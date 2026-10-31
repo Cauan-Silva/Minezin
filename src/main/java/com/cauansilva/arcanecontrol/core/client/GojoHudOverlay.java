@@ -92,6 +92,7 @@ public class GojoHudOverlay {
         // =====================================================================
         // HUD NORMAL NO CANTO SUPERIOR ESQUERDO
         // =====================================================================
+        if(mc.player.getMainHandItem().is(com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get())) return;
         gui.fill(8, 8, 255, 62, 0x900A0A12);
         gui.renderOutline(8, 8, 247, 54, 0xFF00B4D8);
 

@@ -21,13 +21,21 @@ public final class RoteiroGojo {
             new Chave(160, new Quadro(3, 1.4, -5, 0, 1))
     };
 
+    private static final Chave[] ATOMIC = {
+        new Chave(0,new Quadro(2,.3,3,0,.95)),
+        new Chave(35,new Quadro(-2,.4,3,0,.8)),
+        new Chave(75,new Quadro(-3,1,2,0,.7)),
+        new Chave(90,new Quadro(-5,2,-4,0,.9)),
+        new Chave(110,new Quadro(-11,6,-14,0,1.15)),
+        new Chave(140,new Quadro(-6,3,-7,0,1))
+    };
     public static double suave(double k) {
         k = Math.max(0, Math.min(1, k));
         return k * k * (3 - 2 * k);
     }
 
     public static Quadro amostrar(int tipo, double tick) {
-        Chave[] chaves = tipo == 5 ? DOMINIO : ROXO;
+        Chave[] chaves = tipo == 14 ? ATOMIC : tipo == 5 ? DOMINIO : ROXO;
         if (tick <= 0) return chaves[0].quadro;
         for (int i = 1; i < chaves.length; i++) {
             Chave a = chaves[i - 1], b = chaves[i];
@@ -42,7 +50,7 @@ public final class RoteiroGojo {
     }
 
     public static double impacto(int tipo, double tick) {
-        double desde = tick - (tipo == 5 ? 35 : 30);
+        double desde = tick - (tipo == 14 ? 90 : tipo == 5 ? 35 : 30);
         return desde < 0 ? 0 : .65 * Math.max(0, 1 - desde / 12);
     }
 

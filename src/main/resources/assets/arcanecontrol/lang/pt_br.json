@@ -1,9 +1,14 @@
 {
   "category.minezin.magias": "Minezin - Jujutsu Kaisen (Gojo)",
-  "key.minezin.z": "Técnica Azul (Ao - Esfera 3D de Atração)",
-  "key.minezin.x": "Técnica Vermelho (Aka - Esfera 3D de Repulsão)",
+  "key.minezin.z": "T\u00e9cnica Azul (Ao - Esfera 3D de Atra\u00e7\u00e3o)",
+  "key.minezin.x": "T\u00e9cnica Vermelho (Aka - Esfera 3D de Repuls\u00e3o)",
   "key.minezin.c": "Infinito (Mukagen - Barreira Espacial 3D)",
   "key.minezin.v": "Ultimate: Vazio Roxo (Cutscene + Modelo 3D)",
-  "key.minezin.r": "Ultimate: Expansão de Domínio - Vazio Infinito (Cutscene + Domo 3D)",
-  "key.minezin.tree": "Árvore de técnicas"
+  "key.minezin.r": "Ultimate: Expans\u00e3o de Dom\u00ednio - Vazio Infinito (Cutscene + Domo 3D)",
+  "key.minezin.tree": "\u00c1rvore de t\u00e9cnicas",
+  "item.arcanecontrol.lamina_shadow": "L\u00e2mina de Shadow",
+  "item.arcanecontrol.capuz_shadow": "Capuz de Shadow",
+  "item.arcanecontrol.manto_shadow": "Manto de Shadow",
+  "item.arcanecontrol.calcas_shadow": "Calcas de Shadow",
+  "item.arcanecontrol.botas_shadow": "Botas de Shadow"
 }

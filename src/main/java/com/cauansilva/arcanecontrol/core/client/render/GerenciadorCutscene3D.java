@@ -68,6 +68,10 @@ public class GerenciadorCutscene3D {
             return;
         }
         if (EFEITOS_3D.size() >= 64) EFEITOS_3D.remove(0);
+        if (tipo >= 11 && tipo <= 15) {
+            com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));
+            return;
+        }
         TecnicaGojo tecnica = TecnicaGojo.porId(tipo);
         if (tecnica != null && mc.player != null && mc.player.getUUID().equals(playerId)) {
             GojoHudOverlay.notificarHabilidade(tecnica.nome, 0x55FFFF);
@@ -95,7 +99,7 @@ public class GerenciadorCutscene3D {
         }
     }
 
-    private static void iniciarCutsceneLocal(int tipo, int duracao) {
+    public static void iniciarCutsceneLocal(int tipo, int duracao) {
         if (!ConfigCliente.CINEMATICAS.get()) return;
         Minecraft mc = Minecraft.getInstance();
         finalizarCutscene();
@@ -112,7 +116,7 @@ public class GerenciadorCutscene3D {
         mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
     }
 
-    private static void finalizarCutscene() {
+    public static void finalizarCutscene() {
         Minecraft mc = Minecraft.getInstance();
         if (cameraAnterior != null) mc.options.setCameraType(cameraAnterior);
         cameraAnterior = null;

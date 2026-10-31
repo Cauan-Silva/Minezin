@@ -22,6 +22,7 @@ public class ArcaneControl {
                 net.minecraftforge.fml.config.ModConfig.Type.CLIENT, ConfigCliente.SPEC);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::setup);
+        com.cauansilva.arcanecontrol.core.cid.EspadaCid.ITEMS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(GerenciadorMagiasGojo.class);
     }
