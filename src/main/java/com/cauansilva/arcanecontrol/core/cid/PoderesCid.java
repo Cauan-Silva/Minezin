@@ -91,10 +91,23 @@ public final class PoderesCid {
                 it.remove();continue;
             }
             long t = event.getServer().overworld().getGameTime() - a.inicio;
+            if (t < 90 && t % 12 == 0) {
+                a.nivel.playSound(null, a.jogador.blockPosition(), SoundEvents.WARDEN_HEARTBEAT,
+                        SoundSource.PLAYERS, 1.8f, (float)(.55 + t / 130.0));
+            }
             if (t == 90) {
+                if (com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get()) {
+                    a.nivel.explode(a.jogador, a.centro.x, a.centro.y, a.centro.z,
+                            com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get() / 2f, false,
+                            net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+                }
                 for (LivingEntity alvo : a.nivel.getEntitiesOfClass(LivingEntity.class, new AABB(a.centro,a.centro).inflate(14),
                         e -> e != a.jogador && e.isAlive())) {
-                    if (alvo.distanceToSqr(a.centro) <= 196) alvo.hurt(a.nivel.damageSources().indirectMagic(a.jogador,a.jogador), 45);
+                    if (alvo.distanceToSqr(a.centro) <= 196) {
+                        alvo.hurt(a.nivel.damageSources().indirectMagic(a.jogador,a.jogador), 45);
+                        alvo.setDeltaMovement(alvo.position().subtract(a.centro).normalize().scale(1.6).add(0,.6,0));
+                        alvo.hurtMarked = true;
+                    }
                 }
                 a.nivel.playSound(null, net.minecraft.core.BlockPos.containing(a.centro), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 3, .5f);
             }

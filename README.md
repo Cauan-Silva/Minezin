@@ -78,3 +78,7 @@ O traje usa peças de netherita + ametista + lã preta em receitas sem formato. 
 Atomic prepara por 90 ticks, aplica um impacto em raio de 14 blocos e encerra aos 140 ticks. Não destrói blocos. O jogador fica lento durante a preparação; afastar-se mais de 3 blocos do centro cancela a sequência. Morte, desconexão e mudança de dimensão cancelam a execução. Cooldowns ficam salvos por jogador; danos e permissões de uso são validados pelo servidor. Esta versão inicial usa sons do Minecraft, sem fala gravada.
 
 Validação manual necessária: aparência do traje/espada em primeira e terceira pessoa, recorte do manto ao andar e agachar, colisão da câmera, efeito Atomic e sincronia com dois jogadores. A aprovação do build não comprova a qualidade visual. O aprimoramento do modelo do Gojo e a árvore própria do Cid são próximos trabalhos.
+
+### 1.3.1 — Atomic e itens
+Ícones do traje agora usam o atlas de itens. Atomic inclui carga orbital, partículas, núcleo branco/violeta, ondas de choque e clarão breve. No impacto, causa explosão real e arremesso dos alvos. A explosão usa os eventos nativos do Forge; compatibilidade com cada mod de proteção precisa ser testada.
+Configuração por mundo em serverconfig/arcanecontrol-server.toml: atomic.destruirTerreno (padrão true) e atomic.raioCratera (padrão 14, intervalo 1–24). O alcance efetivo varia com a resistência dos blocos. Teste em uma cópia do mundo: a explosão destrói blocos de verdade.
