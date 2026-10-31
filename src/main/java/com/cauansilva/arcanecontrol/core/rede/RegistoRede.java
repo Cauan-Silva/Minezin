@@ -7,19 +7,22 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 public class RegistoRede {
     private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-        new ResourceLocation(ArcaneControl.MODID, "main"),
-        () -> PROTOCOL_VERSION,
-        PROTOCOL_VERSION::equals,
-        PROTOCOL_VERSION::equals
+    public static final SimpleChannel ENVIAR = NetworkRegistry.newSimpleChannel(
+            new ResourceLocation(ArcaneControl.MODID, "main"),
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
     );
-    private static int packetId = 0;
 
     public static void registarPacotes() {
-        INSTANCE.messageBuilder(EfeitoVisualPacote.class, packetId++)
-            .encoder(EfeitoVisualPacote::encode)
-            .decoder(EfeitoVisualPacote::decode)
-            .consumerMainThread(EfeitoVisualPacote::handle)
-            .add();
+        int id = 0;
+        ENVIAR.registerMessage(id++, PacoteUsarMagia.class,
+                PacoteUsarMagia::encode,
+                PacoteUsarMagia::decode,
+                PacoteUsarMagia::handle);
+        ENVIAR.registerMessage(id++, PacoteSincronizarCutscene3D.class,
+                PacoteSincronizarCutscene3D::encode,
+                PacoteSincronizarCutscene3D::decode,
+                PacoteSincronizarCutscene3D::handle);
     }
 }

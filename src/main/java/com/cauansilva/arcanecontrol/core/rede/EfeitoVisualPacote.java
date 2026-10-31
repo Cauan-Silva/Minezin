@@ -2,6 +2,7 @@ package com.cauansilva.arcanecontrol.core.rede;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+
 import java.util.function.Supplier;
 
 public class EfeitoVisualPacote {
@@ -24,7 +25,7 @@ public class EfeitoVisualPacote {
 
     public static void handle(EfeitoVisualPacote msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            // Lógica de shaders e efeitos no cliente
+            // Lógica no cliente para efeitos visuais/shaders
         });
         ctx.get().setPacketHandled(true);
     }
