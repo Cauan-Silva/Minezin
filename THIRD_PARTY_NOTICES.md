@@ -1,6 +1,6 @@
 # Referência HobbyMine
 
-A integração com Player Animator e a estrutura de câmera desta versão foram adaptadas do projeto HobbyMine fornecido por Cauan Silva. Os gestos do Gojo foram refeitos com tempos alinhados às técnicas atuais. Nenhum pacote de texturas ou modelos de terceiros foi importado.
+A integração com Player Animator e a estrutura de câmera foram adaptadas do projeto HobbyMine fornecido por Cauan Silva. Os gestos do Gojo foram refeitos com tempos alinhados às técnicas atuais. O kit Cid/Shadow reutiliza texturas, ícones, gestos e a base do traje Soberano Oculto desse projeto; a espada e os segmentos animados do manto foram adaptados nesta versão.
 
 ## Licença do HobbyMine
 

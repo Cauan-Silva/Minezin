@@ -50,6 +50,14 @@ public final class AnimacoesGojo {
         if (camada.isActive() && PRIORIDADES.getOrDefault(id, 0) >= 4 && tipo < 4) return;
         reproduzir(jogador, camada, id, tipo, "gojo_" + NOMES[tipo - 1]);
     }
+    public static void cancelar(UUID id) {
+        var mc = Minecraft.getInstance();
+        if(mc.level != null && mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador) {
+            var camada = camada(jogador);
+            if(camada != null) camada.setAnimation(null);
+        }
+        PRIORIDADES.remove(id);
+    }
     public static void tocarCid(UUID id, int tipo) {
         var mc = Minecraft.getInstance();
         if(mc.level == null || tipo < 11 || tipo > 14) return;

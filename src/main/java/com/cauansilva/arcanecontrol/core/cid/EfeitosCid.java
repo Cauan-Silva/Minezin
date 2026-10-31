@@ -22,6 +22,7 @@ public final class EfeitosCid {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
         if(tipo==15){
+            AnimacoesGojo.cancelar(jogador);
             EFEITOS.removeIf(f->f.jogador.equals(jogador));
             if(mc.player!=null && mc.player.getUUID().equals(jogador)) GerenciadorCutscene3D.finalizarCutscene();
             return;
