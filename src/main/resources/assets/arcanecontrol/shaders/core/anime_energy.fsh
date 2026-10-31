@@ -37,11 +37,12 @@ void main(){
         vec3 n=normalSphere(uv);float rim=pow(1.0-abs(dot(n,normalize(Viewer))),5.0);
         color=vec3(.0005,.0003,.002)+vertexColor.rgb*rim*.6;
     } else if(m<4.5){
-        float flow=fbm(vec2(uv.x*12.0-t*2.0,uv.y*9.0));
-        float bands=pow(.5+.5*sin(uv.y*45.0+flow*7.0-t*4.0),5.0);
-        float border=sin(clamp(uv.y,0.0,1.0)*PI);
-        color=mix(color*.3,vec3(1.0,.94,.8),bands*.7+flow*.2);
-        alpha*=border*(.25+bands*.65);
+        float flow=fbm(vec2(uv.x*2.5-t*.7,uv.y*4.0));
+        float bands=.5+.5*sin(uv.y*28.0+flow*2.2-t*2.0);
+        float border=pow(sin(clamp(uv.y,0.0,1.0)*PI),.6);
+        float streams=.65+.35*sin(uv.x*1.4-t*3.0+uv.y*5.0);
+        color=mix(vec3(.25,.12,.045),vec3(1.0,.87,.58),.4+bands*.35+flow*.2);
+        alpha*=border*(.45+bands*.35)*streams;
     } else if(m<5.5){
         float edge=pow(1.0-abs(uv.x-.5)*2.0, .25);
         float dissolve=fbm(uv*13.0+vec2(t*.8,-t*.2));

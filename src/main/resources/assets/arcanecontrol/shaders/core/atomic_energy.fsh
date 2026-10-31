@@ -44,6 +44,7 @@ void main() {
         energy=mix(energy,mix(vec3(.35,.07,.8),vec3(.97,.9,1.0),.55+flow*.4),impact);
         alpha=mix(alpha,vertexColor.a*(.5+flow*.45),impact);
     }
+    if(EffectMode>1.5){float d=abs(p.y-.5);float white=exp(-d*d*35.0);energy=mix(vec3(.45,.08,1.0),vec3(1.0,.96,1.0),white);alpha=vertexColor.a*exp(-d*d*18.0);}
     if(alpha<0.008) discard;
     fragColor=vec4(energy*vertexColor.rgb,alpha);
 }

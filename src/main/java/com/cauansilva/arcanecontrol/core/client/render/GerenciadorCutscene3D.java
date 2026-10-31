@@ -213,6 +213,10 @@ public class GerenciadorCutscene3D {
         double tempo = cutsceneTick + parcial;
         RoteiroGojo.Quadro quadro = RoteiroGojo.amostrar(cutsceneTipo, tempo);
         Vec3 olho = mc.player.getEyePosition(parcial);
+        if(cutsceneTipo==14&&tempo>=90){
+            Vec3 centro=com.cauansilva.arcanecontrol.core.cid.EfeitosCid.centroAtomic(mc.player.getUUID());
+            if(centro!=null)olho=centro.add(0,mc.player.getEyeHeight(),0);
+        }
         Vec3 frente=frenteCamera;
         Vec3 alvo=olho.add(frenteCamera.scale(quadro.alvoFrente())).add(0,quadro.alvoAltura(),0);
         if(cutsceneTipo==4) {
@@ -304,6 +308,11 @@ public class GerenciadorCutscene3D {
             float t = ef.tickAtual + partialTick;
             Player conjurador = mc.level.getPlayerByUUID(ef.playerId);
             if(RenderGojo.desenhar(poseStack,ef,conjurador,camPos,partialTick)) continue;
+            if(ef.tipo==4&&t>12){
+                Vec3 dirR=conjurador!=null&&t<=30?conjurador.getViewVector(partialTick):ef.direcao;
+                Vec3 origemR=conjurador!=null&&t<=30?conjurador.getEyePosition(partialTick):ef.origem;
+                RenderGojo.raiosSemMaterial(poseStack,camPos,origemR.add(dirR.scale(PerfilVfxGojo.distanciaRoxo(t))),dirR,t,(float)PerfilVfxGojo.opacidade(4,t));
+            }
 
             // -----------------------------------------------------------------
             // MODELO 3D: TÉCNICA AZUL (AO) - Esfera 3D Azul + Disco Gravitacional
@@ -453,7 +462,7 @@ public class GerenciadorCutscene3D {
 
                 // Domo 3D Cósmico se expandindo e trancando a área!
                 float raioDomo = t < 35 ? (t / 35.0f) * 26.0f : 26.0f;
-                RenderizadorModelos3D.desenharEsfera3D(poseStack, raioDomo, 5, 5, 18, 230, 32);
+                RenderizadorModelos3D.desenharEsfera3D(poseStack, raioDomo, 2, 3, 12, (int)(255*PerfilVfxGojo.opacidade(5,t)), 32);
 
                 // Buraco Negro 3D do Vazio Infinito pairando acima (exatamente como no vídeo 01:58!)
                 if (t > 20) {
@@ -462,12 +471,12 @@ public class GerenciadorCutscene3D {
                     // Horizonte de eventos negro
                     RenderizadorModelos3D.desenharEsfera3D(poseStack, 3.5f, 0, 0, 0, 255, 28);
                     // Halo branco/azul brilhante ao redor do buraco negro
-                    RenderizadorModelos3D.desenharEsfera3D(poseStack, 3.85f, 200, 240, 255, 130, 28);
+                    RenderizadorModelos3D.desenharEsfera3D(poseStack, 3.85f, 70, 90, 140, 30, 28);
 
                     // Disco de acreção cósmico girando
                     poseStack.mulPose(Axis.YP.rotationDegrees(t * 4.0f));
                     poseStack.mulPose(Axis.XP.rotationDegrees(20.0f));
-                    RenderizadorModelos3D.desenharAnel3D(poseStack, 4.2f, 11.5f, 180, 235, 255, 190, 48);
+                    RenderizadorModelos3D.desenharAnel3D(poseStack, 4.2f, 4.32f, 100, 130, 190, 65, 48);
                     poseStack.popPose();
                 }
 

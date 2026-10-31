@@ -1,6 +1,6 @@
 # Poderes, progressão e trajes — 2.0.0
 
-Forge 1.20.1 / Java 17. Cliente e servidor precisam da mesma versão (protocolo 6). As dependências da versão anterior continuam necessárias: GeckoLib, PlayerAnimator e Photon com LDLib incluída.
+Forge 1.20.1 / Java 17. Cliente e servidor precisam da mesma versão (protocolo 7). As dependências da versão anterior continuam necessárias: GeckoLib, PlayerAnimator e Photon com LDLib incluída.
 
 ## Menu e survival
 
@@ -24,7 +24,7 @@ No Criativo, pesquise sem custos e receba nível 5 para testar o moveset complet
 | Z | Corte de Slime: impacto sincronizado ao arco da espada | Zoltraak: feixe que para no primeiro bloco ou alvo válido |
 | X | Passo das Sombras: percurso com colisão e miragens | Barreira Arcana: 4 s, absorve 70% do dano de entidades, reserva de 30 pontos |
 | C | Fios de Slime: até 8 alvos, fios vinculados às entidades e atração | Impulso Arcano com queda lenta por 5 s |
-| V | I Am Atomic: carga, selos, núcleo e explosão | Buraco Negro: 3 s de formação, atração até 8,5 s, colapso, fim em 10 s |
+| V | I Am Atomic: carga, selos, núcleo e explosão | Buraco Negro: 3,5 s de formação, atração até 11 s, colapso, fim em 14 s |
 
 Gojo conserva Z/X/C/V/R; o Vazio Roxo ganhou raios ramificados pulsantes ao redor do projétil. Os gestos de Cid e Frieren foram escritos no projeto. A ultimate de Frieren possui roteiro de câmera voltado ao centro da singularidade. A representação do buraco negro é uma interpretação visual para este kit.
 
@@ -32,7 +32,7 @@ O colapso usa explosão nativa do Forge para destruição, respeitando seus even
 
 ## Armaduras
 
-Novos conjuntos de Gojo e Frieren possuem geometria por peça, textura original compartilhada, detalhes de tecido/cabelo e animações sutis. As mãos e o rosto usam a skin do jogador. As peças aparecem na aba de combate do Criativo.
+Novos conjuntos de Gojo e Frieren possuem geometria por peça, textura original compartilhada, detalhes de tecido, sem cabelo adicionado e animações sutis. As mãos e o rosto usam a skin do jogador. As peças aparecem na aba de combate do Criativo.
 
 Na ferraria: **papel + peça de netherita + fragmento de ametista** produz Gojo; **papel + peça de diamante + barra de ouro** produz Frieren. Receitas `smithing_transform` preservam dados e encantamentos da peça base. IDs: `arcanecontrol:gojo_cabeca`, `gojo_peito`, `gojo_pernas`, `gojo_botas`; os de Frieren usam o prefixo `frieren_`.
 

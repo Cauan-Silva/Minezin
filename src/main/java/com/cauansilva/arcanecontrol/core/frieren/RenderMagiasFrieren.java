@@ -19,18 +19,23 @@ public final class RenderMagiasFrieren {
         try{
             if(e.tipo()==21){
                 Vec3 fim=e.alvo().subtract(e.origem()),dir=fim.normalize(),lado=dir.cross(new Vec3(0,1,0)).normalize();
-                Vec3 mao=lado.scale(.18).add(0,-.15,0);float a=(float)Math.max(0,1-t/12);
+                Vec3 mao=lado.scale(.18).add(0,-.15,0);float a=(float)Math.max(0,1-t/30);
                 DesenhoMagia.lote(pose,1,true,()->{
                     DesenhoMagia.fita(pose,cam,mao,fim,.17,0,8,CLARO,a*.4f);
                     DesenhoMagia.fita(pose,cam,mao,fim,.045,0,8,0xFFFFFF,a);
                 });
                 DesenhoMagia.lote(pose,6,true,()->{
-                    DesenhoMagia.anel(pose,dir.scale(.9),dir,.48,.55,OURO,a,48);
-                    DesenhoMagia.anel(pose,dir.scale(.9),dir,.25,.28,CLARO,a,32);
+                    DesenhoMagia.anel(pose,dir.scale(.9),dir,.7,.74,OURO,a,48);
+                    DesenhoMagia.selo(pose,cam,dir.scale(.9),dir,.7,t,OURO,a);
+                    DesenhoMagia.selo(pose,cam,dir.scale(1.35),dir,.42,-t,CLARO,a*.6f);
                 });
             } else if(e.tipo()==22){
                 float a=(float)Math.min(1,Math.min(t/6,(80-t)/10));
-                DesenhoMagia.esfera(pose,cam,atual.add(0,1,0),1.65,2,CLARO,a*.65f,true,n);
+                DesenhoMagia.esfera(pose,cam,atual.add(0,1,0),1.9,2,CLARO,a*.75f,true,n);
+                DesenhoMagia.lote(pose,6,true,()->{
+                    DesenhoMagia.selo(pose,cam,atual.add(0,.05,0),new Vec3(0,1,0),1.65,t,OURO,a*.7f);
+                    DesenhoMagia.anel(pose,atual.add(0,1,0),cam.subtract(atual).normalize(),1.86,1.9,CLARO,a*.4f,64);
+                });
             } else if(e.tipo()==23){
                 float a=(float)Math.min(1,Math.max(0,(100-t)/20));
                 DesenhoMagia.lote(pose,6,true,()->{
@@ -50,11 +55,22 @@ public final class RenderMagiasFrieren {
                 DesenhoMagia.lote(pose,4,true,()->{
                     if(r>.02){
                         DesenhoMagia.anel(pose,Vec3.ZERO,normal,r*1.3,r*2.8,OURO,fade*.85f,96);
-                        DesenhoMagia.anel(pose,Vec3.ZERO,new Vec3(0,0,1),r*1.03,r*1.11,CLARO,fade*.7f,80);
+                        DesenhoMagia.anel(pose,Vec3.ZERO,cam.normalize(),r*1.03,r*1.11,CLARO,fade*.7f,80);
                     }
-                    if(t>=170){double onda=(t-170)*.5;DesenhoMagia.anel(pose,Vec3.ZERO,new Vec3(0,1,0),onda,onda+.7,OURO,fade*.7f,80);}
+                    if(t>=PerfilFrieren.COLAPSO){double onda=(t-PerfilFrieren.COLAPSO)*.5;DesenhoMagia.anel(pose,Vec3.ZERO,new Vec3(0,1,0),onda,onda+.7,OURO,fade*.7f,80);}
                 });
-                if(t<170)DesenhoMagia.lote(pose,1,true,()->{
+                if(t<PerfilFrieren.ABERTURA){
+                    Vec3 mao=atual.add(0,1.2,0),normalMao=e.origem().subtract(p.getEyePosition(parcial)).normalize();
+                    DesenhoMagia.lote(pose,6,true,()->{
+                        DesenhoMagia.selo(pose,cam,mao,normalMao,1.4,t,OURO,fade*.8f);
+                        DesenhoMagia.selo(pose,cam,Vec3.ZERO,new Vec3(0,1,0),2+3*carga,-t,CLARO,fade*.5f);
+                    });
+                }
+                if(t>=PerfilFrieren.COLAPSO&&t<PerfilFrieren.COLAPSO+30){
+                    double onda=(t-PerfilFrieren.COLAPSO)*.5;
+                    DesenhoMagia.esfera(pose,cam,Vec3.ZERO,onda,2,CLARO,fade*.3f,true,n);
+                }
+                if(t<PerfilFrieren.COLAPSO)DesenhoMagia.lote(pose,1,true,()->{
                     int caminhos=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?4:8;
                     for(int j=0;j<caminhos;j++){
                         Vec3 anterior=null;

@@ -22,13 +22,13 @@ def ring(inner,outer,normal,color):
  return np.array(out,dtype='f4')
 def lightning(color):
  out=[]
- for j in range(6):
-  angle=j*math.tau/6;previous=None
-  for i in range(7):
-   r=.45+i*.28;p=np.array([math.cos(angle)*r-math.sin(angle)*math.sin(i*2.1+j)*.12,
+ for j in range(8):
+  angle=j*math.tau/8;previous=None
+  for i in range(9):
+   r=1.15+i*.18;p=np.array([math.cos(angle)*r-math.sin(angle)*math.sin(i*2.1+j)*.12,
                          math.sin(angle)*r+math.cos(angle)*math.sin(i*2.1+j)*.12,0.])
    if previous is not None:
-    d=p-previous;side=np.cross(d,[0,0,1]);side=side/np.linalg.norm(side)*.035
+    d=p-previous;side=np.cross(d,[0,0,1]);side=side/np.linalg.norm(side)*.08
     points=[previous-side,p-side,p+side,previous+side];uv=[(i*.25,0),((i+1)*.25,0),((i+1)*.25,1),(i*.25,1)]
     for k in [0,1,2,0,2,3]:out.append([*points[k],*color,*uv[k]])
    previous=p
@@ -37,6 +37,7 @@ def render(output,backend=None):
  ctx=moderngl.create_standalone_context(require=320,**({'backend':backend}if backend else{}))
  base=load_program(ctx,'anime_energy');add=load_program(ctx,'anime_energy_additive')
  atomic=load_program(ctx,'atomic_energy','one');gojo=load_program(ctx,'gojo_energy_additive')
+ load_roxo=load_program(ctx,'gojo_energy')
  width,height=320,260;fbo=ctx.simple_framebuffer((width,height),components=4);fbo.use()
  proj=np.diag([2/6,2/4.875,-2/100,1.]).astype('f4');proj[2,3]=-1
  view=np.eye(4,dtype='f4');view[2,3]=-8
@@ -64,7 +65,9 @@ def render(output,backend=None):
   elif index==5:draw(base,5,quad(.55,1.6,violet,u=1))
   elif index==6:draw(add,6,ring(1.25,1.38,[0,0,1],gold),True)
   elif index==7:draw(atomic,1,mesh(1.5,color=(1,1,1,.7)),True,time=5)
-  else:draw(gojo,5,lightning((.9,.83,1,1)),True)
+  else:
+   draw(load_roxo,2,mesh(1.1,color=(.7,.3,1,1)))
+   draw(gojo,8,lightning((.9,.83,1,1)),True)
   tile=Image.frombytes('RGBA',(width,height),fbo.read(components=4)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
   data=np.asarray(tile);assert data[:,:,:3].std()>1.5,f'Blank VFX: {label}'
   x=index%3*width;y=index//3*height;sheet.paste(tile.convert('RGB'),(x,y));text.text((x+12,y+12),label,fill=(230,234,245))
@@ -72,7 +75,7 @@ def render(output,backend=None):
  text.text((12,height*3+33),'Sem bloom Photon, personagens ou composicao completa de cada habilidade.',fill=(160,178,202))
  output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);sheet.save(output)
  print('Power VFX GPU:',ctx.info['GL_RENDERER']);print('Rendered 9 power materials:',output)
- for p in [base,add,atomic,gojo]:p.release()
+ for p in [base,add,atomic,gojo,load_roxo]:p.release()
  fbo.release();ctx.release()
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--backend');a=p.parse_args();render(a.output,a.backend)

@@ -2,6 +2,7 @@ package com.cauansilva.arcanecontrol.core.frieren;
 import com.cauansilva.arcanecontrol.core.client.render.*;
 import com.cauansilva.arcanecontrol.core.client.*;
 import com.cauansilva.arcanecontrol.core.poderes.PoderAnime;
+import com.cauansilva.arcanecontrol.core.vfx.PerfilFrieren;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,18 +27,19 @@ public final class EfeitosFrieren {
         EFEITOS.add(new Efeito(tipo,id,origem,alvo,mc.level.getGameTime(),mc.level));
         AnimacoesGojo.tocarFrieren(id,tipo);
         if(tipo==21)EmissoresAnime.pulso(id,alvo,0xDFEBFF,12,2,.1,12);
-        if(tipo==24&&mc.player!=null&&mc.player.getUUID().equals(id))GerenciadorCutscene3D.iniciarCutsceneLocal(24,200);
+        if(tipo==24&&mc.player!=null&&mc.player.getUUID().equals(id))GerenciadorCutscene3D.iniciarCutsceneLocal(24,PerfilFrieren.FIM);
     }
     public static Vec3 centroUltimate(UUID id){for(var e:EFEITOS)if(e.tipo==24&&e.jogador.equals(id))return e.origem;return null;}
-    private static int duracao(int tipo){return switch(tipo){case 21->12;case 22->80;case 23->100;case 24->200;default->0;};}
+    private static int duracao(int tipo){return switch(tipo){case 21->30;case 22->80;case 23->100;case 24->PerfilFrieren.FIM;default->0;};}
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e){
         if(e.phase!=TickEvent.Phase.END)return;var mc=Minecraft.getInstance();
         EFEITOS.removeIf(f->mc.level==null||f.mundo!=mc.level||mc.level.getGameTime()-f.inicio>=duracao(f.tipo)
                 ||mc.level.getPlayerByUUID(f.jogador)==null||!mc.level.getPlayerByUUID(f.jogador).isAlive());
         if(mc.level==null||mc.isPaused())return;
         for(var f:EFEITOS){long t=mc.level.getGameTime()-f.inicio;
-            if(f.tipo==24&&t==60)for(int j=0;j<6;j++)EmissoresAnime.pulso(f.jogador,f.origem.add(Math.cos(j*Math.PI/3)*4,0,Math.sin(j*Math.PI/3)*4),0xE7D09C,6,1,.12,24);
-            if(f.tipo==24&&t==170)EmissoresAnime.pulso(f.jogador,f.origem,0xF2DEB1,80,7,.18,24);
+            if(f.tipo==24&&t==PerfilFrieren.ABERTURA)for(int j=0;j<6;j++)EmissoresAnime.pulso(f.jogador,f.origem.add(Math.cos(j*Math.PI/3)*4,0,Math.sin(j*Math.PI/3)*4),0xE7D09C,6,1,.12,24);
+            if(f.tipo==24&&t==PerfilFrieren.COLAPSO)EmissoresAnime.pulso(f.jogador,f.origem,0xF2DEB1,80,7,.18,24);
+            if(f.tipo==24&&t>PerfilFrieren.ABERTURA&&t<PerfilFrieren.COLAPSO&&t%10==0)EmissoresAnime.pulso(f.jogador,f.origem,0xB9CFFF,8,4,.12,20);
             if(f.tipo==23&&t<40&&t%8==0){var p=mc.level.getPlayerByUUID(f.jogador);EmissoresAnime.pulso(f.jogador,p.position(),0xA7DEFF,4,.3,.08,12);}
         }
     }
@@ -52,7 +54,7 @@ public final class EfeitosFrieren {
     }
     @SubscribeEvent public static void hud(RenderGuiOverlayEvent.Post e){
         var mc=Minecraft.getInstance();if(mc.player==null||mc.options.hideGui||!e.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id()))return;
-        if(GerenciadorCutscene3D.cutsceneTipo==24){e.getGuiGraphics().drawCenteredString(mc.font,GerenciadorCutscene3D.cutsceneTick<60?"Singularidade...":"Buraco Negro",e.getWindow().getGuiScaledWidth()/2,e.getWindow().getGuiScaledHeight()-30,0xEEDDB7);return;}
+        if(GerenciadorCutscene3D.cutsceneTipo==24){e.getGuiGraphics().drawCenteredString(mc.font,GerenciadorCutscene3D.cutsceneTick<PerfilFrieren.ABERTURA?"Singularidade...":"Buraco Negro",e.getWindow().getGuiScaledWidth()/2,e.getWindow().getGuiScaledHeight()-30,0xEEDDB7);return;}
         if(PoderesCliente.ativo()!=PoderAnime.FRIEREN)return;
         e.getGuiGraphics().fill(8,8,306,47,0xDC101321);
         e.getGuiGraphics().drawString(mc.font,"FRIEREN • [P] Poderes",14,14,0xE6D19C);

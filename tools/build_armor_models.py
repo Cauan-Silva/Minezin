@@ -38,15 +38,6 @@ def skeleton():
 
 def gojo():
     b=skeleton();head=b['armorHead'];body=b['armorBody']
-    cube(head,[-4.3,30.2,-4.15],[8.6,2.5,8.3],4)
-    for row,z in enumerate([-2.4,.1,2.4]):
-        for i,x in enumerate([-3.5,-2.1,-.7,.7,2.1,3.5]):
-            pivot=[x,31.6,z];rot=[row*8-7,(i-2.5)*5,(i-2.5)*-10]
-            cube(head,[x-.65,31.6,z-.75],[1.3,1.8,1.5],4,pivot,rot)
-            cube(head,[x-.45,33.2,z-.5],[.9,.95,1.0],4,pivot,rot)
-            cube(head,[x-.24,34.0,z-.3],[.48,.55+(i%3)*.18,.6],4,pivot,rot)
-    for side in [-1,1]:
-        cube(head,[side*4.0-(1 if side<0 else 0),28.0,-1.5],[1.0,4.1,4.7],4,[side*4,30,0],[0,0,-side*12])
     cube(head,[-4.35,27.0,-4.45],[8.7,2.3,.55],0)
     cube(head,[-4.4,27.0,-4.1],[.55,2.3,8.5],0);cube(head,[3.85,27.0,-4.1],[.55,2.3,8.5],0)
     cube(head,[-4.15,27.0,3.9],[8.3,2.3,.5],0)
@@ -84,20 +75,8 @@ def gojo():
 
 def frieren():
     b=skeleton();head=b['armorHead'];body=b['armorBody']
-    cube(head,[-4.3,30.2,-4.15],[8.6,2.4,8.3],4)
-    cube(head,[-4.4,23.0,3.2],[8.8,8.8,1.3],4)
-    for i in range(6):cube(head,[-4.1+i*1.35,29.0,-4.5],[1.35,2.8,.9],4,[-3.4+i*1.35,31.8,-4],[0,0,(i-2.5)*4])
-    for side,brinco in [(-1,'brinco_esq'),(1,'brinco_dir')]:
-        x=-6.1 if side<0 else 4.0
-        cube(head,[x,20.6,-3.4],[2.1,10.0,2.6],4,[side*5.0,30,1.5],[0,0,-side*5])
-        cube(head,[x+.1,20.1,-3.2],[1.9,1.2,2.2],4)
-        ear_x=-7.0 if side<0 else 4.0
-        cube(head,[ear_x,27.0,-.6],[3.0,1.2,1.5],7,[side*4,27.5,0],[0,0,side*16])
-        cube(head,[-7.7 if side<0 else 6.6,27.5,-.3],[1.0,.6,.9],7,[side*6.7,27.7,0],[0,0,side*20])
-        b[brinco]=bone(brinco,[side*5.9,27,-.8],'armorHead')
-        cube(b[brinco],[side*5.9-.12,25.4,-.95],[.24,1.8,.25],5)
-        cube(b[brinco],[side*5.9-.34,24.9,-1.05],[.68,.8,.35],5)
-        cube(b[brinco],[side*5.9-.2,24.98,-1.2],[.4,.56,.22],10)
+    cube(head,[-4.3,29.8,-4.3],[8.6,.45,.35],5)
+    cube(head,[-.35,29.5,-4.5],[.7,.8,.3],10)
     cube(body,[-4.4,12,-2.4],[8.8,12.2,4.8],2)
     cube(body,[-5.2,20.7,-2.65],[10.4,3.1,5.3],2)
     for x in [-4.4,.4]:

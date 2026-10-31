@@ -11,7 +11,7 @@ public final class ConfigServidor {
         var b = new ForgeConfigSpec.Builder();
         b.push("atomic");
         DESTRUIR = b.comment("Permite que I Am Atomic destrua terreno. Respeita eventos de explosao do Forge.").define("destruirTerreno", true);
-        RAIO = b.comment("Escala da cratera em blocos. A resistencia do terreno altera o alcance real.").defineInRange("raioCratera", 14, 1, 24);
+        RAIO = b.comment("Escala da cratera em blocos. A resistencia do terreno altera o alcance real.").defineInRange("raioCratera", 20, 1, 28);
         b.pop();
         BURACO_DESTRUIR=b.comment("Permitir cratera no colapso da Ultimate da Frieren; usa eventos de explosao do Forge.")
                 .define("buracoNegroDestruirTerreno",true);

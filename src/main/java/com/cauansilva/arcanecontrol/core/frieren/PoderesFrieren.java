@@ -61,12 +61,13 @@ public final class PoderesFrieren {
             if(ATIVOS.stream().anyMatch(a->a.jogador==p))return;
             if(alvo.distanceToSqr(p.position())<9){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Mire em uma área mais distante para formar a singularidade."),true);return;}
             ATIVOS.add(new Singularidade(p,level,alvo,agora));
-            p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,60,2,false,false));
+            if(!com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get())p.displayClientMessage(net.minecraft.network.chat.Component.literal("Destruição de terreno desativada neste mundo."),true);
+            p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,PerfilFrieren.ABERTURA,2,false,false));
             enviar(p,24,alvo,dir);
             level.playSound(null,BlockPos.containing(alvo),SoundEvents.BEACON_POWER_SELECT,SoundSource.PLAYERS,2,.5f);
         }
         cd[slot]=agora+ProgressaoPoderes.recarga(p,PoderAnime.FRIEREN,slot,RECARGAS[slot]);tag.putLongArray("fri_cds",cd);
-        ProgressaoPoderes.registrarUso(p,PoderAnime.FRIEREN,slot,new int[]{12,80,100,200}[slot]);
+        ProgressaoPoderes.registrarUso(p,PoderAnime.FRIEREN,slot,new int[]{30,80,100,PerfilFrieren.FIM}[slot]);
     }
     @SubscribeEvent public static void proteger(LivingHurtEvent e){
         if(!(e.getEntity() instanceof ServerPlayer p)||e.getSource().getEntity()==null)return;
@@ -89,6 +90,7 @@ public final class PoderesFrieren {
             long t=ProgressaoPoderes.agora(p)-a.inicio;
             if(t==PerfilFrieren.ABERTURA)a.nivel.playSound(null,BlockPos.containing(a.centro),SoundEvents.WARDEN_SONIC_BOOM,SoundSource.PLAYERS,2,.55f);
             if(t>=PerfilFrieren.ABERTURA&&t<PerfilFrieren.COLAPSO){
+                if(t%2==0&&com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get())com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.atrairBlocos(p,a.centro,t);
                 for(var alvo:a.nivel.getEntities(p,new AABB(a.centro,a.centro).inflate(16),
                         v->(v instanceof LivingEntity||v instanceof Projectile)&&!v.isAlliedTo(p))){
                     Vec3 delta=a.centro.subtract(alvo.position().add(0,alvo.getBbHeight()*.5,0));double dist=delta.length();
@@ -99,7 +101,10 @@ public final class PoderesFrieren {
                 }
             }
             if(t==PerfilFrieren.COLAPSO){
-                if(com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get())a.nivel.explode(p,a.centro.x,a.centro.y,a.centro.z,3.5f,false,net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+                if(com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get()){
+                    com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.cratera(p,a.centro,14,9);
+                    a.nivel.explode(p,a.centro.x,a.centro.y,a.centro.z,5f,false,net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+                }
                 for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(a.centro,a.centro).inflate(8),v->v!=p&&!v.isAlliedTo(p))) {
                     if(alvo.distanceToSqr(a.centro)>64)continue;
                     alvo.hurt(a.nivel.damageSources().indirectMagic(p,p),25);

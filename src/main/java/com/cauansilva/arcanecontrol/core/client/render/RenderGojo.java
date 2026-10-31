@@ -141,35 +141,47 @@ public final class RenderGojo {
                         anterior=q;
                     }
                 }
-                for(int j=0;j<6;j++){
-                    if(reduzido()&&j%2!=0)continue;
-                    Vec3 anterior=null;float pulso=(float)com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.intensidade(j,t)*alpha;
-                    for(int i=0;i<=6;i++){
-                        var c=com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.ponto(j,i,t);
-                        Vec3 q=pos.add(lado.scale(c.lateral())).add(alto.scale(c.vertical())).add(dir.scale(c.frente()));
-                        if(anterior!=null)fita(pose,cam,anterior,q,.035,i*.25,(i+1)*.25,0xE7D3FF,pulso*.8f);
-                        if(i==4){
-                            Vec3 ramo=q.add(lado.scale(Math.sin(j*2+t*.04)*.7)).add(alto.scale(.9)).add(dir.scale(.4));
-                            fita(pose,cam,q,ramo,.02,0,1,0xBDA4FF,pulso*.6f);
-                        }
-                        anterior=q;
-                    }
-                }
             });
         }
+        if(t>12) raiosRoxo(pose,cam,t<=30?centro:origem.add(dir.scale(PerfilVfxGojo.distanciaRoxo(t))),dir,t,alpha);
+    }
+    private static void raiosRoxo(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha){
+        fitas(8,()->geometriaRaios(pose,cam,centro,dir,t,alpha));
+    }
+    public static void raiosSemMaterial(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha){
+        RenderSystem.enableBlend();RenderSystem.defaultBlendFunc();RenderSystem.disableCull();RenderSystem.depthMask(false);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        var b=Tesselator.getInstance().getBuilder();b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
+        geometriaRaios(pose,cam,centro,dir,t,alpha);Tesselator.getInstance().end();restaurar();
+    }
+    private static void geometriaRaios(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha){
+        Vec3 lado=direita(dir),alto=lado.cross(dir).normalize();
+            for(int j=0;j<(reduzido()?4:8);j++){
+                Vec3 anterior=null;float pulso=(float)com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.intensidade(j,t)*alpha;
+                for(int i=0;i<=8;i++){
+                    var c=com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.ponto(j,i,t);
+                    Vec3 q=centro.add(lado.scale(c.lateral())).add(alto.scale(c.vertical())).add(dir.scale(c.frente()));
+                    if(anterior!=null){
+                        fita(pose,cam,anterior,q,.24,0,1,ROXO,pulso*.55f);
+                        fita(pose,cam,anterior,q,.075,0,1,0xF2DEFF,pulso);
+                    }
+                    if(i==5){Vec3 ramo=q.add(lado.scale(Math.sin(j*2)*1.7)).add(alto.scale(1.3));fita(pose,cam,q,ramo,.065,0,1,0xEAD2FF,pulso);}
+                    anterior=q;
+                }
+            }
     }
     private static void dominio(PoseStack pose,Vec3 cam,Vec3 origem,double t,float alpha) {
         double raio=PerfilVfxGojo.raioDominio(t);
-        if(raio>.1 && cam.distanceTo(origem)>raio-.5) esfera(pose,cam,origem,raio,7,BRANCO,alpha,false);
+        if(raio>.1) esfera(pose,cam,origem,raio,cam.distanceTo(origem)<raio-.5?4:7,BRANCO,alpha,false);
         double presenca=PerfilVfxGojo.presencaDominio(t,cam.distanceTo(origem));
         if(ConfigCliente.AMBIENTE_DOMINIO.get() && presenca>.01)
             pisoAstral(pose,cam,origem,raio,(float)(presenca*.95));
         if(t<20) return;
         Vec3 horizonte=origem.add(0,8,0);
         esfera(pose,cam,horizonte,3.3,7,BRANCO,alpha,false);
-        esfera(pose,cam,horizonte,3.7,6,BRANCO,alpha*.55f,true);
+        esfera(pose,cam,horizonte,3.7,6,0x647AB0,alpha*.12f,true);
         fitas(()->{
-            for(int j=0;j<4;j++) anel(pose,cam,horizonte,new Vec3(.15,1,.2),4+j*1.1,.09+j*.03,BRANCO,alpha*(.45f-j*.06f),t*.2+j);
+            for(int j=0;j<4;j++) anel(pose,cam,horizonte,new Vec3(.15,1,.2),4+j*1.1,.09+j*.03,0x91A9D9,alpha*(.18f-j*.025f),t*.2+j);
             int n=reduzido()?18:40;
             for(int j=0;j<n;j++) {
                 double a=j*2.399963+t*.002,r=6+(j%7)*2.1;
@@ -260,10 +272,11 @@ public final class RenderGojo {
         double a=Math.PI*j/n,lat=-Math.PI/2+Math.PI*i/n;
         v(b,m,base.add(Math.cos(a)*Math.cos(lat)*r,Math.sin(lat)*r,Math.sin(a)*Math.cos(lat)*r),j/(double)(n*2),i/(double)n,cor,alpha);
     }
-    private static void fitas(Runnable geometria) {
+    private static void fitas(Runnable geometria) {fitas(5,geometria);}
+    private static void fitas(int modo,Runnable geometria) {
         selecionar(true);
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE);
-        shader.safeGetUniform("EffectMode").set(5f);
+        shader.safeGetUniform("EffectMode").set((float)modo);
         var b=Tesselator.getInstance().getBuilder();
         b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
         geometria.run();Tesselator.getInstance().end();

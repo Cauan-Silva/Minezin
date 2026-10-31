@@ -38,13 +38,14 @@ public final class EfeitosCid {
         if(tipo==14) PhotonAtomic.iniciar(jogador,origem);
         AnimacoesGojo.tocarCid(jogador,tipo);
         if (tipo == 14 && mc.player != null && mc.player.getUUID().equals(jogador))
-            GerenciadorCutscene3D.iniciarCutsceneLocal(14,140);
+            GerenciadorCutscene3D.iniciarCutsceneLocal(14,240);
     }
+    public static Vec3 centroAtomic(UUID id){for(var f:EFEITOS)if(f.tipo==14&&f.jogador.equals(id))return f.origem;return null;}
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END) return;
         PhotonAtomic.tick();
         var mc=Minecraft.getInstance();
-        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?170:f.tipo==13?48:25)
+        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?240:f.tipo==13?48:25)
                 || mc.level.getPlayerByUUID(f.jogador)==null || !mc.level.getPlayerByUUID(f.jogador).isAlive());
         if(mc.level == null) return;
         DESTINOS.entrySet().removeIf(a->a.getValue().mundo!=mc.level||mc.level.getGameTime()-a.getValue().tick>25);
@@ -105,7 +106,7 @@ public final class EfeitosCid {
                 RenderMovesetCid.selosAtomic(pose,t,camera.subtract(f.origem));
                 // O material procedural substitui as esferas/aneis lisos da Atomic.
             } else if(f.tipo==14) {
-                double carga=Math.min(1,t/90), depois=Math.max(0,t-90), fade=1-Math.min(1,depois/50);
+                double carga=Math.min(1,t/90), depois=Math.max(0,t-90), fade=1-Math.min(1,depois/150);
                 // Contrarrotacao na carga; nucleo branco e casca violeta no impacto.
                 if(t<90) {
                     for(int j=0;j<3;j++) {
@@ -201,7 +202,7 @@ public final class EfeitosCid {
                     e.getWindow().getGuiScaledHeight()-35,0xDDCCFF);
         } else if(com.cauansilva.arcanecontrol.core.client.PoderesCliente.ativo()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID) {
             e.getGuiGraphics().fill(8,8,285,47,0xDD100A1C);
-            e.getGuiGraphics().drawString(mc.font,"SHADOW â€¢ [P] Poderes",14,14,0xCC99FF);
+            e.getGuiGraphics().drawString(mc.font,"SHADOW • [P] Poderes",14,14,0xCC99FF);
             e.getGuiGraphics().drawString(mc.font,"[Z] Corte [X] Passo [C] Fios [V] Atomic",14,30,0xE0D8EE);
         }
     }
