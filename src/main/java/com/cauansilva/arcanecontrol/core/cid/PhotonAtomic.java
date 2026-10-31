@@ -27,7 +27,8 @@ public final class PhotonAtomic {
         fx.getMainFX().objects().add(emissor("explosao",3,38,60/escala,.3,12,.45,0xFFDDAAFF,true));
         fx.getMainFX().objects().add(emissor("corona",5,25,12/escala,.5,7,2.5,0xAABB66FF,true));
         fx.getMainFX().objects().add(emissor("poeira",35,55,3/escala,8,.3,2.2,0x66554865,false));
-        var runtime = fx.createRuntime();
+        // FX e emissores sao novos por conjuracao; mantem nomes/tempos sem shallowCopy.
+        var runtime = fx.createInternalRuntime();
         runtime.getRoot().updatePos(new Vector3f((float)centro.x,(float)centro.y+1,(float)centro.z));
         var mundo = mc.level;
         runtime.emmit(() -> mundo);
