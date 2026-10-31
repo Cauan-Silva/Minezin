@@ -61,8 +61,8 @@ public final class AnimacoesGojo {
         Minecraft mc = Minecraft.getInstance();
         if (event.phase != TickEvent.Phase.END || mc.level == null) return;
         PRIORIDADES.keySet().removeIf(id -> mc.level.getPlayerByUUID(id) == null);
-        for (var p : mc.level.players()) {
-            if (p instanceof AbstractClientPlayer jogador && !jogador.isAlive()) {
+        for (AbstractClientPlayer jogador : mc.level.players()) {
+            if (!jogador.isAlive()) {
                 ModifierLayer<IAnimation> camada = camada(jogador);
                 if (camada != null) camada.setAnimation(null);
                 PRIORIDADES.remove(jogador.getUUID());
