@@ -67,7 +67,7 @@ public class ArvoreGojoScreen extends Screen {
         for (TecnicaGojo t : TecnicaGojo.values()) {
             Button botao = botoes[t.id - 1];
             boolean tem = p.tem(t);
-            String estado = tem ? "M" + p.maestria(t) : "Nv." + t.nivel() + " / " + t.custo + " pt";
+            String estado = tem ? "M" + p.maestria(t) : "Nv." + t.nivel + " / " + t.custo + " pt";
             int recarga = (ProgressoGojoCliente.cooldowns[t.id - 1] + 19) / 20;
             if (tem && recarga > 0) estado += " • " + recarga + "s";
             botao.setMessage(Component.literal("[" + teclas[t.id - 1] + "] " + t.nome + " • "
