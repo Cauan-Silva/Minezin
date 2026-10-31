@@ -8,7 +8,7 @@ import net.minecraftforge.network.NetworkDirection;
 import java.util.Optional;
 
 public class RegistoRede {
-    private static final String PROTOCOL_VERSION = "7";
+    private static final String PROTOCOL_VERSION = "8";
     public static final SimpleChannel ENVIAR = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(ArcaneControl.MODID, "main"),
             () -> PROTOCOL_VERSION,

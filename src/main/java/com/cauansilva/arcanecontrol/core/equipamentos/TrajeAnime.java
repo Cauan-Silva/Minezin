@@ -4,15 +4,15 @@ import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
-public final class TrajeAnime extends ArmorItem implements GeoItem {
+public class TrajeAnime extends ArmorItem implements GeoItem {
     public final String estilo;
     private final AnimatableInstanceCache cache=GeckoLibUtil.createInstanceCache(this);
-    public TrajeAnime(String estilo,Type tipo){super(estilo.equals("gojo")?ArmorMaterials.NETHERITE:ArmorMaterials.DIAMOND,tipo,
+    public TrajeAnime(String estilo,Type tipo){super(estilo.equals("frieren")?ArmorMaterials.DIAMOND:ArmorMaterials.NETHERITE,tipo,
             new Item.Properties().rarity(Rarity.EPIC).fireResistant());this.estilo=estilo;}
     @Override public AnimatableInstanceCache getAnimatableInstanceCache(){return cache;}
     @Override public void appendHoverText(ItemStack s,net.minecraft.world.level.Level l,java.util.List<net.minecraft.network.chat.Component> texto,TooltipFlag f){
         super.appendHoverText(s,l,texto,f);
-        texto.add(net.minecraft.network.chat.Component.literal(estilo.equals("gojo")?"Ferraria: papel + peça de netherita + ametista":"Ferraria: papel + peça de diamante + ouro").withStyle(net.minecraft.ChatFormatting.GRAY));
+        texto.add(net.minecraft.network.chat.Component.literal(estilo.equals("shadow")?"Conjunto Shadow: capuz e capa de slime.":estilo.equals("gojo")?"Ferraria: papel + peça de netherita + ametista":"Ferraria: papel + peça de diamante + ouro").withStyle(net.minecraft.ChatFormatting.GRAY));
     }
     @Override public void registerControllers(AnimatableManager.ControllerRegistrar r){r.add(new AnimationController<>(this,"tecido",5,s->s.setAndContinue(RawAnimation.begin().thenLoop("animation.traje.idle"))));}
     @Override public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.extensions.common.IClientItemExtensions> consumer){

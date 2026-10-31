@@ -15,6 +15,7 @@ public final class RegistroTrajes {
     public static final RegistryObject<Item> FRI_PEITO=EspadaCid.ITEMS.register("frieren_peito",()->new TrajeAnime("frieren",ArmorItem.Type.CHESTPLATE));
     public static final RegistryObject<Item> FRI_PERNAS=EspadaCid.ITEMS.register("frieren_pernas",()->new TrajeAnime("frieren",ArmorItem.Type.LEGGINGS));
     public static final RegistryObject<Item> FRI_BOTAS=EspadaCid.ITEMS.register("frieren_botas",()->new TrajeAnime("frieren",ArmorItem.Type.BOOTS));
+    public static final RegistryObject<Item> CAJADO_FRIEREN=EspadaCid.ITEMS.register("cajado_frieren",com.cauansilva.arcanecontrol.core.frieren.CajadoFrieren::new);
     public static void registrar(){}
     @SubscribeEvent public static void aba(BuildCreativeModeTabContentsEvent e){if(e.getTabKey()==CreativeModeTabs.COMBAT)EspadaCid.ITEMS.getEntries().forEach(i->e.accept(i.get()));}
 }
