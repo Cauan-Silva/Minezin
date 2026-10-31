@@ -31,8 +31,8 @@ public class GerenciadorCutscene3D {
     public static class Efeito3DAtivo {
         public final int tipo; // 1=Azul, 2=Vermelho, 4=VazioRoxo, 5=Dominio
         public final UUID playerId;
-        public final Vec3 origem;
-        public final Vec3 direcao;
+        public Vec3 origem;
+        public Vec3 direcao;
         public int tickAtual = 0;
         public final int duracaoMax;
 
@@ -53,13 +53,26 @@ public class GerenciadorCutscene3D {
     public static int cutsceneTick = 0;
     public static int cutsceneDuracao = 0;
     private static CameraType cameraAnterior = null;
+    private static Vec3 frenteCamera = new Vec3(0, 0, 1);
+    private static Vec3 posicaoCameraInicial = Vec3.ZERO;
 
     public static void iniciarEfeitoCliente(int tipo, UUID playerId, double x, double y, double z, double dx, double dy, double dz) {
         Minecraft mc = Minecraft.getInstance();
+        if (tipo == 6) {
+            for (Efeito3DAtivo efeito : EFEITOS_3D) {
+                if (efeito.tipo == 4 && efeito.playerId.equals(playerId)) {
+                    efeito.origem = new Vec3(x, y, z);
+                    efeito.direcao = new Vec3(dx, dy, dz);
+                }
+            }
+            return;
+        }
+        if (EFEITOS_3D.size() >= 64) EFEITOS_3D.remove(0);
         TecnicaGojo tecnica = TecnicaGojo.porId(tipo);
         if (tecnica != null && mc.player != null && mc.player.getUUID().equals(playerId)) {
             GojoHudOverlay.notificarHabilidade(tecnica.nome, 0x55FFFF);
         }
+        com.cauansilva.arcanecontrol.core.client.AnimacoesGojo.tocar(playerId, tipo);
         Vec3 origem = new Vec3(x, y, z);
         Vec3 direcao = new Vec3(dx, dy, dz);
 
@@ -91,6 +104,10 @@ public class GerenciadorCutscene3D {
         cutsceneDuracao = duracao;
         cameraAnterior = mc.options.getCameraType();
         mundoCutscene = mc.level;
+        Vec3 olhar = mc.player.getLookAngle();
+        frenteCamera = new Vec3(olhar.x, 0, olhar.z).normalize();
+        if (frenteCamera.lengthSqr() < 1.0E-6) frenteCamera = new Vec3(0, 0, 1);
+        posicaoCameraInicial = mc.gameRenderer.getMainCamera().getPosition();
         // Muda automaticamente para câmera cinemática em 3ª pessoa para ver o personagem e as esferas 3D!
         mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
     }
@@ -147,61 +164,42 @@ public class GerenciadorCutscene3D {
     // =========================================================================
     @SubscribeEvent
     public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
-        if (cutsceneTipo == 0) return;
-
-        float partial = (float) event.getPartialTick();
-        float tempo = cutsceneTick + partial;
-
-        // Cutscene Vazio Roxo (Tipo 4)
-        if (cutsceneTipo == 4) {
-            if (tempo <= 35) {
-                // Fase de Fusão: Leve inclinação dramática de câmera estilo anime
-                float roll = Mth.sin(tempo * 0.25f) * 4.5f;
-                event.setRoll(roll);
-            } else {
-                // Fase do Disparo Apagador: Terremoto de tela intenso (Screen Shake)!
-                float intensidade = Math.max(0.0f, (85.0f - tempo) / 50.0f) * 3.5f;
-                event.setYaw(event.getYaw() + (float) ((Math.random() - 0.5) * intensidade));
-                event.setPitch(event.getPitch() + (float) ((Math.random() - 0.5) * intensidade));
-                event.setRoll((float) ((Math.random() - 0.5) * intensidade * 1.5f));
-            }
+        Minecraft mc = Minecraft.getInstance();
+        if (cutsceneTipo == 0 || mc.player == null || mc.level == null) return;
+        float parcial = (float) event.getPartialTick();
+        double tempo = cutsceneTick + parcial;
+        RoteiroGojo.Quadro quadro = RoteiroGojo.amostrar(cutsceneTipo, tempo);
+        Vec3 olho = mc.player.getEyePosition(parcial);
+        Vec3 direita = frenteCamera.cross(new Vec3(0, 1, 0));
+        Vec3 desejada = olho.add(direita.scale(quadro.x())).add(0, quadro.y(), 0)
+                .add(frenteCamera.scale(quadro.z()));
+        desejada = posicaoCameraInicial.lerp(desejada, RoteiroGojo.suave(tempo / 8));
+        Vec3 alvo = olho.add(frenteCamera.scale(quadro.alvoFrente()));
+        var colisao = mc.level.clip(new net.minecraft.world.level.ClipContext(olho, desejada,
+                net.minecraft.world.level.ClipContext.Block.VISUAL,
+                net.minecraft.world.level.ClipContext.Fluid.NONE, mc.player));
+        if (colisao.getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
+            Vec3 trajeto = desejada.subtract(olho);
+            double distancia = Math.max(.05, colisao.getLocation().distanceTo(olho) - .3);
+            desejada = olho.add(trajeto.normalize().scale(distancia));
         }
-        // Cutscene Expansão de Domínio: Vazio Infinito (Tipo 5)
-        else if (cutsceneTipo == 5) {
-            if (tempo <= 40) {
-                // Zoom dramático nos Seis Olhos + cruzamento de dedos
-                event.setRoll(Mth.sin(tempo * 0.15f) * 6.0f);
-            } else if (tempo <= 65) {
-                // Explosão de abertura do Domínio
-                float shake = 2.5f;
-                event.setYaw(event.getYaw() + (float) ((Math.random() - 0.5) * shake));
-                event.setPitch(event.getPitch() + (float) ((Math.random() - 0.5) * shake));
-            }
-        }
+        event.getCamera().setPosition(desejada);
+        Vec3 direcao = alvo.subtract(desejada);
+        double horizontal = Math.sqrt(direcao.x * direcao.x + direcao.z * direcao.z);
+        double impacto = RoteiroGojo.impacto(cutsceneTipo, tempo);
+        event.setYaw((float) Math.toDegrees(Math.atan2(-direcao.x, direcao.z))
+                + (float) (Math.sin(tempo * 2.7) * impacto));
+        event.setPitch((float) -Math.toDegrees(Math.atan2(direcao.y, horizontal))
+                + (float) (Math.sin(tempo * 3.3) * impacto));
+        event.setRoll((float) (Math.sin(tempo * 2.1) * impacto * .5));
     }
 
-    // =========================================================================
-    // EFEITO DE ZOOM / FOV DINÂMICO DURANTE A CUTSCENE DA ULTIMATE
-    // =========================================================================
     @SubscribeEvent
     public static void onFovUpdate(ComputeFovModifierEvent event) {
-        if (cutsceneTipo == 4) {
-            if (cutsceneTick < 30) {
-                // Fecha o zoom durante a concentração do Azul + Vermelho
-                float progresso = cutsceneTick / 30.0f;
-                event.setNewFovModifier(1.0f - (progresso * 0.35f));
-            } else if (cutsceneTick < 45) {
-                // Abre o FOV bruscamente no impacto do disparo!
-                event.setNewFovModifier(1.35f);
-            }
-        } else if (cutsceneTipo == 5) {
-            if (cutsceneTick < 35) {
-                float progresso = cutsceneTick / 35.0f;
-                event.setNewFovModifier(1.0f - (progresso * 0.45f));
-            } else {
-                event.setNewFovModifier(1.25f);
-            }
-        }
+        if (cutsceneTipo == 0) return;
+        double tempo = cutsceneTick + Minecraft.getInstance().getFrameTime();
+        event.setNewFovModifier((float) (event.getNewFovModifier()
+                * RoteiroGojo.amostrar(cutsceneTipo, tempo).fov()));
     }
 
     // =========================================================================

@@ -37,7 +37,10 @@ public class GojoHudOverlay {
             int tipo = GerenciadorCutscene3D.cutsceneTipo;
 
             // Barras pretas cinematográficas (Letterbox) no topo e rodapé
-            int alturaBarra = Math.min(38, tick * 4);
+            double entrada = com.cauansilva.arcanecontrol.core.client.render.RoteiroGojo.suave(tick / 8.0);
+            double saida = com.cauansilva.arcanecontrol.core.client.render.RoteiroGojo.suave(
+                    (GerenciadorCutscene3D.cutsceneDuracao - tick) / 12.0);
+            int alturaBarra = (int) (Math.min(38, sh * .12) * Math.min(entrada, saida));
             gui.fill(0, 0, sw, alturaBarra, 0xEE000000);
             gui.fill(0, sh - alturaBarra, sw, sh, 0xEE000000);
 
@@ -55,7 +58,7 @@ public class GojoHudOverlay {
 
                 // Flash de Impacto Branco/Roxo no momento exato da colisão (Ticks 29 a 33)
                 if (tick >= 29 && tick <= 33) {
-                    int alphaFlash = (34 - tick) * 45;
+                    int alphaFlash = (34 - tick) * 18;
                     int corFlash = (alphaFlash << 24) | 0xE5AAFF;
                     gui.fill(0, 0, sw, sh, corFlash);
                 }
@@ -75,7 +78,7 @@ public class GojoHudOverlay {
                     gui.drawCenteredString(mc.font, "§b§l✦ RYŌIKI TENKAI: MURYŌKŪSHO ✦", sw / 2, yFaixa - 2, 0xFFFFFF);
                 }
                 if (tick >= 34 && tick <= 39) {
-                    int alphaFlash = (40 - tick) * 40;
+                    int alphaFlash = (40 - tick) * 20;
                     gui.fill(0, 0, sw, sh, (alphaFlash << 24) | 0xFFFFFF);
                 }
                 String legenda = tick < 35

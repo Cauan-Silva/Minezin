@@ -36,6 +36,10 @@ public class ArcaneControl {
     @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class ClientModEvents {
         @SubscribeEvent
+        public static void onClientSetup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
+            event.enqueueWork(com.cauansilva.arcanecontrol.core.client.AnimacoesGojo::registrar);
+        }
+        @SubscribeEvent
         public static void onKeyRegister(RegisterKeyMappingsEvent event) {
             event.register(TeclasControlo.TECLA_Z);
             event.register(TeclasControlo.TECLA_X);
