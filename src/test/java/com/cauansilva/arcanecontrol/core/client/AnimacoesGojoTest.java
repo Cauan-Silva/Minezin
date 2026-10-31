@@ -21,6 +21,10 @@ class AnimacoesGojoTest {
             for (var animacao : animacoes) {
                 assertFalse(animacao.isInfinite);
                 assertTrue(animacao.endTick > 0);
+                for (String perna : new String[]{"rightLeg", "leftLeg"}) {
+                    var parte = animacao.getPart(perna);
+                    assertTrue(parte == null || !parte.isEnabled(), "A animação não deve travar " + perna);
+                }
             }
         }
     }
