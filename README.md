@@ -40,7 +40,7 @@ Abra a árvore com **K** (tecla remapeável). Todos começam com Azul; cada 100 
 
 Cada ativação aceita concede 5 XP e um uso de maestria à técnica. Cada 20 usos concede um grau de maestria, até 5, reduzindo a recarga em 5% por grau (máximo 25%). Derrotar um inimigo hostil com dano atribuído ao jogador concede 25 XP, inclusive com armas normais. Desativar Infinito é livre e não concede XP. A contagem das recargas usa ticks do servidor (20 ticks por segundo em condições normais).
 
-Progresso e recargas são salvos por jogador, preservados na morte e sincronizados ao entrar, renascer e mudar de dimensão. Esta versão inicia progressão também para jogadores de mundos existentes. Cliente e servidor precisam usar a mesma versão (protocolo de rede 2).
+Progresso e recargas são salvos por jogador, preservados na morte e sincronizados ao entrar, renascer e mudar de dimensão. Esta versão inicia progressão também para jogadores de mundos existentes. Cliente e servidor precisam usar a mesma versão (protocolo de rede 3 na versão 1.2).
 
 A árvore permite desativar as cinematics locais, mantendo os efeitos visuais. A preferência fica em `config/arcanecontrol-client.toml`. Esta entrega reaproveita os efeitos e cutscenes existentes: animações corporais com rigs e novas sequências cinematográficas ainda são etapas futuras.
 
@@ -53,3 +53,15 @@ A árvore permite desativar as cinematics locais, mantendo os efeitos visuais. A
 - Desativar cinematics pela árvore e confirmar que os efeitos continuam sem mudança de câmera.
 
 Os testes automatizados das regras de progressão rodam com `gradlew test` e no build de CI.
+
+## Animações e efeitos (1.2)
+
+O cliente agora exige **Player Animator Forge 1.0.2-rc1+1.20**, instalado separadamente na pasta `mods/`. A dependência vem do [projeto oficial](https://github.com/KosmX/minecraftPlayerAnimator); no ambiente de desenvolvimento o Gradle a baixa automaticamente. O servidor dedicado não precisa da biblioteca, mas todos os clientes precisam dela e da mesma versão do Minezin.
+
+Cinco gestos de braços/tronco acompanham as técnicas, inclusive para jogadores próximos que recebem o evento do servidor. As pernas mantêm a locomoção normal. Os keyframes têm preparação, liberação e recuperação, alinhados aos tempos do servidor. Desligar cinematics na árvore desliga a câmera; os gestos e efeitos continuam.
+
+Roxo e Domínio usam roteiros de câmera relativos ao conjurador, com interpolação suave, aproximação, afastamento, FOV gradual e teste de colisão com blocos. O tremor fica restrito ao impacto. Flashes foram reduzidos e as barras de cinema entram e saem suavemente. Camadas translúcidas de energia usam mistura aditiva e os efeitos simultâneos têm limite de 64 por cliente.
+
+O servidor envia uma atualização no instante do disparo do Roxo: os clientes passam a desenhar a trajetória a partir da posição e direção reais de lançamento, mesmo que o jogador se mova durante a preparação.
+
+O HobbyMine anterior serviu como referência para a integração de animação e câmera; veja `THIRD_PARTY_NOTICES.md`. Não foram importados todos os elementos, modelos e sistemas antigos. Os cinco testes adicionais verificam carregamento pelo parser real do Player Animator, durações, ausência de animação das pernas, continuidade dos roteiros, FOV e janela do tremor. Aparência, primeira/terceira pessoa, colisão da câmera e sincronização visual com dois jogadores ainda exigem teste no jogo. Não há promessa de qualidade visual validada somente pelo build.

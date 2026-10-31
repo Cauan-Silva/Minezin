@@ -13,7 +13,12 @@ public class RenderizadorModelos3D {
      */
     public static void desenharEsfera3D(PoseStack poseStack, float raio, int r, int g, int b, int a, int segmentos) {
         RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        if (a < 160) {
+            RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA,
+                    com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
+        } else {
+            RenderSystem.defaultBlendFunc();
+        }
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
@@ -46,6 +51,7 @@ public class RenderizadorModelos3D {
 
         RenderSystem.depthMask(true);
         RenderSystem.enableCull();
+        RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
     }
 
@@ -54,7 +60,12 @@ public class RenderizadorModelos3D {
      */
     public static void desenharAnel3D(PoseStack poseStack, float raioInterno, float raioExterno, int r, int g, int b, int a, int lados) {
         RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        if (a < 160) {
+            RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA,
+                    com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
+        } else {
+            RenderSystem.defaultBlendFunc();
+        }
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
@@ -77,6 +88,7 @@ public class RenderizadorModelos3D {
 
         RenderSystem.depthMask(true);
         RenderSystem.enableCull();
+        RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
     }
 
@@ -85,7 +97,12 @@ public class RenderizadorModelos3D {
      */
     public static void desenharFeixe3D(PoseStack poseStack, float raio, float comprimento, int r, int g, int b, int a, int lados) {
         RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        if (a < 160) {
+            RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA,
+                    com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
+        } else {
+            RenderSystem.defaultBlendFunc();
+        }
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(false);
@@ -108,6 +125,7 @@ public class RenderizadorModelos3D {
 
         RenderSystem.depthMask(true);
         RenderSystem.enableCull();
+        RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
     }
 }

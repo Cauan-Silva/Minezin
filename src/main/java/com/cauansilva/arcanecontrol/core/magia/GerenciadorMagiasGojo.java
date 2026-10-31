@@ -192,6 +192,9 @@ public class GerenciadorMagiasGojo {
                     if (tickAtual == 30) {
                         origemDisparo = olho.add(dir.scale(3.2));
                         direcaoDisparo = dir;
+                        RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
+                                new PacoteSincronizarCutscene3D(6, player.getUUID(),
+                                        olho.x, olho.y, olho.z, dir.x, dir.y, dir.z));
                         level.playSound(null, player.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 3.0f, 0.5f);
                         level.playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 3.0f, 0.5f);
                         level.sendParticles(ParticleTypes.FLASH, origemDisparo.x, origemDisparo.y, origemDisparo.z, 5, 0.2, 0.2, 0.2, 0);
