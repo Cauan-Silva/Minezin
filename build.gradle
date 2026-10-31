@@ -8,7 +8,7 @@ plugins {
 version = '1.0.0'
 group = 'com.cauansilva.arcanecontrol'
 base {
-    archivesName = 'arcanecontrol'
+    archivesName = 'minezin'
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)

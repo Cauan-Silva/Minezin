@@ -19,12 +19,6 @@ public abstract class ChefeAbstrato {
     }
 
     protected abstract void verificarFasesDeBatalha();
-
-    public String getIdChefe() {
-        return idChefe;
-    }
-
-    public float getPorcentagemVida() {
-        return (vidaAtual / vidaMaxima) * 100.0f;
-    }
+    public String getIdChefe() { return idChefe; }
+    public float getPorcentagemVida() { return (vidaAtual / vidaMaxima) * 100.0f; }
 }

@@ -13,7 +13,6 @@ public class RegistoRede {
         PROTOCOL_VERSION::equals,
         PROTOCOL_VERSION::equals
     );
-
     private static int packetId = 0;
 
     public static void registarPacotes() {
