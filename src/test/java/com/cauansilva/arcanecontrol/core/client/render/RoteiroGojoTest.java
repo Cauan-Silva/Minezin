@@ -13,6 +13,8 @@ class RoteiroGojoTest {
                 assertTrue(atual.fov() >= .75 && atual.fov() <= 1.1);
                 assertTrue(Math.abs(atual.x() - anterior.x()) < .5);
                 assertTrue(Math.abs(atual.z() - anterior.z()) < .5);
+                assertTrue(Double.isFinite(atual.alvoAltura()));
+                assertTrue(Math.abs(atual.alvoAltura()-anterior.alvoAltura())<.1);
                 anterior = atual;
             }
         }
@@ -30,6 +32,8 @@ class RoteiroGojoTest {
     @Test void fimRetornaFovNeutro() {
         assertEquals(1, RoteiroGojo.amostrar(4, 85).fov());
         assertEquals(1, RoteiroGojo.amostrar(5, 160).fov());
+        assertEquals(0,RoteiroGojo.amostrar(5,160).alvoAltura());
+        assertTrue(RoteiroGojo.amostrar(5,85).alvoAltura()>4);
         assertEquals(0, RoteiroGojo.suave(-10));
         assertEquals(1, RoteiroGojo.suave(10));
     }

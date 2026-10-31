@@ -2,7 +2,11 @@ package com.cauansilva.arcanecontrol.core.client.render;
 
 /** Coordenadas relativas ao conjurador: direita, altura e frente (em blocos). */
 public final class RoteiroGojo {
-    public record Quadro(double x, double y, double z, double alvoFrente, double fov) {}
+    public record Quadro(double x, double y, double z, double alvoFrente, double fov, double alvoAltura) {
+        public Quadro(double x,double y,double z,double alvoFrente,double fov) {
+            this(x,y,z,alvoFrente,fov,0);
+        }
+    }
     private record Chave(double tick, Quadro quadro) {}
     private static final Chave[] ROXO = {
             new Chave(0, new Quadro(2.4, .4, 3.4, .2, .95)),
@@ -15,9 +19,9 @@ public final class RoteiroGojo {
     private static final Chave[] DOMINIO = {
             new Chave(0, new Quadro(2, .3, 3, 0, .95)),
             new Chave(28, new Quadro(-1.8, .3, 2.6, 0, .75)),
-            new Chave(40, new Quadro(-4.0, 2, 4, 0, .95)),
-            new Chave(85, new Quadro(-9, 5, -4, 0, 1.1)),
-            new Chave(140, new Quadro(7, 4, -9, 0, 1.05)),
+            new Chave(40, new Quadro(-4.0, 2, 4, 0, .95, 3.5)),
+            new Chave(85, new Quadro(-9, 5, -4, 0, 1.1, 5)),
+            new Chave(140, new Quadro(7, 4, -9, 0, 1.05, 4)),
             new Chave(160, new Quadro(3, 1.4, -5, 0, 1))
     };
 
@@ -43,7 +47,7 @@ public final class RoteiroGojo {
                 double k = suave((tick - a.tick) / (b.tick - a.tick));
                 return new Quadro(lerp(a.quadro.x, b.quadro.x, k), lerp(a.quadro.y, b.quadro.y, k),
                         lerp(a.quadro.z, b.quadro.z, k), lerp(a.quadro.alvoFrente, b.quadro.alvoFrente, k),
-                        lerp(a.quadro.fov, b.quadro.fov, k));
+                        lerp(a.quadro.fov, b.quadro.fov, k),lerp(a.quadro.alvoAltura,b.quadro.alvoAltura,k));
             }
         }
         return chaves[chaves.length - 1].quadro;

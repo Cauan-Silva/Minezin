@@ -1,6 +1,7 @@
 package com.cauansilva.arcanecontrol.core.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.cauansilva.arcanecontrol.core.vfx.PerfilVfxGojo;
 import com.mojang.math.Axis;
 import com.cauansilva.arcanecontrol.ConfigCliente;
 import com.cauansilva.arcanecontrol.core.client.GojoHudOverlay;
@@ -35,6 +36,7 @@ public class GerenciadorCutscene3D {
         public Vec3 direcao;
         public int tickAtual = 0;
         public final int duracaoMax;
+        public final Object mundo;
 
         public Efeito3DAtivo(int tipo, UUID playerId, Vec3 origem, Vec3 direcao, int duracaoMax) {
             this.tipo = tipo;
@@ -42,10 +44,18 @@ public class GerenciadorCutscene3D {
             this.origem = origem;
             this.direcao = direcao;
             this.duracaoMax = duracaoMax;
+            this.mundo = Minecraft.getInstance().level;
         }
     }
 
     private static final List<Efeito3DAtivo> EFEITOS_3D = new ArrayList<>();
+    private static final java.util.Set<UUID> INFINITOS = new java.util.HashSet<>();
+    private static final List<Efeito3DAtivo> VISTA = java.util.Collections.unmodifiableList(EFEITOS_3D);
+    static List<Efeito3DAtivo> efeitos(){return VISTA;}
+    private static void adicionar(Efeito3DAtivo e){
+        if(EFEITOS_3D.size()>=64) EFEITOS_3D.remove(0);
+        EFEITOS_3D.add(e);EmissoresGojo.iniciar(e);
+    }
     private static net.minecraft.client.multiplayer.ClientLevel mundoCutscene;
 
     // Estado da Cutscene Local (Para o jogador que ativou a Ultimate)
@@ -58,21 +68,36 @@ public class GerenciadorCutscene3D {
 
     public static void iniciarEfeitoCliente(int tipo, UUID playerId, double x, double y, double z, double dx, double dy, double dz) {
         Minecraft mc = Minecraft.getInstance();
+        if(mc.level==null) return;
+        if(tipo==8 || tipo==9) {
+            if(tipo==8) INFINITOS.add(playerId);else INFINITOS.remove(playerId);
+            return;
+        }
+        if(tipo==7) {
+            for(Efeito3DAtivo ef:EFEITOS_3D) if(ef.tipo==2 && ef.playerId.equals(playerId)) {
+                ef.origem=new Vec3(x,y,z);ef.direcao=new Vec3(dx,dy,dz);
+                ef.tickAtual=Math.max(ef.tickAtual,PerfilVfxGojo.VERMELHO_DISPARO);
+            }
+            return;
+        }
         if (tipo == 6) {
             for (Efeito3DAtivo efeito : EFEITOS_3D) {
                 if (efeito.tipo == 4 && efeito.playerId.equals(playerId)) {
                     efeito.origem = new Vec3(x, y, z);
                     efeito.direcao = new Vec3(dx, dy, dz);
+                    efeito.tickAtual=Math.max(efeito.tickAtual,PerfilVfxGojo.ROXO_DISPARO);
                 }
             }
+            if(mc.player!=null && mc.player.getUUID().equals(playerId) && cutsceneTipo==4)
+                cutsceneTick=Math.max(cutsceneTick,PerfilVfxGojo.ROXO_DISPARO);
             return;
         }
-        if (EFEITOS_3D.size() >= 64) EFEITOS_3D.remove(0);
         if (tipo >= 11 && tipo <= 15) {
             com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));
             return;
         }
         TecnicaGojo tecnica = TecnicaGojo.porId(tipo);
+        if(tecnica==null) return;
         if (tecnica != null && mc.player != null && mc.player.getUUID().equals(playerId)) {
             GojoHudOverlay.notificarHabilidade(tecnica.nome, 0x55FFFF);
         }
@@ -81,20 +106,20 @@ public class GerenciadorCutscene3D {
         Vec3 direcao = new Vec3(dx, dy, dz);
 
         if (tipo == 1) {
-            EFEITOS_3D.add(new Efeito3DAtivo(1, playerId, origem, direcao, 60));
+            adicionar(new Efeito3DAtivo(1, playerId, origem, direcao, PerfilVfxGojo.duracao(1)));
         } else if (tipo == 2) {
-            EFEITOS_3D.add(new Efeito3DAtivo(2, playerId, origem, direcao, 28));
+            adicionar(new Efeito3DAtivo(2, playerId, origem, direcao, PerfilVfxGojo.duracao(2)));
         } else if (tipo == 3) {
             // O estado do Infinito local vem do snapshot validado pelo servidor.
         } else if (tipo == 4) {
-            EFEITOS_3D.add(new Efeito3DAtivo(4, playerId, origem, direcao, 85));
+            adicionar(new Efeito3DAtivo(4, playerId, origem, direcao, PerfilVfxGojo.duracao(4)));
             if (mc.player != null && mc.player.getUUID().equals(playerId)) {
-                iniciarCutsceneLocal(4, 85);
+                iniciarCutsceneLocal(4, PerfilVfxGojo.duracao(4));
             }
         } else if (tipo == 5) {
-            EFEITOS_3D.add(new Efeito3DAtivo(5, playerId, origem, direcao, 160));
+            adicionar(new Efeito3DAtivo(5, playerId, origem, direcao, PerfilVfxGojo.duracao(5)));
             if (mc.player != null && mc.player.getUUID().equals(playerId)) {
-                iniciarCutsceneLocal(5, 160);
+                iniciarCutsceneLocal(5, PerfilVfxGojo.duracao(5));
             }
         }
     }
@@ -129,6 +154,8 @@ public class GerenciadorCutscene3D {
     public static void aoDesconectar(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
         finalizarCutscene();
         EFEITOS_3D.clear();
+        INFINITOS.clear();
+        EmissoresGojo.limpar();
     }
 
     @SubscribeEvent
@@ -138,22 +165,31 @@ public class GerenciadorCutscene3D {
         if (mc.player == null || mc.level == null || !mc.player.isAlive()) {
             finalizarCutscene();
             EFEITOS_3D.clear();
+            INFINITOS.clear();
+            EmissoresGojo.limpar();
             return;
         }
-        if (cutsceneTipo != 0 && (mundoCutscene != mc.level || !ConfigCliente.CINEMATICAS.get())) {
+        if (cutsceneTipo != 0 && mundoCutscene != mc.level) {
             finalizarCutscene();
             EFEITOS_3D.clear();
+            EmissoresGojo.limpar();
+        } else if(cutsceneTipo!=0 && !ConfigCliente.CINEMATICAS.get()) {
+            finalizarCutscene();
         }
         if (mc.isPaused()) return;
+        INFINITOS.removeIf(id->mc.level.getPlayerByUUID(id)==null || !mc.level.getPlayerByUUID(id).isAlive());
 
         Iterator<Efeito3DAtivo> it = EFEITOS_3D.iterator();
         while (it.hasNext()) {
             Efeito3DAtivo ef = it.next();
+            Player dono=mc.level.getPlayerByUUID(ef.playerId);
+            if(ef.mundo!=mc.level || dono==null || !dono.isAlive()) {it.remove();continue;}
             ef.tickAtual++;
             if (ef.tickAtual >= ef.duracaoMax) {
                 it.remove();
             }
         }
+        EmissoresGojo.tick();
 
         if (cutsceneTipo != 0) {
             cutsceneTick++;
@@ -174,11 +210,21 @@ public class GerenciadorCutscene3D {
         double tempo = cutsceneTick + parcial;
         RoteiroGojo.Quadro quadro = RoteiroGojo.amostrar(cutsceneTipo, tempo);
         Vec3 olho = mc.player.getEyePosition(parcial);
-        Vec3 direita = frenteCamera.cross(new Vec3(0, 1, 0));
+        Vec3 frente=frenteCamera;
+        Vec3 alvo=olho.add(frenteCamera.scale(quadro.alvoFrente())).add(0,quadro.alvoAltura(),0);
+        if(cutsceneTipo==4) {
+            for(Efeito3DAtivo ef:EFEITOS_3D) if(ef.tipo==4 && ef.playerId.equals(mc.player.getUUID())) {
+                Vec3 direcao=tempo<=PerfilVfxGojo.ROXO_DISPARO?mc.player.getViewVector(parcial):ef.direcao;
+                Vec3 plano=direcao.multiply(1,0,1).normalize();
+                if(plano.lengthSqr()>1e-6) frente=plano;
+                Vec3 origem=tempo<=PerfilVfxGojo.ROXO_DISPARO?olho:ef.origem;
+                alvo=origem.add(direcao.scale(quadro.alvoFrente()));
+            }
+        }
+        Vec3 direita = frente.cross(new Vec3(0, 1, 0));
         Vec3 desejada = olho.add(direita.scale(quadro.x())).add(0, quadro.y(), 0)
-                .add(frenteCamera.scale(quadro.z()));
+                .add(frente.scale(quadro.z()));
         desejada = posicaoCameraInicial.lerp(desejada, RoteiroGojo.suave(tempo / 8));
-        Vec3 alvo = olho.add(frenteCamera.scale(quadro.alvoFrente()));
         var colisao = mc.level.clip(new net.minecraft.world.level.ClipContext(olho, desejada,
                 net.minecraft.world.level.ClipContext.Block.VISUAL,
                 net.minecraft.world.level.ClipContext.Fluid.NONE, mc.player));
@@ -222,7 +268,7 @@ public class GerenciadorCutscene3D {
         float partialTick = event.getPartialTick();
 
         // 1. Se o Infinito (C) estiver ativo, desenha anéis 3D translúcidos ao redor do Gojo
-        if (ProgressoGojoCliente.infinito) {
+        if (ProgressoGojoCliente.infinito && !RenderGojo.infinito(poseStack,mc.player,camPos,partialTick)) {
             Player p = mc.player;
             double px = Mth.lerp(partialTick, p.xo, p.getX()) - camPos.x;
             double py = Mth.lerp(partialTick, p.yo, p.getY()) - camPos.y;
@@ -237,10 +283,20 @@ public class GerenciadorCutscene3D {
             poseStack.popPose();
         }
 
+        int infinitosRenderizados=ProgressoGojoCliente.infinito?1:0;
+        for(UUID id:INFINITOS) {
+            Player p=mc.level.getPlayerByUUID(id);
+            if(p==null || p==mc.player || p.distanceToSqr(mc.player)>96*96 || infinitosRenderizados>=8) continue;
+            RenderGojo.infinito(poseStack,p,camPos,partialTick);infinitosRenderizados++;
+        }
+
         // 2. Renderiza cada Modelo 3D de Magia ativo no mundo
+        int renderizados=0;
         for (Efeito3DAtivo ef : EFEITOS_3D) {
+            if(ef.mundo!=mc.level || ef.origem.distanceToSqr(camPos)>256*256 || renderizados++>=8) continue;
             float t = ef.tickAtual + partialTick;
             Player conjurador = mc.level.getPlayerByUUID(ef.playerId);
+            if(RenderGojo.desenhar(poseStack,ef,conjurador,camPos,partialTick)) continue;
 
             // -----------------------------------------------------------------
             // MODELO 3D: TÉCNICA AZUL (AO) - Esfera 3D Azul + Disco Gravitacional
@@ -279,10 +335,10 @@ public class GerenciadorCutscene3D {
             // MODELO 3D: TÉCNICA VERMELHO (AKA) - Esfera 3D Carmesim + Expansão
             // -----------------------------------------------------------------
             else if (ef.tipo == 2) {
-                Vec3 olho = conjurador != null ? conjurador.getEyePosition(partialTick) : ef.origem;
-                Vec3 dir = conjurador != null ? conjurador.getViewVector(partialTick) : ef.direcao;
+                Vec3 olho = conjurador != null && t<PerfilVfxGojo.VERMELHO_DISPARO ? conjurador.getEyePosition(partialTick) : ef.origem;
+                Vec3 dir = conjurador != null && t<PerfilVfxGojo.VERMELHO_DISPARO ? conjurador.getViewVector(partialTick) : ef.direcao;
 
-                if (t <= 12) {
+                if (t < PerfilVfxGojo.VERMELHO_DISPARO) {
                     // Esfera 3D concentrando na ponta do dedo
                     Vec3 posDedo = olho.add(dir.scale(1.8));
                     float escala = (t / 12.0f) * 0.65f;
@@ -294,13 +350,16 @@ public class GerenciadorCutscene3D {
                     RenderizadorModelos3D.desenharAnel3D(poseStack, escala * 1.1f, escala * 2.2f, 255, 50, 50, 160, 24);
                     poseStack.popPose();
                 } else {
-                    // Orbe 3D disparado em alta velocidade + Anel de Onda de Choque
-                    float avanco = (t - 12.0f) * 2.2f;
-                    Vec3 posOrbe = olho.add(dir.scale(1.8 + avanco));
+                    // A repulsao ocorre de uma vez no servidor; o foco nao viaja como projetil.
+                    Vec3 posOrbe = olho.add(dir.scale(1.8));
                     poseStack.pushPose();
                     poseStack.translate(posOrbe.x - camPos.x, posOrbe.y - camPos.y, posOrbe.z - camPos.z);
                     RenderizadorModelos3D.desenharEsfera3D(poseStack, 0.9f, 255, 255, 255, 240, 18);
                     RenderizadorModelos3D.desenharEsfera3D(poseStack, 1.7f, 255, 15, 30, 160, 18);
+                    poseStack.mulPose(new org.joml.Quaternionf().rotationTo(new org.joml.Vector3f(0,1,0),
+                            new org.joml.Vector3f((float)dir.x,(float)dir.y,(float)dir.z).normalize()));
+                    float r=1+(t-PerfilVfxGojo.VERMELHO_DISPARO)*.35f;
+                    RenderizadorModelos3D.desenharAnel3D(poseStack,r,r+.4f,255,40,55,100,32);
                     poseStack.popPose();
                 }
             }
