@@ -82,3 +82,10 @@ Validação manual necessária: aparência do traje/espada em primeira e terceir
 ### 1.3.1 — Atomic e itens
 Ícones do traje agora usam o atlas de itens. Atomic inclui carga orbital, partículas, núcleo branco/violeta, ondas de choque e clarão breve. No impacto, causa explosão real e arremesso dos alvos. A explosão usa os eventos nativos do Forge; compatibilidade com cada mod de proteção precisa ser testada.
 Configuração por mundo em serverconfig/arcanecontrol-server.toml: atomic.destruirTerreno (padrão true) e atomic.raioCratera (padrão 14, intervalo 1–24). O alcance efetivo varia com a resistência dos blocos. Teste em uma cópia do mundo: a explosão destrói blocos de verdade.
+
+### 1.4.0 — Protótipo Photon da Atomic
+Requer Photon 1.1.17 (Forge 1.20.1), que inclui LDLib 1.0.42. Em desenvolvimento, as duas bibliotecas são declaradas explicitamente. Instale o Photon nos clientes; no servidor dedicado ele não é exigido pelo Minezin.
+Cinco emissores autorais: convergência violeta, centelhas claras, explosão radial, corona luminosa e poeira residual. Photon faz o bloom das camadas luminosas; a geometria existente continua compondo o núcleo e as ondas. Não há distorção de tela implementada nesta etapa.
+Limites: 4 sequências Photon simultâneas, 256 partículas por emissor, encerramento obrigatório aos 185 ticks. Interrupção, morte, troca de mundo e desconexão removem os runtimes. O dano e a destruição continuam controlados pelo servidor.
+Configuração do cliente: photonAtomic, vfxReduzidos e claraoAtomic. Desligar photonAtomic mantém os efeitos geométricos anteriores; vfxReduzidos corta a taxa de emissão pela metade. Não altera a configuração global do bloom Photon.
+Referência de direção gráfica: The Shooting Star. Este protótipo ainda precisa de comparação visual no Minecraft, medição de FPS e testes com Oculus/Embeddium. O build não comprova equivalência gráfica à referência.

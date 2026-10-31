@@ -22,6 +22,7 @@ public final class EfeitosCid {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
         if(tipo==15){
+            PhotonAtomic.cancelar(jogador);
             AnimacoesGojo.cancelar(jogador);
             EFEITOS.removeIf(f->f.jogador.equals(jogador));
             if(mc.player!=null && mc.player.getUUID().equals(jogador)) GerenciadorCutscene3D.finalizarCutscene();
@@ -29,12 +30,14 @@ public final class EfeitosCid {
         }
         if (EFEITOS.size() >= 24) EFEITOS.remove(0);
         EFEITOS.add(new Efeito(tipo,jogador,origem,direcao,mc.level.getGameTime(),mc.level));
+        if(tipo==14) PhotonAtomic.iniciar(jogador,origem);
         AnimacoesGojo.tocarCid(jogador,tipo);
         if (tipo == 14 && mc.player != null && mc.player.getUUID().equals(jogador))
             GerenciadorCutscene3D.iniciarCutsceneLocal(14,140);
     }
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END) return;
+        PhotonAtomic.tick();
         var mc=Minecraft.getInstance();
         EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?140:25)
                 || mc.level.getPlayerByUUID(f.jogador)==null || !mc.level.getPlayerByUUID(f.jogador).isAlive());
@@ -59,7 +62,7 @@ public final class EfeitosCid {
             }
         }
     }
-    @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e) { EFEITOS.clear(); }
+    @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e) { EFEITOS.clear(); PhotonAtomic.limpar(); }
     private static void linha(PoseStack pose, Vec3 a, Vec3 b, float raio, int alpha) {
         Vec3 d=b.subtract(a);
         if(d.lengthSqr()<.00001) return;
@@ -169,7 +172,7 @@ public final class EfeitosCid {
         if(mc.player==null || mc.options.hideGui || !e.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id())) return;
         if(GerenciadorCutscene3D.cutsceneTipo==14) {
             int t=GerenciadorCutscene3D.cutsceneTick;
-            if(t>=90 && t<96) {
+            if(com.cauansilva.arcanecontrol.ConfigCliente.CLARAO.get() && t>=90 && t<96) {
                 int alpha=(int)(180*(1-(t-90+mc.getFrameTime())/6f));
                 e.getGuiGraphics().fill(0,0,e.getWindow().getGuiScaledWidth(),e.getWindow().getGuiScaledHeight(),(Math.max(0,alpha)<<24)|0xEEDFFF);
             }
