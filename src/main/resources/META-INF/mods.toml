@@ -1,0 +1,11 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="arcanecontrol"
+version="1.0.0"
+displayName="Arcane Control Rework"
+credits="Cauan Silva"
+authors="Cauan Silva"
+description='''Novo motor modular limpo para magias, chefes e animações.'''
