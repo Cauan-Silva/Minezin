@@ -39,6 +39,11 @@ void main() {
     vec3 violet=mix(vec3(0.16,0.015,0.42),vec3(0.64,0.17,1.0),flow);
     vec3 energy=mix(violet,vec3(0.94,0.85,1.0),clamp(core,0.0,1.0));
     float alpha=edge*vertexColor.a*(0.55+flow*0.45);
+    if(EffectMode>0.5){
+        float impact=smoothstep(4.45,4.6,EffectTime);
+        energy=mix(energy,mix(vec3(.35,.07,.8),vec3(.97,.9,1.0),.55+flow*.4),impact);
+        alpha=mix(alpha,vertexColor.a*(.5+flow*.45),impact);
+    }
     if(alpha<0.008) discard;
     fragColor=vec4(energy*vertexColor.rgb,alpha);
 }

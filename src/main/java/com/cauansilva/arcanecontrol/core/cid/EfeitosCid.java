@@ -18,13 +18,18 @@ import java.util.*;
 public final class EfeitosCid {
     private record Efeito(int tipo, UUID jogador, Vec3 origem, Vec3 direcao, long inicio, Object mundo) {}
     private static final List<Efeito> EFEITOS = new ArrayList<>();
+    private record Destino(Vec3 pos,long tick,Object mundo){}
+    private static final Map<UUID,Destino> DESTINOS=new HashMap<>();
+    private static final Map<UUID,List<UUID>> ALVOS=new HashMap<>();
+    public static void vincularAlvos(UUID id,List<UUID> alvos){if(alvos.isEmpty())ALVOS.remove(id);else{if(ALVOS.size()>=64)ALVOS.clear();ALVOS.put(id,List.copyOf(alvos));}}
     public static void iniciar(int tipo, UUID jogador, Vec3 origem, Vec3 direcao) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
+        if(tipo==16){if(DESTINOS.size()>=64)DESTINOS.clear();DESTINOS.put(jogador,new Destino(origem,mc.level.getGameTime(),mc.level));return;}
         if(tipo==15){
             PhotonAtomic.cancelar(jogador);
             AnimacoesGojo.cancelar(jogador);
-            EFEITOS.removeIf(f->f.jogador.equals(jogador));
+            EFEITOS.removeIf(f->f.jogador.equals(jogador)&&f.tipo==14);
             if(mc.player!=null && mc.player.getUUID().equals(jogador)) GerenciadorCutscene3D.finalizarCutscene();
             return;
         }
@@ -39,10 +44,16 @@ public final class EfeitosCid {
         if (e.phase != TickEvent.Phase.END) return;
         PhotonAtomic.tick();
         var mc=Minecraft.getInstance();
-        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?170:25)
+        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?170:f.tipo==13?48:25)
                 || mc.level.getPlayerByUUID(f.jogador)==null || !mc.level.getPlayerByUUID(f.jogador).isAlive());
         if(mc.level == null) return;
+        DESTINOS.entrySet().removeIf(a->a.getValue().mundo!=mc.level||mc.level.getGameTime()-a.getValue().tick>25);
+        ALVOS.keySet().removeIf(id->EFEITOS.stream().noneMatch(f->f.tipo==13&&f.jogador.equals(id)));
+        if(mc.isPaused())return;
         for(var f:EFEITOS) {
+            long idade=mc.level.getGameTime()-f.inicio;
+            if(f.tipo==11&&idade==6)com.cauansilva.arcanecontrol.core.client.render.EmissoresAnime.pulso(f.jogador,f.origem.add(f.direcao.scale(3)).add(0,1,0),0xB76BFF,16,3,.12,12);
+            if(f.tipo==12&&idade==1){var d=DESTINOS.get(f.jogador);if(d!=null)com.cauansilva.arcanecontrol.core.client.render.EmissoresAnime.pulso(f.jogador,d.pos.add(0,1,0),0xB76BFF,16,2,.14,14);}
             if(f.tipo!=14 || mc.player==null || mc.player.distanceToSqr(f.origem)>96*96) continue;
             long t=mc.level.getGameTime()-f.inicio;
             if(t<90) {
@@ -62,7 +73,7 @@ public final class EfeitosCid {
             }
         }
     }
-    @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e) { EFEITOS.clear(); PhotonAtomic.limpar(); }
+    @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e) { EFEITOS.clear();DESTINOS.clear();ALVOS.clear(); PhotonAtomic.limpar(); }
     private static void linha(PoseStack pose, Vec3 a, Vec3 b, float raio, int alpha) {
         Vec3 d=b.subtract(a);
         if(d.lengthSqr()<.00001) return;
@@ -87,7 +98,11 @@ public final class EfeitosCid {
             Vec3 pos=f.origem.subtract(camera);pose.translate(pos.x,pos.y,pos.z);
             Vec3 plano=f.direcao.multiply(1,0,1).normalize();
             Vec3 ancora=plano.scale(.5).add(plano.cross(new Vec3(0,1,0)).scale(.4)).add(0,1.2,0);
-            if(f.tipo==14 && RenderEnergiaAtomic.desenhar(pose,t,camera.subtract(f.origem),ancora)) {
+            var destinoDash=DESTINOS.get(f.jogador);
+            if(f.tipo>=11&&f.tipo<=13&&RenderMovesetCid.desenhar(pose,f.tipo,f.jogador,f.origem,f.direcao,
+                    destinoDash==null?null:destinoDash.pos,t,camera.subtract(f.origem),ALVOS.getOrDefault(f.jogador,List.of()))) {
+            } else if(f.tipo==14 && RenderEnergiaAtomic.desenhar(pose,t,camera.subtract(f.origem),ancora)) {
+                RenderMovesetCid.selosAtomic(pose,t,camera.subtract(f.origem));
                 // O material procedural substitui as esferas/aneis lisos da Atomic.
             } else if(f.tipo==14) {
                 double carga=Math.min(1,t/90), depois=Math.max(0,t-90), fade=1-Math.min(1,depois/50);
@@ -184,9 +199,9 @@ public final class EfeitosCid {
             }
             e.getGuiGraphics().drawCenteredString(mc.font,t<90?"I... AM...":"ATOMIC",e.getWindow().getGuiScaledWidth()/2,
                     e.getWindow().getGuiScaledHeight()-35,0xDDCCFF);
-        } else if(mc.player.getMainHandItem().is(EspadaCid.ESPADA.get())) {
+        } else if(com.cauansilva.arcanecontrol.core.client.PoderesCliente.ativo()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID) {
             e.getGuiGraphics().fill(8,8,285,47,0xDD100A1C);
-            e.getGuiGraphics().drawString(mc.font,"SHADOW • Cid Kagenou",14,14,0xCC99FF);
+            e.getGuiGraphics().drawString(mc.font,"SHADOW â€¢ [P] Poderes",14,14,0xCC99FF);
             e.getGuiGraphics().drawString(mc.font,"[Z] Corte [X] Passo [C] Fios [V] Atomic",14,30,0xE0D8EE);
         }
     }

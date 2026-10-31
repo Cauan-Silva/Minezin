@@ -66,12 +66,17 @@ public final class AnimacoesGojo {
         if(camada == null) return;
         reproduzir(jogador,camada,id,tipo,"cid_" + (tipo - 10));
     }
+    public static void tocarFrieren(UUID id,int tipo){
+        var mc=Minecraft.getInstance();if(mc.level==null||tipo<21||tipo>24)return;
+        if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
+        var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,"frieren_"+(tipo-20));
+    }
     private static void reproduzir(AbstractClientPlayer jogador, ModifierLayer<IAnimation> camada, UUID id, int tipo, String nome) {
         KeyframeAnimation animacao = PlayerAnimationRegistry.getAnimation(new ResourceLocation("arcanecontrol",nome));
         if (animacao == null) return;
         camada.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(3, Ease.OUTQUAD),
                 new KeyframeAnimationPlayer(animacao));
-        PRIORIDADES.put(id, tipo);
+        PRIORIDADES.put(id,(tipo==4||tipo==5||tipo==14||tipo==24)?4:1);
     }
 
     @SubscribeEvent

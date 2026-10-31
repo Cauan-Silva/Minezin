@@ -8,7 +8,7 @@ import net.minecraftforge.network.NetworkDirection;
 import java.util.Optional;
 
 public class RegistoRede {
-    private static final String PROTOCOL_VERSION = "5";
+    private static final String PROTOCOL_VERSION = "6";
     public static final SimpleChannel ENVIAR = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(ArcaneControl.MODID, "main"),
             () -> PROTOCOL_VERSION,
@@ -18,6 +18,10 @@ public class RegistoRede {
 
     public static void registarPacotes() {
         int id = 0;
+        ENVIAR.registerMessage(id++,PacoteAlvosCid.class,PacoteAlvosCid::encode,PacoteAlvosCid::decode,PacoteAlvosCid::handle,Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        ENVIAR.registerMessage(id++,PacoteAcaoPoder.class,PacoteAcaoPoder::encode,PacoteAcaoPoder::decode,PacoteAcaoPoder::handle,Optional.of(NetworkDirection.PLAY_TO_SERVER));
+        ENVIAR.registerMessage(id++,PacoteEstadoPoderes.class,PacoteEstadoPoderes::encode,PacoteEstadoPoderes::decode,PacoteEstadoPoderes::handle,Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+
         ENVIAR.registerMessage(id++, PacoteUsarMagia.class,
                 PacoteUsarMagia::encode,
                 PacoteUsarMagia::decode,

@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SHADERS = ROOT / "src/main/resources/assets/arcanecontrol/shaders/core"
 
 
-def load_program(ctx, name):
+def load_program(ctx, name, expected_blend=None):
     descriptor = json.loads((SHADERS / f"{name}.json").read_text())
     def source(key, extension):
         namespace, path = descriptor[key].split(":", 1)
@@ -30,7 +30,7 @@ def load_program(ctx, name):
         assert len(uniform["values"]) == uniform["count"]
     blend = descriptor["blend"]
     assert blend["srcrgb"] == "srcalpha"
-    expected = "one" if name.endswith("_additive") else "1-srcalpha"
+    expected = expected_blend or ("one" if name.endswith("_additive") else "1-srcalpha")
     assert blend["dstrgb"] == expected
     return program
 

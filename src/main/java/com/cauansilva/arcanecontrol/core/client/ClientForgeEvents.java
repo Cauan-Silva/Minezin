@@ -15,31 +15,19 @@ public class ClientForgeEvents {
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.level == null || minecraft.screen != null) return;
-        if (TeclasControlo.ARVORE.consumeClick()) {
-            minecraft.setScreen(new ArvoreGojoScreen());
-            return;
+        if(TeclasControlo.PODERES.consumeClick()) {
+            minecraft.setScreen(new PoderesScreen());return;
+        }
+        if(TeclasControlo.ARVORE.consumeClick()) {
+            minecraft.setScreen(PoderesCliente.ativo()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO
+                    ?new ArvoreGojoScreen():new PoderesScreen());return;
+        }
+        var kit=PoderesCliente.ativo();
+        var teclas=new net.minecraft.client.KeyMapping[]{TeclasControlo.TECLA_Z,TeclasControlo.TECLA_X,
+                TeclasControlo.TECLA_C,TeclasControlo.TECLA_V,TeclasControlo.TECLA_R};
+        for(int i=0;i<teclas.length;i++) if(teclas[i].consumeClick()) {
+            int id=kit.tecnica(i);if(id!=0)RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(id));
         }
 
-        boolean cid = minecraft.player.getMainHandItem().is(com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get());
-        // Z - Azul (Ao) com Esfera 3D e Anéis de Acreção
-        if (TeclasControlo.TECLA_Z.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 11 : 1));
-        }
-        // X - Vermelho (Aka) com Núcleo 3D e Anéis de Choque
-        if (TeclasControlo.TECLA_X.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 12 : 2));
-        }
-        // C - Infinito (Mukagen) com Aura Hexagonal/Esférica 3D
-        if (TeclasControlo.TECLA_C.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 13 : 3));
-        }
-        // V - ULTIMATE 1: Vazio Roxo (Murasaki) com CUTSCENE + MODELOS 3D + FEIXE VOLUMÉTRICO
-        if (TeclasControlo.TECLA_V.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 14 : 4));
-        }
-        // R - ULTIMATE 2: Expansão de Domínio (Vazio Infinito) com CUTSCENE + DOMO 3D + BURACO NEGRO
-        if (TeclasControlo.TECLA_R.consumeClick() && !cid) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(5));
-        }
     }
 }

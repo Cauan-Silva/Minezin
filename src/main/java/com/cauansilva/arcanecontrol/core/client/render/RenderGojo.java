@@ -141,6 +141,20 @@ public final class RenderGojo {
                         anterior=q;
                     }
                 }
+                for(int j=0;j<6;j++){
+                    if(reduzido()&&j%2!=0)continue;
+                    Vec3 anterior=null;float pulso=(float)com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.intensidade(j,t)*alpha;
+                    for(int i=0;i<=6;i++){
+                        var c=com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.ponto(j,i,t);
+                        Vec3 q=pos.add(lado.scale(c.lateral())).add(alto.scale(c.vertical())).add(dir.scale(c.frente()));
+                        if(anterior!=null)fita(pose,cam,anterior,q,.035,i*.25,(i+1)*.25,0xE7D3FF,pulso*.8f);
+                        if(i==4){
+                            Vec3 ramo=q.add(lado.scale(Math.sin(j*2+t*.04)*.7)).add(alto.scale(.9)).add(dir.scale(.4));
+                            fita(pose,cam,q,ramo,.02,0,1,0xBDA4FF,pulso*.6f);
+                        }
+                        anterior=q;
+                    }
+                }
             });
         }
     }

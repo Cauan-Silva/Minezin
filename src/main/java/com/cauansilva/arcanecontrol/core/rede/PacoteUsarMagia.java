@@ -26,8 +26,10 @@ public class PacoteUsarMagia {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
             if (player != null) {
+                if(!com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.podeUsar(player,msg.idMagia))return;
                 if (com.cauansilva.arcanecontrol.core.cid.PoderesCid.dados(player).getLong("cid_ocupado") > player.server.overworld().getGameTime()) return;
                 if (msg.idMagia >= 11 && msg.idMagia <= 14) com.cauansilva.arcanecontrol.core.cid.PoderesCid.executar(player,msg.idMagia);
+                else if(msg.idMagia>=21&&msg.idMagia<=24)com.cauansilva.arcanecontrol.core.frieren.PoderesFrieren.executar(player,msg.idMagia);
                 else GerenciadorMagiasGojo.executarMagia(player, msg.idMagia);
             }
         });

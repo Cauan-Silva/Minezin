@@ -32,12 +32,25 @@ public class GerenciadorMagiasGojo {
 
     private static final Set<UUID> INFINITO_ATIVO = new HashSet<>();
     private static final List<AnimacaoAtiva> ANIMACOES = new ArrayList<>();
+    private static final class ProjetilRetido {
+        final Vec3 velocidade;final boolean semGravidade;long tick;
+        ProjetilRetido(Projectile p){velocidade=p.getDeltaMovement();semGravidade=p.isNoGravity();}
+    }
+    private static final Map<Projectile,ProjetilRetido> PROJETEIS_RETIDOS=new IdentityHashMap<>();
+    private static void reter(Projectile p,ServerLevel nivel){
+        var estado=PROJETEIS_RETIDOS.computeIfAbsent(p,ProjetilRetido::new);
+        estado.tick=nivel.getServer().overworld().getGameTime();p.setDeltaMovement(Vec3.ZERO);p.setNoGravity(true);p.hurtMarked=true;
+    }
+    private static void restaurar(Projectile p,ProjetilRetido estado){
+        if(!p.isRemoved()){p.setNoGravity(estado.semGravidade);p.setDeltaMovement(estado.velocidade);p.hurtMarked=true;}
+    }
 
     private static final DustParticleOptions PART_AZUL = new DustParticleOptions(new Vector3f(0.0f, 0.75f, 1.0f), .7f);
     private static final DustParticleOptions PART_VERMELHO = new DustParticleOptions(new Vector3f(1.0f, 0.1f, 0.15f), .8f);
     private static final DustParticleOptions PART_ROXO = new DustParticleOptions(new Vector3f(0.75f, 0.1f, 1.0f), .9f);
 
     public static void executarMagia(ServerPlayer player, int idMagia) {
+        if(!com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.podeUsar(player,idMagia))return;
         TecnicaGojo tecnica = TecnicaGojo.porId(idMagia);
         if (tecnica == null || !ProgressaoGojo.autorizar(player, tecnica,
                 idMagia == 3 && infinitoAtivo(player))) return;
@@ -60,6 +73,7 @@ public class GerenciadorMagiasGojo {
             case 5 -> iniciarExpansaoDominio(player, level);
         }
         ProgressaoGojo.sincronizar(player);
+        com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.bloquear(player,PerfilVfxGojo.duracao(idMagia));
     }
 
     public static boolean infinitoAtivo(ServerPlayer player) {
@@ -82,6 +96,7 @@ public class GerenciadorMagiasGojo {
     public static void aoParar(net.minecraftforge.event.server.ServerStoppedEvent event) {
         INFINITO_ATIVO.clear();
         ANIMACOES.clear();
+        PROJETEIS_RETIDOS.forEach(GerenciadorMagiasGojo::restaurar);PROJETEIS_RETIDOS.clear();
     }
 
     // =========================================================================
@@ -174,6 +189,9 @@ public class GerenciadorMagiasGojo {
     private static void sincronizarInfinito(ServerPlayer player) {
         RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
                 new PacoteSincronizarCutscene3D(INFINITO_ATIVO.contains(player.getUUID())?8:9,player.getUUID(),0,0,0,0,0,0));
+    }
+    public static void desativarInfinito(ServerPlayer player){
+        if(INFINITO_ATIVO.remove(player.getUUID())){sincronizarInfinito(player);ProgressaoGojo.sincronizar(player);}
     }
 
     @SubscribeEvent public static void aoRastrear(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking e) {
@@ -293,8 +311,7 @@ public class GerenciadorMagiasGojo {
                             level.sendParticles(ParticleTypes.ENCHANT, living.getX(), living.getY() + 1.5, living.getZ(), 15, 0.3, 0.3, 0.3, 0.2);
                         }
                     } else if (alvo instanceof Projectile proj) {
-                        proj.setDeltaMovement(Vec3.ZERO);
-                        proj.setNoGravity(true);
+                        reter(proj,level);
                     }
                 }
             }
@@ -322,6 +339,11 @@ public class GerenciadorMagiasGojo {
                 }
             }
         }
+        long agora=event.getServer().overworld().getGameTime();
+        PROJETEIS_RETIDOS.entrySet().removeIf(e->{
+            if(e.getKey().isRemoved())return true;
+            if(e.getValue().tick<agora){restaurar(e.getKey(),e.getValue());return true;}return false;
+        });
     }
 
     private static void aplicarBarreiraInfinito(ServerPlayer player, ServerLevel level) {
@@ -331,9 +353,7 @@ public class GerenciadorMagiasGojo {
             double dist = Math.max(0.1, diff.length());
 
             if (entidade instanceof Projectile proj) {
-                proj.setDeltaMovement(Vec3.ZERO);
-                proj.setNoGravity(true);
-                proj.hurtMarked = true;
+                reter(proj,level);
                 if(player.tickCount%4==0) level.sendParticles(ParticleTypes.ENCHANTED_HIT, proj.getX(), proj.getY(), proj.getZ(), 1, 0.05, 0.05, 0.05, 0);
             } else if (entidade instanceof LivingEntity) {
                 Vec3 repulsaoSuave = diff.normalize().scale(0.25 / dist);
