@@ -2,6 +2,10 @@ package com.cauansilva.arcanecontrol.core.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.cauansilva.arcanecontrol.ConfigCliente;
+import com.cauansilva.arcanecontrol.core.client.GojoHudOverlay;
+import com.cauansilva.arcanecontrol.core.client.ProgressoGojoCliente;
+import com.cauansilva.arcanecontrol.core.progressao.TecnicaGojo;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -42,7 +46,7 @@ public class GerenciadorCutscene3D {
     }
 
     private static final List<Efeito3DAtivo> EFEITOS_3D = new ArrayList<>();
-    private static boolean infinito3DAtivo = false;
+    private static net.minecraft.client.multiplayer.ClientLevel mundoCutscene;
 
     // Estado da Cutscene Local (Para o jogador que ativou a Ultimate)
     public static int cutsceneTipo = 0; // 0=Nenhuma, 4=Vazio Roxo, 5=Expansão de Domínio
@@ -52,6 +56,10 @@ public class GerenciadorCutscene3D {
 
     public static void iniciarEfeitoCliente(int tipo, UUID playerId, double x, double y, double z, double dx, double dy, double dz) {
         Minecraft mc = Minecraft.getInstance();
+        TecnicaGojo tecnica = TecnicaGojo.porId(tipo);
+        if (tecnica != null && mc.player != null && mc.player.getUUID().equals(playerId)) {
+            GojoHudOverlay.notificarHabilidade(tecnica.nome, 0x55FFFF);
+        }
         Vec3 origem = new Vec3(x, y, z);
         Vec3 direcao = new Vec3(dx, dy, dz);
 
@@ -60,7 +68,7 @@ public class GerenciadorCutscene3D {
         } else if (tipo == 2) {
             EFEITOS_3D.add(new Efeito3DAtivo(2, playerId, origem, direcao, 28));
         } else if (tipo == 3) {
-            infinito3DAtivo = !infinito3DAtivo;
+            // O estado do Infinito local vem do snapshot validado pelo servidor.
         } else if (tipo == 4) {
             EFEITOS_3D.add(new Efeito3DAtivo(4, playerId, origem, direcao, 85));
             if (mc.player != null && mc.player.getUUID().equals(playerId)) {
@@ -75,19 +83,46 @@ public class GerenciadorCutscene3D {
     }
 
     private static void iniciarCutsceneLocal(int tipo, int duracao) {
+        if (!ConfigCliente.CINEMATICAS.get()) return;
         Minecraft mc = Minecraft.getInstance();
+        finalizarCutscene();
         cutsceneTipo = tipo;
         cutsceneTick = 0;
         cutsceneDuracao = duracao;
         cameraAnterior = mc.options.getCameraType();
+        mundoCutscene = mc.level;
         // Muda automaticamente para câmera cinemática em 3ª pessoa para ver o personagem e as esferas 3D!
         mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+    }
+
+    private static void finalizarCutscene() {
+        Minecraft mc = Minecraft.getInstance();
+        if (cameraAnterior != null) mc.options.setCameraType(cameraAnterior);
+        cameraAnterior = null;
+        mundoCutscene = null;
+        cutsceneTipo = 0;
+        cutsceneTick = 0;
+    }
+
+    @SubscribeEvent
+    public static void aoDesconectar(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
+        finalizarCutscene();
+        EFEITOS_3D.clear();
     }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null || !mc.player.isAlive()) {
+            finalizarCutscene();
+            EFEITOS_3D.clear();
+            return;
+        }
+        if (cutsceneTipo != 0 && (mundoCutscene != mc.level || !ConfigCliente.CINEMATICAS.get())) {
+            finalizarCutscene();
+            EFEITOS_3D.clear();
+        }
         if (mc.isPaused()) return;
 
         Iterator<Efeito3DAtivo> it = EFEITOS_3D.iterator();
@@ -102,11 +137,7 @@ public class GerenciadorCutscene3D {
         if (cutsceneTipo != 0) {
             cutsceneTick++;
             if (cutsceneTick >= cutsceneDuracao) {
-                cutsceneTipo = 0;
-                if (cameraAnterior != null && mc.options != null) {
-                    mc.options.setCameraType(cameraAnterior);
-                    cameraAnterior = null;
-                }
+                finalizarCutscene();
             }
         }
     }
@@ -189,7 +220,7 @@ public class GerenciadorCutscene3D {
         float partialTick = event.getPartialTick();
 
         // 1. Se o Infinito (C) estiver ativo, desenha anéis 3D translúcidos ao redor do Gojo
-        if (infinito3DAtivo) {
+        if (ProgressoGojoCliente.infinito) {
             Player p = mc.player;
             double px = Mth.lerp(partialTick, p.xo, p.getX()) - camPos.x;
             double py = Mth.lerp(partialTick, p.yo, p.getY()) - camPos.y;

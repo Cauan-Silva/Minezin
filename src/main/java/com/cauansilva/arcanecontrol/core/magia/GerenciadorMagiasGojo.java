@@ -2,6 +2,8 @@ package com.cauansilva.arcanecontrol.core.magia;
 
 import com.cauansilva.arcanecontrol.core.rede.PacoteSincronizarCutscene3D;
 import com.cauansilva.arcanecontrol.core.rede.RegistoRede;
+import com.cauansilva.arcanecontrol.core.progressao.ProgressaoGojo;
+import com.cauansilva.arcanecontrol.core.progressao.TecnicaGojo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -36,6 +38,9 @@ public class GerenciadorMagiasGojo {
     private static final DustParticleOptions PART_BRANCO = new DustParticleOptions(new Vector3f(0.95f, 0.95f, 1.0f), 2.0f);
 
     public static void executarMagia(ServerPlayer player, int idMagia) {
+        TecnicaGojo tecnica = TecnicaGojo.porId(idMagia);
+        if (tecnica == null || !ProgressaoGojo.autorizar(player, tecnica,
+                idMagia == 3 && infinitoAtivo(player))) return;
         ServerLevel level = player.serverLevel();
         Vec3 olho = player.getEyePosition();
         Vec3 dir = player.getLookAngle();
@@ -53,6 +58,27 @@ public class GerenciadorMagiasGojo {
             case 4 -> iniciarVazioRoxo(player, level);
             case 5 -> iniciarExpansaoDominio(player, level);
         }
+        ProgressaoGojo.sincronizar(player);
+    }
+
+    public static boolean infinitoAtivo(ServerPlayer player) {
+        return INFINITO_ATIVO.contains(player.getUUID());
+    }
+
+    @SubscribeEvent
+    public static void aoSair(net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent event) {
+        INFINITO_ATIVO.remove(event.getEntity().getUUID());
+    }
+
+    @SubscribeEvent
+    public static void aoMorrer(net.minecraftforge.event.entity.living.LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) INFINITO_ATIVO.remove(player.getUUID());
+    }
+
+    @SubscribeEvent
+    public static void aoParar(net.minecraftforge.event.server.ServerStoppedEvent event) {
+        INFINITO_ATIVO.clear();
+        ANIMACOES.clear();
     }
 
     // =========================================================================
@@ -64,7 +90,7 @@ public class GerenciadorMagiasGojo {
         ANIMACOES.add(new AnimacaoAtiva(60) {
             @Override
             void tick(int tickAtual) {
-                if (!player.isAlive()) return;
+                if (!player.isAlive() || player.hasDisconnected() || player.serverLevel() != level) return;
                 Vec3 centro = player.getEyePosition().add(player.getLookAngle().scale(7.5));
 
                 level.sendParticles(PART_AZUL, centro.x, centro.y, centro.z, 8, 0.4, 0.4, 0.4, 0.02);
@@ -79,7 +105,7 @@ public class GerenciadorMagiasGojo {
                     alvo.hurtMarked = true;
 
                     if (distancia < 2.8 && alvo instanceof LivingEntity living && tickAtual % 5 == 0) {
-                        living.hurt(level.damageSources().magic(), 6.0f);
+                        living.hurt(level.damageSources().indirectMagic(player, player), 6.0f);
                         level.sendParticles(ParticleTypes.CRIT, alvo.getX(), alvo.getY() + 1, alvo.getZ(), 6, 0.2, 0.2, 0.2, 0.1);
                     }
                 }
@@ -96,7 +122,7 @@ public class GerenciadorMagiasGojo {
         ANIMACOES.add(new AnimacaoAtiva(28) {
             @Override
             void tick(int tickAtual) {
-                if (!player.isAlive()) return;
+                if (!player.isAlive() || player.hasDisconnected() || player.serverLevel() != level) return;
                 Vec3 olho = player.getEyePosition();
                 Vec3 dir = player.getLookAngle();
                 Vec3 pontoDedo = olho.add(dir.scale(1.8));
@@ -154,7 +180,7 @@ public class GerenciadorMagiasGojo {
 
             @Override
             void tick(int tickAtual) {
-                if (!player.isAlive()) return;
+                if (!player.isAlive() || player.hasDisconnected() || player.serverLevel() != level) return;
                 Vec3 olho = player.getEyePosition();
                 Vec3 dir = player.getLookAngle();
 
@@ -196,7 +222,9 @@ public class GerenciadorMagiasGojo {
                     AABB areaRoxo = new AABB(posEsfera, posEsfera).inflate(5.0);
                     for (Entity alvo : level.getEntities(player, areaRoxo)) {
                         if (alvo instanceof LivingEntity living) {
-                            living.hurt(level.damageSources().fellOutOfWorld(), 60.0f);
+                            living.hurt(new net.minecraft.world.damagesource.DamageSource(
+                                    level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
+                                            .getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.FELL_OUT_OF_WORLD), player), 60.0f);
                         } else {
                             alvo.discard();
                         }
@@ -217,7 +245,7 @@ public class GerenciadorMagiasGojo {
         ANIMACOES.add(new AnimacaoAtiva(160) {
             @Override
             void tick(int tickAtual) {
-                if (!player.isAlive()) return;
+                if (!player.isAlive() || player.hasDisconnected() || player.serverLevel() != level) return;
 
                 // Partículas cósmicas dentro do Domo 3D
                 if (tickAtual % 2 == 0) {
@@ -239,7 +267,7 @@ public class GerenciadorMagiasGojo {
                         living.addEffect(new MobEffectInstance(MobEffects.GLOWING, 20, 1, false, false));
 
                         if (tickAtual > 35 && tickAtual % 10 == 0) {
-                            living.hurt(level.damageSources().magic(), 8.0f);
+                            living.hurt(level.damageSources().indirectMagic(player, player), 8.0f);
                             level.sendParticles(ParticleTypes.ENCHANT, living.getX(), living.getY() + 1.5, living.getZ(), 15, 0.3, 0.3, 0.3, 0.2);
                         }
                     } else if (alvo instanceof Projectile proj) {

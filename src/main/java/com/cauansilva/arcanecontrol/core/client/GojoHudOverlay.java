@@ -13,25 +13,15 @@ public class GojoHudOverlay {
     private static String ultimaTecnica = "§7Nenhuma técnica ativa";
     private static int corTecnica = 0xFFFFFF;
     private static long tempoNotificacao = 0;
-    private static boolean infinitoAtivo = false;
-
     public static void notificarHabilidade(String nome, int cor) {
         ultimaTecnica = nome;
         corTecnica = cor;
         tempoNotificacao = System.currentTimeMillis();
     }
 
-    public static void alternarInfinito() {
-        infinitoAtivo = !infinitoAtivo;
-        if (infinitoAtivo) {
-            notificarHabilidade("§9∞ Infinito: ATIVO (Barreira 3D)", 0x55FFFF);
-        } else {
-            notificarHabilidade("§7∞ Infinito: DESATIVADO", 0xAAAAAA);
-        }
-    }
-
     @SubscribeEvent
     public static void onRenderHud(RenderGuiOverlayEvent.Post event) {
+        if (!event.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id())) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.options.hideGui) return;
 
@@ -104,8 +94,10 @@ public class GojoHudOverlay {
 
         gui.drawString(mc.font, "§b§lSEIS OLHOS & ILIMITADO (3D)", 14, 14, 0xFFFFFF, true);
 
-        String statusInfinito = infinitoAtivo ? "§a§lATIVO (Anel 3D ON)" : "§c§lOFF (Pressione C)";
+        String statusInfinito = ProgressoGojoCliente.infinito ? "§a§lATIVO (Anel 3D ON)" : "§c§lOFF (Pressione C)";
         gui.drawString(mc.font, "§fInfinito: " + statusInfinito, 14, 27, 0xFFFFFF, true);
+        gui.drawString(mc.font, "§b[K] Árvore §7• Nv. " + ProgressoGojoCliente.progresso.nivel()
+                + " • " + ProgressoGojoCliente.progresso.pontos() + " ponto(s)", 14, 68, 0xFFFFFF, true);
 
         if (System.currentTimeMillis() - tempoNotificacao < 4000) {
             gui.drawString(mc.font, ultimaTecnica, 14, 42, corTecnica, true);

@@ -1,8 +1,9 @@
 {
-    "category.minezin.magias": "Minezin - Jujutsu Kaisen (Gojo)",
-    "key.minezin.z": "Técnica Azul (Ao - Esfera 3D de Atração)",
-    "key.minezin.x": "Técnica Vermelho (Aka - Esfera 3D de Repulsão)",
-    "key.minezin.c": "Infinito (Mukagen - Barreira Espacial 3D)",
-    "key.minezin.v": "Ultimate: Vazio Roxo (Cutscene + Modelo 3D)",
-    "key.minezin.r": "Ultimate: Expansão de Domínio - Vazio Infinito (Cutscene + Domo 3D)"
+  "category.minezin.magias": "Minezin - Jujutsu Kaisen (Gojo)",
+  "key.minezin.z": "Técnica Azul (Ao - Esfera 3D de Atração)",
+  "key.minezin.x": "Técnica Vermelho (Aka - Esfera 3D de Repulsão)",
+  "key.minezin.c": "Infinito (Mukagen - Barreira Espacial 3D)",
+  "key.minezin.v": "Ultimate: Vazio Roxo (Cutscene + Modelo 3D)",
+  "key.minezin.r": "Ultimate: Expansão de Domínio - Vazio Infinito (Cutscene + Domo 3D)",
+  "key.minezin.tree": "Technique tree"
 }
