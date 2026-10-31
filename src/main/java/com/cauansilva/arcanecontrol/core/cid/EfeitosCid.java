@@ -81,6 +81,26 @@ public final class EfeitosCid {
                                 new Vec3(Math.cos(a)*raio,4*fade,Math.sin(a)*raio),.035f,(int)(110*fade));
                     }
                 }
+            } else if(f.tipo==12) {
+                double fade=1-Math.min(1,t/25);
+                var jogador=mc.level.getPlayerByUUID(f.jogador);
+                Vec3 destino=jogador==null?f.direcao.scale(8):jogador.position().subtract(f.origem);
+                for(int i=0;i<5;i++) {
+                    double altura=.2+i*.35;
+                    linha(pose,new Vec3(0,altura,0),destino.add(0,altura,0),(float)(.035*fade),(int)(100*fade));
+                }
+            } else if(f.tipo==13) {
+                double fade=1-Math.min(1,t/25);
+                for(int j=0;j<8;j++) {
+                    double ang=j*Math.PI/4;
+                    Vec3 anterior=new Vec3(0,1,0);
+                    for(int i=1;i<=12;i++) {
+                        double r=i*.7;
+                        Vec3 atual=new Vec3(Math.cos(ang)*r,.5+Math.sin(i*.6-t*.2)*.3,Math.sin(ang)*r);
+                        linha(pose,anterior,atual,(float)(.035*fade),(int)(150*fade));
+                        anterior=atual;
+                    }
+                }
             } else {
                 Vec3 frente=new Vec3(f.direcao.x,0,f.direcao.z).normalize(), lado=frente.cross(new Vec3(0,1,0));
                 double progresso=Math.min(1,t/25), fade=1-progresso;
