@@ -8,8 +8,11 @@ public final class ConfigCliente {
     public static final ForgeConfigSpec.BooleanValue PHOTON;
     public static final ForgeConfigSpec.BooleanValue VFX_REDUZIDOS;
     public static final ForgeConfigSpec.BooleanValue CLARAO;
+    public static final ForgeConfigSpec.BooleanValue SHADER_ATOMIC;
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        SHADER_ATOMIC = builder.comment("Material procedural e filamentos da Atomic. Desligar restaura a geometria anterior.")
+                .define("shaderAtomic", true);
         PHOTON = builder.comment("Ativar emissores e bloom Photon da Atomic.").define("photonAtomic", true);
         VFX_REDUZIDOS = builder.comment("Reduzir a emissao de particulas da Atomic pela metade.").define("vfxReduzidos", false);
         CLARAO = builder.comment("Ativar o clarao breve da Atomic.").define("claraoAtomic", true);
