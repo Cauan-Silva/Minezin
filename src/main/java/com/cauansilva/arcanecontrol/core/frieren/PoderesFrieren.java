@@ -46,7 +46,17 @@ public final class PoderesFrieren {
             var hit=ProjectileUtil.getEntityHitResult(p,origem,fim,p.getBoundingBox().expandTowards(fim.subtract(origem)).inflate(1),
                     e->e instanceof LivingEntity&&e!=p&&e.isAlive()&&!e.isAlliedTo(p),origem.distanceToSqr(fim));
             if(hit!=null){alvo=hit.getLocation();hit.getEntity().hurt(level.damageSources().indirectMagic(p,p),10);}
-            enviar(p,21,origem,alvo);
+            Vec3 origemVisual=origem;
+            var cajado=com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.CAJADO_FRIEREN.get();
+            boolean direita=p.getMainHandItem().is(cajado),esquerda=p.getOffhandItem().is(cajado);
+            if(direita||esquerda){
+                Vec3 lado=dir.cross(new Vec3(0,1,0)).normalize();
+                boolean maoDireita=direita==(p.getMainArm()==net.minecraft.world.entity.HumanoidArm.RIGHT);
+                Vec3 foco=origem.add(dir.scale(.95)).add(lado.scale(maoDireita?.35:-.35)).add(0,-.2,0);
+                var limite=level.clip(new ClipContext(origem,foco,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p));
+                origemVisual=limite.getType()==HitResult.Type.MISS?foco:limite.getLocation().subtract(dir.scale(.03));
+            }
+            enviar(p,21,origemVisual,alvo);
             level.playSound(null,p.blockPosition(),SoundEvents.AMETHYST_BLOCK_RESONATE,SoundSource.PLAYERS,1.5f,1.6f);
         } else if(slot==1){
             tag.putLong("fri_barreira_ate",agora+80);tag.putFloat("fri_barreira_reserva",30);

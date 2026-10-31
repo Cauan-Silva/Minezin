@@ -7,17 +7,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import com.cauansilva.arcanecontrol.core.client.render.RoteiroGojo;
 class CidAssetsTest {
-    @Test void iconesUsamDiretorioIncluidoNoAtlas() throws Exception {
+    @Test void iconesShadowUsamRenderizadorGeoComModelosPorPeca() throws Exception {
         for(String nome:new String[]{"capuz","manto","calcas","botas"}) {
             try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/models/item/"+nome+"_shadow.json")) {
                 assertNotNull(in);
                 var model=JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();
-                String textura=model.getAsJsonObject("textures").get("layer0").getAsString();
-                assertTrue(textura.startsWith("arcanecontrol:item/"),"Icone precisa entrar no atlas de itens");
-                try(var png=getClass().getResourceAsStream("/assets/arcanecontrol/textures/"+textura.split(":")[1]+".png")) {
-                    assertNotNull(png);var imagem=javax.imageio.ImageIO.read(png);
-                    assertNotNull(imagem);assertEquals(16,imagem.getWidth());assertEquals(16,imagem.getHeight());
-                }
+                assertEquals("builtin/entity",model.get("parent").getAsString());
             }
         }
     }
