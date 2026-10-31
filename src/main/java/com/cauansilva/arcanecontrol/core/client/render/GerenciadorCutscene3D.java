@@ -92,9 +92,12 @@ public class GerenciadorCutscene3D {
                 cutsceneTick=Math.max(cutsceneTick,PerfilVfxGojo.ROXO_DISPARO);
             return;
         }
-        if (tipo >= 11 && tipo <= 15) {
+        if (tipo >= 11 && tipo <= 16) {
             com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));
             return;
+        }
+        if(tipo>=21&&tipo<=26){
+            com.cauansilva.arcanecontrol.core.frieren.EfeitosFrieren.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));return;
         }
         TecnicaGojo tecnica = TecnicaGojo.porId(tipo);
         if(tecnica==null) return;
@@ -220,6 +223,10 @@ public class GerenciadorCutscene3D {
                 Vec3 origem=tempo<=PerfilVfxGojo.ROXO_DISPARO?olho:ef.origem;
                 alvo=origem.add(direcao.scale(quadro.alvoFrente()));
             }
+        }
+        if(cutsceneTipo==24){
+            Vec3 centro=com.cauansilva.arcanecontrol.core.frieren.EfeitosFrieren.centroUltimate(mc.player.getUUID());
+            if(centro!=null)alvo=olho.lerp(centro,RoteiroGojo.suave((tempo-10)/40));
         }
         Vec3 direita = frente.cross(new Vec3(0, 1, 0));
         Vec3 desejada = olho.add(direita.scale(quadro.x())).add(0, quadro.y(), 0)

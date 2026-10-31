@@ -1,14 +1,23 @@
 {
   "category.minezin.magias": "Minezin - Jujutsu Kaisen (Gojo)",
-  "key.minezin.z": "T\u00e9cnica Azul (Ao - Esfera 3D de Atra\u00e7\u00e3o)",
-  "key.minezin.x": "T\u00e9cnica Vermelho (Aka - Esfera 3D de Repuls\u00e3o)",
+  "key.minezin.z": "Técnica Azul (Ao - Esfera 3D de Atração)",
+  "key.minezin.x": "Técnica Vermelho (Aka - Esfera 3D de Repulsão)",
   "key.minezin.c": "Infinito (Mukagen - Barreira Espacial 3D)",
   "key.minezin.v": "Ultimate: Vazio Roxo (Cutscene + Modelo 3D)",
-  "key.minezin.r": "Ultimate: Expans\u00e3o de Dom\u00ednio - Vazio Infinito (Cutscene + Domo 3D)",
+  "key.minezin.r": "Ultimate: Expansão de Domínio - Vazio Infinito (Cutscene + Domo 3D)",
   "key.minezin.tree": "Technique tree",
   "item.arcanecontrol.lamina_shadow": "Shadow Blade",
   "item.arcanecontrol.capuz_shadow": "Shadow hood",
   "item.arcanecontrol.manto_shadow": "Shadow mantle",
   "item.arcanecontrol.calcas_shadow": "Shadow leggings",
-  "item.arcanecontrol.botas_shadow": "Shadow boots"
+  "item.arcanecontrol.botas_shadow": "Shadow boots",
+  "key.minezin.powers": "Choose powers",
+  "item.arcanecontrol.gojo_cabeca": "Six Eyes — Blindfold and Hair",
+  "item.arcanecontrol.gojo_peito": "Limitless Uniform",
+  "item.arcanecontrol.gojo_pernas": "Limitless Trousers",
+  "item.arcanecontrol.gojo_botas": "Limitless Boots",
+  "item.arcanecontrol.frieren_cabeca": "Elven Mage Adornments",
+  "item.arcanecontrol.frieren_peito": "Elven Mage Cloak",
+  "item.arcanecontrol.frieren_pernas": "Elven Mage Garments",
+  "item.arcanecontrol.frieren_botas": "Elven Mage Boots"
 }

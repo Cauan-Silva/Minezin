@@ -112,6 +112,8 @@ public final class ProgressaoGojo {
     @SubscribeEvent
     public static void aoDerrotarInimigo(LivingDeathEvent event) {
         if (event.getEntity() instanceof Enemy && event.getSource().getEntity() instanceof ServerPlayer jogador) {
+            if(com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.ler(jogador).ativo()
+                    !=com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO)return;
             ProgressoGojo progresso = ler(jogador);
             progresso.ganharXp(25);
             salvar(jogador, progresso);
