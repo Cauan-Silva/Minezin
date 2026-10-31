@@ -21,6 +21,12 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build mod
         run: ./gradlew build --no-daemon --console=plain
+      - name: Validate Atomic GLSL
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq glslang-tools
+          glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/atomic_energy.vsh
+          glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/atomic_energy.fsh
       - uses: actions/upload-artifact@v4
         with:
           name: minezin-jar

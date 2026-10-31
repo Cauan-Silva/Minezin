@@ -39,7 +39,7 @@ public final class EfeitosCid {
         if (e.phase != TickEvent.Phase.END) return;
         PhotonAtomic.tick();
         var mc=Minecraft.getInstance();
-        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?140:25)
+        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?170:25)
                 || mc.level.getPlayerByUUID(f.jogador)==null || !mc.level.getPlayerByUUID(f.jogador).isAlive());
         if(mc.level == null) return;
         for(var f:EFEITOS) {
@@ -78,12 +78,18 @@ public final class EfeitosCid {
         if(mc.level==null || mc.player==null) return;
         Vec3 camera=event.getCamera().getPosition();
         PoseStack pose=event.getPoseStack();
+        int atomics=0;
         for(Efeito f:EFEITOS) {
             if(f.mundo!=mc.level || f.origem.distanceToSqr(camera)>128*128) continue;
+            if(f.tipo==14 && atomics++>=4) continue;
             double t=mc.level.getGameTime()-f.inicio+event.getPartialTick();
             pose.pushPose();
             Vec3 pos=f.origem.subtract(camera);pose.translate(pos.x,pos.y,pos.z);
-            if(f.tipo==14) {
+            Vec3 plano=f.direcao.multiply(1,0,1).normalize();
+            Vec3 ancora=plano.scale(.5).add(plano.cross(new Vec3(0,1,0)).scale(.4)).add(0,1.2,0);
+            if(f.tipo==14 && RenderEnergiaAtomic.desenhar(pose,t,camera.subtract(f.origem),ancora)) {
+                // O material procedural substitui as esferas/aneis lisos da Atomic.
+            } else if(f.tipo==14) {
                 double carga=Math.min(1,t/90), depois=Math.max(0,t-90), fade=1-Math.min(1,depois/50);
                 // Contrarrotacao na carga; nucleo branco e casca violeta no impacto.
                 if(t<90) {
