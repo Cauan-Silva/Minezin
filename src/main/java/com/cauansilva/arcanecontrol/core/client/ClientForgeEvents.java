@@ -20,24 +20,25 @@ public class ClientForgeEvents {
             return;
         }
 
+        boolean cid = minecraft.player.getMainHandItem().is(com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get());
         // Z - Azul (Ao) com Esfera 3D e Anéis de Acreção
         if (TeclasControlo.TECLA_Z.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(1));
+            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 11 : 1));
         }
         // X - Vermelho (Aka) com Núcleo 3D e Anéis de Choque
         if (TeclasControlo.TECLA_X.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(2));
+            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 12 : 2));
         }
         // C - Infinito (Mukagen) com Aura Hexagonal/Esférica 3D
         if (TeclasControlo.TECLA_C.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(3));
+            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 13 : 3));
         }
         // V - ULTIMATE 1: Vazio Roxo (Murasaki) com CUTSCENE + MODELOS 3D + FEIXE VOLUMÉTRICO
         if (TeclasControlo.TECLA_V.consumeClick()) {
-            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(4));
+            RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(cid ? 14 : 4));
         }
         // R - ULTIMATE 2: Expansão de Domínio (Vazio Infinito) com CUTSCENE + DOMO 3D + BURACO NEGRO
-        if (TeclasControlo.TECLA_R.consumeClick()) {
+        if (TeclasControlo.TECLA_R.consumeClick() && !cid) {
             RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(5));
         }
     }

@@ -65,3 +65,16 @@ Roxo e Domínio usam roteiros de câmera relativos ao conjurador, com interpola�
 O servidor envia uma atualização no instante do disparo do Roxo: os clientes passam a desenhar a trajetória a partir da posição e direção reais de lançamento, mesmo que o jogador se mova durante a preparação.
 
 O HobbyMine anterior serviu como referência para a integração de animação e câmera; veja `THIRD_PARTY_NOTICES.md`. Não foram importados todos os elementos, modelos e sistemas antigos. Os cinco testes adicionais verificam carregamento pelo parser real do Player Animator, durações, ausência de animação das pernas, continuidade dos roteiros, FOV e janela do tremor. Aparência, primeira/terceira pessoa, colisão da câmera e sincronização visual com dois jogadores ainda exigem teste no jogo. Não há promessa de qualidade visual validada somente pelo build.
+
+
+## Cid / Shadow (1.3)
+
+Requer GeckoLib Forge 4.4.9 (cliente e servidor) e Player Animator Forge 1.0.2-rc1+1.20 no cliente. A biblioteca GeckoLib fornece o modelo da espada e do traje, ossos animados e camada emissiva. Cliente e servidor devem atualizar juntos (protocolo 4).
+
+Combine uma espada de netherita, uma ametista e uma obsidiana para criar a Lâmina de Shadow. Equipá-la na mão principal troca Z/X/C/V para o kit Cid: corte (2 s), passo sombrio (8 s), contenção (12 s), Atomic (90 s). R não ativa uma técnica enquanto a espada estiver equipada. K continua abrindo a árvore do Gojo; o kit Cid é liberado pela criação da espada e ainda não tem árvore de maestria própria.
+
+O traje usa peças de netherita + ametista + lã preta em receitas sem formato. Itens: `capuz_shadow`, `manto_shadow`, `calcas_shadow`, `botas_shadow`. Para testes em criativo, use `/give @s arcanecontrol:lamina_shadow` e os IDs das peças. A espada tem lâmina afilada, núcleo emissivo e fragmentos orbitais. O manto reaproveita o traje detalhado do HobbyMine com 117 peças distribuídas em três ossos móveis adicionais. Texturas originais preservadas; referência e licença em THIRD_PARTY_NOTICES.md.
+
+Atomic prepara por 90 ticks, aplica um impacto em raio de 14 blocos e encerra aos 140 ticks. Não destrói blocos. O jogador fica lento durante a preparação; afastar-se mais de 3 blocos do centro cancela a sequência. Morte, desconexão e mudança de dimensão cancelam a execução. Cooldowns ficam salvos por jogador; danos e permissões de uso são validados pelo servidor. Esta versão inicial usa sons do Minecraft, sem fala gravada.
+
+Validação manual necessária: aparência do traje/espada em primeira e terceira pessoa, recorte do manto ao andar e agachar, colisão da câmera, efeito Atomic e sincronia com dois jogadores. A aprovação do build não comprova a qualidade visual. O aprimoramento do modelo do Gojo e a árvore própria do Cid são próximos trabalhos.

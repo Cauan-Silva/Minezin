@@ -48,8 +48,18 @@ public final class AnimacoesGojo {
         ModifierLayer<IAnimation> camada = camada(jogador);
         if (camada == null) return;
         if (camada.isActive() && PRIORIDADES.getOrDefault(id, 0) >= 4 && tipo < 4) return;
-        KeyframeAnimation animacao = PlayerAnimationRegistry.getAnimation(
-                new ResourceLocation("arcanecontrol", "gojo_" + NOMES[tipo - 1]));
+        reproduzir(jogador, camada, id, tipo, "gojo_" + NOMES[tipo - 1]);
+    }
+    public static void tocarCid(UUID id, int tipo) {
+        var mc = Minecraft.getInstance();
+        if(mc.level == null || tipo < 11 || tipo > 14) return;
+        if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador)) return;
+        var camada = camada(jogador);
+        if(camada == null) return;
+        reproduzir(jogador,camada,id,tipo,"cid_" + (tipo - 10));
+    }
+    private static void reproduzir(AbstractClientPlayer jogador, ModifierLayer<IAnimation> camada, UUID id, int tipo, String nome) {
+        KeyframeAnimation animacao = PlayerAnimationRegistry.getAnimation(new ResourceLocation("arcanecontrol",nome));
         if (animacao == null) return;
         camada.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(3, Ease.OUTQUAD),
                 new KeyframeAnimationPlayer(animacao));
