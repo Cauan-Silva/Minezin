@@ -4,8 +4,8 @@ license="All Rights Reserved"
 
 [[mods]]
 modId="arcanecontrol"
-version="1.3.1"
-displayName="Minezin - Arcane Control (Gojo Kit)"
+version="1.4.0"
+displayName="Minezin - Arcane Control"
 description='''
 Mod de anime Minezin com o kit completo e animado do Gojo Satoru (Infinito, Azul, Vermelho e Vazio Roxo).
 '''
@@ -23,3 +23,17 @@ mandatory=true
 versionRange="[4.4.9,5)"
 ordering="BEFORE"
 side="BOTH"
+
+[[dependencies.arcanecontrol]]
+modId="photon"
+mandatory=true
+versionRange="[1.1.17]"
+ordering="AFTER"
+side="CLIENT"
+
+[[dependencies.arcanecontrol]]
+modId="ldlib"
+mandatory=true
+versionRange="[1.0.42]"
+ordering="AFTER"
+side="CLIENT"

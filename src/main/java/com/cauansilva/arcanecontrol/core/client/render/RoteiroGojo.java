@@ -26,7 +26,7 @@ public final class RoteiroGojo {
         new Chave(35,new Quadro(-2,.4,3,0,.8)),
         new Chave(75,new Quadro(-3,1,2,0,.7)),
         new Chave(90,new Quadro(-5,2,-4,0,.9)),
-        new Chave(110,new Quadro(-11,6,-14,0,1.15)),
+        new Chave(110,new Quadro(-18,10,-20,0,1.15)),
         new Chave(140,new Quadro(-6,3,-7,0,1))
     };
     public static double suave(double k) {
