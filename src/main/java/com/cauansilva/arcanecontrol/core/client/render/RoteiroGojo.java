@@ -28,18 +28,20 @@ public final class RoteiroGojo {
     private static final Chave[] ATOMIC = {
         new Chave(0,new Quadro(2,.3,3,0,.95)),
         new Chave(35,new Quadro(-2,.4,3,0,.8)),
-        new Chave(75,new Quadro(-3,1,2,0,.7)),
+        new Chave(50,new Quadro(-6,3,-7,0,.9,10)),
+        new Chave(75,new Quadro(-11,7,-12,0,1.05,12)),
         new Chave(90,new Quadro(-5,2,-4,0,.9)),
         new Chave(110,new Quadro(-18,10,-20,0,1.15)),
-        new Chave(140,new Quadro(-6,3,-7,0,1))
+        new Chave(170,new Quadro(16,9,-16,0,1.1)),
+        new Chave(240,new Quadro(-6,3,-7,0,1))
     };
     private static final Chave[] SINGULARIDADE={
         new Chave(0,new Quadro(2,.3,3,0,.95)),
         new Chave(35,new Quadro(-3,.7,3,6,.8)),
-        new Chave(60,new Quadro(-6,3,-3,12,1.05)),
+        new Chave(70,new Quadro(-6,3,-3,12,1.05)),
         new Chave(120,new Quadro(8,5,-6,12,1.05)),
-        new Chave(170,new Quadro(-7,4,-6,12,.9)),
-        new Chave(200,new Quadro(3,1.4,-5,8,1))
+        new Chave(220,new Quadro(-7,4,-6,12,.9)),
+        new Chave(280,new Quadro(3,1.4,-5,8,1))
     };
     public static double suave(double k) {
         k = Math.max(0, Math.min(1, k));
@@ -62,7 +64,7 @@ public final class RoteiroGojo {
     }
 
     public static double impacto(int tipo, double tick) {
-        if(tipo==24){double d=tick>=170?tick-170:tick-60;return d<0?0:.65*Math.max(0,1-d/12);}
+        if(tipo==24){double d=tick>=220?tick-220:tick-70;return d<0?0:.65*Math.max(0,1-d/12);}
         double desde = tick - (tipo == 14 ? 90 : tipo == 5 ? 35 : 30);
         return desde < 0 ? 0 : .65 * Math.max(0, 1 - desde / 12);
     }

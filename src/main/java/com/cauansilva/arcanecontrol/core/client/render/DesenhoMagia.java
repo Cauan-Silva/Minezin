@@ -55,6 +55,25 @@ public final class DesenhoMagia {
             ponto(pose,centro.add(q.scale(externo)),(i+1)*.3,1,cor,alpha);ponto(pose,centro.add(p.scale(externo)),i*.3,1,cor,alpha);
         }
     }
+    public static void selo(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 normal,double raio,double t,int cor,float alpha){
+        anel(pose,centro,normal,raio*.94,raio,cor,alpha,64);
+        anel(pose,centro,normal,raio*.69,raio*.72,cor,alpha*.7f,48);
+        Vec3 u=normal.cross(new Vec3(0,1,0)).normalize();if(u.lengthSqr()<1e-8)u=new Vec3(1,0,0);
+        Vec3 v=normal.cross(u).normalize();
+        for(int j=0;j<8;j++){
+            double a=j*Math.PI/4+t*.012,b=a+.18;
+            Vec3 radial=u.scale(Math.cos(a)).add(v.scale(Math.sin(a)));
+            Vec3 borda=u.scale(Math.cos(b)).add(v.scale(Math.sin(b)));
+            fita(pose,cam,centro.add(radial.scale(raio*.76)),centro.add(borda.scale(raio*.9)),.024,0,1,cor,alpha);
+            fita(pose,cam,centro.add(borda.scale(raio*.9)),centro.add(radial.scale(raio*.9)),.024,0,1,cor,alpha);
+        }
+        for(int j=0;j<6;j++){
+            double a=j*Math.PI/3-t*.01,b=a+Math.PI*2/3;
+            Vec3 p=u.scale(Math.cos(a)).add(v.scale(Math.sin(a))).scale(raio*.6);
+            Vec3 q=u.scale(Math.cos(b)).add(v.scale(Math.sin(b))).scale(raio*.6);
+            fita(pose,cam,centro.add(p),centro.add(q),.018,0,2,cor,alpha*.6f);
+        }
+    }
     public static void esfera(PoseStack pose,Vec3 cam,Vec3 centro,double raio,int modo,int cor,float alpha,boolean aditivo,int segmentos){
         if(modo==3&&alpha>.95f)RenderSystem.depthMask(true);
         material(modo,aditivo,cam.subtract(centro));var b=Tesselator.getInstance().getBuilder();

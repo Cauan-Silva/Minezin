@@ -76,11 +76,12 @@ void main(){
         float rim=pow(1.0-abs(dot(n,normalize(Viewer))),3.5);
         color*=.7+fbm(vec2(n.x+n.z,n.y)*8.0+time*.2)*.3;
         alpha*=rim*.6;
-    } else {
+    } else if(mode<7.5) {
         vec3 n=sphereNormal(uv);
         float f=fbm(vec2(n.x+n.z,n.y)*9.0+time*.05);
         color=vec3(.004,.005,.012)+vec3(.008,.012,.025)*pow(f,3.0);
     }
+    if(mode>7.5){float d=abs(uv.y-.5);float core=exp(-d*d*170.0);color=mix(vertexColor.rgb,vec3(1.0,.91,1.0),core*.8);alpha=vertexColor.a*exp(-d*d*32.0);}
     if(alpha<.004) discard;
     fragColor=vec4(color,alpha);
 }

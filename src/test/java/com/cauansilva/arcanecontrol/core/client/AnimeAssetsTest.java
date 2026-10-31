@@ -19,6 +19,11 @@ class AnimeAssetsTest {
     @Test void armadurasPossuemHierarquiaTexturaEReceitasQuePreservamDados()throws Exception{
         try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/textures/armor/anime_atlas.png")){
             assertNotNull(in);var image=javax.imageio.ImageIO.read(in);assertNotNull(image);assertEquals(1254,image.getWidth());assertEquals(1254,image.getHeight());
+            double variacao=0;int amostras=0;
+            for(int y=20;y<280;y++)for(int x=20;x<280;x++){
+                int a=image.getRGB(x,y)&255,b=image.getRGB(x+1,y)&255;variacao+=Math.abs(a-b);amostras++;
+            }
+            assertTrue(variacao/amostras<1.5,"Tecido deve ter cor limpa, sem ruido de alta frequencia");
         }
         for(String style:new String[]{"gojo","frieren"}){
             var root=json("/assets/arcanecontrol/geo/armaduras/"+style+".geo.json");
@@ -26,7 +31,10 @@ class AnimeAssetsTest {
             assertEquals(1254,geometry.getAsJsonObject("description").get("texture_width").getAsInt());
             var names=new HashSet<String>();var bones=geometry.getAsJsonArray("bones");int cubes=0;
             for(var element:bones){var b=element.getAsJsonObject();assertTrue(names.add(b.get("name").getAsString()));if(b.has("cubes"))cubes+=b.getAsJsonArray("cubes").size();}
-            assertTrue(cubes>=60);
+            assertTrue(cubes>=30&&cubes<60);
+            for(var element:bones){var b=element.getAsJsonObject();if(b.get("name").getAsString().equals("armorHead")){
+                for(var cube:b.getAsJsonArray("cubes")){var c=cube.getAsJsonObject();assertTrue(c.getAsJsonArray("origin").get(1).getAsDouble()+c.getAsJsonArray("size").get(1).getAsDouble()<=30.5,"Sem cabelo acima da testa");}
+            }}
             for(var element:bones){var b=element.getAsJsonObject();if(b.has("parent"))assertTrue(names.contains(b.get("parent").getAsString()));}
             for(String piece:new String[]{"cabeca","peito","pernas","botas"}){
                 var item=json("/assets/arcanecontrol/models/item/"+style+"_"+piece+".json");assertEquals("builtin/entity",item.get("parent").getAsString());

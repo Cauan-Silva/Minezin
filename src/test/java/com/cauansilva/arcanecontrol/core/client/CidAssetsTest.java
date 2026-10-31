@@ -30,8 +30,8 @@ class CidAssetsTest {
     }
     @Test void atomicTemImpactoEEncerramentoDefinidos(){
         assertEquals(0,RoteiroGojo.impacto(14,89));assertEquals(.65,RoteiroGojo.impacto(14,90));
-        assertEquals(0,RoteiroGojo.impacto(14,102));assertEquals(1,RoteiroGojo.amostrar(14,140).fov());
-        for(double t=0;t<=140;t+=.25){var q=RoteiroGojo.amostrar(14,t);assertTrue(Double.isFinite(q.x()));assertTrue(q.fov()>=.7&&q.fov()<=1.15);}
+        assertEquals(0,RoteiroGojo.impacto(14,102));assertEquals(1,RoteiroGojo.amostrar(14,240).fov());
+        for(double t=0;t<=240;t+=.25){var q=RoteiroGojo.amostrar(14,t);assertTrue(Double.isFinite(q.x()));assertTrue(q.fov()>=.7&&q.fov()<=1.15);}
     }
     @Test void modelosTemHierarquiaValida() throws Exception {
         for(String modelo:new String[]{"lamina","traje"}){

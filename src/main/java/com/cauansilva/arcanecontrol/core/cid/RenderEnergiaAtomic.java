@@ -30,7 +30,7 @@ public final class RenderEnergiaAtomic {
 
     public static boolean desenhar(PoseStack pose,double tick,Vec3 camera,Vec3 ancora) {
         if(shader==null || !ConfigCliente.SHADER_ATOMIC.get()) return false;
-        if(tick<0 || tick>=170) return true;
+        if(tick<0 || tick>=240) return true;
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE);
         RenderSystem.enableDepthTest(); RenderSystem.depthMask(false); RenderSystem.disableCull();
@@ -53,8 +53,8 @@ public final class RenderEnergiaAtomic {
                 Tesselator.getInstance().end();
                 casca(b,m,ancora,tick,.15+tick*.003,alpha*.65f,reduzido?12:20);
             } else {
-                double idade=tick-90, fade=Math.max(0,1-idade/80);
-                double raio=(.6+10*(1-Math.exp(-idade/5)))*Math.max(.05,1-idade/60);
+                double idade=tick-90, fade=Math.max(0,1-idade/150);
+                double raio=(.6+16*(1-Math.exp(-idade/13)))*Math.max(.05,1-idade/150);
                 casca(b,m,new Vec3(0,1,0),tick,raio,(float)(fade*.7),reduzido?16:28);
                 shader.safeGetUniform("EffectMode").set(0f);
                 b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
@@ -77,6 +77,18 @@ public final class RenderEnergiaAtomic {
                     Vec3 p=new Vec3(Math.cos(a+i*.35)*(1+Math.sin(i*.7+idade*.1)*.5),i*2,Math.sin(a+i*.35)*1.5);
                     Vec3 q=new Vec3(Math.cos(a+(i+1)*.35)*(1+Math.sin((i+1)*.7+idade*.1)*.5),(i+1)*2,Math.sin(a+(i+1)*.35)*1.5);
                     fita(b,m,p,q,camera,.35*fade,i*.3,(i+1)*.3,(float)(fade*.6));
+                }
+                Tesselator.getInstance().end();
+            }
+            double brilho=com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.brilhoFeixe(tick);
+            if(brilho>0){
+                double base=com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.baseFeixe(tick);
+                shader.safeGetUniform("EffectMode").set(2f);
+                b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
+                for(int j=0;j<12;j++){
+                    double a=j*Math.PI/6,r=tick<90?.55:1.6;
+                    Vec3 q=new Vec3(Math.cos(a)*r,base,Math.sin(a)*r);
+                    fita(b,m,q,q.add(0,52-base,0),camera,tick<90?.32:.7,0,8,(float)(brilho*.8));
                 }
                 Tesselator.getInstance().end();
             }
