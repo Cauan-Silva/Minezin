@@ -38,6 +38,26 @@ public final class EfeitosCid {
         var mc=Minecraft.getInstance();
         EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?140:25)
                 || mc.level.getPlayerByUUID(f.jogador)==null || !mc.level.getPlayerByUUID(f.jogador).isAlive());
+        if(mc.level == null) return;
+        for(var f:EFEITOS) {
+            if(f.tipo!=14 || mc.player==null || mc.player.distanceToSqr(f.origem)>96*96) continue;
+            long t=mc.level.getGameTime()-f.inicio;
+            if(t<90) {
+                for(int i=0;i<6;i++) {
+                    double ang=mc.level.random.nextDouble()*Math.PI*2, r=2+mc.level.random.nextDouble()*4;
+                    Vec3 p=f.origem.add(Math.cos(ang)*r,mc.level.random.nextDouble()*5,Math.sin(ang)*r);
+                    Vec3 v=f.origem.add(0,1.5,0).subtract(p).scale(.12);
+                    mc.level.addParticle(net.minecraft.core.particles.ParticleTypes.PORTAL,p.x,p.y,p.z,v.x,v.y,v.z);
+                }
+            } else if(t==90) {
+                for(int i=0;i<160;i++) {
+                    double ang=mc.level.random.nextDouble()*Math.PI*2, r=mc.level.random.nextDouble()*12;
+                    Vec3 p=f.origem.add(Math.cos(ang)*r,.2,Math.sin(ang)*r);
+                    mc.level.addParticle(net.minecraft.core.particles.ParticleTypes.END_ROD,p.x,p.y,p.z,Math.cos(ang)*.6,.2+mc.level.random.nextDouble(),Math.sin(ang)*.6);
+                    if(i%4==0) mc.level.addParticle(net.minecraft.core.particles.ParticleTypes.CAMPFIRE_COSY_SMOKE,p.x,p.y,p.z,0,.15,0);
+                }
+            }
+        }
     }
     @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e) { EFEITOS.clear(); }
     private static void linha(PoseStack pose, Vec3 a, Vec3 b, float raio, int alpha) {
@@ -62,6 +82,30 @@ public final class EfeitosCid {
             Vec3 pos=f.origem.subtract(camera);pose.translate(pos.x,pos.y,pos.z);
             if(f.tipo==14) {
                 double carga=Math.min(1,t/90), depois=Math.max(0,t-90), fade=1-Math.min(1,depois/50);
+                // Contrarrotacao na carga; nucleo branco e casca violeta no impacto.
+                if(t<90) {
+                    for(int j=0;j<3;j++) {
+                        pose.pushPose();
+                        pose.translate(0,1.4+j*.3,0);
+                        pose.mulPose(new Quaternionf().rotateX((float)(.5+j*.8)).rotateZ((float)(t*.025*(j%2==0?1:-1))));
+                        float r=(float)(3.5-2.8*carga+j*.25);
+                        RenderizadorModelos3D.desenharAnel3D(pose,r,r+.06f,190,90,255,130,48);
+                        pose.popPose();
+                    }
+                } else {
+                    float expansao=(float)(1-Math.exp(-depois/5));
+                    pose.pushPose();pose.translate(0,1,0);
+                    RenderizadorModelos3D.desenharEsfera3D(pose,(1+expansao*8)*(float)fade,120,35,255,(int)(100*fade),24);
+                    RenderizadorModelos3D.desenharEsfera3D(pose,(1+expansao*5)*(float)fade,235,220,255,(int)(150*fade),20);
+                    pose.popPose();
+                    for(int j=0;j<3;j++) {
+                        float onda=(float)Math.max(0,(depois-j*4)*.65);
+                        if(onda<=0) continue;
+                        pose.pushPose();pose.translate(0,.2+j*.4,0);
+                        RenderizadorModelos3D.desenharAnel3D(pose,onda,onda+.35f,200,120,255,(int)(140*fade),64);
+                        pose.popPose();
+                    }
+                }
                 float raio=(float)(t<90 ? 1.2+2*carga : 3+depois*.35);
                 RenderizadorModelos3D.desenharAnel3D(pose,raio,raio+.12f,160,55,255,(int)(110*fade),64);
                 for(int j=0;j<6;j++) {
@@ -76,6 +120,10 @@ public final class EfeitosCid {
                 }
                 if(t>=90) {
                     linha(pose,Vec3.ZERO,new Vec3(0,30,0),(float)(1.8*fade),120);
+                    pose.pushPose();
+                    pose.mulPose(new Quaternionf().rotateX((float)(-Math.PI/2)));
+                    RenderizadorModelos3D.desenharFeixe3D(pose,(float)(.85*fade),48,245,230,255,(int)(150*fade),24);
+                    pose.popPose();
                     for(int i=0;i<12;i++) {
                         double a=i*Math.PI/6;
                         linha(pose,new Vec3(Math.cos(a)*raio,0,Math.sin(a)*raio),
@@ -121,6 +169,10 @@ public final class EfeitosCid {
         if(mc.player==null || mc.options.hideGui || !e.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id())) return;
         if(GerenciadorCutscene3D.cutsceneTipo==14) {
             int t=GerenciadorCutscene3D.cutsceneTick;
+            if(t>=90 && t<96) {
+                int alpha=(int)(180*(1-(t-90+mc.getFrameTime())/6f));
+                e.getGuiGraphics().fill(0,0,e.getWindow().getGuiScaledWidth(),e.getWindow().getGuiScaledHeight(),(Math.max(0,alpha)<<24)|0xEEDFFF);
+            }
             e.getGuiGraphics().drawCenteredString(mc.font,t<90?"I... AM...":"ATOMIC",e.getWindow().getGuiScaledWidth()/2,
                     e.getWindow().getGuiScaledHeight()-35,0xDDCCFF);
         } else if(mc.player.getMainHandItem().is(EspadaCid.ESPADA.get())) {
