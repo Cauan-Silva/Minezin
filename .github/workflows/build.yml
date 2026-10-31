@@ -18,15 +18,32 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - uses: gradle/actions/setup-gradle@v4
       - name: Build mod
         run: ./gradlew build --no-daemon --console=plain
-      - name: Validate Atomic GLSL
+      - name: Validate VFX GLSL
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq glslang-tools
+          sudo apt-get install -y -qq glslang-tools libegl1 libgl1-mesa-dri
           glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/atomic_energy.vsh
           glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/atomic_energy.fsh
+          glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/gojo_energy.vsh
+          glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/gojo_energy.fsh
+      - name: Render Gojo materials in OpenGL
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          EGL_PLATFORM: surfaceless
+        run: |
+          python -m pip install moderngl==5.13.0 numpy==2.5.4 pillow==13.0.0
+          python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gojo-materials-preview
+          path: build/gojo-materials.png
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: minezin-jar

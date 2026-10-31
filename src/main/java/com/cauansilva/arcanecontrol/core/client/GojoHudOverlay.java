@@ -44,47 +44,22 @@ public class GojoHudOverlay {
             gui.fill(0, 0, sw, alturaBarra, 0xEE000000);
             gui.fill(0, sh - alturaBarra, sw, sh, 0xEE000000);
 
-            if (tipo == 4) { // CUTSCENE VAZIO ROXO
-                // Banner dos Seis Olhos (Ticks 4 a 28)
-                if (tick >= 4 && tick <= 28) {
-                    int yFaixa = sh / 4;
-                    gui.fill(0, yFaixa - 14, sw, yFaixa + 18, 0xCC050515);
-                    gui.fill(0, yFaixa - 14, sw, yFaixa - 12, 0xFF00D4FF);
-                    gui.fill(0, yFaixa + 16, sw, yFaixa + 18, 0xFFFF2A55);
-
-                    String txtOlhos = "§b§l◈ SEIS OLHOS: CONVERGÊNCIA + DIVERGÊNCIA ◈";
-                    gui.drawCenteredString(mc.font, txtOlhos, sw / 2, yFaixa - 2, 0xFFFFFF);
+            int legendaY=sh-Math.max(12,alturaBarra/2+4);
+            boolean clarao=com.cauansilva.arcanecontrol.ConfigCliente.CLARAO_GOJO.get();
+            if(tipo==4) {
+                if(clarao && tick>=30 && tick<34) {
+                    int a=(34-tick)*14;
+                    gui.fill(0,0,sw,sh,(a<<24)|0xD8B9FF);
                 }
-
-                // Flash de Impacto Branco/Roxo no momento exato da colisão (Ticks 29 a 33)
-                if (tick >= 29 && tick <= 33) {
-                    int alphaFlash = (34 - tick) * 18;
-                    int corFlash = (alphaFlash << 24) | 0xE5AAFF;
-                    gui.fill(0, 0, sw, sh, corFlash);
+                String legenda=tick<15?"Azul · Vermelho":tick<30?"Técnica Imaginária":"Roxo";
+                gui.drawCenteredString(mc.font,legenda,sw/2,legendaY,0xE6CFFF);
+            } else if(tipo==5) {
+                if(clarao && tick>=35 && tick<39) {
+                    int a=(39-tick)*14;
+                    gui.fill(0,0,sw,sh,(a<<24)|0xE5F3FF);
                 }
-
-                // Legenda estilo Anime na barra inferior (sem conflito de aspas!)
-                String legenda = tick < 15
-                        ? "§b« Técnica Amaldiçoada: Azul... » §7+ §c« Reversão: Vermelho... »"
-                        : "§d§l« Técnica Imaginária: VAZIO ROXO (Murasaki)! »";
-                gui.drawCenteredString(mc.font, legenda, sw / 2, sh - alturaBarra + 14, 0xFFFFFF);
-            }
-            else if (tipo == 5) { // CUTSCENE EXPANSÃO DE DOMÍNIO: VAZIO INFINITO
-                if (tick >= 4 && tick <= 36) {
-                    int yFaixa = sh / 4;
-                    gui.fill(0, yFaixa - 14, sw, yFaixa + 18, 0xDD000814);
-                    gui.fill(0, yFaixa - 14, sw, yFaixa - 12, 0xFF00FFFF);
-                    gui.fill(0, yFaixa + 16, sw, yFaixa + 18, 0xFFFFFFFF);
-                    gui.drawCenteredString(mc.font, "§b§l✦ RYŌIKI TENKAI: MURYŌKŪSHO ✦", sw / 2, yFaixa - 2, 0xFFFFFF);
-                }
-                if (tick >= 34 && tick <= 39) {
-                    int alphaFlash = (40 - tick) * 20;
-                    gui.fill(0, 0, sw, sh, (alphaFlash << 24) | 0xFFFFFF);
-                }
-                String legenda = tick < 35
-                        ? "§b« Expansão de Domínio... »"
-                        : "§f§l« VAZIO INFINITO (Unlimited Void) »";
-                gui.drawCenteredString(mc.font, legenda, sw / 2, sh - alturaBarra + 14, 0xFFFFFF);
+                gui.drawCenteredString(mc.font,tick<35?"Expansão de Domínio":"Vazio Infinito",
+                        sw/2,legendaY,0xDDEEFF);
             }
             return;
         }
@@ -96,9 +71,9 @@ public class GojoHudOverlay {
         gui.fill(8, 8, 255, 62, 0x900A0A12);
         gui.renderOutline(8, 8, 247, 54, 0xFF00B4D8);
 
-        gui.drawString(mc.font, "§b§lSEIS OLHOS & ILIMITADO (3D)", 14, 14, 0xFFFFFF, true);
+        gui.drawString(mc.font, "§b§lSEIS OLHOS · ILIMITADO", 14, 14, 0xFFFFFF, true);
 
-        String statusInfinito = ProgressoGojoCliente.infinito ? "§a§lATIVO (Anel 3D ON)" : "§c§lOFF (Pressione C)";
+        String statusInfinito = ProgressoGojoCliente.infinito ? "§a§lATIVO" : "§c§lOFF (Pressione C)";
         gui.drawString(mc.font, "§fInfinito: " + statusInfinito, 14, 27, 0xFFFFFF, true);
         gui.drawString(mc.font, "§b[K] Árvore §7• Nv. " + ProgressoGojoCliente.progresso.nivel()
                 + " • " + ProgressoGojoCliente.progresso.pontos() + " ponto(s)", 14, 68, 0xFFFFFF, true);
