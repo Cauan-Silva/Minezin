@@ -65,6 +65,9 @@ def apply(style,bones):
     faces=['north','south','east','west','up','down']
     for name,b in bones.items():
         for c in b.get('cubes',[]):
+            # Authored garment angles are Cartesian; convert once for GeckoLib's X reflection.
+            if 'rotation' in c:
+                rx,ry,rz=c['rotation'];c['rotation']=[-rx,ry,-rz]
             old=c['uv']['north']['uv'];tile=int(old[0]/a.W*4)+4*int(old[1]/a.H*4)
             w,h,d=[max(1,int(math.ceil(v-.05))) for v in c['size']]
             kind='boots' if 'Boot' in name else 'cape' if name.startswith(('capa_','aba_','manto_','saia_')) else 'torso' if name=='armorBody' and c['size'][1]>5 else 'cloth'

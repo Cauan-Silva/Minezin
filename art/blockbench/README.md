@@ -57,3 +57,10 @@ Revisão no Minecraft pendente: skins Classic/Slim com hat layer, combinação d
 As mangas cobrem o topo do braço até Y=24.4 e o contorno da camada externa padrão da skin. Antes, terminavam abaixo de Y=24, expondo toda a tampa do braço ao girar. A correção é na manga presa ao osso do braço, acompanhada de regressão de cobertura para os quatro trajes.
 
 O manto do Asta usa superfícies finas no peito, costas e ombros, barra frontal inclinada e borda dourada mais estreita. Substitui os blocos grossos e inclinados das ombreiras. As peças laterais continuam seguindo os braços. As prévias estáticas foram refeitas sem operar a tela do usuário; validar encaixe em movimento no Minecraft.
+
+### Acessórios dos bosses
+As rotações dos cubos Bedrock passam pela reflexão de X no `BakedModelFactory` do GeckoLib; as coordenadas de autoria vistas sem essa reflexão exigem sinais invertidos em X/Z. A prévia agora segue essa conversão. Segmentos de chifres usam o ângulo convertido e os dedos inferiores do Qual compartilham a rotação do osso do braço. A cauda do Liebe usa juntas conectadas.
+
+A arma visual exclusiva do Toji é filha de `rightArm`, com pivô na palma, cabo em contato com a mão e lâmina abaixo do punho no repouso. Não é um item registrado novo. Os testes de conexão dos chifres e cauda passam pelo conversor real de cubos e pelas matrizes de rotação do GeckoLib, sem depender apenas da prévia externa. Validar a luta e a empunhadura em movimento no Minecraft.
+
+Os trajes também convertem os ângulos de autoria para a convenção do GeckoLib durante a exportação dos UVs. Isso mantém o caimento visto na prévia após a correção da reflexão de coordenadas.
