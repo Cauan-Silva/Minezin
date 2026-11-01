@@ -11,7 +11,7 @@ def quad(width,height,color,u=4):
  uv=[(0,0),(u,0),(u,1),(0,1)]
  return np.array([[*points[k],*color,*uv[k]] for k in [0,1,2,0,2,3]],dtype='f4')
 def ring(inner,outer,normal,color):
- normal=np.asarray(normal,dtype=float);normal/=np.linalg.norm(normal)
+ normal=np.array(normal,dtype=float,copy=True);normal/=np.linalg.norm(normal)
  side=np.cross(normal,[0,1,0]);side=side/np.linalg.norm(side) if np.linalg.norm(side)>1e-8 else np.array([1.,0,0])
  up=np.cross(normal,side);out=[]
  for i in range(96):

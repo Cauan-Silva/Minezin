@@ -49,6 +49,7 @@ def render(output,backend=None):
     for index,(kind,t)in enumerate(frames):
         atomic=kind=='ATOMIC';hole=kind=='SINGULARIDADE'
         camera=np.array([12.,15.,38.])if atomic else np.array([0.,8.,30.])if hole else np.array([13.,7.,17.])
+        original_camera=camera.copy()
         target=np.array([0.,12.,0.])if atomic else np.zeros(3)
         view=lookat(camera,target).astype('f4');span=48 if atomic else 34 if hole else 12
         proj=np.diag([2/(span*w/h),2/span,-2/200,1.]).astype('f4');proj[2,3]=-1
@@ -124,6 +125,7 @@ def render(output,backend=None):
             else:
                 draw('anime_energy',7,ribbons(arc(4,progress,.32,(.075,.035,.08,alpha)),camera))
                 draw('anime_energy_additive',10,ribbons(arc(4.05,progress,.065,(.93,.15,.3,alpha)),camera),True)
+        assert np.array_equal(camera,original_camera),'Geometry changed the camera position'
         tile=Image.frombytes('RGBA',(w,h),fbo.read(components=4)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
         pixels=np.asarray(tile);assert pixels[:,:,:3].std()>2,(kind,t,'blank frame')
         x=index%4*w;y=index//4*h;sheet.paste(tile.convert('RGB'),(x,y))
