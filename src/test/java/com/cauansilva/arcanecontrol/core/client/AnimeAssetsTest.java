@@ -10,6 +10,22 @@ class AnimeAssetsTest {
     private JsonObject json(String path)throws Exception{
         try(var in=getClass().getResourceAsStream(path)){assertNotNull(in,path);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}
     }
+    @Test void mangasCobremOTopoDosBracosIncluindoSegundaCamadaDaSkin()throws Exception{
+        for(String style:new String[]{"gojo","frieren","shadow","asta"}){
+            var g=json("/assets/arcanecontrol/geo/armaduras/"+style+".geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
+            for(String lado:new String[]{"armorLeftArm","armorRightArm"}){
+                JsonObject manga=null;
+                for(var v:g.getAsJsonArray("bones"))if(v.getAsJsonObject().get("name").getAsString().equals(lado))for(var c:v.getAsJsonObject().getAsJsonArray("cubes")){
+                    var cube=c.getAsJsonObject();if(manga==null||cube.getAsJsonArray("size").get(1).getAsDouble()>manga.getAsJsonArray("size").get(1).getAsDouble())manga=cube;
+                }
+                assertNotNull(manga);var o=manga.getAsJsonArray("origin");var z=manga.getAsJsonArray("size");
+                assertTrue(o.get(1).getAsDouble()+z.get(1).getAsDouble()>=24.39,style+" ombro aberto");
+                assertTrue(o.get(2).getAsDouble()<=-2.25&&o.get(2).getAsDouble()+z.get(2).getAsDouble()>=2.25);
+                double x=lado.equals("armorLeftArm")?4:-8;
+                assertTrue(o.get(0).getAsDouble()<=x-.25&&o.get(0).getAsDouble()+z.get(0).getAsDouble()>=x+4.25);
+            }
+        }
+    }
     @Test void quatroTrajesUsamUv128ComIlhasOpacasETexturasDiferentes()throws Exception{
         var hashes=new HashSet<Integer>();
         for(String style:new String[]{"gojo","frieren","shadow","asta"}){

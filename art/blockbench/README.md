@@ -52,3 +52,8 @@ Gojo conserva a gola alta e botão único, com costuras na textura. A venda e a 
 Os ícones dos quatro slots são exportados dos mesmos modelos e UVs. Rosto/cabelo continuam pertencendo à skin do jogador. Cajado, armas e forma demoníaca mantêm seus materiais existentes. A prévia `--poses` mostra poses estáticas sintéticas de repouso, caminhada e braços erguidos; não é captura do Minecraft nem teste da animação em movimento. A prévia usa dois samplers para não aplicar a textura da roupa no cajado ou nos acessórios da forma.
 
 Revisão no Minecraft pendente: skins Classic/Slim com hat layer, combinação de slots, ataques, agachar, primeira/terceira pessoa e recarga de recursos. O controle de tela foi interrompido pelo usuário durante esta etapa; a validação seguiu sem operar aplicativos.
+
+### Correção do ombro e manto do Asta
+As mangas cobrem o topo do braço até Y=24.4 e o contorno da camada externa padrão da skin. Antes, terminavam abaixo de Y=24, expondo toda a tampa do braço ao girar. A correção é na manga presa ao osso do braço, acompanhada de regressão de cobertura para os quatro trajes.
+
+O manto do Asta usa superfícies finas no peito, costas e ombros, barra frontal inclinada e borda dourada mais estreita. Substitui os blocos grossos e inclinados das ombreiras. As peças laterais continuam seguindo os braços. As prévias estáticas foram refeitas sem operar a tela do usuário; validar encaixe em movimento no Minecraft.
