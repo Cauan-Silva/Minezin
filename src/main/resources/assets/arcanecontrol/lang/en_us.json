@@ -32,5 +32,15 @@
   "item.arcanecontrol.asta_peito": "Manto dos Touros Negros",
   "item.arcanecontrol.asta_pernas": "Calças dos Touros Negros",
   "item.arcanecontrol.asta_botas": "Botas dos Touros Negros",
-  "effect.arcanecontrol.silencio": "Silenced"
+  "effect.arcanecontrol.silencio": "Silenced",
+  "subtitles.arcanecontrol.atomic_charge": "Atomic energy gathers",
+  "subtitles.arcanecontrol.atomic_release": "Atomic detonates",
+  "subtitles.arcanecontrol.divider_charge": "Antimagic blade extends",
+  "subtitles.arcanecontrol.divider_release": "Black Divider slashes",
+  "subtitles.arcanecontrol.purple_charge": "Blue and Red converge",
+  "subtitles.arcanecontrol.purple_release": "Hollow Purple fires",
+  "subtitles.arcanecontrol.frieren_cast": "Zoltraak fires",
+  "subtitles.arcanecontrol.frieren_barrier": "Magic barrier resonates",
+  "subtitles.arcanecontrol.singularity_charge": "Singularity forms",
+  "subtitles.arcanecontrol.singularity_collapse": "Singularity collapses"
 }

@@ -45,6 +45,12 @@ void main() {
         alpha=mix(alpha,vertexColor.a*(.12+pow(flow,.7)*.25+core*.6),impact);
     }
     if(EffectMode>1.5){float d=abs(p.y-.5);float white=exp(-d*d*35.0);energy=mix(vec3(.45,.08,1.0),vec3(1.0,.96,1.0),white);alpha=vertexColor.a*exp(-d*d*18.0);}
+    if(EffectMode>2.5){
+        float strands=pow(max(0.,sin(p.x*110.+fbm(p*12.-EffectTime)*4.-EffectTime*2.)),8.);
+        float top=1.-smoothstep(.7,1.,p.y);
+        energy=mix(vec3(.38,.045,.9),vec3(1.,.96,1.),strands*.8+flow*.25);
+        alpha=vertexColor.a*(.1+strands*.5+flow*.16)*top;
+    }
     if(alpha<0.008) discard;
     fragColor=vec4(energy*vertexColor.rgb,alpha);
 }

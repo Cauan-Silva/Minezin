@@ -27,7 +27,7 @@ public final class EfeitosCid {
         if (mc.level == null) return;
         if(tipo==16){if(DESTINOS.size()>=64)DESTINOS.clear();DESTINOS.put(jogador,new Destino(origem,mc.level.getGameTime(),mc.level));return;}
         if(tipo==15){
-            PhotonAtomic.cancelar(jogador);
+            PhotonAtomic.cancelar(jogador);com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(jogador,"atomic");
             ImpactosAnime.cancelar(jogador);
             AnimacoesGojo.cancelar(jogador);
             EFEITOS.removeIf(f->f.jogador.equals(jogador)&&f.tipo==14);
@@ -36,7 +36,7 @@ public final class EfeitosCid {
         }
         if (EFEITOS.size() >= 24) EFEITOS.remove(0);
         EFEITOS.add(new Efeito(tipo,jogador,origem,direcao,mc.level.getGameTime(),mc.level));
-        if(tipo==14){PhotonAtomic.iniciar(jogador,origem);ImpactosAnime.programar(jogador,origem.add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.IMPACTO,0xB76BFF,1,44,2);}
+        if(tipo==14){com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(jogador,"atomic",origem,com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.atomic());PhotonAtomic.iniciar(jogador,origem);ImpactosAnime.programar(jogador,origem.add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.IMPACTO,0xB76BFF,1,44,2);}
         AnimacoesGojo.tocarCid(jogador,tipo);
         if (tipo == 14 && mc.player != null && mc.player.getUUID().equals(jogador))
             GerenciadorCutscene3D.iniciarCutsceneLocal(14,100);

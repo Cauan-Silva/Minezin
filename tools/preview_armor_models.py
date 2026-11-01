@@ -16,12 +16,15 @@ def rotation(degrees):
  rz=np.array([[cz,-sz,0,0],[sz,cz,0,0],[0,0,1,0],[0,0,0,1]])
  return rz@ry@rx
 def transform(obj,gecko=True):
- pivot=np.array(obj.get('pivot',[0,0,0]));r=obj.get('rotation',[0,0,0]);return translation(pivot)@rotation([-r[0],r[1],-r[2]] if gecko else r)@translation(-pivot)
+ pivot=np.array(obj.get('pivot',[0,0,0]));r=obj.get('rotation',[0,0,0]);return translation(pivot)@rotation([-r[0],r[1],-r[2]] if gecko else r)@np.diag([*obj.get('scale',[1,1,1]),1])@translation(-pivot)
 def mesh(style,pose_name="idle"):
  bosses={'toji':1,'aurora':2,'qual':3,'liebe':4}
  path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
+ if style=='matadora':
+  if pose_name=='divider':bones['blade']['scale']=[1.55,3.6,1]
+  else:bones['energia_divider']['cubes']=[]
  materials={n:(d['description']['texture_width'],d['description']['texture_height'],2 if style=='asta_forma' else 1) for n in bones}
  native_form=set(bones) if style=='asta_forma' else set()
  if style=='asta_forma':

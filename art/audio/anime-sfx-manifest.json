@@ -1,0 +1,82 @@
+{
+  "atomic_charge": {
+    "duration": 4.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.66599,
+    "rms": 0.13552,
+    "sha256": "38280acbc32827764f2916ec471079528ce0b0f75b17a0c784ae1aafa3aee0d0"
+  },
+  "atomic_release": {
+    "duration": 3.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.84334,
+    "rms": 0.08189,
+    "sha256": "f98efefe075bc13f5d9cfc8c12e520ef08bd32b8bc9f3747a843b5d50216c520"
+  },
+  "divider_charge": {
+    "duration": 0.9,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.70378,
+    "rms": 0.13271,
+    "sha256": "7c188253c482eb04f14aa42962416d95f98095a4a62fa76d1a5b2dcac3d7881b"
+  },
+  "divider_release": {
+    "duration": 0.9,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.89088,
+    "rms": 0.13291,
+    "sha256": "a5ca8e3ad93b76f939b801f9411923768677974a143323fb718403e2241862a0"
+  },
+  "purple_charge": {
+    "duration": 1.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.72298,
+    "rms": 0.13404,
+    "sha256": "7a51d4dacdbfc655ccc9166485c102f832043f91d1b8ce56e57ddbdbf5070f95"
+  },
+  "purple_release": {
+    "duration": 1.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.86988,
+    "rms": 0.11581,
+    "sha256": "bf33b3e959a19a0d21d2d784141a3eb456bcbeb25771a14eb41bf933d5985522"
+  },
+  "frieren_cast": {
+    "duration": 0.55,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.69541,
+    "rms": 0.08922,
+    "sha256": "7e764649244291749b9eeb49e63228924d98e7bf1eee4b08e1fbf69d13a837f5"
+  },
+  "frieren_barrier": {
+    "duration": 0.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.55955,
+    "rms": 0.07153,
+    "sha256": "443cafc361c889bc30c99985d01f9a8a21d5bb8e477a0657293cf51d8335ad09"
+  },
+  "singularity_charge": {
+    "duration": 3.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.7686,
+    "rms": 0.13573,
+    "sha256": "c74d9db72356b1ced1db2d57d79714966f088573e23883e10ab9b1f2f44da169"
+  },
+  "singularity_collapse": {
+    "duration": 2.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.78422,
+    "rms": 0.09017,
+    "sha256": "06d011cd5b2d219fea804e997cb0fb28cf5788fb72b3a69956fd301596f52c67"
+  }
+}

@@ -90,6 +90,7 @@ public class GerenciadorCutscene3D {
             return;
         }
         if (tipo == 6) {
+            com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(playerId,"purple",new Vec3(x,y,z),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.imediato("purple_release",32));
             ImpactosAnime.programar(playerId,new Vec3(x,y,z).add(new Vec3(dx,dy,dz).scale(PerfilVfxGojo.ROXO_ORIGEM)),0,0xB359FF,.85,28,1);
             for (Efeito3DAtivo efeito : EFEITOS_3D) {
                 if (efeito.tipo == 4 && efeito.playerId.equals(playerId)) {
@@ -125,6 +126,7 @@ public class GerenciadorCutscene3D {
         } else if (tipo == 3) {
             // O estado do Infinito local vem do snapshot validado pelo servidor.
         } else if (tipo == 4) {
+            com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(playerId,"purple",origem,com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.imediato("purple_charge",30));
             adicionar(new Efeito3DAtivo(4, playerId, origem, direcao, PerfilVfxGojo.duracao(4)));
             if (mc.player != null && mc.player.getUUID().equals(playerId)) {
                 iniciarCutsceneLocal(4, PerfilVfxGojo.duracao(4));

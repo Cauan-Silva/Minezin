@@ -23,6 +23,11 @@ def espada():
  c(r,[-2.2,28.2,-.55],[4.4,2.2,1.1],armor.STEEL)
  c(r,[-1.5,28.2,-.64],[3,1.5,1.28],armor.INK)
  c(r,[-.6,30.4,-.5],[1.2,1.6,1],armor.STEEL)
+ b['blade']=armor.bone('blade',[0,1.2,0],'root');b['blade']['cubes']=r['cubes'][7:];r['cubes']=r['cubes'][:7]
+ b['energia_divider']=armor.bone('energia_divider',[0,1.2,0],'blade')
+ for side in [-1,1]:
+  c(b['energia_divider'],[side*3.82-.1,2,-.87],[.2,22,.14],armor.RUBY)
+  c(b['energia_divider'],[side*2.7-.1,25.3,-.8],[.2,2.2,.12],armor.RUBY)
  return b
 def forma():
  from armor_reference_shapes import asta_forma

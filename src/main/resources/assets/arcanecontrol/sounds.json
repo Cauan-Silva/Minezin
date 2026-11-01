@@ -1,0 +1,92 @@
+{
+  "atomic_charge": {
+    "subtitle": "subtitles.arcanecontrol.atomic_charge",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/atomic_charge",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "atomic_release": {
+    "subtitle": "subtitles.arcanecontrol.atomic_release",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/atomic_release",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "divider_charge": {
+    "subtitle": "subtitles.arcanecontrol.divider_charge",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/divider_charge",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "divider_release": {
+    "subtitle": "subtitles.arcanecontrol.divider_release",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/divider_release",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "purple_charge": {
+    "subtitle": "subtitles.arcanecontrol.purple_charge",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/purple_charge",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "purple_release": {
+    "subtitle": "subtitles.arcanecontrol.purple_release",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/purple_release",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "frieren_cast": {
+    "subtitle": "subtitles.arcanecontrol.frieren_cast",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_cast",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "frieren_barrier": {
+    "subtitle": "subtitles.arcanecontrol.frieren_barrier",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_barrier",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "singularity_charge": {
+    "subtitle": "subtitles.arcanecontrol.singularity_charge",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/singularity_charge",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "singularity_collapse": {
+    "subtitle": "subtitles.arcanecontrol.singularity_collapse",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/singularity_collapse",
+        "attenuation_distance": 64
+      }
+    ]
+  }
+}

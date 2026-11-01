@@ -30,11 +30,19 @@ public final class EfeitosAsta {
         return null;
     }
 
+    public static double divider(java.util.UUID id,float parcial){
+        var mc=Minecraft.getInstance();if(mc.level==null)return -1;
+        var jogador=mc.level.getPlayerByUUID(id);if(jogador==null||!jogador.isAlive())return -1;
+        for(int i=EFEITOS.size()-1;i>=0;i--){var f=EFEITOS.get(i);if(f.p.tipo()==306&&f.mundo==mc.level&&f.p.dono().equals(id)){
+            double t=mc.level.getGameTime()+parcial-f.inicio;return t>=0&&t<32?t:-1;
+        }}return -1;
+    }
     public static void receber(PacoteEfeitoDespertar p){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
-        if(p.tipo()==0){ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));AnimacoesGojo.cancelar(p.dono());if(mc.player!=null&&p.dono().equals(mc.player.getUUID())&&GerenciadorCutscene3D.cutsceneTipo==35)GerenciadorCutscene3D.finalizarCutscene();return;}
+        if(p.tipo()==0){com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(p.dono(),null);ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));AnimacoesGojo.cancelar(p.dono());if(mc.player!=null&&p.dono().equals(mc.player.getUUID())&&GerenciadorCutscene3D.cutsceneTipo==35)GerenciadorCutscene3D.finalizarCutscene();return;}
         if(p.ticks()<1||p.ticks()>1200)return;
         if(p.tipo()==310){EFEITOS.removeIf(e->e.p.dono().equals(p.dono())&&e.p.tipo()==307);receber(new PacoteEfeitoDespertar(p.dono(),309,p.a(),p.b(),p.ticks(),4));return;}
+        if(p.tipo()==306)com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(p.dono(),"divider",p.a(),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.divider());
         if(p.tipo()==309)ImpactosAnime.programar(p.dono(),p.a().add(0,.7,0),0,0xD5264C,.75,18,4);
         if(p.tipo()==200){
             EFEITOS.removeIf(e->e.p.dono().equals(p.dono())&&e.p.tipo()==200);
