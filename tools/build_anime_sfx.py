@@ -25,6 +25,10 @@ def synth(name,duration):
         f0,f1=(65,290)if name.startswith('atomic')else(90,540)if name.startswith('purple')else(48,120)if name.startswith('singularity')else(130,65)
         pulse=.7+.3*np.sin(2*np.pi*(3*t+u*u*7))**2
         x=(.24*tone(f0,f1)+.12*tone(f0*2.01,f1*2.01)+.14*low+.08*air*u)*(.15+.85*u**1.5)*pulse
+    elif name=='atomic_release':
+        shock=.52*tone(68,24)*np.exp(-t*4.8)+.25*air*np.exp(-t*35)
+        delay=np.maximum(0,t-.18);after=(t>=.18)*(1-np.exp(-delay*30))*np.exp(-delay*1.4)
+        x=shock+.24*low*after+.045*tone(600,95)*np.exp(-t*2.2)
     elif name=='frieren_barrier':
         x=sum(np.sin(2*np.pi*f*t)*np.exp(-t*(5+i))*.12 for i,f in enumerate([620,947,1530,2371]))+.10*air*np.exp(-t*25)
     elif name=='frieren_cast':
@@ -35,22 +39,27 @@ def synth(name,duration):
         tail=.22*low*np.exp(-t*(2.8 if name.startswith('divider')else 1.7))
         shimmer=.09*tone(900,180)*np.exp(-t*3)
         x=punch+crack+tail+shimmer
+    if name=='atomic_charge':
+        # Last 180 ms are deliberately quiet, making the tick-90 transient legible.
+        q=np.clip((t-4.12)/.2,0,1);x*=1-q*q*(3-2*q)
     # Smooth edges and bounded peaks; mono preserves spatial attenuation in Minecraft/OpenAL.
     fade=np.minimum(1,t/.012)*np.minimum(1,(duration-t)/.07)
     x=np.tanh(x*1.2)*fade
     x*=min(1,.82/max(1e-8,np.max(np.abs(x))))
     return x.astype('float32')
 
-def build(preview=None):
+def build(preview=None,atomic_only=False):
     folder=ASSETS/'sounds/anime';folder.mkdir(parents=True,exist_ok=True)
-    definitions={};manifest={};mix=[]
+    definitions=json.loads((ASSETS/'sounds.json').read_text(encoding='utf-8')) if atomic_only else {}
+    manifest=json.loads((ROOT/'art/audio/anime-sfx-manifest.json').read_text(encoding='utf-8')) if atomic_only else {};mix=[]
     for name,duration in zip(NAMES,DURATIONS):
+        if atomic_only and not name.startswith('atomic_'):continue
         x=synth(name,duration);p=folder/(name+'.ogg');sf.write(p,x,RATE,format='OGG',subtype='VORBIS')
         decoded,sr=sf.read(p);assert sr==RATE and decoded.ndim==1 and np.isfinite(decoded).all()
         assert np.max(np.abs(decoded))<.99
         definitions[name]={'subtitle':'subtitles.arcanecontrol.'+name,'sounds':[{'name':'arcanecontrol:anime/'+name,'attenuation_distance':64 if name.startswith(('atomic','singularity'))else 32}]}
         manifest[name]={'duration':round(len(decoded)/sr,4),'sample_rate':sr,'channels':1,'peak':round(float(np.max(np.abs(decoded))),5),'rms':round(float(np.sqrt(np.mean(decoded**2))),5),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
-        mix.extend([x,np.zeros(int(RATE*.35),dtype='float32')])
+        mix.extend([x] if atomic_only else [x,np.zeros(int(RATE*.35),dtype='float32')])
     (ASSETS/'sounds.json').write_bytes((json.dumps(definitions,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
     for language,labels in [('pt_br',PT),('en_us',EN)]:
         p=ASSETS/f'lang/{language}.json';data=json.loads(p.read_text(encoding='utf-8'))
@@ -60,6 +69,6 @@ def build(preview=None):
     (p/'anime-sfx-manifest.json').write_bytes((json.dumps(manifest,indent=2)+'\n').encode('utf-8'))
     if preview:
         p=Path(preview);p.parent.mkdir(parents=True,exist_ok=True);sf.write(p,np.concatenate(mix),RATE,subtype='PCM_16')
-    print('Generated and decoded 10 original mono Vorbis SFX; bounded peaks, subtitles and provenance manifest.')
+    print('Generated and decoded original mono Vorbis SFX; bounded peaks, subtitles and provenance manifest. Atomic-only:',atomic_only)
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--preview');a=p.parse_args();build(a.preview)
+    p=argparse.ArgumentParser();p.add_argument('--preview');p.add_argument('--atomic-only',action='store_true');a=p.parse_args();build(a.preview,a.atomic_only)

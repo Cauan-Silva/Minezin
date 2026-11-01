@@ -89,6 +89,15 @@ public final class RenderEnergiaAtomic {
                         fita(b,m,p,q,camera,.18+j*.06,i*.2,(i+1)*.2,(float)(fade*.7));
                     }
                 }
+                if(ConfigCliente.CINEMA_ATOMIC.get()&&idade<34){
+                    int n=reduzido?8:24;double abrir=1-Math.exp(-idade/5);
+                    for(int i=0;i<n;i++){
+                        double a=i*Math.PI*2/n,r=2+abrir*(8+i%4);
+                        var inicio=new Vec3(Math.cos(a)*r,.15,Math.sin(a)*r);
+                        var topo=new Vec3(Math.cos(a+.08)*r*(1.08+i%3*.05),2+(i%5)*.9+abrir*2,Math.sin(a+.08)*r*(1.08+i%3*.05));
+                        fita(b,m,inicio,topo,camera,.08+i%3*.025,0,2,(float)((1-idade/34)*.9));
+                    }
+                }
                 // Relampagos ascendentes quebram a silhueta cilindrica do impacto.
                 for(int j=0;j<(reduzido?4:8);j++) for(int i=0;i<16;i++) {
                     double a=j*Math.PI/4+idade*.025;

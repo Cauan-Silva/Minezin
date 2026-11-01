@@ -11,6 +11,8 @@ public final class ConfigCliente {
     public static final ForgeConfigSpec.BooleanValue VFX_REDUZIDOS;
     public static final ForgeConfigSpec.BooleanValue CLARAO;
     public static final ForgeConfigSpec.BooleanValue SHADER_ATOMIC;
+    public static final ForgeConfigSpec.BooleanValue CINEMA_ATOMIC;
+    public static final ForgeConfigSpec.DoubleValue INTENSIDADE_ATOMIC;
     public static final ForgeConfigSpec.BooleanValue GOJO_VFX;
     public static final ForgeConfigSpec.BooleanValue AMBIENTE_DOMINIO;
     public static final ForgeConfigSpec.BooleanValue CLARAO_GOJO;
@@ -25,6 +27,8 @@ public final class ConfigCliente {
                 .define("gojoVfx", true);
         AMBIENTE_DOMINIO = builder.comment("Ceu e neblina cosmicos somente dentro do Vazio Infinito.")
                 .define("ambienteDominio", true);
+        CINEMA_ATOMIC=builder.comment("Pós-processamento intenso da Atomic: contraste, distorção e sequência gráfica. Efeitos reduzidos desativam este passe.").define("cinemaAtomic",true);
+        INTENSIDADE_ATOMIC=builder.comment("Intensidade do pós-processamento Atomic (0–1). Flashes também respeitam impactFrames e claraoAtomic.").defineInRange("intensidadeCinemaAtomic",1d,0d,1d);
         SHADER_ATOMIC = builder.comment("Material procedural e filamentos da Atomic. Desligar restaura a geometria anterior.")
                 .define("shaderAtomic", true);
         PHOTON = builder.comment("Ativar emissores e bloom Photon da Atomic.").define("photonAtomic", true);

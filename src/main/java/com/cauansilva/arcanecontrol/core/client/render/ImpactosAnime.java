@@ -51,7 +51,7 @@ public final class ImpactosAnime {
         var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null||mc.options.hideGui||!ConfigCliente.IMPACT_FRAMES.get()||ConfigCliente.VFX_REDUZIDOS.get()
                 ||!e.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id()))return;
         double agora=mc.level.getGameTime()+e.getPartialTick();Impacto escolhido=null;
-        for(var f:ATIVOS)if(f.mundo==mc.level&&f.forca>=.8&&(f.kit!=2||ConfigCliente.CLARAO.get())&&(f.kit!=1||ConfigCliente.CLARAO_GOJO.get())&&agora>=f.inicio&&agora<f.inicio+2&&visivel(f,mc.gameRenderer.getMainCamera().getPosition()))
+        for(var f:ATIVOS)if(f.mundo==mc.level&&f.forca>=.8&&!(f.kit==2&&com.cauansilva.arcanecontrol.core.cid.CinemaAtomic.aplicado())&&(f.kit!=2||ConfigCliente.CLARAO.get())&&(f.kit!=1||ConfigCliente.CLARAO_GOJO.get())&&agora>=f.inicio&&agora<f.inicio+2&&visivel(f,mc.gameRenderer.getMainCamera().getPosition()))
             if(escolhido==null||f.forca>escolhido.forca)escolhido=f;
         if(escolhido==null)return;
         var g=e.getGuiGraphics();int w=mc.getWindow().getGuiScaledWidth(),h=mc.getWindow().getGuiScaledHeight();

@@ -31,6 +31,15 @@ public final class FormaEnergiaAtomic {
         double r=base*(.82+.6*Math.sqrt(s))*(1+Math.sin(angulo*7+s*12-tick*.08)*.035);
         return new Ponto(Math.cos(angulo)*r,s*48,Math.sin(angulo)*r);
     }
+    public record Detrito(Ponto ponto,double tamanho,double alpha,double giro){}
+    public static Detrito detrito(int indice,double tick){
+        double idade=tick-94-(indice%5)*1.5,vida=55+(indice%6)*7;
+        if(!Double.isFinite(tick)||idade<0||idade>=vida)return new Detrito(new Ponto(0,0,0),0,0,0);
+        double ang=indice*2.399963,vel=.08+(indice%7)*.018,r=2+(indice%9)*.55+idade*vel;
+        double h=Math.max(.1,(.28+(indice%5)*.055)*idade-.0055*idade*idade);
+        double fade=Math.min(1,idade/3)*Math.min(1,(vida-idade)/12);
+        return new Detrito(new Ponto(Math.cos(ang)*r,h,Math.sin(ang)*r),.12+(indice%4)*.055,fade,idade*(.04+(indice%3)*.01));
+    }
     public static double onda(double tick, int indice) {
         double idade=tick-90-indice*5;
         return idade<=0?0:18*(1-Math.exp(-idade/13));
