@@ -60,6 +60,7 @@ jobs:
           python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
           python tools/preview_armor_models.py --backend egl --output build/anime-armor.png
+          python tools/preview_armor_models.py --poses --backend egl --output build/armor-poses.png
           python tools/preview_armor_models.py --boss-scale --backend egl --output build/boss-scale.png
           python tools/preview_armor_models.py --nemesis --backend egl --output build/anime-nemesis.png
           python tools/preview_armor_models.py --asta --backend egl --output build/anime-asta.png
@@ -70,6 +71,7 @@ jobs:
             build/gojo-materials.png
             build/anime-materials.png
             build/anime-armor.png
+            build/armor-poses.png
             build/anime-nemesis.png
             build/boss-scale.png
             build/anime-asta.png

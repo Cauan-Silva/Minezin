@@ -82,14 +82,18 @@ def staff():
     return b
 
 def document(style, bones):
+    clothing=style in ['gojo','frieren','shadow','asta'] or any(style==n+'_'+slot for n in ['gojo','frieren','shadow','asta'] for slot in ['helmet','chestplate','leggings','boots'])
     return {'format_version':'1.12.0','minecraft:geometry':[{'description':{
-        'identifier':'geometry.'+style,'texture_width':W,'texture_height':H,
+        'identifier':'geometry.'+style,'texture_width':128 if clothing else W,'texture_height':128 if clothing else H,
         'visible_bounds_width':4,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(bones.values())}]}
 
 def build():
     subsets={'helmet':{'armorHead'},'chestplate':{'armorBody','armorLeftArm','armorRightArm'},
              'leggings':{'armorLeftLeg','armorRightLeg'},'boots':{'armorLeftBoot','armorRightBoot'}}
     for style,bones in [('gojo',gojo()),('frieren',frieren()),('shadow',shadow())]:
+        from clothing_uv import apply
+        from polish_clothing_shapes import polish
+        bones=apply(style,polish(style,bones))
         save(ASSETS/f'geo/armaduras/{style}.geo.json', document(style,bones));scales={}
         for part,roots in subsets.items():
             icon=copy.deepcopy(bones)
