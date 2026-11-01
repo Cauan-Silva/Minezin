@@ -37,4 +37,11 @@ class RoteiroGojoTest {
         assertEquals(0, RoteiroGojo.suave(-10));
         assertEquals(1, RoteiroGojo.suave(10));
     }
+    @Test void cameraDoAstaPontuaAConsolidacaoDaForma(){
+        int impacto=com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.FORMA_IMPACTO;
+        assertEquals(0,RoteiroGojo.impacto(35,impacto-1));
+        assertEquals(.75,RoteiroGojo.impacto(35,impacto));
+        assertEquals(1,RoteiroGojo.amostrar(35,55).fov());
+        for(double t=0;t<=55;t+=.1){var q=RoteiroGojo.amostrar(35,t);assertTrue(Double.isFinite(q.x())&&q.fov()>=.75&&q.fov()<=1.4);}
+    }
 }

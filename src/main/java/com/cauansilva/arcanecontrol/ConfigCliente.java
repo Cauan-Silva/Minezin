@@ -30,7 +30,7 @@ public final class ConfigCliente {
         CLARAO = builder.comment("Ativar o clarao breve da Atomic.").define("claraoAtomic", true);
         CINEMATICAS = builder.comment("Ativar câmera, zoom e tremor nas Ultimates locais.")
                 .define("cinematicas", true);
-        IMPACT_FRAMES=builder.comment("Impact frames breves nos ataques dos bosses; desligado tambem por vfxReduzidos.").define("impactFrames",true);
+        IMPACT_FRAMES=builder.comment("Impact frames breves de ultimates e bosses; desligado tambem por vfxReduzidos.").define("impactFrames",true);
         SPEC = builder.build();
     }
 }

@@ -82,6 +82,7 @@ public class GerenciadorCutscene3D {
             return;
         }
         if(tipo==7) {
+            ImpactosAnime.programar(playerId,new Vec3(x,y,z).add(new Vec3(dx,dy,dz).scale(1.8)),0,0xFF354C,.55,22,1);
             for(Efeito3DAtivo ef:EFEITOS_3D) if(ef.tipo==2 && ef.playerId.equals(playerId)) {
                 ef.origem=new Vec3(x,y,z);ef.direcao=new Vec3(dx,dy,dz);
                 ef.tickAtual=Math.max(ef.tickAtual,PerfilVfxGojo.VERMELHO_DISPARO);
@@ -89,6 +90,7 @@ public class GerenciadorCutscene3D {
             return;
         }
         if (tipo == 6) {
+            ImpactosAnime.programar(playerId,new Vec3(x,y,z).add(new Vec3(dx,dy,dz).scale(PerfilVfxGojo.ROXO_ORIGEM)),0,0xB359FF,.85,28,1);
             for (Efeito3DAtivo efeito : EFEITOS_3D) {
                 if (efeito.tipo == 4 && efeito.playerId.equals(playerId)) {
                     efeito.origem = new Vec3(x, y, z);

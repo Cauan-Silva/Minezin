@@ -28,14 +28,17 @@ public final class ModeloFormaAsta {
         }catch(Exception ex){com.mojang.logging.LogUtils.getLogger().warn("Forma Asta indisponivel",ex);return List.of();}
     }
     public static void desenhar(PoseStack s,String attachment,double t,float alpha,double idade){
-        if(partes==null)partes=carregar();float abertura=(float)Math.min(1,idade/30);
-        DesenhoMagia.lote(s,8,false,()->{for(var p:partes){
+        if(partes==null)partes=carregar();float abertura=(float)com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.abrirAsa(idade);
+        float opacidade=alpha*(float)com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.revelarForma(idade,attachment);
+        if(opacidade<=0)return;
+        com.mojang.blaze3d.systems.RenderSystem.depthMask(opacidade>.95f);
+        try{DesenhoMagia.lote(s,8,false,()->{for(var p:partes){
             if(!p.attachment.equals(attachment))continue;
             s.pushPose();
-            if(attachment.equals("body")){s.translate(-.25,.0625,.25);s.mulPose(Axis.YP.rotationDegrees((float)(Math.sin(t*.06)*5+(1-abertura)*65)));s.mulPose(Axis.ZP.rotationDegrees((1-abertura)*35));s.translate(.25,-.0625,-.25);}
+            if(attachment.equals("body")){s.translate(-.25,.0625,.25);s.mulPose(Axis.YP.rotationDegrees((float)(Math.sin(idade*.06)*5+(1-abertura)*65)));s.mulPose(Axis.ZP.rotationDegrees((1-abertura)*35));s.translate(.25,-.0625,-.25);}
             var pivot=PivoFormaAsta.converter(p.pivot,attachment);s.translate(pivot.x,pivot.y,pivot.z);
             s.mulPose(Axis.XP.rotationDegrees((float)-p.rot.x));s.mulPose(Axis.YP.rotationDegrees((float)p.rot.y));s.mulPose(Axis.ZP.rotationDegrees((float)-p.rot.z));
-            s.translate(-pivot.x,-pivot.y,-pivot.z);DesenhoMagia.caixa(s,PivoFormaAsta.converter(p.centro,attachment),p.tamanho.x,p.tamanho.y,p.tamanho.z,p.cor,alpha);s.popPose();
-        }});
+            s.translate(-pivot.x,-pivot.y,-pivot.z);DesenhoMagia.caixa(s,PivoFormaAsta.converter(p.centro,attachment),p.tamanho.x,p.tamanho.y,p.tamanho.z,p.cor,opacidade);s.popPose();
+        }});}finally{com.mojang.blaze3d.systems.RenderSystem.depthMask(false);}
     }
 }

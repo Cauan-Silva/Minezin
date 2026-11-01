@@ -21,7 +21,8 @@ public final class RenderMagiasFrieren {
                 Vec3 fim=e.alvo().subtract(e.origem()),dir=fim.normalize(),lado=dir.cross(new Vec3(0,1,0)).normalize();
                 Vec3 mao=lado.scale(.18).add(0,-.15,0);float a=(float)Math.max(0,1-t/30);
                 DesenhoMagia.lote(pose,1,true,()->{
-                    DesenhoMagia.fita(pose,cam,mao,fim,.17,0,8,CLARO,a*.4f);
+                    DesenhoMagia.fita(pose,cam,mao,fim,.24,0,8,CLARO,a*.4f);
+                    if(t<8){DesenhoMagia.anel(pose,fim,dir,.15+t*.14,.23+t*.14,OURO,a,48);GeometriaCinematica.raios(pose,cam,fim,1.8,t,CLARO,a*.55f);}
                     DesenhoMagia.fita(pose,cam,mao,fim,.045,0,8,0xFFFFFF,a);
                 });
                 DesenhoMagia.lote(pose,6,true,()->{
@@ -51,6 +52,24 @@ public final class RenderMagiasFrieren {
                 double carga=PerfilVfxGojo.suave(t/PerfilFrieren.ABERTURA);
                 double r=PerfilFrieren.nucleo(t);float fade=(float)PerfilFrieren.opacidade(t);
                 if(r>.02)DesenhoMagia.esfera(pose,cam,Vec3.ZERO,r,3,0x8F9CCF,fade,false,n);
+                Vec3 vista=cam.lengthSqr()<1e-8?new Vec3(0,0,1):cam.normalize();
+                if(r>.02){
+                    // Lensed light bends around the opaque core; a different material from the hot disk.
+                    DesenhoMagia.lote(pose,9,true,()->{
+                        DesenhoMagia.anel(pose,Vec3.ZERO,vista,r*1.12,r*2.45,0xA8BBF2,fade*.65f,96);
+                    });
+                    Vec3 lateral=vista.cross(new Vec3(0,1,0)).normalize();if(lateral.lengthSqr()<1e-8)lateral=new Vec3(1,0,0);
+                    final Vec3 x=lateral,y=vista.cross(lateral).normalize();
+                    DesenhoMagia.lote(pose,1,true,()->{
+                        for(int j=0;j<3;j++)for(int i=0;i<48;i++){
+                            double a=i*Math.PI/24,b=(i+1)*Math.PI/24,raio=r*(1.06+j*.035);
+                            Vec3 u=x.scale(Math.cos(a)*raio*1.07).add(y.scale(Math.sin(a)*raio));
+                            Vec3 v=x.scale(Math.cos(b)*raio*1.07).add(y.scale(Math.sin(b)*raio));
+                            DesenhoMagia.fita(pose,cam,u,v,.026,0,1,j==0?CLARO:OURO,fade*(j==0?.85f:.3f));
+                        }
+                    });
+                    if(t<PerfilFrieren.COLAPSO)GeometriaCinematica.detritosSingularidade(pose,t,r,fade);
+                }
                 Vec3 normal=new Vec3(Math.sin(t*.008)*.3,1,Math.cos(t*.008)*.2).normalize();
                 DesenhoMagia.lote(pose,4,true,()->{
                     if(r>.02){

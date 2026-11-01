@@ -11,7 +11,7 @@ def quad(width,height,color,u=4):
  uv=[(0,0),(u,0),(u,1),(0,1)]
  return np.array([[*points[k],*color,*uv[k]] for k in [0,1,2,0,2,3]],dtype='f4')
 def ring(inner,outer,normal,color):
- normal=np.asarray(normal,dtype=float);normal/=np.linalg.norm(normal)
+ normal=np.array(normal,dtype=float,copy=True);normal/=np.linalg.norm(normal)
  side=np.cross(normal,[0,1,0]);side=side/np.linalg.norm(side) if np.linalg.norm(side)>1e-8 else np.array([1.,0,0])
  up=np.cross(normal,side);out=[]
  for i in range(96):
@@ -52,13 +52,13 @@ def render(output,backend=None):
  sheet=Image.new('RGB',(width*3,height*4+65),(10,14,23));text=ImageDraw.Draw(sheet)
  ctx.enable(moderngl.DEPTH_TEST|moderngl.BLEND);ctx.disable(moderngl.CULL_FACE)
  for index,label in enumerate(labels):
-  fbo.clear(.028,.036,.055,1,depth=1);ctx.depth_mask=False
+  fbo.depth_mask=True;fbo.clear(.028,.036,.055,1,depth=1);fbo.depth_mask=False
   if index==0:
    draw(base,0,quad(2.4,.55,violet));draw(add,1,quad(2.4,.09,violet),True)
   elif index==1:draw(add,1,quad(2.4,.18,blue),True)
   elif index==2:draw(add,2,mesh(1.6,color=blue),True)
   elif index==3:
-   ctx.depth_mask=True;draw(base,3,mesh(1,color=blue));ctx.depth_mask=False
+   fbo.depth_mask=True;draw(base,3,mesh(1,color=blue));fbo.depth_mask=False
    draw(add,4,ring(1.3,2.8,[.3,1,.2],gold),True)
    draw(add,4,ring(1.03,1.11,[0,0,1],blue),True)
   elif index==4:draw(add,4,ring(.8,2.3,[0,0,1],gold),True)
