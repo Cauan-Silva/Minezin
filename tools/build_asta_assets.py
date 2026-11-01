@@ -34,8 +34,8 @@ def forma():
  save(A/'geo/asta/forma.geo.json',doc)
 
 def liebe():
- from boss_reference_shapes import liebe as shape
- save(A/'geo/nemesis/4.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':'geometry.nemesis_4','texture_width':boss.W,'texture_height':boss.H,'visible_bounds_width':5,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(shape().values())}]})
+ from build_nemesis_models import liebe as shape
+ save(A/'geo/nemesis/4.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':'geometry.nemesis_4','texture_width':64,'texture_height':64,'visible_bounds_width':5,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(shape().values())}]})
 def animations():
  all={}
  for tipo in [200,*range(300,308)]:

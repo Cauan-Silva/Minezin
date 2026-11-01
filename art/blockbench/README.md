@@ -30,3 +30,8 @@ Em `saves/<mundo>/serverconfig/arcanecontrol-server.toml`, a seção `[bosses]` 
 Regenere os bosses com `python tools/build_nemesis_models.py` antes de exportar os projetos. As prévias mostram as malhas em escala de autoria; use F3+B no Minecraft para avaliar a colisão com a escala configurada.
 
 Revisão no Blockbench desktop: Shadow abriu com atlas, grupos e reprodução do idle; Qual abriu com atlas, 75 cubos e quatro animações. Isso não substitui a validação da luta no Minecraft.
+
+### Skins enviadas pelo usuário
+Aurora e Liebe usam layout Minecraft 64×64 e segunda camada com inflação. Aurora foi copiada de `Aurora-Witch-of-Calamity-Eminence-in-Shadow-on-planetminecraft-com.png`. Liebe foi transcodificado de `liebe-version-blue-17238469.webp` para PNG, preservando todos os pixels RGBA decodificados. Não são skins criadas neste rework. Toji e Qual ainda usam o atlas anterior e precisam da mesma revisão de pixel art; não confundir o rework geométrico com uma aprovação dessas texturas.
+
+Os impact frames dos bosses podem ser desligados em `impactFrames` na configuração cliente; `vfxReduzidos` também os desliga. Duram dois ticks, exigem proximidade, direção do olhar e linha de visão do impacto.

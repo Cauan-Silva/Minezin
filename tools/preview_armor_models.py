@@ -47,10 +47,12 @@ def mesh(style):
  out=[];tw,th=d['description']['texture_width'],d['description']['texture_height']
  for name,b in bones.items():
   for cube in b.get('cubes',[]):
-   m=bone_matrix(name)@transform(cube);origin=np.array(cube['origin']);size=np.array(cube['size'])
+   m=bone_matrix(name)@transform(cube);inflate=cube.get('inflate',0);origin=np.array(cube['origin'])-inflate;size=np.array(cube['size'])+2*inflate
    corners=[origin+size*np.array([i&1,(i>>1)&1,(i>>2)&1]) for i in range(8)]
    for face,(indices,normal) in faces.items():
     uv=cube['uv'][face];u,v=uv['uv'];w,h=uv['uv_size'];tex=[(u/tw,v/th),((u+w)/tw,v/th),((u+w)/tw,(v+h)/th),(u/tw,(v+h)/th)]
+    if face in ['north','east']:tex=[(u/tw,(v+h)/th),(u/tw,v/th),((u+w)/tw,v/th),((u+w)/tw,(v+h)/th)]
+    elif face in ['south','west']:tex=[(u/tw,(v+h)/th),((u+w)/tw,(v+h)/th),((u+w)/tw,v/th),(u/tw,v/th)]
     n=m[:3,:3]@normal
     for k in [0,1,2,0,2,3]:out.append([*(m@np.r_[corners[indices[k]],1])[:3],*n,*tex[k],0 if name=='mannequin' else 1])
  return np.array(out,dtype='f4')
@@ -64,8 +66,8 @@ def render(output,backend=None,nemesis=False,asta=False):
  out vec2 uv;out vec3 normal;out float textured;void main(){textured=Textured;gl_Position=Matrix*vec4(Position,1);normal=mat3(ModelView)*Normal;uv=UV;}''',
  fragment_shader='''#version 150
  uniform sampler2D Atlas;in vec2 uv;in vec3 normal;in float textured;out vec4 fragColor;
- void main(){vec4 c=mix(vec4(.72,.55,.43,1),texture(Atlas,uv),textured);float light=.38+.62*max(0.,dot(normalize(normal),normalize(vec3(-.4,.8,1))));fragColor=vec4(c.rgb*light,c.a);}''')
- image=Image.open(ASSETS/('textures/armor/anime_atlas.png' if nemesis else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.LINEAR,moderngl.LINEAR);texture.use();program['Atlas'].value=0
+ void main(){vec4 c=mix(vec4(.72,.55,.43,1),texture(Atlas,uv),textured);if(c.a<.1)discard;float light=.38+.62*max(0.,dot(normalize(normal),normalize(vec3(-.4,.8,1))));fragColor=vec4(c.rgb*light,c.a);}''')
+ image=Image.open(ASSETS/('textures/armor/anime_atlas.png' if nemesis else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.NEAREST,moderngl.NEAREST);texture.use();program['Atlas'].value=0
  width,height=320,430;fbo=ctx.simple_framebuffer((width,height),components=4);fbo.use()
  ctx.enable(moderngl.DEPTH_TEST);ctx.disable(moderngl.CULL_FACE)
  projection=np.diag([2/34,2/45,-2/200,1]);projection[2,3]=-1
@@ -73,7 +75,7 @@ def render(output,backend=None,nemesis=False,asta=False):
  styles=['asta','matadora','asta_forma','liebe'] if asta else ['toji','aurora','qual'] if nemesis else ['gojo','frieren','shadow','cajado'];rows=len(styles)
  sheet=Image.new('RGB',(width*3,height*rows+58),(11,15,24));draw=ImageDraw.Draw(sheet)
  for index,(style,yaw)in enumerate([(style,yaw) for style in styles for yaw in [0,180,28]]):
-  image=Image.open(ASSETS/('textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.write(image.tobytes())
+  image=Image.open(ASSETS/(f'textures/bosses/{style}_skin.png' if style in ['aurora','liebe'] else 'textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.release();texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.NEAREST,moderngl.NEAREST);texture.use()
   fbo.clear(.14,.15,.18,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
   framing=projection.copy();framing[0,0]=2/(84 if style=='asta_forma' else 48 if style=='liebe' else 34)
   if style=='asta_forma':

@@ -24,6 +24,7 @@ def read(path):return json.loads(path.read_text(encoding='utf-8'))
 def make_project(name,embedded=False):
     model,animation,kind=PROJECTS[name]
     texture_path=ASSETS/'textures/armor/anime_atlas.png' if model.startswith('geo/nemesis/') else TEXTURE
+    if name in ['aurora','liebe']:texture_path=ASSETS/f'textures/bosses/{name}_skin.png'
     geo=read(ASSETS/model)['minecraft:geometry'][0]
     elements=[];groups=[];nodes={};groupids={b['name']:uid(name+'/'+b['name']) for b in geo['bones']}
     for bone in geo['bones']:
@@ -40,7 +41,7 @@ def make_project(name,embedded=False):
                 faces[face]={'uv':[u,v,u+w,v+h],'texture':0}
             elements.append({'uuid':cid,'name':bone['name']+'_'+str(index),'type':'cube','box_uv':False,
                              'from':[-o[0]-s[0],o[1],o[2]],'to':[-o[0],o[1]+s[1],o[2]+s[2]],
-                             'origin':xyz(c.get('pivot',bone['pivot'])),
+                             'inflate':c.get('inflate',0),'origin':xyz(c.get('pivot',bone['pivot'])),
                              'rotation':rotation(c.get('rotation',[0,0,0])),
                              'autouv':0,'export':True,'faces':faces})
             children.append(cid)
@@ -50,7 +51,7 @@ def make_project(name,embedded=False):
         if bone.get('parent'):nodes[bone['parent']]['children'].append(node)
         else:roots.append(node)
     texture={'uuid':uid('atlas'),'name':texture_path.name,'id':'0','mode':'bitmap',
-             'relative_path':'../../src/main/resources/assets/arcanecontrol/textures/armor/'+texture_path.name,
+             'relative_path':'../../src/main/resources/assets/arcanecontrol/'+texture_path.relative_to(ASSETS).as_posix(),
              'uv_width':geo['description']['texture_width'],'uv_height':geo['description']['texture_height']}
     if embedded:
         texture['source']='data:image/png;base64,'+base64.b64encode(texture_path.read_bytes()).decode('ascii')
