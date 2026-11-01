@@ -56,6 +56,14 @@ public class GerenciadorCutscene3D {
         if(EFEITOS_3D.size()>=64) EFEITOS_3D.remove(0);
         EFEITOS_3D.add(e);EmissoresGojo.iniciar(e);
     }
+    public static void cancelarDominioCliente(UUID id){
+        EFEITOS_3D.removeIf(e->e.tipo==5&&e.playerId.equals(id));
+        var mc=Minecraft.getInstance();if(mc.player!=null&&mc.player.getUUID().equals(id)&&cutsceneTipo==5)finalizarCutscene();
+    }
+    public static void garantirDominio(UUID id,Vec3 centro,int restante){
+        if(EFEITOS_3D.stream().anyMatch(e->e.tipo==5&&e.playerId.equals(id)))return;
+        var ef=new Efeito3DAtivo(5,id,centro,new Vec3(0,0,1),400);ef.tickAtual=Math.max(0,400-restante);adicionar(ef);
+    }
     private static net.minecraft.client.multiplayer.ClientLevel mundoCutscene;
 
     // Estado da Cutscene Local (Para o jogador que ativou a Ultimate)
@@ -122,7 +130,7 @@ public class GerenciadorCutscene3D {
         } else if (tipo == 5) {
             adicionar(new Efeito3DAtivo(5, playerId, origem, direcao, PerfilVfxGojo.duracao(5)));
             if (mc.player != null && mc.player.getUUID().equals(playerId)) {
-                iniciarCutsceneLocal(5, PerfilVfxGojo.duracao(5));
+                iniciarCutsceneLocal(5, 60);
             }
         }
     }

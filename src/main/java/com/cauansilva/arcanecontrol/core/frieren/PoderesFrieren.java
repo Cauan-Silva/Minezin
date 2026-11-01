@@ -21,14 +21,16 @@ import com.cauansilva.arcanecontrol.core.vfx.PerfilFrieren;
 
 @Mod.EventBusSubscriber(modid="arcanecontrol")
 public final class PoderesFrieren {
-    private record Singularidade(ServerPlayer jogador,ServerLevel nivel,Vec3 centro,long inicio){}
+    private record Singularidade(ServerPlayer jogador,ServerLevel nivel,Vec3 centro,long inicio,boolean silencioso){}
     private static final List<Singularidade> ATIVOS=new ArrayList<>();
-    private static final int[] RECARGAS={30,160,180,1200};
+    private static final int[] RECARGAS={80,240,200,500};
     private static void enviar(ServerPlayer p,int tipo,Vec3 origem,Vec3 alvo){
         RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),
                 new PacoteSincronizarCutscene3D(tipo,p.getUUID(),origem.x,origem.y,origem.z,alvo.x,alvo.y,alvo.z));
     }
-    public static void executar(ServerPlayer p,int id){
+    public static void executar(ServerPlayer p,int id){executar(p,id,false);}
+    public static void buracoDespertado(ServerPlayer p){executar(p,24,true);}
+    private static void executar(ServerPlayer p,int id,boolean despertado){
         if(!ProgressaoPoderes.podeUsar(p,id))return;
         int slot=id-21;if(slot<0||slot>3)return;
         var tag=ProgressaoPoderes.tag(p);long agora=ProgressaoPoderes.agora(p);
@@ -43,7 +45,7 @@ public final class PoderesFrieren {
             if(ATIVOS.stream().anyMatch(a->a.jogador==p))return;
             if(alvo.distanceToSqr(p.position())<9){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Mire em uma área mais distante para formar a singularidade."),true);return;}
         }
-        if(!com.cauansilva.arcanecontrol.core.rpg.RpgServidor.conjurar(p,PoderAnime.FRIEREN,slot,RECARGAS[slot]))return;
+        if(!com.cauansilva.arcanecontrol.core.rpg.RpgServidor.conjurar(p,PoderAnime.FRIEREN,despertado?2:slot,RECARGAS[slot]))return;
         if(slot==0){
             Vec3 fim=alvo;
             var hit=ProjectileUtil.getEntityHitResult(p,origem,fim,p.getBoundingBox().expandTowards(fim.subtract(origem)).inflate(1),
@@ -71,7 +73,7 @@ public final class PoderesFrieren {
             enviar(p,23,p.position(),dir);
             level.playSound(null,p.blockPosition(),SoundEvents.ELYTRA_FLYING,SoundSource.PLAYERS,1,.8f);
         } else {
-            ATIVOS.add(new Singularidade(p,level,alvo,agora));
+            ATIVOS.add(new Singularidade(p,level,alvo,agora,despertado));
             if(!com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get())p.displayClientMessage(net.minecraft.network.chat.Component.literal("Destruição de terreno desativada neste mundo."),true);
             p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,PerfilFrieren.ABERTURA,2,false,false));
             enviar(p,24,alvo,dir);
@@ -94,7 +96,7 @@ public final class PoderesFrieren {
         var it=ATIVOS.iterator();
         while(it.hasNext()){
             var a=it.next();var p=a.jogador;
-            if(!p.isAlive()||p.hasDisconnected()||p.serverLevel()!=a.nivel||p.distanceToSqr(a.centro)>48*48){
+            if(!p.isAlive()||p.hasDisconnected()||p.serverLevel()!=a.nivel||p.distanceToSqr(a.centro)>48*48||(a.silencioso&&!com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.ativo(p))){
                 if(!p.hasDisconnected())enviar(p,25,a.centro,Vec3.ZERO);it.remove();continue;
             }
             long t=ProgressaoPoderes.agora(p)-a.inicio;
@@ -113,14 +115,14 @@ public final class PoderesFrieren {
             if(t==PerfilFrieren.COLAPSO){
                 if(com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get()){
                     com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.cratera(p,a.centro,14,9);
-                    a.nivel.explode(p,a.centro.x,a.centro.y,a.centro.z,5f,false,net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+                    if(!a.silencioso)a.nivel.explode(p,a.centro.x,a.centro.y,a.centro.z,5f,false,net.minecraft.world.level.Level.ExplosionInteraction.TNT);
                 }
                 for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(a.centro,a.centro).inflate(8),v->v!=p&&!v.isAlliedTo(p))) {
                     if(alvo.distanceToSqr(a.centro)>64)continue;
                     alvo.hurt(a.nivel.damageSources().indirectMagic(p,p),25);
                     alvo.setDeltaMovement(alvo.position().subtract(a.centro).normalize().scale(1.5).add(0,.6,0));alvo.hurtMarked=true;
                 }
-                a.nivel.playSound(null,BlockPos.containing(a.centro),SoundEvents.GENERIC_EXPLODE,SoundSource.PLAYERS,3,.6f);
+                if(!a.silencioso)a.nivel.playSound(null,BlockPos.containing(a.centro),SoundEvents.GENERIC_EXPLODE,SoundSource.PLAYERS,3,.6f);
             }
             if(t>=PerfilFrieren.FIM)it.remove();
         }

@@ -15,7 +15,7 @@ public final class ArvoreRpgScreen extends Screen {
     private final Button[] nos=new Button[8];
     private PostChain blur;
     private static final String[] ROTULOS={"X","C","V","+Físico","+Magia","+Mana","+Mov.","Despertar"};
-    private static final String[] DETALHES={"Desbloqueia a técnica X.","Desbloqueia a técnica C.","Desbloqueia a técnica V.","+10% de dano físico.","+10% de dano mágico.","+25% de regeneração de mana.","+10% de velocidade de movimento.","Despertar indisponível. Exige nível 50 e desafio do personagem."};
+    private static final String[] DETALHES={"Desbloqueia a técnica X.","Desbloqueia a técnica C.","Desbloqueia a técnica V.","+10% de dano físico.","+10% de dano mágico.","+25% de regeneração de mana.","+10% de velocidade de movimento.","Nível 50: compre este nó, vença seu chefe no Altar e use a alma. G ativa a forma."};
     public ArvoreRpgScreen(){this(PoderAnime.porId(RpgCliente.ativo()));}
     public ArvoreRpgScreen(PoderAnime foco){super(Component.literal("Árvore de habilidades"));this.foco=foco==null?PoderAnime.GOJO:foco;}
     @Override protected void init(){
@@ -52,7 +52,7 @@ public final class ArvoreRpgScreen extends Screen {
         for(var no:NoRpg.values()){
             var b=nos[no.indice];boolean tem=m.tem(no);
             b.setMessage(Component.literal((tem?"OK ":"")+ROTULOS[no.indice]));
-            b.active=RpgCliente.recebido()&&RpgCliente.tem(foco.id)&&no!=NoRpg.DESPERTAR&&!tem&&m.nivel()>=no.nivel&&m.pontos()>=no.custo&&(m.nos()&no.requisitos)==no.requisitos;
+            b.active=RpgCliente.recebido()&&RpgCliente.tem(foco.id)&&!tem&&m.nivel()>=no.nivel&&m.pontos()>=no.custo&&(m.nos()&no.requisitos)==no.requisitos;
             g.drawCenteredString(font,"Nv"+no.nivel+" "+no.custo+"pt",b.getX()+b.getWidth()/2,b.getY()+22,tem?0x86CBA8:0x9EACC0);
             if(mx>=b.getX()&&mx<b.getX()+b.getWidth()&&my>=b.getY()&&my<b.getY()+b.getHeight())hover=no;
         }

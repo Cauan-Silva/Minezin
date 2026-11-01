@@ -70,7 +70,7 @@ public final class ProgressaoPoderes {
         PoderAnime kit=PoderAnime.porId(id);if(kit==null)return;
         var e=ler(p);
         if(acao==1){
-            if(ocupado(p)||p.hurtTime>0){mensagem(p,"Aguarde a técnica terminar antes de trocar de kit.");return;}
+            if(ocupado(p)||com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.ativo(p)||p.hurtTime>0){mensagem(p,"Aguarde a técnica terminar antes de trocar de kit.");return;}
             if(!e.selecionar(kit)){mensagem(p,"Esse kit ainda está bloqueado.");return;}
             GerenciadorMagiasGojo.desativarInfinito(p);
             escrever(tag(p),e);com.cauansilva.arcanecontrol.core.rpg.RpgServidor.aplicarAtributos(p);sincronizar(p);return;

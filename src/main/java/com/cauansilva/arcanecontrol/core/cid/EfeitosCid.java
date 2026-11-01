@@ -38,7 +38,7 @@ public final class EfeitosCid {
         if(tipo==14) PhotonAtomic.iniciar(jogador,origem);
         AnimacoesGojo.tocarCid(jogador,tipo);
         if (tipo == 14 && mc.player != null && mc.player.getUUID().equals(jogador))
-            GerenciadorCutscene3D.iniciarCutsceneLocal(14,240);
+            GerenciadorCutscene3D.iniciarCutsceneLocal(14,100);
     }
     public static Vec3 centroAtomic(UUID id){for(var f:EFEITOS)if(f.tipo==14&&f.jogador.equals(id))return f.origem;return null;}
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e) {

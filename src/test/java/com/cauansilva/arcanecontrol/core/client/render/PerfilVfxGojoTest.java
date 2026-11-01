@@ -25,9 +25,9 @@ class PerfilVfxGojoTest {
         assertEquals(0,PerfilVfxGojo.presencaDominio(0,0));
         assertEquals(1,PerfilVfxGojo.presencaDominio(50,10));
         assertEquals(0,PerfilVfxGojo.presencaDominio(50,26.01));
-        assertEquals(0,PerfilVfxGojo.presencaDominio(160,0));
-        assertEquals(0,PerfilVfxGojo.presencaDominio(180,0));
-        for(double t=0;t<=160;t+=.2) for(double d=0;d<=30;d+=.5) {
+        assertEquals(0,PerfilVfxGojo.presencaDominio(400,0));
+        assertEquals(0,PerfilVfxGojo.presencaDominio(420,0));
+        for(double t=0;t<=400;t+=.2) for(double d=0;d<=30;d+=.5) {
             double p=PerfilVfxGojo.presencaDominio(t,d);
             assertTrue(p>=0 && p<=1);
             if(d>=PerfilVfxGojo.raioDominio(t)) assertEquals(0,p);

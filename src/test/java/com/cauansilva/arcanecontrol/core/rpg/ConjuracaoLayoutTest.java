@@ -30,11 +30,11 @@ class ConjuracaoLayoutTest {
         assertEquals(ConjuracaoRpg.Resultado.INVALIDA,ConjuracaoRpg.tentar(m,mana,cd,PersonagemRpg.GOJO,0,1,100,Double.NaN,false,false,false));
         assertEquals(100,mana.atual());assertEquals(0,cd.restante(PersonagemRpg.GOJO,0,1));
     }
-    @Test void dominioLegadoSoAbreSlotExtraQuandoAutorizado(){
+    @Test void dominioLegadoNaoDispensaAlmaDoDespertar(){
         var m=new MestriaRpg();var mana=new RecursoMana(100);var cd=new RecargasRpg();
         assertEquals(ConjuracaoRpg.Resultado.BLOQUEADA,ConjuracaoRpg.tentar(m,mana,cd,PersonagemRpg.GOJO,4,1,100,50,false,false,false));
-        assertEquals(ConjuracaoRpg.Resultado.OK,ConjuracaoRpg.tentar(m,mana,cd,PersonagemRpg.GOJO,4,1,100,50,false,false,true));
-        assertEquals(50,mana.atual());
+        assertEquals(ConjuracaoRpg.Resultado.BLOQUEADA,ConjuracaoRpg.tentar(m,mana,cd,PersonagemRpg.GOJO,4,1,100,50,false,false,true));
+        assertEquals(100,mana.atual());
     }
     @Test void arvoreCabeEmTodasAsEscalasSemSobreporNos(){
         for(int[] tela:new int[][]{{320,240},{426,240},{640,360},{854,480},{1920,1080}}){

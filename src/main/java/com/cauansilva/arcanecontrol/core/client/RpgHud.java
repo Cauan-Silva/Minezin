@@ -23,13 +23,14 @@ public final class RpgHud {
         g.drawString(mc.font,kit.nome+" · Nv."+RpgCliente.mestria(kit.id).nivel()+" [H]",x+6,y+5,kit.cor);
         g.fill(x+6,y+18,x+156,y+25,0xFF26354A);g.fill(x+6,y+18,x+6+(int)(150*RpgCliente.mana()/100),y+25,0xFF42A8D7);
         g.drawCenteredString(mc.font,"Mana "+(int)RpgCliente.mana()+" / 100",x+81,y+17,0xF3FAFF);
-        int quantidade=kit==PoderAnime.GOJO&&RpgCliente.dominioLegado()?5:4;
+        int quantidade=5;
+        if(RpgCliente.forma())g.drawString(mc.font,"Despertar: "+((RpgCliente.formaTicks()+19)/20)+"s",x+6,y-12,kit.cor);
         for(int i=0;i<quantidade;i++){
             int bx=x+6+i*30,by=y+32;boolean liberada=RpgCliente.tecnica(kit.id,i);int cd=RpgCliente.recarga(i);boolean semMana=RpgCliente.mana()+1e-9<RpgCliente.custo(i);
             g.fill(bx,by,bx+26,by+25,liberada?0xFF26384F:0xFF202631);g.renderOutline(bx,by,26,25,liberada?0xFF000000|kit.cor:0xFF485363);
             if(cd>0)setor(g,bx+13,by+12,12,RpgCliente.fracao(i));
-            g.drawCenteredString(mc.font,new String[]{"Z","X","C","V","R"}[i],bx+13,by+8,liberada?(cd>0?0xAAB2BE:semMana?0xB48585:0xFFFFFF):0x657083);
-            g.drawCenteredString(mc.font,!liberada?"--":cd>0?((cd+19)/20)+"s":semMana?"MP":"OK",bx+13,by+28,liberada?0xC4D3E6:0x657083);
+            g.drawCenteredString(mc.font,new String[]{"Z","X","C","V","G"}[i],bx+13,by+8,liberada?(cd>0?0xAAB2BE:semMana?0xB48585:0xFFFFFF):0x657083);
+            g.drawCenteredString(mc.font,RpgCliente.forma()&&i==4?"FIM":RpgCliente.forma()&&i==3&&RpgCliente.exclusivoUsado()?"USO":!liberada?"--":cd>0?((cd+19)/20)+"s":semMana?"MP":"OK",bx+13,by+28,liberada?0xC4D3E6:0x657083);
         }
     }
     private static void setor(GuiGraphics g,int x,int y,int r,double fracao){

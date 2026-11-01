@@ -145,6 +145,14 @@ public final class RenderGojo {
         }
         if(t>12) raiosRoxo(pose,cam,t<=30?centro:origem.add(dir.scale(PerfilVfxGojo.distanciaRoxo(t))),dir,t,alpha);
     }
+    public static void roxoMaximo(PoseStack pose,Vec3 cam,Vec3 centro,double raio,double t,float alpha){
+        preparar(t);
+        try{
+            esfera(pose,cam,centro,raio,2,ROXO,alpha,false);
+            esfera(pose,cam,centro,raio*1.18,6,ROXO,alpha*.4f,true);
+            fitas(8,()->geometriaRaios(pose,cam,centro,new Vec3(0,0,1),t,alpha,raio/3.6));
+        }finally{restaurar();}
+    }
     private static void raiosRoxo(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha){
         fitas(8,()->geometriaRaios(pose,cam,centro,dir,t,alpha));
     }
@@ -154,13 +162,14 @@ public final class RenderGojo {
         var b=Tesselator.getInstance().getBuilder();b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
         geometriaRaios(pose,cam,centro,dir,t,alpha);Tesselator.getInstance().end();restaurar();
     }
-    private static void geometriaRaios(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha){
+    private static void geometriaRaios(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha){geometriaRaios(pose,cam,centro,dir,t,alpha,1);}
+    private static void geometriaRaios(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha,double escala){
         Vec3 lado=direita(dir),alto=lado.cross(dir).normalize();
             for(int j=0;j<(reduzido()?4:8);j++){
                 Vec3 anterior=null;float pulso=(float)com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.intensidade(j,t)*alpha;
                 for(int i=0;i<=8;i++){
                     var c=com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.ponto(j,i,t);
-                    Vec3 q=centro.add(lado.scale(c.lateral())).add(alto.scale(c.vertical())).add(dir.scale(c.frente()));
+                    Vec3 q=centro.add(lado.scale(c.lateral()*escala)).add(alto.scale(c.vertical()*escala)).add(dir.scale(c.frente()*escala));
                     if(anterior!=null){
                         fita(pose,cam,anterior,q,.24,0,1,ROXO,pulso*.55f);
                         fita(pose,cam,anterior,q,.075,0,1,0xF2DEFF,pulso);
