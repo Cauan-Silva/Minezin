@@ -24,7 +24,7 @@ public final class RpgHud {
         g.fill(x+6,y+18,x+156,y+25,0xFF26354A);g.fill(x+6,y+18,x+6+(int)(150*RpgCliente.mana()/100),y+25,0xFF42A8D7);
         g.drawCenteredString(mc.font,"Mana "+(int)RpgCliente.mana()+" / 100",x+81,y+17,0xF3FAFF);
         int quantidade=5;
-        if(RpgCliente.forma())g.drawString(mc.font,"Despertar: "+((RpgCliente.formaTicks()+19)/20)+"s",x+6,y-12,kit.cor);
+        if(RpgCliente.forma())g.drawString(mc.font,kit==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.ICHIGO?"Bankai • mantido por mana":"Despertar: "+((RpgCliente.formaTicks()+19)/20)+"s",x+6,y-12,kit.cor);
         for(int i=0;i<quantidade;i++){
             int bx=x+6+i*30,by=y+32;boolean liberada=RpgCliente.tecnica(kit.id,i);int cd=RpgCliente.recarga(i);boolean semMana=RpgCliente.mana()+1e-9<RpgCliente.custo(i);
             g.fill(bx,by,bx+26,by+25,liberada?0xFF26384F:0xFF202631);g.renderOutline(bx,by,26,25,liberada?0xFF000000|kit.cor:0xFF485363);

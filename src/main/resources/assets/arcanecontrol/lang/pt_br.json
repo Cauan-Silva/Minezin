@@ -42,5 +42,10 @@
   "subtitles.arcanecontrol.frieren_cast": "Zoltraak dispara",
   "subtitles.arcanecontrol.frieren_barrier": "Barreira mágica ressoa",
   "subtitles.arcanecontrol.singularity_charge": "Singularidade se forma",
-  "subtitles.arcanecontrol.singularity_collapse": "Singularidade colapsa"
+  "subtitles.arcanecontrol.singularity_collapse": "Singularidade colapsa",
+  "item.arcanecontrol.zangetsu": "Zangetsu",
+  "item.arcanecontrol.ichigo_cabeca": "Faixa Shihakusho",
+  "item.arcanecontrol.ichigo_peito": "Shihakusho",
+  "item.arcanecontrol.ichigo_pernas": "Hakama",
+  "item.arcanecontrol.ichigo_botas": "Sandálias espirituais"
 }

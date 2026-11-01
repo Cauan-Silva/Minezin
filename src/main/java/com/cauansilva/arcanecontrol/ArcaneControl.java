@@ -28,6 +28,7 @@ public class ArcaneControl {
         com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.registrar();
         com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.asta.RegistroAsta.registrar(modEventBus);
+        com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.inicializar();
         com.cauansilva.arcanecontrol.core.cid.EspadaCid.ITEMS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(GerenciadorMagiasGojo.class);

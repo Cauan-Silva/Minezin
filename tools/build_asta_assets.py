@@ -28,7 +28,23 @@ def espada():
  for side in [-1,1]:
   c(b['energia_divider'],[side*3.82-.1,2,-.87],[.2,22,.14],armor.RUBY)
   c(b['energia_divider'],[side*2.7-.1,25.3,-.8],[.2,2.2,.12],armor.RUBY)
+ # Align the middle of the ten-unit grip with the held-item origin.
+ for part in b.values():
+  part['pivot'][1]+=5
+  for c in part.get('cubes',[]):
+   c['origin'][1]+=5
+   if 'pivot' in c:c['pivot'][1]+=5
  return b
+
+def sword_display():
+ return {'parent':'builtin/entity','display':{
+  'gui':{'rotation':[0,0,-30],'translation':[0,-1.9,0],'scale':[.38]*3},
+  'thirdperson_righthand':{'rotation':[0,-90,10],'translation':[0,0,0],'scale':[.8]*3},
+  'thirdperson_lefthand':{'rotation':[0,90,-10],'translation':[0,0,0],'scale':[.8]*3},
+  'firstperson_righthand':{'rotation':[0,-45,25],'translation':[0,0,0],'scale':[.65]*3},
+  'firstperson_lefthand':{'rotation':[0,45,-25],'translation':[0,0,0],'scale':[.65]*3},
+  'ground':{'rotation':[0,0,90],'scale':[.5]*3},'fixed':{'rotation':[0,0,-25],'scale':[.4]*3}}}
+
 def forma():
  from armor_reference_shapes import asta_forma
  pieces=asta_forma();save(A/'models/effects/asta_forma.json',{'pieces':pieces})
@@ -93,6 +109,6 @@ def main():
  anim={name:{'rotation':{'0':[0,0,0],'2':[1.2 if name.startswith('capa_') else .6,0,0],'4':[0,0,0]}} for name in bones if name.startswith(('manto_','capa_'))}
  save(A/'animations/armaduras/asta.animation.json',{'format_version':'1.8.0','animations':{'animation.traje.idle':{'loop':True,'animation_length':4,'bones':anim}}})
  save(A/'geo/asta/matadora.geo.json',armor.document('matadora',espada()));save(A/'animations/asta/matadora.animation.json',{'format_version':'1.8.0','animations':{'animation.matadora.idle':{'loop':True,'animation_length':1,'bones':{}}}})
- save(A/'models/item/matadora_demonios.json',{'parent':'builtin/entity','display':{'gui':{'rotation':[0,0,-30],'translation':[0,0,0],'scale':[.38]*3},'thirdperson_righthand':{'rotation':[0,0,0],'translation':[0,1,0],'scale':[.8]*3},'thirdperson_lefthand':{'rotation':[0,0,0],'translation':[0,1,0],'scale':[.8]*3},'firstperson_righthand':{'rotation':[0,-15,-12],'translation':[0,0,-1],'scale':[.65]*3},'firstperson_lefthand':{'rotation':[0,15,12],'translation':[0,0,-1],'scale':[.65]*3},'ground':{'rotation':[0,0,90],'scale':[.5]*3},'fixed':{'rotation':[0,0,-25],'scale':[.4]*3}}})
+ save(A/'models/item/matadora_demonios.json',sword_display())
  forma();liebe();animations();recipes();glyph();print('Authored Asta uniform, sword, awakening, Liebe, 9 gestures and recipes.')
 if __name__=='__main__':main()

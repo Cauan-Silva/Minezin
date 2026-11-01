@@ -33,7 +33,7 @@ public final class PoderesScreen extends Screen {
         String estado=p.tem(foco)?p.ativo()==foco?"ATIVO":"DESBLOQUEADO":"BLOQUEADO";
         g.drawString(font,foco.nome+" • "+estado,x+12,y+70,foco.cor);
         g.renderItem(new net.minecraft.world.item.ItemStack(foco==PoderAnime.GOJO?com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.GOJO_CABECA.get()
-                :foco==PoderAnime.ASTA?com.cauansilva.arcanecontrol.core.asta.RegistroAsta.ESPADA.get():foco==PoderAnime.CID?com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get():com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.FRI_CABECA.get()),x+w-32,y+68);
+                :foco==PoderAnime.ICHIGO?com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.ESPADA.get():foco==PoderAnime.ASTA?com.cauansilva.arcanecontrol.core.asta.RegistroAsta.ESPADA.get():foco==PoderAnime.CID?com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get():com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.FRI_CABECA.get()),x+w-32,y+68);
         int nivel=RpgCliente.recebido()?RpgCliente.mestria(foco.id).nivel():p.nivel(foco),xp=RpgCliente.recebido()?RpgCliente.mestria(foco.id).xp():p.xp(foco);
         g.drawString(font,"Nível "+nivel+" • "+xp+" XP",x+12,y+84,0xE5E9F2);
         int barra=w-24;g.fill(x+12,y+97,x+w-12,y+100,0xFF253247);
@@ -46,7 +46,7 @@ public final class PoderesScreen extends Screen {
             g.drawString(font,"["+teclas[i]+"] "+(RpgCliente.forma()&&foco.id==RpgCliente.ativo()?NomesMovesets.nome(foco.id,i):foco.tecnicas[i])+" • "+detalhe,x+12,y+109+i*linha,aprendida?0xDCE8FA:0x7E899B);
         }
         String custo=foco==PoderAnime.GOJO?"Árvore em H. Uso: +5 XP; dano e inimigos também dão XP."
-                :p.tem(foco)?"Uso: +5 XP; inimigo: +25 XP. "+(foco==PoderAnime.ASTA?"Requer a Espada Matadora.":foco==PoderAnime.CID?"Requer a Lâmina Shadow.":"Magia pode ser usada sem cajado.")
+                :p.tem(foco)?"Uso: +5 XP; inimigo: +25 XP. "+(foco==PoderAnime.ICHIGO?"Requer Zangetsu.":foco==PoderAnime.ASTA?"Requer a Espada Matadora.":foco==PoderAnime.CID?"Requer a Lâmina Shadow.":"Magia pode ser usada sem cajado.")
                 :foco.custo+" conhecimento + "+(foco==PoderAnime.ASTA?"8 ferros + 4 obsidianas":foco==PoderAnime.CID?"8 ametistas + 4 obsidianas":"8 lápis-lazúli + 4 ametistas");
         g.drawWordWrap(font,Component.literal(custo),x+12,y+h-64,w-24,0xABB8CC);
         acao.setMessage(Component.literal(p.tem(foco)?p.ativo()==foco?"Kit selecionado":"Selecionar kit":PoderesCliente.criativo?"Desbloquear (Criativo)":"Pesquisar kit"));
