@@ -15,13 +15,14 @@ def rotation(degrees):
  ry=np.array([[cy,0,sy,0],[0,1,0,0],[-sy,0,cy,0],[0,0,0,1]])
  rz=np.array([[cz,-sz,0,0],[sz,cz,0,0],[0,0,1,0],[0,0,0,1]])
  return rz@ry@rx
-def transform(obj):
- pivot=np.array(obj.get('pivot',[0,0,0]));return translation(pivot)@rotation(obj.get('rotation',[0,0,0]))@translation(-pivot)
+def transform(obj,gecko=True):
+ pivot=np.array(obj.get('pivot',[0,0,0]));r=obj.get('rotation',[0,0,0]);return translation(pivot)@rotation([-r[0],r[1],-r[2]] if gecko else r)@translation(-pivot)
 def mesh(style):
  bosses={'toji':1,'aurora':2,'qual':3,'liebe':4}
  path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
+ native_form=set(bones) if style=='asta_forma' else set()
  if style=='asta_forma':
   armor=json.loads((ASSETS/'geo/armaduras/asta.geo.json').read_text(encoding='utf-8'))['minecraft:geometry'][0]
   for b in armor['bones']:bones[b['name']]=b
@@ -34,7 +35,7 @@ def mesh(style):
  def bone_matrix(name):
   if name not in cache:
    b=bones[name];base=bone_matrix(b['parent']) if 'parent'in b else translation([9,17,0]) if name=='staff_root' else translation([0,6,0]) if style=='matadora' else translation([0,18,0]) if style=='cajado' else np.eye(4)
-   cache[name]=base@transform(b)
+   cache[name]=base@transform(b,name not in native_form)
   return cache[name]
  faces={'north':([0,2,3,1],[0,0,-1]),'south':([4,5,7,6],[0,0,1]),'west':([0,4,6,2],[-1,0,0]),
         'east':([1,3,7,5],[1,0,0]),'down':([0,1,5,4],[0,-1,0]),'up':([2,6,7,3],[0,1,0])}
@@ -47,7 +48,7 @@ def mesh(style):
  out=[];tw,th=d['description']['texture_width'],d['description']['texture_height']
  for name,b in bones.items():
   for cube in b.get('cubes',[]):
-   m=bone_matrix(name)@transform(cube);inflate=cube.get('inflate',0);origin=np.array(cube['origin'])-inflate;size=np.array(cube['size'])+2*inflate
+   m=bone_matrix(name)@transform(cube,name not in native_form);inflate=cube.get('inflate',0);origin=np.array(cube['origin'])-inflate;size=np.array(cube['size'])+2*inflate
    corners=[origin+size*np.array([i&1,(i>>1)&1,(i>>2)&1]) for i in range(8)]
    for face,(indices,normal) in faces.items():
     uv=cube['uv'][face];u,v=uv['uv'];w,h=uv['uv_size'];tex=[(u/tw,v/th),((u+w)/tw,v/th),((u+w)/tw,(v+h)/th),(u/tw,(v+h)/th)]
