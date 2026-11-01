@@ -36,7 +36,7 @@ public final class AltarDespertar extends Block {
             if(!level.noCollision(candidato,EspacoInvocacao.volumeLivre(candidato.getBoundingBox()))||level.containsAnyLiquid(candidato.getBoundingBox())||!level.getBlockState(bp.below()).isFaceSturdy(level,bp.below(),Direction.UP))continue;
             chefe=candidato;
         }
-        if(chefe==null){p.displayClientMessage(Component.literal("Libere uma área com chão firme, a cinco blocos à frente do altar."),true);return InteractionResult.CONSUME;}
+        if(chefe==null){int alturaLivre=(int)Math.ceil(PerfilBoss.ALTURA_BASE*PerfilBoss.escala(kit.id,com.cauansilva.arcanecontrol.ConfigServidor.escalaChefe(kit.id))+.1);p.displayClientMessage(Component.literal("Libere uma área com chão firme e "+alturaLivre+" blocos livres de altura, a cinco blocos à frente do altar."),true);return InteractionResult.CONSUME;}
         chefe.preparar(p,kit.id,centro);tag.putUUID("desafio",chefe.getUUID());
         if(!level.addFreshEntity(chefe)){tag.remove("desafio");return InteractionResult.FAIL;}
         p.displayClientMessage(Component.literal("Desafio: "+PersonagemRpg.porId(kit.id).nemesis+". Permaneça próximo do altar."),false);

@@ -59,7 +59,7 @@ def mesh(style):
 def lookat(eye,target):
  f=(target-eye);f=f/np.linalg.norm(f);s=np.cross(f,[0,1,0]);s=s/np.linalg.norm(s);u=np.cross(s,f)
  m=np.eye(4);m[0,:3]=s;m[1,:3]=u;m[2,:3]=-f;return m@translation(-eye)
-def render(output,backend=None,nemesis=False,asta=False):
+def render(output,backend=None,nemesis=False,asta=False,boss_scale=False):
  ctx=moderngl.create_standalone_context(require=320,**({'backend':backend}if backend else{}))
  program=ctx.program(vertex_shader='''#version 150
  in vec3 Position;in vec3 Normal;in vec2 UV;in float Textured;uniform mat4 Matrix;uniform mat4 ModelView;
@@ -72,19 +72,25 @@ def render(output,backend=None,nemesis=False,asta=False):
  ctx.enable(moderngl.DEPTH_TEST);ctx.disable(moderngl.CULL_FACE)
  projection=np.diag([2/34,2/45,-2/200,1]);projection[2,3]=-1
  view=lookat(np.array([0.,20.,-60.]),np.array([0.,18.,0.]))
- styles=['asta','matadora','asta_forma','liebe'] if asta else ['toji','aurora','qual'] if nemesis else ['gojo','frieren','shadow','cajado'];rows=len(styles)
+ styles=['toji','qual','liebe'] if boss_scale else ['asta','matadora','asta_forma','liebe'] if asta else ['toji','aurora','qual'] if nemesis else ['gojo','frieren','shadow','cajado'];rows=1 if boss_scale else len(styles)
  sheet=Image.new('RGB',(width*3,height*rows+58),(11,15,24));draw=ImageDraw.Draw(sheet)
- for index,(style,yaw)in enumerate([(style,yaw) for style in styles for yaw in [0,180,28]]):
+ views=[(style,0) for style in styles] if boss_scale else [(style,yaw) for style in styles for yaw in [0,180,28]]
+ for index,(style,yaw)in enumerate(views):
   image=Image.open(ASSETS/(f'textures/bosses/{style}_skin.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.release();texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.NEAREST,moderngl.NEAREST);texture.use()
   fbo.clear(.14,.15,.18,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
   framing=projection.copy();framing[0,0]=2/(84 if style=='asta_forma' else 48 if style=='liebe' else 34)
   if style=='asta_forma':
    framing[1,1]=2/64;mv=lookat(np.array([0.,26.,-60.]),np.array([0.,26.,0.]))@model
+  if boss_scale:
+   scale={'toji':1,'qual':2.5,'liebe':.85}[style];model=model@np.diag([scale,scale,scale,1]);framing[0,0]=2/84;framing[1,1]=2/110;mv=lookat(np.array([0.,52.,-60.]),np.array([0.,52.,0.]))@model
   program['Matrix'].write((framing@mv).T.astype('f4').tobytes());program['ModelView'].write(mv.T.astype('f4').tobytes())
   buf=ctx.buffer(mesh(style).tobytes());vao=ctx.vertex_array(program,[(buf,'3f 3f 2f 1f','Position','Normal','UV','Textured')]);vao.render(moderngl.TRIANGLES)
   tile=Image.frombytes('RGBA',(width,height),fbo.read(components=4)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
   data=np.asarray(tile);assert data[:,:,:3].std()>10,f'Blank model render: {style}, std={data[:,:,:3].std()}'
   x=index%3*width;y=index//3*height;sheet.paste(tile.convert('RGB'),(x,y))
+  if boss_scale:
+   for block in range(7):
+    line=y+int(height*(.5+(52-block*16)/110));draw.line((x,line,x+width,line),fill=(90,94,104));draw.text((x+4,line-12),str(block)+' blocos',fill=(180,188,200))
   draw.text((x+12,y+12),style.upper()+(' - FRENTE' if yaw==0 else ' - COSTAS' if yaw==180 else ' - PERSPECTIVA'),fill=(230,235,245));vao.release();buf.release()
  draw.text((12,height*rows+12),'MODELOS E TEXTURA REAIS EM OPENGL'+(' - CHEFES' if nemesis else ' - MANEQUIM NEUTRO'),fill=(230,235,245))
  draw.text((12,height*rows+32),'Sem animacao, iluminacao ou renderizador do Minecraft.',fill=(160,178,202))
@@ -92,4 +98,4 @@ def render(output,backend=None,nemesis=False,asta=False):
  print('Armor GPU:',ctx.info['GL_RENDERER']);print('Rendered armor models:',output)
  texture.release();program.release();fbo.release();ctx.release()
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--backend');p.add_argument('--nemesis',action='store_true');p.add_argument('--asta',action='store_true');a=p.parse_args();render(a.output,a.backend,a.nemesis,a.asta)
+ p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--backend');p.add_argument('--boss-scale',action='store_true');p.add_argument('--nemesis',action='store_true');p.add_argument('--asta',action='store_true');a=p.parse_args();render(a.output,a.backend,a.nemesis,a.asta,a.boss_scale)

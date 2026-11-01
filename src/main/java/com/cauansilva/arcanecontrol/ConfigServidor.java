@@ -20,7 +20,7 @@ public final class ConfigServidor {
         b.push("bosses");
         TOJI_ESCALA=b.comment("Escala visual e da colisao; aplicada ao invocar ou carregar o boss.").defineInRange("tojiEscala",1.0,.5,3.0);
         AURORA_ESCALA=b.defineInRange("auroraEscala",1.0,.5,3.0);
-        QUAL_ESCALA=b.defineInRange("qualEscala",1.4,.5,3.0);
+        QUAL_ESCALA=b.comment("Qual tem corpo de pelo menos cinco blocos. Configuracoes antigas menores sao corrigidas.").defineInRange("qualEscala",2.5,2.5,3.0);
         LIEBE_ESCALA=b.defineInRange("liebeEscala",.85,.5,3.0);
         b.pop();
         SPEC = b.build();

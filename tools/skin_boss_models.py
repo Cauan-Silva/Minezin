@@ -62,11 +62,19 @@ def liebe(shape):
     return b
 
 def toji(shape):
-    return accessories(shape,['curse','weapon','chain'],{m.BLACK:(0,0),m.SILVER:(1,0),m.PLUM:(2,0),m.IVORY:(3,0),m.GOLD:(4,0),m.SKIN:(5,0),m.NAVY:(6,0),m.RED:(7,0)})
+    return accessories(shape,['curse','weapon','chain'],{m.BLACK:(0,14),m.SILVER:(1,23),m.PLUM:(5,30),m.IVORY:(8,13),m.GOLD:(6,14),m.SKIN:(32,61),m.NAVY:(0,8),m.RED:(6,18)})
 
 def qual(shape):
     names=[n for n in shape if n.startswith(('lower_arm_','mantle_'))]
     b=accessories(shape,names,{m.BLACK:(0,0),m.SILVER:(1,0),m.PLUM:(2,0),m.NAVY:(2,0),m.IVORY:(3,0)})
+    for n in names:
+        if n.startswith('mantle_'):
+            i=int(n.split('_')[1])
+            for c in b[n]['cubes']:
+                for f in ['north','south']:c['uv'][f]={'uv':[56+i,16],'uv_size':[1,16]}
+        elif n.startswith('lower_arm_'):
+            for c in b[n]['cubes']:
+                if c['size'][1]>=8:c['uv']=uv_box(40,16,4,10,4)
     for c in shape['head']['cubes']:
         if c.get('pivot') and abs(c['size'][0]-c['size'][2])<1e-6 and c['size'][0]<=1.71 and c['origin'][1]>=30:
             c=copy.deepcopy(c);patch(c,(2,0));b['head']['cubes'].append(c)

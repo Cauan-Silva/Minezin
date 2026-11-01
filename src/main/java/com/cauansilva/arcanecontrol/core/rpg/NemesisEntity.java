@@ -32,8 +32,8 @@ public final class NemesisEntity extends Monster implements GeoEntity {
     private static final EntityDataAccessor<Float> ESCALA=SynchedEntityData.defineId(NemesisEntity.class,EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> LIBERANDO=SynchedEntityData.defineId(NemesisEntity.class,EntityDataSerializers.BOOLEAN);
     public float escala(){return entityData.get(ESCALA);}
-    public void configurarTamanho(int kit){entityData.set(KIT,kit);entityData.set(ESCALA,(float)com.cauansilva.arcanecontrol.ConfigServidor.escalaChefe(kit));refreshDimensions();}
-    @Override public EntityDimensions getDimensions(Pose pose){return EntityDimensions.scalable(.85f,2f).scale(escala());}
+    public void configurarTamanho(int kit){entityData.set(KIT,kit);entityData.set(ESCALA,PerfilBoss.escala(kit,com.cauansilva.arcanecontrol.ConfigServidor.escalaChefe(kit)));refreshDimensions();}
+    @Override public EntityDimensions getDimensions(Pose pose){return EntityDimensions.scalable(.85f,PerfilBoss.ALTURA_BASE).scale(escala());}
     @Override protected float getStandingEyeHeight(Pose pose,EntityDimensions size){return size.height*.88f;}
     @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key){super.onSyncedDataUpdated(key);if(ESCALA.equals(key))refreshDimensions();}
     public NemesisEntity(EntityType<? extends Monster> tipo,Level level){super(tipo,level);xpReward=60;setPersistenceRequired();}
