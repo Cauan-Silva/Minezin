@@ -3,8 +3,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 class PerfilBossTest {
     @Test void efeitosDosQuatroChefesNaoCapturamMovesetsDoJogador(){
-        for(int i=1;i<=4;i++){assertTrue(PerfilBoss.efeito(100+i));assertTrue(PerfilBoss.efeito(110+i));}
-        for(int i:new int[]{0,30,1040,105,110,115,200,300,304,310})assertFalse(PerfilBoss.efeito(i));
+        for(int i=1;i<=4;i++){assertTrue(PerfilBoss.efeito(400+i));assertTrue(PerfilBoss.efeito(410+i));}
+        for(int i:new int[]{0,30,101,104,111,113,114,200,300,304,310,405,410,415,1040})assertFalse(PerfilBoss.efeito(i));
     }
     @Test void tremorCaiComTempoEDistanciaERespeitaLimites(){
         assertEquals(.45,PerfilBoss.trauma(0,0),1e-9);
