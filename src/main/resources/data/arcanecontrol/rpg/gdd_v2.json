@@ -1,0 +1,770 @@
+{
+  "versao": 2,
+  "personagens": [
+    {
+      "id": 4,
+      "nome": "Asta",
+      "universo": "Black Clover",
+      "descricao": "Brawler pesado com Zangetsu-like. Dependente de Mestria Física (nível de vida).",
+      "despertar": "Assimilação Demoníaca: (Req: Derrotar Liebe). Cutscene: Tela treme. Ganha asa de corvo e chifre. FOV 120. Liberta partículas squid_ink. Duração 60s, Cooldown: 5 min.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Espada Matadora de Demónios",
+          "descricao": "Hitbox 120º. Reflete projéteis. Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Corte Divisor",
+          "descricao": "Slash vertical rotativo. Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Avanço Touro Negro",
+          "descricao": "Dash protegido. Ignora knockback. Cooldown: 12s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Barreira Antimagia",
+          "descricao": "Cria escudo frontal passivo por 5s. Cooldown: 25s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Black Meteorite",
+          "descricao": "Dash teleguiado. Impacto de explosão física. Cooldown: 3s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Furacão Negro",
+          "descricao": "Limpa buffs mágicos inimigos em área. Cooldown: 10s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Black Divider",
+          "descricao": "Soco/espada vertical massivo. Cria fenda linear. Cooldown: 15s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Corte Antimagia Absoluto",
+          "descricao": "Dispara meia-lua que aplica efeito Mudo (Silence). Cooldown: 20s."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "nome": "Eren Yeager",
+      "universo": "Attack on Titan",
+      "descricao": "Equipa Lâminas Duplas. Mobilidade extrema na base.",
+      "despertar": "Transformação Titã: (Req: Derrotar Titã Encouraçado). Relâmpago colossal. Controla Titã 3D (15 blocos). Duração: 2 mins. Cooldown: 8 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Gancho DMT",
+          "descricao": "Raycast metálico com gás. Cooldown: 3s (por carga)."
+        },
+        {
+          "tecla": "X",
+          "nome": "Gancho DMT",
+          "descricao": "Raycast metálico com gás. Cooldown: 3s (por carga)."
+        },
+        {
+          "tecla": "C",
+          "nome": "Corte Giratório",
+          "descricao": "Piroueta 3D (AoE). Dano base depende da Mestria. Cooldown: 10s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Recarregar Gás",
+          "descricao": "Restaura todos os cooldowns DMT. Cooldown: 30s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Soco Esmagador",
+          "descricao": "Quebra blocos macios. Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Endurecimento",
+          "descricao": "Modelo 3D muda braços para cristal. Próximos socos dão dano x3. Cooldown: 20s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Chute Titânico",
+          "descricao": "Empurrão de vento massivo (Knockback brutal). Cooldown: 15s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Sair da Nuca",
+          "descricao": "Desativa Titã, evapora o corpo com fumo. Reseta G."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "nome": "Ichigo Kurosaki",
+      "universo": "Bleach",
+      "descricao": "Espadachim espiritual com a espada Zangetsu 3D.",
+      "despertar": "Bankai: Tensa Zangetsu: (Req: Derrotar Zangetsu Interior). Explosão de large_smoke. Arma vira negra fina. Duração infinita enquanto tiver Mana.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Getsuga Tenshou",
+          "descricao": "Meia lua azul. Rastro dust. Cooldown: 5s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Passo Flash",
+          "descricao": "Teleporte de 10 blocos. Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Pressão Espiritual",
+          "descricao": "Aura empurra inimigos num raio de 8 blocos. Cooldown: 15s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Corte Ascendente",
+          "descricao": "Lança alvo ao ar (Uppercut). Cooldown: 20s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Kuroi Getsuga",
+          "descricao": "Dispara Getsugas negros/vermelhos sem delay (spam). Cooldown: 1s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Shunpo Contínuo",
+          "descricao": "Teleporte 15 blocos com fantasmas vermelhos. Cooldown: 2s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Getsuga Cruzado",
+          "descricao": "Meias-luas em 'X'. Dano radial. Cooldown: 12s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Máscara Hollow",
+          "descricao": "Adiciona máscara 3D. Aumenta dano físico e mágico em 50%. Cooldown: 40s."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "nome": "Naruto Uzumaki",
+      "universo": "Naruto Shippuden",
+      "descricao": "Lutador de chakra baseado na criação de clones (NPCs).",
+      "despertar": "Modo Kurama: (Req: Derrotar Kurama na Mente). Jogador emissivo dourado com chamas. Duração: 3 mins. Cooldown: 5 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Rasengan",
+          "descricao": "Esfera 3D. Knockback espiral (AoE). Cooldown: 6s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Kage Bunshin",
+          "descricao": "Invoca 4 clones (NPC) para focar alvo. Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Oodama Rasengan",
+          "descricao": "Salta e enterra chão. Cratera e vento. Cooldown: 25s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Invocação Sapo",
+          "descricao": "Sapo 3D cai esmagando inimigos. Cooldown: 45s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Braços de Chakra",
+          "descricao": "Braços esticam agarrando inimigos (15 blocos). Cooldown: 5s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Shunshin Dourado",
+          "descricao": "Teleporte deixando fogo dourado explosivo. Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Mini Bijuu Dama",
+          "descricao": "Esfera negra perfurante. Causa grande cratera. Cooldown: 20s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Rasenshuriken Planetário",
+          "descricao": "Motosserra de vento (Multi-hit intenso). Cooldown: 40s."
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "nome": "Gojo Satoru",
+      "universo": "Jujutsu Kaisen",
+      "descricao": "Mago defensivo que distorce as leis do jogo.",
+      "despertar": "Expansão: Vazio Infinito: (Req: Derrotar Toji Fushiguro). Domo preto 3D engole a arena por 20 segundos. Cooldown: 6 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Azul",
+          "descricao": "Esfera de atração (puxa). Cooldown: 5s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Vermelho",
+          "descricao": "Onda de repulsão massiva (flash). Cooldown: 10s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Teleporte Curto",
+          "descricao": "Dobras espaciais até ao alvo mirado. Cooldown: 15s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Vazio Roxo",
+          "descricao": "Cilindro desintegrador 3D (purple). Cooldown: 50s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Brain Death",
+          "descricao": "Ataque pelo olhar (dano contínuo passivo). Sem Cooldown."
+        },
+        {
+          "tecla": "X",
+          "nome": "Teletransporte Ilimitado",
+          "descricao": "Glitch visual instantâneo para qualquer bloco do Domo. Cooldown: 1s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Chuva de Informação",
+          "descricao": "Debuff cego e Wither no Domo inteiro. Cooldown: 5s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Hollow Purple Máximo",
+          "descricao": "Esfera roxa estática crescente que consome os presos. Cooldown: 1x por Domo."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "nome": "Sung Jin-Woo",
+      "universo": "Solo Leveling",
+      "descricao": "Usa adagas duplas exclusivas. Transita de Assassino para Necromante.",
+      "despertar": "Erguer-se (Arise): (Req: Sobreviver a Igris na Quest). Spawna 15 Sombras 3D permanentes enquanto mana durar.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Mutilar",
+          "descricao": "Linhas de corte vermelhas. Dano atrasado (Burst). Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Furtividade",
+          "descricao": "Evapora. Invisível para IA. Buff no próximo hit. Cooldown: 12s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Dominador",
+          "descricao": "Esmaga o alvo no chão (Telecinese). Cooldown: 18s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Corte Sombrio",
+          "descricao": "Slash giratório com dash (Roxo). Cooldown: 25s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Focar Alvo",
+          "descricao": "Chama azul faz exército focar fogo/pular no mob. Cooldown: 2s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Defesa Absoluta",
+          "descricao": "Escudos 3D formam barreira ao redor de Jin-Woo. Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Wyvern Kaisel",
+          "descricao": "Monta dragão 3D e cospe fogo negro (Voo). Cooldown: 40s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Avanço do Monarca",
+          "descricao": "Onda negra destrutiva junto com sombras atacando à frente. Cooldown: 30s."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "Cid Kagenou / Shadow",
+      "universo": "Eminence in Shadow",
+      "descricao": "Gola alta e capa animada. Espada de slime escura.",
+      "despertar": "I Am Atomic: (Req: Derrotar Aurora). Vinheta negra, Invert Frame, explosão roxa. Cria Domo Atómico 40s. Cooldown: 5 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Corte de Slime",
+          "descricao": "Rasto curvo preto/roxo, fragmenta. Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Passo das Sombras",
+          "descricao": "Puff de tinta negra. Deixa fantasmas (miragens). Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Fios de Slime",
+          "descricao": "Fios 3D puxam alvos (Lentidão pesada). Cooldown: 16s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Lâmina Oculta",
+          "descricao": "Dano crítico instantâneo em single-target. Cooldown: 30s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Corte Omnidirecional",
+          "descricao": "Ataque num raio de 15 blocos. Flashes brancos. Cooldown: 3s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Chuva de Lâminas",
+          "descricao": "Espadas 3D chovem do céu. Cooldown: 12s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Buraco Negro Sombrio",
+          "descricao": "Puxa todos do domo atómico pro centro. Cooldown: 20s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Cura Sombria",
+          "descricao": "Slime regenera a vida a 100%. Cooldown: 1x por domo."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "Frieren",
+      "universo": "Sousou no Frieren",
+      "descricao": "Catalisador: Cajado Mágico. Dano mágico massivo via Árvore de Habilidades.",
+      "despertar": "Desencadear Mana: (Req: Derrotar Qual). Aura opressiva, levitação fixa, screen shake passivo de área. Duração: 45s.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Zoltraak",
+          "descricao": "Feixe branco perfurante (end_rod). Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Barreira Arcana",
+          "descricao": "Hexágonos 3D deflectem dano no impacto. Cooldown: 12s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Impulso Arcano",
+          "descricao": "Pulo cyan_dust com Slow Falling. Cooldown: 10s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Gaiola de Vento",
+          "descricao": "Ciclone aprisiona inimigo (Não se mexe). Cooldown: 30s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Zoltraak Múltiplo",
+          "descricao": "20 feixes pequenos teleguiados. Cooldown: 2s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Julgamento",
+          "descricao": "Pilar de luz do céu esmaga alvos (como beacon). Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Buraco Negro Mágico",
+          "descricao": "Suga blocos/entidades e implode sem som. Cooldown: 25s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Escudo Celestial",
+          "descricao": "Cúpula de invulnerabilidade no grupo. Cooldown: 40s."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "nome": "Sukuna",
+      "universo": "Jujutsu Kaisen",
+      "descricao": "Rei das Maldições. Corta sem arma visível (Mestria Mágica).",
+      "despertar": "Santuário Malevolente: (Req: Derrotar Mahoraga). Templo 3D enorme spawna. Duração: 30s. Cooldown: 5 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Desmantelar",
+          "descricao": "Projétil invisível, risco sangrento no alvo. Cooldown: 3s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Clivar",
+          "descricao": "Melee. Teia de linhas vermelhas fatia alvo. Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Garras",
+          "descricao": "Arranhões 3D voadores. Cooldown: 12s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Fūga",
+          "descricao": "Flecha fogo massiva, explode magma. Cooldown: 40s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Desmantelar Amplo",
+          "descricao": "Onda horizontal que fatia a montanha ao meio. Cooldown: 6s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Fūga Concentrada",
+          "descricao": "Míssil teleguiado vaporizador de blocos de água. Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Corte Aranha",
+          "descricao": "Chão abre-se cortando mobs por baixo. Cooldown: 20s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Regeneração Reversa",
+          "descricao": "Regenera vida full em 1 segundo. Cooldown: 1x por Domo."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "nome": "Rimuru Tempest",
+      "universo": "TenSura",
+      "descricao": "Mestre dos Elementos, evolução baseada em Gula (níveis por comer mobs).",
+      "despertar": "Despertar Lorde Demónio: (Req: Derrotar Lorde Orc Disaster). Asas 3D, aura negra, flutuação. Duração: 2 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Lâmina de Água",
+          "descricao": "Meia lua liquida transpassante. Cooldown: 3s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Chamas Negras",
+          "descricao": "Domo de fogo preto (Wither debuff). Cooldown: 10s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Gula",
+          "descricao": "Slime suga inimigos num raio de 5s, curando-se. Cooldown: 15s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Teia de Aço",
+          "descricao": "Amarra inimigo no chão (Root total). Cooldown: 25s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Megiddo",
+          "descricao": "Gotas de água no céu disparam raycasts na cabeça dos alvos. Cooldown: 8s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Tempestade Negra",
+          "descricao": "Furacão de raios e fogo escuro. Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Beelzebuth",
+          "descricao": "Devora blocos massivos do terreno para Buff passivo permanente de Dano. Cooldown: 30s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Relâmpago Negro",
+          "descricao": "Pilar horizontal elétrico das trevas. Cooldown: 25s."
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "nome": "Tanjiro Kamado",
+      "universo": "Demon Slayer",
+      "descricao": "Arma: Espada Nichirin. Alterna respirações via NBT tags.",
+      "despertar": "Hinokami Kagura: (Req: Derrotar Lua Superior Akaza). A lâmina incendeia permanentemente (Fogo 3D). Altera Paleta e Status.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Corte Água",
+          "descricao": "Rasto curvo espuma (brilha no escuro). Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Dragão da Mudança",
+          "descricao": "Dash do dragão aquático 3D (AoE splash). Cooldown: 12s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Mundo Transparente",
+          "descricao": "Slow motion em mobs Glowing. Som batimento cardíaco. Cooldown: 20s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Roda d'Água",
+          "descricao": "Ataque vertical aéreo circular. Cooldown: 15s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Sol Claro",
+          "descricao": "Corte fogo 3D purificador. Derrete pedra. Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Dança Contínua",
+          "descricao": "Dashes curtos deixando fogueiras. Dano staka a cada X. Cooldown: 1.5s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Dragão Solar",
+          "descricao": "Dragão de magma solar persegue em AoE. Cooldown: 18s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Céu Azul",
+          "descricao": "Iaijutsu (Bainha rápida) rasga o chão em chama linear. Cooldown: 20s."
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "nome": "Killua Zoldyck",
+      "universo": "Hunter x Hunter",
+      "descricao": "Arma: Yo-Yos. Altíssima velocidade passiva vinda da Árvore de Habilidades.",
+      "despertar": "Kanmuru (Godspeed): (Req: Sobreviver Raio de Eletricidade Absoluta). Cabelo arrepia (Modelo). Aura azul/amarela. Ativa Parry Automático. Duração: 45s.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Yo-Yo Metálico",
+          "descricao": "Física de elástico. Ricochete (AoE). Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Palmas Elétricas",
+          "descricao": "Choque melee (Slowness 255). Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Eco Rítmico",
+          "descricao": "Ilusões ghost 3D confundem IA dos mobs. Cooldown: 15s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Unhas Assassinas",
+          "descricao": "Crítico invisível silencioso (Sangramento). Cooldown: 25s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Raio Direto",
+          "descricao": "Disparo elétrico perfurante instantâneo. Cooldown: 2s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Velocidade Divina",
+          "descricao": "Dash supersónico que fere alvos no trajeto com fios vivos. Cooldown: 4s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Descarga Esgotante",
+          "descricao": "Explosão elétrica global que encerra a transformação. Cooldown: 1x."
+        },
+        {
+          "tecla": "V",
+          "nome": "Narukami",
+          "descricao": "Raio vertical cai do céu fulminante no cursor. Cooldown: 12s."
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "nome": "Genos",
+      "universo": "One Punch Man",
+      "descricao": "Armadura passiva cyborgue embutida. Usa gestão de superaquecimento.",
+      "despertar": "Max Power: (Req: Derrotar Carnage Kabuto). Partes 3D laranjas. Fumaça (campfire) eterna. Status Triplicados.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Machine Gun Blows",
+          "descricao": "Murros blur frontais (quebra blocos). Cooldown: 5s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Rocket Stomp",
+          "descricao": "Impulso pro chão. Cratera massiva e chamas. Cooldown: 10s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Core Flash",
+          "descricao": "Luz de reator cega todos (Blindness total 6s). Cooldown: 20s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Dual Kick",
+          "descricao": "Pontapé foguete que lança o mob para as nuvens. Cooldown: 15s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Incineration Cannon",
+          "descricao": "Lança-chamas 3D sustentado. Vira blocos em magma. Cooldown: 8s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Spiral Incineration",
+          "descricao": "Raio giratório propulsivo (Knockback brutal horizontal). Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Lightning Eye",
+          "descricao": "Raios laranjas pequenos rastreiam o alvo. Cooldown: 12s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Core Overload",
+          "descricao": "Explosão suicida atómica que aniquila a área. Cooldown: Mata o jogador."
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "nome": "Jotaro Kujo",
+      "universo": "JoJo's Bizarre Adventure",
+      "descricao": "Manipula Server Tick Rate para criar o efeito de tempo parado (Frozen Time).",
+      "despertar": "Star Platinum: The World: (Req: Derrotar DIO Vampire). Ecrã cinza, Blip som. Servidor pausa IA/Gravidade de todos menos o jogador por 6 segundos. Cooldown: 3 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "ORA ORA",
+          "descricao": "Stand 3D espanca. Ondas de choque (AABB larga). Cooldown: 4s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Star Finger",
+          "descricao": "Raycast crítico rápido com dedo esticado 3D. Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Stand Leap",
+          "descricao": "Levanta blocos. Balística vertical do jogador. Cooldown: 12s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Stand Block",
+          "descricao": "Cruza braços (Parry/Invulnerabilidade 1s). Cooldown: 15s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "ORA ORA Congelado",
+          "descricao": "Aplica dano e partículas num alvo imóvel. O Dano acumula mas não subtrai a vida do alvo até o tempo voltar."
+        },
+        {
+          "tecla": "X",
+          "nome": "Lançamento Facas",
+          "descricao": "Facas de item estancam no ar mirando no inimigo."
+        },
+        {
+          "tecla": "C",
+          "nome": "Rolo Compressor",
+          "descricao": "Spawna veículo gigante 3D no céu caindo em direção ao mob paralisado."
+        },
+        {
+          "tecla": "V",
+          "nome": "Retomar Tempo",
+          "descricao": "O jogador cancela manualmente. Tudo calcula de uma vez num mega-dano explosivo."
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "nome": "Edward Elric",
+      "universo": "Fullmetal Alchemist",
+      "descricao": "Muda a geometria (Tags de Bloco do Minecraft) para criar armas a partir do mapa.",
+      "despertar": "Pedra Filosofal: (Req: Derrotar Homunculus Mestre). Sem bater palmas. Relâmpagos vermelhos 3D. Criações 10x maiores. Duração: 2 mins.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Muralha Terrestre",
+          "descricao": "Sobe barreira com os mesmos blocos que pisar. Cooldown: 3s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Espinhos de Pedra",
+          "descricao": "3 pilares 3D empalam a partir do chão. Cooldown: 8s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Lâmina Automail",
+          "descricao": "Modelo braço 3D metálico. Aumenta dano base corpo-a-corpo. (Toggle)."
+        },
+        {
+          "tecla": "V",
+          "nome": "Canhão de Chão",
+          "descricao": "Cria monte de pedra que cospe pedregulho balístico. Cooldown: 15s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Chuva Alquímica",
+          "descricao": "Bateria de canhões 3D cospem cascalho (spray). Cooldown: 5s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Prisão Terrestre",
+          "descricao": "Gaiola de barras de ferro 3D ao redor do mob instantânea. Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Transmutação Área Leta",
+          "descricao": "Terreno espreme pilares letais (Altera topografia local). Cooldown: 25s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Golem Protetor",
+          "descricao": "Animação da terra levantando Golem 3D com aggro e muita vida. Cooldown: 40s."
+        }
+      ]
+    }
+  ]
+}
