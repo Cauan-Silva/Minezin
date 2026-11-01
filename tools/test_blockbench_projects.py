@@ -50,7 +50,7 @@ class BlockbenchProjectsTest(unittest.TestCase):
         for name in PROJECTS:
             p=read(OUT/(name+'.bbmodel'));ids={g['uuid'] for g in p['groups']}
             for animation in p.get('animations',[]):
-                self.assertEqual('loop',animation['loop']);self.assertGreater(animation['length'],0)
+                self.assertIn(animation['loop'],['loop','once']);self.assertGreater(animation['length'],0)
                 for key,animator in animation['animators'].items():
                     self.assertIn(key,ids)
                     for frame in animator['keyframes']:

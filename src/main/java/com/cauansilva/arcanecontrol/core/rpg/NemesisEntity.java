@@ -28,13 +28,20 @@ public final class NemesisEntity extends Monster implements GeoEntity {
     private final ServerBossEvent barra=new ServerBossEvent(Component.literal("Nêmesis"),BossEvent.BossBarColor.PURPLE,BossEvent.BossBarOverlay.PROGRESS);
     private UUID dono;
     private Vec3 arena=Vec3.ZERO,mira=Vec3.ZERO;
-    private int carga,proximo=70;
+    private int carga,recuperacao,proximo=70;
+    private static final EntityDataAccessor<Float> ESCALA=SynchedEntityData.defineId(NemesisEntity.class,EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> LIBERANDO=SynchedEntityData.defineId(NemesisEntity.class,EntityDataSerializers.BOOLEAN);
+    public float escala(){return entityData.get(ESCALA);}
+    public void configurarTamanho(int kit){entityData.set(KIT,kit);entityData.set(ESCALA,(float)com.cauansilva.arcanecontrol.ConfigServidor.escalaChefe(kit));refreshDimensions();}
+    @Override public EntityDimensions getDimensions(Pose pose){return EntityDimensions.scalable(.85f,2f).scale(escala());}
+    @Override protected float getStandingEyeHeight(Pose pose,EntityDimensions size){return size.height*.88f;}
+    @Override public void onSyncedDataUpdated(EntityDataAccessor<?> key){super.onSyncedDataUpdated(key);if(ESCALA.equals(key))refreshDimensions();}
     public NemesisEntity(EntityType<? extends Monster> tipo,Level level){super(tipo,level);xpReward=60;setPersistenceRequired();}
     public static AttributeSupplier.Builder atributos(){return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH,360).add(Attributes.MOVEMENT_SPEED,.29).add(Attributes.ATTACK_DAMAGE,10).add(Attributes.ARMOR,10).add(Attributes.KNOCKBACK_RESISTANCE,.8).add(Attributes.FOLLOW_RANGE,64);}
-    @Override protected void defineSynchedData(){super.defineSynchedData();entityData.define(KIT,1);entityData.define(CONJURANDO,false);}
+    @Override protected void defineSynchedData(){super.defineSynchedData();entityData.define(KIT,1);entityData.define(CONJURANDO,false);entityData.define(ESCALA,1f);entityData.define(LIBERANDO,false);}
     public int kit(){return entityData.get(KIT);}
-    public void preparar(ServerPlayer p,int kit,Vec3 centro){dono=p.getUUID();entityData.set(KIT,kit);arena=centro;getAttribute(Attributes.MAX_HEALTH).setBaseValue(kit==1?360:kit==2?420:kit==3?460:480);setHealth(getMaxHealth());setCustomName(Component.literal(PersonagemRpg.porId(kit).nemesis));setTarget(p);}
-    @Override protected void registerGoals(){goalSelector.addGoal(0,new FloatGoal(this));goalSelector.addGoal(2,new MeleeAttackGoal(this,1,true));goalSelector.addGoal(4,new LookAtPlayerGoal(this,net.minecraft.world.entity.player.Player.class,32));}
+    public void preparar(ServerPlayer p,int kit,Vec3 centro){dono=p.getUUID();configurarTamanho(kit);arena=centro;getAttribute(Attributes.MAX_HEALTH).setBaseValue(kit==1?360:kit==2?420:kit==3?460:480);setHealth(getMaxHealth());setCustomName(Component.literal(PersonagemRpg.porId(kit).nemesis));setTarget(p);}
+    @Override protected void registerGoals(){goalSelector.addGoal(0,new FloatGoal(this));goalSelector.addGoal(2,new MeleeAttackGoal(this,1,true){@Override public boolean canUse(){return carga==0&&recuperacao==0&&super.canUse();}@Override public boolean canContinueToUse(){return carga==0&&recuperacao==0&&super.canContinueToUse();}});goalSelector.addGoal(4,new LookAtPlayerGoal(this,net.minecraft.world.entity.player.Player.class,32));}
     private boolean valido(ServerPlayer p){return p!=null&&p.isAlive()&&!p.isSpectator()&&p.serverLevel()==level()&&p.distanceToSqr(arena)<64*64&&RpgServidor.dados(p).hasUUID("desafio")&&getUUID().equals(RpgServidor.dados(p).getUUID("desafio"));}
     @Override public void tick(){
         super.tick();if(level().isClientSide||!isAlive())return;
@@ -42,10 +49,11 @@ public final class NemesisEntity extends Monster implements GeoEntity {
         if(!valido(p)){if(p!=null&&RpgServidor.dados(p).hasUUID("desafio")&&getUUID().equals(RpgServidor.dados(p).getUUID("desafio")))RpgServidor.dados(p).remove("desafio");discard();return;}
         barra.setName(getDisplayName());barra.setProgress(getHealth()/getMaxHealth());setTarget(p);
         if(distanceToSqr(arena)>48*48){setPos(arena.x,arena.y,arena.z);getNavigation().stop();}
-        if(hasEffect(com.cauansilva.arcanecontrol.core.asta.RegistroAsta.SILENCIO.get())){carga=0;entityData.set(CONJURANDO,false);proximo=Math.max(proximo,20);return;}
+        if(hasEffect(com.cauansilva.arcanecontrol.core.asta.RegistroAsta.SILENCIO.get())){carga=0;recuperacao=0;entityData.set(CONJURANDO,false);entityData.set(LIBERANDO,false);proximo=Math.max(proximo,20);return;}
+        if(recuperacao>0){getNavigation().stop();if(--recuperacao==0)entityData.set(LIBERANDO,false);return;}
         if(carga>0){
             getNavigation().stop();setDeltaMovement(getDeltaMovement().multiply(0,1,0));getLookControl().setLookAt(p);
-            if(--carga==0){entityData.set(CONJURANDO,false);impacto(p);proximo=getHealth()<getMaxHealth()/2?65:105;}
+            if(--carga==0){entityData.set(CONJURANDO,false);entityData.set(LIBERANDO,true);recuperacao=8;impacto(p);proximo=getHealth()<getMaxHealth()/2?65:105;}
         }else if(--proximo<=0){
             mira=p.position();carga=kit()==1?18:kit()==2?26:kit()==4?22:30;entityData.set(CONJURANDO,true);
             EfeitosDespertar.enviar((ServerLevel)level(),getUUID(),100+kit(),position(),mira,carga,kit());
@@ -86,7 +94,7 @@ public final class NemesisEntity extends Monster implements GeoEntity {
     @Override protected boolean shouldDespawnInPeaceful(){return false;}
     @Override public boolean removeWhenFarAway(double d){return false;}
     @Override public void addAdditionalSaveData(CompoundTag t){super.addAdditionalSaveData(t);if(dono!=null)t.putUUID("dono",dono);t.putInt("kit",kit());t.putDouble("ax",arena.x);t.putDouble("ay",arena.y);t.putDouble("az",arena.z);}
-    @Override public void readAdditionalSaveData(CompoundTag t){super.readAdditionalSaveData(t);dono=t.hasUUID("dono")?t.getUUID("dono"):null;entityData.set(KIT,Math.max(1,Math.min(4,t.getInt("kit"))));arena=new Vec3(t.getDouble("ax"),t.getDouble("ay"),t.getDouble("az"));}
+    @Override public void readAdditionalSaveData(CompoundTag t){super.readAdditionalSaveData(t);dono=t.hasUUID("dono")?t.getUUID("dono"):null;configurarTamanho(Math.max(1,Math.min(4,t.getInt("kit"))));arena=new Vec3(t.getDouble("ax"),t.getDouble("ay"),t.getDouble("az"));}
     @Override public AnimatableInstanceCache getAnimatableInstanceCache(){return cache;}
-    @Override public void registerControllers(AnimatableManager.ControllerRegistrar r){r.add(new AnimationController<>(this,"corpo",5,s->s.setAndContinue(RawAnimation.begin().thenLoop(entityData.get(CONJURANDO)?"cast":s.isMoving()?"walk":"idle"))));}
+    @Override public void registerControllers(AnimatableManager.ControllerRegistrar r){r.add(new AnimationController<>(this,"corpo",0,s->s.setAndContinue(entityData.get(LIBERANDO)?RawAnimation.begin().thenPlay("release"):entityData.get(CONJURANDO)?RawAnimation.begin().thenPlay("cast"):RawAnimation.begin().thenLoop(s.isMoving()?"walk":"idle"))));}
 }

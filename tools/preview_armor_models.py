@@ -74,7 +74,7 @@ def render(output,backend=None,nemesis=False,asta=False):
  sheet=Image.new('RGB',(width*3,height*rows+58),(11,15,24));draw=ImageDraw.Draw(sheet)
  for index,(style,yaw)in enumerate([(style,yaw) for style in styles for yaw in [0,180,28]]):
   image=Image.open(ASSETS/('textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.write(image.tobytes())
-  fbo.clear(.035,.045,.067,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
+  fbo.clear(.14,.15,.18,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
   framing=projection.copy();framing[0,0]=2/(84 if style=='asta_forma' else 48 if style=='liebe' else 34)
   if style=='asta_forma':
    framing[1,1]=2/64;mv=lookat(np.array([0.,26.,-60.]),np.array([0.,26.,0.]))@model

@@ -32,7 +32,7 @@ public final class AltarDespertar extends Block {
         for(int altura=0;altura<5&&chefe==null;altura++){
             var destino=centro.add(direcao.scale(5)).add(0,altura,0);var bp=BlockPos.containing(destino);
             if(!level.hasChunkAt(bp)||!level.getWorldBorder().isWithinBounds(bp))continue;
-            var candidato=RegistroDespertar.NEMESIS.get().create(level);if(candidato==null)break;candidato.moveTo(destino.x,destino.y,destino.z,p.getYRot()+180,0);
+            var candidato=RegistroDespertar.NEMESIS.get().create(level);if(candidato==null)break;candidato.configurarTamanho(kit.id);candidato.moveTo(destino.x,destino.y,destino.z,p.getYRot()+180,0);
             if(!level.noCollision(candidato,EspacoInvocacao.volumeLivre(candidato.getBoundingBox()))||level.containsAnyLiquid(candidato.getBoundingBox())||!level.getBlockState(bp.below()).isFaceSturdy(level,bp.below(),Direction.UP))continue;
             chefe=candidato;
         }
