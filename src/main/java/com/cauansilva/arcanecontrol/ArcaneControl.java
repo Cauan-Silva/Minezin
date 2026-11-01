@@ -24,6 +24,7 @@ public class ArcaneControl {
                 net.minecraftforge.fml.config.ModConfig.Type.CLIENT, ConfigCliente.SPEC);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::setup);
+        com.cauansilva.arcanecontrol.core.audio.RegistroSons.SONS.register(modEventBus);
         com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.registrar();
         com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.asta.RegistroAsta.registrar(modEventBus);

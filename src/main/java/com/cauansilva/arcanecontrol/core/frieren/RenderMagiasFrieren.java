@@ -32,7 +32,23 @@ public final class RenderMagiasFrieren {
                 });
             } else if(e.tipo()==22){
                 float a=(float)Math.min(1,Math.min(t/6,(80-t)/10));
-                DesenhoMagia.esfera(pose,cam,atual.add(0,1,0),1.9,2,CLARO,a*.75f,true,n);
+                DesenhoMagia.esfera(pose,cam,atual.add(0,1,0),1.9,2,CLARO,a*.16f,true,n);
+                Vec3 normal=p.getViewVector(parcial),x=normal.cross(new Vec3(0,1,0)).normalize();if(x.lengthSqr()<1e-8)x=new Vec3(1,0,0);
+                final Vec3 horizontal=x,vertical=x.cross(normal).normalize(),centro=atual.add(0,1,0).add(normal.scale(1.7));
+                DesenhoMagia.lote(pose,1,true,()->{
+                    for(int linha=-2;linha<=2;linha++)for(int coluna=-2;coluna<=2;coluna++){
+                        double px=coluna*.66+(Math.abs(linha)%2)*.33,py=linha*.57;
+                        if(px*px+py*py>2.15)continue;
+                        Vec3 c=centro.add(horizontal.scale(px)).add(vertical.scale(py));
+                        float pulso=a*(float)(.65+.35*Math.pow(Math.max(0,Math.sin(t*.13+linha*2+coluna)),4));
+                        for(int j=0;j<6;j++){
+                            double v=j*Math.PI/3,w=(j+1)*Math.PI/3;
+                            Vec3 q=c.add(horizontal.scale(Math.cos(v)*.38)).add(vertical.scale(Math.sin(v)*.38));
+                            Vec3 r=c.add(horizontal.scale(Math.cos(w)*.38)).add(vertical.scale(Math.sin(w)*.38));
+                            DesenhoMagia.fita(pose,cam,q,r,.025,0,1,CLARO,pulso);
+                        }
+                    }
+                });
                 DesenhoMagia.lote(pose,6,true,()->{
                     DesenhoMagia.selo(pose,cam,atual.add(0,.05,0),new Vec3(0,1,0),1.65,t,OURO,a*.7f);
                     DesenhoMagia.anel(pose,atual.add(0,1,0),cam.subtract(atual).normalize(),1.86,1.9,CLARO,a*.4f,64);

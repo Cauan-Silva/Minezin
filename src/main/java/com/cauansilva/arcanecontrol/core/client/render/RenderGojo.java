@@ -174,7 +174,7 @@ public final class RenderGojo {
                         fita(pose,cam,anterior,q,.24,0,1,ROXO,pulso*.55f);
                         fita(pose,cam,anterior,q,.075,0,1,0xF2DEFF,pulso);
                     }
-                    if(i==5){Vec3 ramo=q.add(lado.scale(Math.sin(j*2)*1.7)).add(alto.scale(1.3));fita(pose,cam,q,ramo,.065,0,1,0xEAD2FF,pulso);}
+                    if(i==3||i==5){Vec3 ramo=q.add(lado.scale(Math.sin(j*2)*1.7)).add(alto.scale(1.3));fita(pose,cam,q,ramo,.065,0,1,0xEAD2FF,pulso);}
                     anterior=q;
                 }
             }

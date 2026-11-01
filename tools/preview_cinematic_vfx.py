@@ -35,6 +35,17 @@ def arc(radius,progress,width,color):
         paths.append((p,q,width*math.sqrt(math.sin(u*math.pi)),color,u*4,(u+1/36)*4))
     return paths
 
+def column(t,color):
+    out=[];age=max(0,t-90);fade=max(0,1-age/150);base=(1.2+4.8*(1-math.exp(-age/9)))*fade
+    def point(i,j):
+        a=j*math.tau/40;u=i/12;r=base*(.82+.6*math.sqrt(u))*(1+math.sin(a*7+u*12-t*.08)*.035)
+        return [math.cos(a)*r,u*48,math.sin(a)*r]
+    for i in range(12):
+        for j in range(40):
+            vertices=[point(i,j),point(i,j+1),point(i+1,j+1),point(i+1,j)];uv=[(j/40,i/12),((j+1)/40,i/12),((j+1)/40,(i+1)/12),(j/40,(i+1)/12)]
+            for k in [0,1,2,0,2,3]:out.append([*vertices[k],*color,*uv[k]])
+    return np.array(out,dtype='f4')
+
 def render(output,backend=None):
     ctx=moderngl.create_standalone_context(require=320,**({'backend':backend}if backend else{}))
     programs={name:load_program(ctx,name,'one' if name=='atomic_energy' else None)
@@ -78,11 +89,20 @@ def render(output,backend=None):
                         point=np.array([math.cos(a)*r+warp,(1-u)*(1+math.sin(j*1.7)*2)+math.sin(u*math.pi)*.8,math.sin(a)*r-warp])
                         if previous is not None:paths.append((previous,point,.07+t*.001,white,(i-1)/28*4,u*4))
                         previous=point
+                growth=max(0,min(1,(t-8)/40));growth=growth*growth*(3-2*growth)
+                for j in range(42):
+                    previous=None;a=j*2.399963;radius=3+(j%7)*1.7
+                    for i in range(9):
+                        u=i/8;rr=radius*(1-u*u*.35);point=[math.cos(a)*rr+math.sin(u*9+j)*.12,u*(12+(j%5)*1.8)*growth,math.sin(a)*rr]
+                        if previous is not None:paths.append((previous,point,.025,(*violet[:3],.55),0,1))
+                        previous=point
                 draw('atomic_energy',0,ribbons(paths,camera),True)
+                if t>50:
+                    for j in range(2):draw('atomic_energy',0,shifted(ring(1.8+j*.55,1.845+j*.55,UP,white),[0,3.6+j*.35,0]),True)
                 for j in range(3):draw('anime_energy_additive',6,shifted(ring(1.2+j*.65,1.245+j*.65,UP,violet),[0,.05+j*.01,0]),True)
             else:
                 age=t-90;fade=max(0,1-age/150);r=(.6+16*(1-math.exp(-age/13)))*fade
-                draw('atomic_energy',1,shifted(mesh(r,detail=28,color=(1,1,1,fade*.7)),[0,1,0]),True)
+                draw('atomic_energy',3,column(t,(1,1,1,fade*.65)),True)
                 for j in range(3):
                     radius=18*(1-math.exp(-max(0,age-j*5)/13))
                     if radius>0:draw('atomic_energy',0,shifted(ring(max(0,radius-.16),radius,UP,(*violet[:3],fade*.65)),[0,.2+j*.3,0]),True)

@@ -2,8 +2,8 @@ package com.cauansilva.arcanecontrol.core.vfx;
 public final class RaiosRoxo {
     public record Ponto(double lateral,double vertical,double frente){}
     public static Ponto ponto(int raio,int segmento,double tick){
-        double s=segmento/8.0,a=raio*Math.PI/4+tick*.008;
-        double r=3.9+s*4.2;
+        double s=segmento/8.0,a=raio*2.399963+Math.sin(raio*1.71)*.28+tick*.008;
+        double r=3.9+s*(2.7+(Math.sin(raio*3)*.5+.5)*1.5);
         double desvio=Math.sin(raio*3+segmento*2.1+Math.floor(tick/3))*.6*Math.sin(s*Math.PI);
         return new Ponto(Math.cos(a)*r-Math.sin(a)*desvio,Math.sin(a)*r+Math.cos(a)*desvio,
                 Math.sin(raio*1.7+segmento*.9)*s*1.2);

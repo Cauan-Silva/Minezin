@@ -4,6 +4,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public final class ConfigCliente {
     public static final ForgeConfigSpec SPEC;
+    public static final ForgeConfigSpec.BooleanValue SFX_ANIME;
+    public static final ForgeConfigSpec.DoubleValue VOLUME_SFX;
     public static final ForgeConfigSpec.BooleanValue CINEMATICAS;
     public static final ForgeConfigSpec.BooleanValue PHOTON;
     public static final ForgeConfigSpec.BooleanValue VFX_REDUZIDOS;
@@ -31,6 +33,8 @@ public final class ConfigCliente {
         CINEMATICAS = builder.comment("Ativar câmera, zoom e tremor nas Ultimates locais.")
                 .define("cinematicas", true);
         IMPACT_FRAMES=builder.comment("Impact frames breves de ultimates e bosses; desligado tambem por vfxReduzidos.").define("impactFrames",true);
+        SFX_ANIME=builder.comment("SFX originais sincronizados com os efeitos de anime; respeitam o volume de Jogadores.").define("sfxAnime",true);
+        VOLUME_SFX=builder.comment("Ganho adicional dos SFX de anime.").defineInRange("volumeSfxAnime",.7,0d,1d);
         SPEC = builder.build();
     }
 }
