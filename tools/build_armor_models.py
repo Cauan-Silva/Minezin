@@ -51,95 +51,16 @@ def legs(b, material, boots, cuff):
         cube(b[name], [x-.03,4.3,-2.3], [4.46,.7,4.6], cuff)
 
 def gojo():
-    b = skeleton(); head, body = b['armorHead'], b['armorBody']
-    cube(head, [-4.25,27,-4.35], [8.5,2.55,.45], BLACK)
-    for x in [-4.3,3.85]: cube(head, [x,27,-4], [.45,2.5,8.2], BLACK)
-    cube(head, [-4.25,27,3.9], [8.5,2.5,.45], BLACK)
-    for x in [-3.8,2.6]: cube(head, [x,26.55,-4.37], [1.2,.5,.42], BLACK)
-    cube(body, [-4.2,12,-2.2], [8.4,11.8,4.4], INDIGO)
-    cube(body, [-4.3,21.3,-2.45], [8.6,3,4.9], INDIGO)
-    cube(body, [-3.4,21.7,-2.64], [6.8,1.6,.3], SHADOW)
-    cube(body, [-3.8,12.1,-2.45], [3.6,9.6,.35], INDIGO)
-    cube(body, [.05,12.1,-2.45], [3.75,9.6,.35], INDIGO)
-    for y in [13.1,15.1,17.1,19.1,21.1]: cube(body, [-.25,y,-2.85], [.5,.65,.25], GOLD)
-    cube(body, [-4.1,15.6,2.22], [8.2,.45,.18], SHADOW)
-    for name, x in [('armorLeftArm',3.8), ('armorRightArm',-8.3)]:
-        cube(b[name], [x,14.3,-2.2], [4.5,9.5,4.4], INDIGO)
-        cube(b[name], [x-.05,14.0,-2.3], [4.6,.8,4.6], SHADOW)
-        cube(b[name], [x-.05,15.1,-2.3], [4.6,.45,4.6], SHADOW)
-        cube(b[name], [x+.5,17,-2.34], [.7,3.2,.16], SHADOW)
-    legs(b, NAVY, BLACK, SHADOW)
-    return b
+    from armor_reference_shapes import gojo as model
+    return model()
 
 def frieren():
-    b = skeleton(); body = b['armorBody']
-    for side, name in [(-1,'brinco_esq'), (1,'brinco_dir')]:
-        b[name] = bone(name, [side*4.25,27,0], 'armorHead')
-        cube(b[name], [side*4.25-.12,25.5,-.6], [.24,1.6,.3], GOLD)
-        cube(b[name], [side*4.25-.22,25,-.72], [.44,.8,.38], RUBY)
-    cube(body, [-4.25,12,-2.25], [8.5,12,4.5], IVORY)
-    cube(body, [-2.3,13.7,-2.6], [4.6,7.5,.4], BLACK)
-    for y in [14.5,17,19.5]: cube(body, [-2.1,y,-2.85], [4.2,.8,.2], WHITE)
-    for x in [-2.8,2.2]: cube(body, [x,13.4,-2.95], [.65,8.9,.3], GOLD)
-    for x in [-4.2,3.1]: cube(body, [x,13,-2.65], [1.15,9.5,.4], WHITE)
-    cube(body, [-4.55,21.7,-2.5], [9.1,2.3,5], WHITE)
-    for x in [-2.1,1.5]: cube(body, [x,22.8,-2.7], [.6,.75,.3], RUBY)
-    cube(body, [-4.4,12,-2.65], [8.8,1.35,5.3], NAVY)
-    cube(body, [-.5,12.1,-2.95], [1,1,.35], STEEL)
-    for side, name in [(-1,'aba_esq'),(1,'aba_dir')]:
-        b[name] = bone(name, [side*2.25,12.5,-2.2], 'armorBody')
-        cube(b[name], [side*2.25-2.05,7.1,-2.68], [4.1,5.3,.55], WHITE)
-        cube(b[name], [side*2.25-2.05,7.0,-2.75], [4.1,.55,.65], GOLD)
-    for name,x,w in [('capa_esq',-4.35,2.8), ('capa_centro',-1.55,3.1), ('capa_dir',1.55,2.8)]:
-        b[name] = bone(name, [x+w/2,22.5,2.5], 'armorBody')
-        cube(b[name], [x,8,2.55], [w,14.5,.48], WHITE)
-        cube(b[name], [x,7.9,2.52], [w,.55,.55], GOLD)
-    for name,x in [('armorLeftArm',3.7), ('armorRightArm',-8.4)]:
-        cube(b[name], [x,14,-2.3], [4.7,9.5,4.6], WHITE)
-        cube(b[name], [x-.2,21.5,-2.5], [5.1,2.3,5], WHITE)
-        cube(b[name], [x-.22,21.2,-2.52], [5.14,.65,5.04], GOLD)
-        cube(b[name], [x+.9,22.05,-2.65], [.65,1.4,.3], RUBY)
-        for y in [14.1,16.8]: cube(b[name], [x-.05,y,-2.4], [4.8,.75,4.8], GOLD)
-    legs(b, NAVY, BROWN, BRONZE)
-    return b
+    from armor_reference_shapes import frieren as model
+    return model()
 
 def shadow():
-    b = skeleton(); head, body = b['armorHead'], b['armorBody']
-    cube(head, [-4.8,24,3.3], [9.6,9.1,1.7], SHADOW)
-    for x in [-5.1,3.7]: cube(head, [x,24,-4.6], [1.4,8.6,8.7], SHADOW)
-    cube(head, [-4.8,31.4,-4.6], [9.6,1.7,9.6], SHADOW)
-    cube(head, [-4.7,30.6,-4.8], [9.4,1,.5], INK)
-    cube(head, [-4.9,29.1,4.9], [9.8,.55,.25], GOLD)
-    for x in [-5.2,4.9]: cube(head, [x,29,-3.4], [.3,.55,8.4], GOLD)
-    cube(body, [-4.3,12,-2.3], [8.6,12,4.6], SHADOW)
-    cube(body, [-2.8,13.3,-2.65], [5.6,8.4,.45], INK)
-    for y in [14.4,17,19.6]:
-        for side in [-1,1]: cube(body, [side*1.25-1.4,y,-2.95], [2.8,.7,.35], STEEL, [side*1.25,y,-2.9], [0,0,side*23])
-    for side in [-1,1]:
-        cube(body, [side*3.55-.24,12,-2.75], [.48,10.4,.35], GOLD)
-        cube(body, [side*4.2-1.3,21.7,-2.65], [2.6,3.8,.55], PLUM, [side*3.5,22,-2.5], [0,0,-side*20])
-        cube(body, [side*4.2-1.3,21.7,-2.98], [.35,3.8,.25], GOLD, [side*3.5,22,-2.5], [0,0,-side*20])
-    cube(body, [-4.4,11.8,-2.6], [8.8,1.5,5.2], BLACK)
-    cube(body, [-1.2,11.9,-2.9], [2.4,1.2,.4], GOLD)
-    for side,name in [(-1,'aba_esq'),(1,'aba_dir')]:
-        b[name] = bone(name, [side*3,12,-2.1], 'armorBody')
-        cube(b[name], [side*3-1.65,6,-2.55], [3.3,6,.6], SHADOW)
-        cube(b[name], [side*3-1.65,5.9,-2.68], [3.3,.5,.8], GOLD)
-    for name,x,w,y in [('capa_esq',-5.2,3.25,1.8),('capa_centro',-1.95,3.9,.8),('capa_dir',1.95,3.25,1.8)]:
-        b[name] = bone(name, [x+w/2,22.7,2.7], 'armorBody')
-        cube(b[name], [x,y,2.95], [w,22.7-y,.55], INK)
-        cube(b[name], [x,y,3.5], [.55,20-y,.18], PLUM)
-        for j in range(3):
-            cube(b[name], [x+j*w/3,y+(j%2)*.7,3.53], [w/3,1.3,.2], LILAC if j%2==0 else PLUM)
-            cube(b[name], [x+j*w/3,y+1.4+(j%2)*.7,3.53], [w/3,1.2,.2], PLUM)
-    for name,x in [('armorLeftArm',3.7),('armorRightArm',-8.4)]:
-        cube(b[name], [x,14,-2.35], [4.7,9.6,4.7], SHADOW)
-        cube(b[name], [x-.35,21.7,-2.65], [5.4,2.1,5.3], PLUM)
-        cube(b[name], [x-.4,21.3,-2.7], [5.5,.65,5.4], LILAC)
-        cube(b[name], [x-.1,14.2,-2.45], [4.9,.6,4.9], GOLD)
-        cube(b[name], [x-.12,16.9,-2.47], [4.94,.65,4.94], PLUM)
-    legs(b, INK, LEATHER, GOLD)
-    return b
+    from armor_reference_shapes import shadow as model
+    return model()
 
 def staff():
     b = {'root': bone('root', [0,0,0])}
@@ -187,8 +108,9 @@ def build():
             save(ASSETS/f'geo/armaduras/{style}_{part}.geo.json',document(style+'_'+part,icon))
         anim={}
         for name in bones:
-            if name.startswith(('capa_','aba_','brinco_')):
-                amount=1.2 if name.startswith('brinco_') else 2.5
+            if name.startswith(('capa_','aba_','brinco_','manto_')):
+                amount=.65 if name.startswith('manto_') else 1.2 if name.startswith('brinco_') else 2.5
+                amount*=1+(sum(map(ord,name))%5-2)*.12
                 anim[name]={'rotation':{'0':[0,0,0],'1.5':[amount,0,1],'3':[0,0,0],'4.5':[-amount*.5,0,-1],'6':[0,0,0]}}
         save(ASSETS/f'animations/armaduras/{style}.animation.json',{'format_version':'1.8.0','animations':{'animation.traje.idle':{'loop':True,'animation_length':6,'bones':anim}}})
         for part,suffix,cid in [('helmet','cabeca','capuz'),('chestplate','peito','manto'),('leggings','pernas','calcas'),('boots','botas','botas')]:

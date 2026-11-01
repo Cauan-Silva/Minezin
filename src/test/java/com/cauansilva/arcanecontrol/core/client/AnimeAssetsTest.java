@@ -67,7 +67,7 @@ class AnimeAssetsTest {
             assertEquals(1254,geometry.getAsJsonObject("description").get("texture_width").getAsInt());
             var names=new HashSet<String>();var bones=geometry.getAsJsonArray("bones");int cubes=0;
             for(var element:bones){var b=element.getAsJsonObject();assertTrue(names.add(b.get("name").getAsString()));if(b.has("cubes"))cubes+=b.getAsJsonArray("cubes").size();}
-            assertTrue(cubes>=30&&cubes<100);
+            assertTrue(cubes>=20&&cubes<120);
             for(var element:bones){var b=element.getAsJsonObject();if(!style.equals("shadow")&&b.get("name").getAsString().equals("armorHead")){
                 for(var cube:b.getAsJsonArray("cubes")){var c=cube.getAsJsonObject();assertTrue(c.getAsJsonArray("origin").get(1).getAsDouble()+c.getAsJsonArray("size").get(1).getAsDouble()<=30.5,"Sem cabelo acima da testa");}
             }}

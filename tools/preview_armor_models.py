@@ -42,8 +42,8 @@ def mesh(style):
  skin={'uv':[0,0],'uv_size':[1,1]}
  if style not in ['cajado','toji','aurora','qual','liebe','matadora']:bones['mannequin']={'name':'mannequin','cubes':[
   {'origin':[-4,24,-4],'size':[8,8,8],'uv':{f:skin for f in faces}},
-  {'origin':[4,12,-2],'size':[4,3,4],'uv':{f:skin for f in faces}},
-  {'origin':[-8,12,-2],'size':[4,3,4],'uv':{f:skin for f in faces}}]}
+  {'origin':[4,12,-2],'size':[4,12,4],'uv':{f:skin for f in faces}},
+  {'origin':[-8,12,-2],'size':[4,12,4],'uv':{f:skin for f in faces}}]}
  out=[];tw,th=d['description']['texture_width'],d['description']['texture_height']
  for name,b in bones.items():
   for cube in b.get('cubes',[]):
@@ -75,7 +75,9 @@ def render(output,backend=None,nemesis=False,asta=False):
  for index,(style,yaw)in enumerate([(style,yaw) for style in styles for yaw in [0,180,28]]):
   image=Image.open(ASSETS/('textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.write(image.tobytes())
   fbo.clear(.035,.045,.067,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
-  framing=projection.copy();framing[0,0]=2/(72 if style=='asta_forma' else 48 if style=='liebe' else 34)
+  framing=projection.copy();framing[0,0]=2/(84 if style=='asta_forma' else 48 if style=='liebe' else 34)
+  if style=='asta_forma':
+   framing[1,1]=2/64;mv=lookat(np.array([0.,26.,-60.]),np.array([0.,26.,0.]))@model
   program['Matrix'].write((framing@mv).T.astype('f4').tobytes());program['ModelView'].write(mv.T.astype('f4').tobytes())
   buf=ctx.buffer(mesh(style).tobytes());vao=ctx.vertex_array(program,[(buf,'3f 3f 2f 1f','Position','Normal','UV','Textured')]);vao.render(moderngl.TRIANGLES)
   tile=Image.frombytes('RGBA',(width,height),fbo.read(components=4)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
