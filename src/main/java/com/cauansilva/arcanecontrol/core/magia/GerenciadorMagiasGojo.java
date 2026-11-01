@@ -55,6 +55,10 @@ public class GerenciadorMagiasGojo {
         TecnicaGojo tecnica = TecnicaGojo.porId(idMagia);
         if (tecnica == null || !ProgressaoGojo.autorizar(player, tecnica,
                 idMagia == 3 && infinitoAtivo(player))) return;
+        executarEfeito(player,idMagia);
+        if(!desligando)com.cauansilva.arcanecontrol.core.rpg.RpgServidor.uso(player,com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO);
+    }
+    public static void executarEfeito(ServerPlayer player,int idMagia){
         ServerLevel level = player.serverLevel();
         Vec3 olho = player.getEyePosition();
         Vec3 dir = player.getLookAngle();
@@ -73,9 +77,8 @@ public class GerenciadorMagiasGojo {
             case 4 -> iniciarVazioRoxo(player, level);
             case 5 -> iniciarExpansaoDominio(player, level);
         }
-        if(!desligando)com.cauansilva.arcanecontrol.core.rpg.RpgServidor.uso(player,com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO);
         ProgressaoGojo.sincronizar(player);
-        com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.bloquear(player,PerfilVfxGojo.duracao(idMagia));
+        com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.bloquear(player,idMagia==5?35:PerfilVfxGojo.duracao(idMagia));
     }
 
     public static boolean infinitoAtivo(ServerPlayer player) {
@@ -286,7 +289,7 @@ public class GerenciadorMagiasGojo {
         ANIMACOES.add(new AnimacaoAtiva(PerfilVfxGojo.duracao(5)) {
             @Override
             void tick(int tickAtual) {
-                if (!player.isAlive() || player.hasDisconnected() || player.serverLevel() != level) return;
+                if (!player.isAlive() || player.hasDisconnected() || player.serverLevel() != level || !com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.ativo(player)) return;
 
                 // Partículas cósmicas dentro do Domo 3D
                 if (tickAtual % 8 == 0) {
@@ -300,7 +303,7 @@ public class GerenciadorMagiasGojo {
                 // Todos os inimigos dentro do Domo de 26 blocos têm a mente inundada por informação infinita (Congelamento Total!)
                 AABB areaDominio = new AABB(centroDominio, centroDominio).inflate(PerfilVfxGojo.DOMINIO_RAIO);
                 for (Entity alvo : level.getEntities(player, areaDominio,
-                        e->e.distanceToSqr(centroDominio)<=PerfilVfxGojo.DOMINIO_RAIO*PerfilVfxGojo.DOMINIO_RAIO)) {
+                        e->!e.isAlliedTo(player)&&e.distanceToSqr(centroDominio)<=PerfilVfxGojo.DOMINIO_RAIO*PerfilVfxGojo.DOMINIO_RAIO)) {
                     if (alvo instanceof LivingEntity living) {
                         living.setDeltaMovement(Vec3.ZERO);
                         living.hurtMarked = true;
@@ -308,10 +311,6 @@ public class GerenciadorMagiasGojo {
                         living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 1, false, false));
                         living.addEffect(new MobEffectInstance(MobEffects.GLOWING, 20, 1, false, false));
 
-                        if (tickAtual > 35 && tickAtual % 10 == 0) {
-                            living.hurt(level.damageSources().indirectMagic(player, player), 8.0f);
-                            level.sendParticles(ParticleTypes.ENCHANT, living.getX(), living.getY() + 1.5, living.getZ(), 15, 0.3, 0.3, 0.3, 0.2);
-                        }
                     } else if (alvo instanceof Projectile proj) {
                         reter(proj,level);
                     }

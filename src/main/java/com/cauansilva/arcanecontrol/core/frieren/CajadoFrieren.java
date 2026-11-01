@@ -17,7 +17,7 @@ public final class CajadoFrieren extends Item implements GeoItem {
     private final AnimatableInstanceCache cache=GeckoLibUtil.createInstanceCache(this);
     public CajadoFrieren(){super(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant());}
     @Override public InteractionResultHolder<ItemStack> use(Level nivel,Player jogador,InteractionHand mao){
-        if(jogador instanceof ServerPlayer p)PoderesFrieren.executar(p,21);
+        if(jogador instanceof ServerPlayer p)com.cauansilva.arcanecontrol.core.rpg.MovesetsServidor.executar(p,21);
         return InteractionResultHolder.sidedSuccess(jogador.getItemInHand(mao),nivel.isClientSide);
     }
     @Override public void appendHoverText(ItemStack stack,Level nivel,java.util.List<net.minecraft.network.chat.Component> texto,TooltipFlag flag){

@@ -12,7 +12,7 @@
   "item.arcanecontrol.calcas_shadow": "Shadow leggings",
   "item.arcanecontrol.botas_shadow": "Shadow boots",
   "key.minezin.powers": "Choose powers",
-  "item.arcanecontrol.gojo_cabeca": "Six Eyes — Blindfold and Hair",
+  "item.arcanecontrol.gojo_cabeca": "Six Eyes Blindfold",
   "item.arcanecontrol.gojo_peito": "Limitless Uniform",
   "item.arcanecontrol.gojo_pernas": "Limitless Trousers",
   "item.arcanecontrol.gojo_botas": "Limitless Boots",
@@ -22,5 +22,9 @@
   "item.arcanecontrol.frieren_botas": "Elven Mage Boots",
   "item.arcanecontrol.cajado_frieren": "Frieren's Staff",
   "item.arcanecontrol.cajado_frieren.uso": "Right-click: Zoltraak. Select Frieren in P.",
-  "key.minezin.rpg_tree": "RPG skill tree"
+  "key.minezin.rpg_tree": "RPG skill tree",
+  "key.minezin.g": "Awakening",
+  "block.arcanecontrol.altar_despertar": "Awakening Altar",
+  "item.arcanecontrol.alma_despertar": "Awakening Soul",
+  "entity.arcanecontrol.nemesis": "Nemesis"
 }

@@ -51,6 +51,7 @@ jobs:
           python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
           python tools/preview_armor_models.py --backend egl --output build/anime-armor.png
+          python tools/preview_armor_models.py --nemesis --backend egl --output build/anime-nemesis.png
       - uses: actions/upload-artifact@v4
         with:
           name: anime-visual-previews
@@ -58,6 +59,7 @@ jobs:
             build/gojo-materials.png
             build/anime-materials.png
             build/anime-armor.png
+            build/anime-nemesis.png
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:

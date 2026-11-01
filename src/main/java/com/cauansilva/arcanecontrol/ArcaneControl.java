@@ -25,6 +25,7 @@ public class ArcaneControl {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::setup);
         com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.registrar();
+        com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.cid.EspadaCid.ITEMS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(GerenciadorMagiasGojo.class);
@@ -50,6 +51,7 @@ public class ArcaneControl {
             event.register(TeclasControlo.TECLA_C);
             event.register(TeclasControlo.TECLA_V);
             event.register(TeclasControlo.TECLA_R);
+            event.register(TeclasControlo.TECLA_G);
             event.register(TeclasControlo.ARVORE);
             event.register(TeclasControlo.ARVORE_RPG);
             event.register(TeclasControlo.PODERES);

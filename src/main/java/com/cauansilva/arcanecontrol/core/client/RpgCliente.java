@@ -15,6 +15,9 @@ public final class RpgCliente {
     public static int ativo(){return estado==null?1:estado.ativo();}
     public static boolean tem(int kit){return estado!=null&&kit>=1&&kit<=15&&(estado.kits()&(1<<(kit-1)))!=0;}
     public static boolean criativo(){return estado!=null&&estado.criativo();}
+    public static int formaTicks(){var mc=Minecraft.getInstance();return estado==null||mc.level==null?0:(int)Math.max(0,estado.formaTicks()-Math.max(0,mc.level.getGameTime()-recebidoEm));}
+    public static boolean forma(){return formaTicks()>0;}
+    public static boolean exclusivoUsado(){return estado!=null&&estado.exclusivoUsado();}
     public static boolean dominioLegado(){return estado!=null&&estado.dominioLegado();}
     public static MestriaRpg mestria(int kit){return estado==null||kit<1||kit>15?new MestriaRpg():new MestriaRpg(estado.xp()[kit-1],estado.nos()[kit-1],estado.despertar()[kit-1]);}
     public static double mana(){return estado==null?100:new RecursoMana(estado.mana()).atual();}
@@ -24,6 +27,6 @@ public final class RpgCliente {
         return (int)Math.max(0,Math.min(12000,estado.recargas()[slot]-Math.max(0,mc.level.getGameTime()-recebidoEm)));
     }
     public static double fracao(int slot){return estado==null||estado.duracoes()[slot]<=0?0:Math.min(1,recarga(slot)/(double)estado.duracoes()[slot]);}
-    public static boolean tecnica(int kit,int slot){return tem(kit)&&(criativo()&&slot<4||kit==1&&slot==4&&dominioLegado()||mestria(kit).podeUsarSlot(slot));}
+    public static boolean tecnica(int kit,int slot){return tem(kit)&&(criativo()&&slot<4||mestria(kit).podeUsarSlot(slot));}
     @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e){estado=null;recebidoEm=0;}
 }

@@ -6,6 +6,7 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.glfw.GLFW;
 
 public class TeclasControlo {
+    public static final KeyMapping TECLA_G = new KeyMapping("key.minezin.g",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_G,"category.minezin.magias");
     public static final KeyMapping ARVORE_RPG = new KeyMapping("key.minezin.rpg_tree",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_H,"category.minezin.magias");
     public static final KeyMapping PODERES = new KeyMapping("key.minezin.powers",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_P,"category.minezin.magias");
     public static final KeyMapping ARVORE = new KeyMapping("key.minezin.tree", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, "category.minezin.magias");

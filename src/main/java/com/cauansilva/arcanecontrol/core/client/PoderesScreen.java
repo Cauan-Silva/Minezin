@@ -39,11 +39,11 @@ public final class PoderesScreen extends Screen {
         int barra=w-24;g.fill(x+12,y+97,x+w-12,y+100,0xFF253247);
         int valor=nivel>=100?100:xp%100;
         g.fill(x+12,y+97,x+12+barra*valor/100,y+100,0xFF000000|foco.cor);
-        String[] teclas={"Z","X","C","V","R"};int linha=h<240?10:13;
+        String[] teclas={"Z","X","C","V","G"};int linha=h<240?10:13;
         for(int i=0;i<foco.tecnicas.length;i++){
             boolean aprendida=RpgCliente.recebido()&&RpgCliente.tecnica(foco.id,i);
             String detalhe=aprendida?"Aprendida":"Árvore H";
-            g.drawString(font,"["+teclas[i]+"] "+foco.tecnicas[i]+" • "+detalhe,x+12,y+109+i*linha,aprendida?0xDCE8FA:0x7E899B);
+            g.drawString(font,"["+teclas[i]+"] "+(RpgCliente.forma()&&foco.id==RpgCliente.ativo()?NomesMovesets.nome(foco.id,i):foco.tecnicas[i])+" • "+detalhe,x+12,y+109+i*linha,aprendida?0xDCE8FA:0x7E899B);
         }
         String custo=foco==PoderAnime.GOJO?"Árvore em H. Uso: +5 XP; dano e inimigos também dão XP."
                 :p.tem(foco)?"Uso: +5 XP; inimigo: +25 XP. "+(foco==PoderAnime.CID?"Requer a Lâmina Shadow.":"Magia pode ser usada sem cajado.")

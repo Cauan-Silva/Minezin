@@ -6,6 +6,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RpgRedeTest {
+    @Test void efeitoDeChefeTransportaUuidEExtremidadesSemDependerDePlayer(){
+        var pacote=new PacoteEfeitoDespertar(java.util.UUID.randomUUID(),103,new net.minecraft.world.phys.Vec3(1.25,64,-10),new net.minecraft.world.phys.Vec3(7,65,8),30,3);
+        var buf=new FriendlyByteBuf(Unpooled.buffer());
+        try{PacoteEfeitoDespertar.encode(pacote,buf);assertEquals(pacote,PacoteEfeitoDespertar.decode(buf));assertEquals(0,buf.readableBytes());}finally{buf.release();}
+    }
     @Test void nbtMantemProgressaoManaECooldownsSeparados(){
         var raiz=new net.minecraft.nbt.CompoundTag();var gojo=MestriaRpg.migrar(900,true,true,true);var frieren=new MestriaRpg(4900,127,false);
         PerfilRpgNbt.salvar(raiz,1,gojo);PerfilRpgNbt.salvar(raiz,3,frieren);raiz.putDouble("mana",47.5);
@@ -26,13 +31,13 @@ class RpgRedeTest {
     }
     @Test void snapshotComPerfisECooldownsFazRoundTrip(){
         int[] xp=new int[15],nos=new int[15];boolean[] g=new boolean[15];xp[0]=900;xp[2]=4900;nos[2]=127;
-        var pacote=new PacoteEstadoRpg(3,7,xp,nos,g,72,new int[]{10,20,30,40,0},new int[]{30,160,180,1200,0},false,true,true);
+        var pacote=new PacoteEstadoRpg(3,7,xp,nos,g,72,new int[]{10,20,30,40,0},new int[]{30,160,180,1200,0},false,true,true,350,true);
         xp[0]=0;assertEquals(900,pacote.xp()[0]);
         var buf=new FriendlyByteBuf(Unpooled.buffer());
         try{
             PacoteEstadoRpg.encode(pacote,buf);var lido=PacoteEstadoRpg.decode(buf);
             assertEquals(3,lido.ativo());assertEquals(7,lido.kits());assertArrayEquals(pacote.xp(),lido.xp());assertArrayEquals(pacote.nos(),lido.nos());
-            assertArrayEquals(pacote.recargas(),lido.recargas());assertEquals(72,lido.mana());assertTrue(lido.dominioLegado());assertTrue(lido.conjuntoCompleto());assertEquals(0,buf.readableBytes());
+            assertArrayEquals(pacote.recargas(),lido.recargas());assertEquals(72,lido.mana());assertTrue(lido.dominioLegado());assertTrue(lido.conjuntoCompleto());assertEquals(350,lido.formaTicks());assertTrue(lido.exclusivoUsado());assertEquals(0,buf.readableBytes());
         }finally{buf.release();}
     }
     @Test void snapshotRejeitaTamanhosInvalidosECompraSoTransportaIds(){

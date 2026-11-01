@@ -20,7 +20,7 @@ public final class PoderesCid {
     private record Fios(ServerPlayer p,net.minecraft.server.level.ServerLevel nivel,List<LivingEntity> alvos,long inicio){}
     private static final List<Corte> CORTES=new ArrayList<>();
     private static final List<Fios> FIOS=new ArrayList<>();
-    private static final int[] RECARGAS = {40, 160, 240, 1800};
+    private static final int[] RECARGAS = {80, 160, 320, 1800};
 
     public static net.minecraft.nbt.CompoundTag dados(ServerPlayer p) {
         var raiz=p.getPersistentData();
@@ -76,6 +76,12 @@ public final class PoderesCid {
                 com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID,slot,slot==3?240:slot==1?12:slot==2?48:25);
     }
 
+    public static void iniciarDespertar(ServerPlayer p){
+        long agora=p.server.overworld().getGameTime();dados(p).putLong("cid_ocupado",agora+100);
+        p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100,5,false,false));
+        ATIVOS.add(new Atomic(p,p.serverLevel(),p.position(),agora));
+        var o=p.position();var d=p.getLookAngle();RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),new PacoteSincronizarCutscene3D(14,p.getUUID(),o.x,o.y,o.z,d.x,d.y,d.z));
+    }
     @SubscribeEvent public static void tick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         long agora=event.getServer().overworld().getGameTime();
@@ -109,7 +115,7 @@ public final class PoderesCid {
         Iterator<Atomic> it = ATIVOS.iterator();
         while (it.hasNext()) {
             Atomic a = it.next();
-            if (!a.jogador.isAlive() || a.jogador.hasDisconnected() || a.jogador.serverLevel() != a.nivel) { it.remove(); continue; }
+            if (!a.jogador.isAlive() || a.jogador.hasDisconnected() || a.jogador.serverLevel() != a.nivel || !com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.ativo(a.jogador)) { it.remove(); continue; }
             long t = event.getServer().overworld().getGameTime() - a.inicio;
             if (com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.cancelarPorMovimento(t,a.jogador.distanceToSqr(a.centro))) {
                 dados(a.jogador).putLong("cid_ocupado",0);

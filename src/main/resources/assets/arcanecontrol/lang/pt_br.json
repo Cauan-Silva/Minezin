@@ -12,7 +12,7 @@
   "item.arcanecontrol.calcas_shadow": "Calcas de Shadow",
   "item.arcanecontrol.botas_shadow": "Botas de Shadow",
   "key.minezin.powers": "Escolher poderes",
-  "item.arcanecontrol.gojo_cabeca": "Seis Olhos — Faixa e Cabelo",
+  "item.arcanecontrol.gojo_cabeca": "Faixa dos Seis Olhos",
   "item.arcanecontrol.gojo_peito": "Uniforme do Ilimitado",
   "item.arcanecontrol.gojo_pernas": "Calças do Ilimitado",
   "item.arcanecontrol.gojo_botas": "Botas do Ilimitado",
@@ -22,5 +22,9 @@
   "item.arcanecontrol.frieren_botas": "Botas da Maga Élfica",
   "item.arcanecontrol.cajado_frieren": "Cajado da Frieren",
   "item.arcanecontrol.cajado_frieren.uso": "Clique direito: Zoltraak. Selecione Frieren em P.",
-  "key.minezin.rpg_tree": "Árvore de habilidades RPG"
+  "key.minezin.rpg_tree": "Árvore de habilidades RPG",
+  "key.minezin.g": "Despertar",
+  "block.arcanecontrol.altar_despertar": "Altar do Despertar",
+  "item.arcanecontrol.alma_despertar": "Alma do Despertar",
+  "entity.arcanecontrol.nemesis": "Nêmesis"
 }

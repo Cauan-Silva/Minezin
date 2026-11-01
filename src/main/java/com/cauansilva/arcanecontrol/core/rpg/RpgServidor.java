@@ -50,9 +50,11 @@ public final class RpgServidor {
             long now=agora(p);for(int i=0;i<75;i++){prazos[i]=Math.max(0,Math.min(now+12000,prazos[i]));duracoes[i]=(int)Math.max(0,prazos[i]-now);}
             tag.putLongArray("prazos",prazos);tag.putIntArray("duracoes",duracoes);
         }
-        return persistido.getCompound(CHAVE);
+        var atual=persistido.getCompound(CHAVE);
+        if(atual.getInt("versao")<2){PerfilRpgNbt.salvarRecargas(atual,PerfilRpgNbt.recargas(atual));atual.putInt("versao",2);}
+        return atual;
     }
-    private static void salvarMestria(CompoundTag raiz,int kit,MestriaRpg m){
+    public static void salvarMestria(CompoundTag raiz,int kit,MestriaRpg m){
         PerfilRpgNbt.salvar(raiz,kit,m);
     }
     public static MestriaRpg mestria(ServerPlayer p,int kit){
@@ -63,7 +65,7 @@ public final class RpgServidor {
     public static boolean podeUsar(ServerPlayer p,PoderAnime kit,int slot){
         if(kit==null||slot<0||slot>=kit.tecnicas.length||!p.isAlive()||p.isSpectator())return false;
         var e=ProgressaoPoderes.ler(p);if(!e.tem(kit)||e.ativo()!=kit)return false;
-        if(kit==PoderAnime.GOJO&&slot==4)return dados(p).getBoolean("dominioLegado");
+        if(slot==4)return mestria(p,kit.id).despertarLiberado();
         return p.isCreative()||mestria(p,kit.id).podeUsarSlot(slot);
     }
     private static RecargasRpg recargas(ServerPlayer p){return PerfilRpgNbt.recargas(dados(p));}
@@ -71,7 +73,7 @@ public final class RpgServidor {
         if(!podeUsar(p,kit,slot)){mensagem(p,"Técnica bloqueada. Confira o kit em P e a árvore em H.");return false;}
         var mana=new RecursoMana(dados(p).getDouble("mana"));var cds=recargas(p);
         var resultado=ConjuracaoRpg.tentar(mestria(p,kit.id),mana,cds,PersonagemRpg.porId(kit.id),slot,agora(p),baseTicks,
-                ConjuracaoRpg.custoBase(slot),conjuntoCompleto(p,kit),p.isCreative(),kit==PoderAnime.GOJO&&slot==4&&dados(p).getBoolean("dominioLegado"));
+                ConjuracaoRpg.custoBase(slot),conjuntoCompleto(p,kit),p.isCreative(),false,DespertaresServidor.ativo(p));
         if(resultado!=ConjuracaoRpg.Resultado.OK){
             mensagem(p,resultado==ConjuracaoRpg.Resultado.MANA?"Mana insuficiente.":resultado==ConjuracaoRpg.Resultado.RECARGA?"Técnica em recuperação.":"Técnica bloqueada. Abra H.");return false;
         }
@@ -92,7 +94,6 @@ public final class RpgServidor {
         var kit=PoderAnime.porId(kitId);if(kit==null||!ProgressaoPoderes.ler(p).tem(kit))return;
         long now=agora(p),antes=p.getPersistentData().getLong("rpg_compra_tick");if(antes>0&&now-antes<4)return;
         p.getPersistentData().putLong("rpg_compra_tick",now);var no=NoRpg.values()[indice];
-        if(no==NoRpg.DESPERTAR){mensagem(p,"Despertar indisponível nesta versão.");return;}
         var m=mestria(p,kit.id);
         if(m.comprar(no)){salvarMestria(dados(p),kit.id,m);aplicarAtributos(p);sincronizar(p);}
         else mensagem(p,"Confira nível, pontos e pré-requisitos na árvore.");
@@ -101,10 +102,10 @@ public final class RpgServidor {
     public static void sincronizar(ServerPlayer p){
         var legado=ProgressaoPoderes.ler(p);int[] xp=new int[15],nos=new int[15];boolean[] despertar=new boolean[15];
         for(var kit:PoderAnime.values())if(legado.tem(kit)){var m=mestria(p,kit.id);xp[kit.id-1]=m.xp();nos[kit.id-1]=m.nos();despertar[kit.id-1]=m.despertarLiberado();}
-        int[] restante=new int[5],duracao=new int[5];var cds=recargas(p);int[] todas=cds.duracoes();var atual=PersonagemRpg.porId(legado.ativo().id);
-        for(int i=0;i<5;i++){restante[i]=cds.restante(atual,i,agora(p));duracao[i]=todas[(atual.id-1)*5+i];}
+        int[] restante=new int[5],duracao=new int[5];var cds=recargas(p);var atual=PersonagemRpg.porId(legado.ativo().id);
+        for(int i=0;i<5;i++){restante[i]=cds.restante(atual,i,agora(p),DespertaresServidor.ativo(p));duracao[i]=cds.duracao(atual,i,DespertaresServidor.ativo(p));}
         RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),new PacoteEstadoRpg(legado.ativo().id,legado.desbloqueados(),xp,nos,despertar,
-                (float)new RecursoMana(dados(p).getDouble("mana")).atual(),restante,duracao,p.isCreative(),dados(p).getBoolean("dominioLegado"),conjuntoCompleto(p,legado.ativo())));
+                (float)new RecursoMana(dados(p).getDouble("mana")).atual(),restante,duracao,p.isCreative(),dados(p).getBoolean("dominioLegado"),conjuntoCompleto(p,legado.ativo()),DespertaresServidor.restante(p),DespertaresServidor.exclusivoUsado(p)));
     }
     public static void aplicarAtributos(ServerPlayer p){
         var m=mestria(p,ProgressaoPoderes.ler(p).ativo().id);

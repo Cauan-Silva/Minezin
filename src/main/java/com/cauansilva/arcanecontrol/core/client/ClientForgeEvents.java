@@ -22,6 +22,7 @@ public class ClientForgeEvents {
             minecraft.setScreen(new ArvoreRpgScreen());return;
         }
         var kit=PoderesCliente.ativo();
+        if(TeclasControlo.TECLA_G.consumeClick())RegistoRede.ENVIAR.sendToServer(new PacoteUsarMagia(kit.tecnica(4)));
         var teclas=new net.minecraft.client.KeyMapping[]{TeclasControlo.TECLA_Z,TeclasControlo.TECLA_X,
                 TeclasControlo.TECLA_C,TeclasControlo.TECLA_V,TeclasControlo.TECLA_R};
         for(int i=0;i<teclas.length;i++) if(teclas[i].consumeClick()) {
