@@ -55,6 +55,7 @@ public final class EfeitosFrieren {
     @SubscribeEvent public static void hud(RenderGuiOverlayEvent.Post e){
         var mc=Minecraft.getInstance();if(mc.player==null||mc.options.hideGui||!e.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id()))return;
         if(GerenciadorCutscene3D.cutsceneTipo==24){e.getGuiGraphics().drawCenteredString(mc.font,GerenciadorCutscene3D.cutsceneTick<PerfilFrieren.ABERTURA?"Singularidade...":"Buraco Negro",e.getWindow().getGuiScaledWidth()/2,e.getWindow().getGuiScaledHeight()-30,0xEEDDB7);return;}
+        if(com.cauansilva.arcanecontrol.core.client.RpgCliente.recebido())return;
         if(PoderesCliente.ativo()!=PoderAnime.FRIEREN)return;
         e.getGuiGraphics().fill(8,8,306,47,0xDC101321);
         e.getGuiGraphics().drawString(mc.font,"FRIEREN • [P] Poderes",14,14,0xE6D19C);

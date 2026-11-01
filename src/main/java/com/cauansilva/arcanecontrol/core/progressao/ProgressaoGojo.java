@@ -44,36 +44,14 @@ public final class ProgressaoGojo {
 
     public static boolean autorizar(ServerPlayer jogador, TecnicaGojo tecnica, boolean desligandoInfinito) {
         if (!jogador.isAlive() || jogador.isSpectator()) return false;
-        ProgressoGojo progresso = ler(jogador);
-        if (!progresso.tem(tecnica)) {
-            jogador.displayClientMessage(Component.literal("Técnica bloqueada. Abra a árvore com K."), true);
-            return false;
-        }
         if (desligandoInfinito) return true;
-        long[] prazos = Arrays.copyOf(dados(jogador).getLongArray("cooldowns"), 5);
-        long restante = prazos[tecnica.id - 1] - agora(jogador);
-        if (restante > 0) {
-            jogador.displayClientMessage(Component.literal(tecnica.nome + ": recarga de " + ((restante + 19) / 20) + "s"), true);
-            return false;
-        }
-        prazos[tecnica.id - 1] = agora(jogador) + progresso.cooldown(tecnica);
-        dados(jogador).putLongArray("cooldowns", prazos);
-        progresso.registrarUso(tecnica);
-        salvar(jogador, progresso);
-        return true;
+        return com.cauansilva.arcanecontrol.core.rpg.RpgServidor.conjurar(jogador,
+                com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO,tecnica.id-1,tecnica.cooldown);
     }
 
     public static void desbloquear(ServerPlayer jogador, int id) {
-        TecnicaGojo tecnica = TecnicaGojo.porId(id);
-        if (tecnica == null) return;
-        ProgressoGojo progresso = ler(jogador);
-        if (progresso.desbloquear(tecnica)) {
-            salvar(jogador, progresso);
-            jogador.displayClientMessage(Component.literal("Técnica desbloqueada: " + tecnica.nome), true);
-        } else {
-            jogador.displayClientMessage(Component.literal("Confira o nível, os pontos e as técnicas necessárias."), true);
-        }
-        sincronizar(jogador);
+        if(id>=2&&id<=4)com.cauansilva.arcanecontrol.core.rpg.RpgServidor.comprar(jogador,1,id-2);
+        else jogador.displayClientMessage(Component.literal("Abra a árvore com H."),true);
     }
 
     public static void sincronizar(ServerPlayer jogador) {

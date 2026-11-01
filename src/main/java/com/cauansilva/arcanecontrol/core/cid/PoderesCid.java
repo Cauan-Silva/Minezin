@@ -45,12 +45,8 @@ public final class PoderesCid {
         }
         long agora = p.server.overworld().getGameTime();
         var dados = dados(p);
-        if (dados.getLong("cid_ocupado") > agora || dados.getLong("cid_cd_" + slot) > agora) {
-            p.displayClientMessage(net.minecraft.network.chat.Component.literal("Shadow: técnica em recuperação."), true);
-            return;
-        }
-        dados.putLong("cid_cd_" + slot, agora + com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.recarga(p,
-                com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID,slot,RECARGAS[slot]));
+        if(dados.getLong("cid_ocupado")>agora)return;
+        if(!com.cauansilva.arcanecontrol.core.rpg.RpgServidor.conjurar(p,com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID,slot,RECARGAS[slot]))return;
         Vec3 origem = p.position(), dir = p.getLookAngle();
         if (slot == 1) {
             Vec3 passo = new Vec3(dir.x, 0, dir.z).normalize().scale(.25);

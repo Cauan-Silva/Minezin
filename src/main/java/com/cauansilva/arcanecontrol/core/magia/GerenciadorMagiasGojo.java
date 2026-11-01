@@ -51,6 +51,7 @@ public class GerenciadorMagiasGojo {
 
     public static void executarMagia(ServerPlayer player, int idMagia) {
         if(!com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.podeUsar(player,idMagia))return;
+        boolean desligando=idMagia==3&&infinitoAtivo(player);
         TecnicaGojo tecnica = TecnicaGojo.porId(idMagia);
         if (tecnica == null || !ProgressaoGojo.autorizar(player, tecnica,
                 idMagia == 3 && infinitoAtivo(player))) return;
@@ -72,6 +73,7 @@ public class GerenciadorMagiasGojo {
             case 4 -> iniciarVazioRoxo(player, level);
             case 5 -> iniciarExpansaoDominio(player, level);
         }
+        if(!desligando)com.cauansilva.arcanecontrol.core.rpg.RpgServidor.uso(player,com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO);
         ProgressaoGojo.sincronizar(player);
         com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.bloquear(player,PerfilVfxGojo.duracao(idMagia));
     }
