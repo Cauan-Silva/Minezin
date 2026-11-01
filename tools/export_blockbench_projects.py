@@ -13,6 +13,7 @@ TEXTURE=ASSETS/'textures/armor/anime_reference_atlas.png'
 PROJECTS={
     **{n:(f'geo/armaduras/{n}.geo.json',f'animations/armaduras/{n}.animation.json','Armor') for n in ['gojo','frieren','shadow','asta']},
     'asta_black':('geo/asta/forma.geo.json',None,'Entity'),
+    **{n:(f'geo/nemesis/{i}.geo.json',f'animations/nemesis/{i}.animation.json','Entity') for i,n in enumerate(['toji','aurora','qual','liebe'],1)},
 }
 
 def uid(name):return str(uuid.uuid5(uuid.NAMESPACE_URL,'minezin/armor-rework/'+name))
@@ -22,6 +23,8 @@ def read(path):return json.loads(path.read_text(encoding='utf-8'))
 
 def make_project(name,embedded=False):
     model,animation,kind=PROJECTS[name]
+    texture_path=ASSETS/'textures/armor/anime_atlas.png' if model.startswith('geo/nemesis/') else TEXTURE
+    if name in ['toji','aurora','qual','liebe']:texture_path=ASSETS/f'textures/bosses/{name}_skin.png'
     geo=read(ASSETS/model)['minecraft:geometry'][0]
     elements=[];groups=[];nodes={};groupids={b['name']:uid(name+'/'+b['name']) for b in geo['bones']}
     for bone in geo['bones']:
@@ -38,7 +41,7 @@ def make_project(name,embedded=False):
                 faces[face]={'uv':[u,v,u+w,v+h],'texture':0}
             elements.append({'uuid':cid,'name':bone['name']+'_'+str(index),'type':'cube','box_uv':False,
                              'from':[-o[0]-s[0],o[1],o[2]],'to':[-o[0],o[1]+s[1],o[2]+s[2]],
-                             'origin':xyz(c.get('pivot',bone['pivot'])),
+                             'inflate':c.get('inflate',0),'origin':xyz(c.get('pivot',bone['pivot'])),
                              'rotation':rotation(c.get('rotation',[0,0,0])),
                              'autouv':0,'export':True,'faces':faces})
             children.append(cid)
@@ -47,11 +50,11 @@ def make_project(name,embedded=False):
         node=nodes[bone['name']]
         if bone.get('parent'):nodes[bone['parent']]['children'].append(node)
         else:roots.append(node)
-    texture={'uuid':uid('atlas'),'name':TEXTURE.name,'id':'0','mode':'bitmap',
-             'relative_path':'../../src/main/resources/assets/arcanecontrol/textures/armor/'+TEXTURE.name,
+    texture={'uuid':uid('atlas'),'name':texture_path.name,'id':'0','mode':'bitmap',
+             'relative_path':'../../src/main/resources/assets/arcanecontrol/'+texture_path.relative_to(ASSETS).as_posix(),
              'uv_width':geo['description']['texture_width'],'uv_height':geo['description']['texture_height']}
     if embedded:
-        texture['source']='data:image/png;base64,'+base64.b64encode(TEXTURE.read_bytes()).decode('ascii')
+        texture['source']='data:image/png;base64,'+base64.b64encode(texture_path.read_bytes()).decode('ascii')
         texture['internal']=True
     project={'meta':{'format_version':'5.0','model_format':'geckolib_model','box_uv':False},
              'name':name+'_reference_rework','model_identifier':geo['description']['identifier'].removeprefix('geometry.'),
@@ -66,7 +69,7 @@ def make_project(name,embedded=False):
                 if bname not in groupids:raise ValueError('Animation bone missing: '+bname)
                 frames=[]
                 for channel,keys in channels.items():
-                    for time,value in keys.items():
+                    for time,value in (keys.items() if isinstance(keys,dict) else {'0':keys}.items()):
                         value=rotation(value) if channel=='rotation' else value
                         frames.append({'uuid':uid(name+aname+bname+channel+time),'channel':channel,'time':float(time),
                                        'interpolation':'linear','data_points':[dict(zip(['x','y','z'],map(str,value)))]})

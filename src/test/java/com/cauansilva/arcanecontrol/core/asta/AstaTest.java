@@ -10,6 +10,16 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 class AstaTest {
+    @Test void posesDeImpactoCoincidemComODanoESeguramDoisTicks()throws Exception{
+        try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/asta.json")){
+            var a=JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject().getAsJsonObject("animations");
+            for(int tipo:new int[]{300,301,302,304,305,306,307}){
+                int slot=(tipo-300)%4;double t=PerfilAsta.impacto(slot,tipo>=304)/20.0;
+                var frames=a.getAsJsonObject("asta_"+tipo).getAsJsonObject("bones").getAsJsonObject("right_arm").getAsJsonObject("rotation");
+                assertEquals(frames.getAsJsonObject(Double.toString(t)).get("vector"),frames.getAsJsonObject(Double.toString(Math.round((t+.1)*100)/100.0)).get("vector"));
+            }
+        }
+    }
     @Test void idsPersistidosAntigosNaoMudamEOQuartoKitTemCincoSlots(){
         assertEquals(1,PoderAnime.GOJO.id);assertEquals(2,PoderAnime.CID.id);assertEquals(3,PoderAnime.FRIEREN.id);assertEquals(4,PoderAnime.ASTA.id);
         for(int i=0;i<5;i++){assertEquals(31+i,PoderAnime.ASTA.tecnica(i));assertEquals(PoderAnime.ASTA,PoderAnime.daTecnica(31+i));}

@@ -34,18 +34,8 @@ def forma():
  save(A/'geo/asta/forma.geo.json',doc)
 
 def liebe():
- b=boss.base();boss.human(b,boss.BLACK,boss.BLACK,boss.WHITE,boss.SILVER)
- for side in [-1,1]:
-  for i in range(3):boss.cube(b['head'],[side*(3.2+i*.7)-.6,30+i*1.5,-1.2],[1.5-i*.3,2.6,1.4-i*.3],boss.RED,rotation=[0,0,-side*(25+i*10)])
-  n='wing'+str(side);b[n]=boss.bone(n,[side*3.5,22,2.5],'body')
-  boss.cube(b[n],[-17 if side<0 else 3,22,2.5],[14,2.6,1.4],boss.BLACK,rotation=[0,0,side*25],pivot=[side*4,23,3])
-  for i in range(7):
-   x=side*(6+i*1.7)-1.2;y=24+math.sin(i*math.pi/8)*3;length=12-i*.5
-   boss.cube(b[n],[x,y-length,2.8],[2.7,length,1],boss.BLACK,rotation=[0,0,side*(10+i*2)],pivot=[x+1.35,y,2.8])
- for x in [-2.7,1.4]:boss.cube(b['head'],[x,27,-4.7],[1.4,.8,.3],boss.RED)
- boss.cube(b['body'],[-.4,14,-2.5],[.8,8,.3],boss.RED)
- for side in [-1,1]:boss.cube(b['body'],[side*2.5-.3,18,-2.6],[.6,3,.4],boss.RED,rotation=[0,0,side*25])
- save(A/'geo/nemesis/4.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':'geometry.liebe','texture_width':boss.W,'texture_height':boss.H,'visible_bounds_width':5,'visible_bounds_height':4,'visible_bounds_offset':[0,1.5,0]},'bones':list(b.values())}]})
+ from build_nemesis_models import liebe as shape
+ save(A/'geo/nemesis/4.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':'geometry.nemesis_4','texture_width':64,'texture_height':64,'visible_bounds_width':5,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(shape().values())}]})
 def animations():
  all={}
  for tipo in [200,*range(300,308)]:
@@ -57,6 +47,8 @@ def animations():
   else:poses=[[-60,-50,-25],[-100,-65,-15],[-65,75,30],[0,0,0]]
   frames={str(round(t*length,3)):{'vector':v,'easing':'easeInOutSine'} for t,v in zip([0,.3,.6,1],poses)}
   all[f'asta_{tipo}']={'animation_length':length,'loop':False,'bones':{'right_arm':{'rotation':frames},'body':{'rotation':{'0':{'vector':[0,0,0]},str(round(length*.5,3)):{'vector':[8,25 if tipo%2==0 else -20,0]},str(length):{'vector':[0,0,0]}}}}}
+ from refine_player_timing import refine_asta
+ refine_asta(all)
  save(A/'player_animation/asta.json',{'format_version':'1.8.0','geckolib_format_version':2,'animations':all})
 def recipes():
  for suffix,base in [('cabeca','helmet'),('peito','chestplate'),('pernas','leggings'),('botas','boots'),('matadora_demonios','sword')]:

@@ -33,6 +33,7 @@ class BlockbenchProjectsTest(unittest.TestCase):
                         recovered=[-to[0],frm[1],frm[2]]
                         for expected,actual in zip(o,recovered):self.assertAlmostEqual(expected,actual,places=6)
                         for expected,actual in zip(s,[to[i]-frm[i] for i in range(3)]):self.assertAlmostEqual(expected,actual,places=6)
+                        self.assertEqual(cube.get('inflate',0),element.get('inflate',0))
                         self.assertEqual(group['uuid'],parents[element['uuid']])
                         self.assertEqual(xyz(cube.get('pivot',bone['pivot'])),element['origin'])
                         for f,v in cube['uv'].items():
@@ -50,7 +51,7 @@ class BlockbenchProjectsTest(unittest.TestCase):
         for name in PROJECTS:
             p=read(OUT/(name+'.bbmodel'));ids={g['uuid'] for g in p['groups']}
             for animation in p.get('animations',[]):
-                self.assertEqual('loop',animation['loop']);self.assertGreater(animation['length'],0)
+                self.assertIn(animation['loop'],['loop','once']);self.assertGreater(animation['length'],0)
                 for key,animator in animation['animators'].items():
                     self.assertIn(key,ids)
                     for frame in animator['keyframes']:
