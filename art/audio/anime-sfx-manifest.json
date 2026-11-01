@@ -3,17 +3,17 @@
     "duration": 4.5,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.66599,
-    "rms": 0.13552,
-    "sha256": "38280acbc32827764f2916ec471079528ce0b0f75b17a0c784ae1aafa3aee0d0"
+    "peak": 0.66934,
+    "rms": 0.12371,
+    "sha256": "584a2ffb23417b2af704ea918d90d654fa16cf201caee143b0803fe95477faf3"
   },
   "atomic_release": {
     "duration": 3.5,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.84334,
-    "rms": 0.08189,
-    "sha256": "f98efefe075bc13f5d9cfc8c12e520ef08bd32b8bc9f3747a843b5d50216c520"
+    "peak": 0.77026,
+    "rms": 0.11114,
+    "sha256": "c13e19843b5b0e76ad1b245638152edcb67242b42637a3a2ffb5f46b3f3a5327"
   },
   "divider_charge": {
     "duration": 0.9,

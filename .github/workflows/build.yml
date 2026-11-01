@@ -45,6 +45,10 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq glslang-tools libegl1 libgl1-mesa-dri
+          glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/program/atomic_cinema.vsh
+          glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/program/atomic_cinema.fsh
+          glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/atomic_copy.vsh
+          glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/atomic_copy.fsh
           glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/atomic_energy.vsh
           glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/atomic_energy.fsh
           glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/gojo_energy.vsh
@@ -59,6 +63,7 @@ jobs:
           python -m pip install moderngl==5.13.0 numpy==2.5.4 pillow==13.0.0
           python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
+          python tools/preview_atomic_cinema.py --backend egl --output build/atomic-cinema.png
           python tools/preview_cinematic_vfx.py --backend egl --output build/cinematic-vfx.png
           python tools/preview_armor_models.py --ichigo --backend egl --output build/ichigo-models.png
           python tools/preview_divider.py --backend egl --output build/divider-model.png
@@ -74,6 +79,8 @@ jobs:
             build/gojo-materials.png
             build/anime-materials.png
             build/cinematic-vfx.png
+            build/atomic-cinema.png
+            build/atomic-cinema.json
             build/divider-model.png
             build/ichigo-models.png
             build/anime-armor.png
