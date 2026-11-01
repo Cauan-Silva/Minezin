@@ -200,7 +200,7 @@ public final class EfeitosCid {
             }
             e.getGuiGraphics().drawCenteredString(mc.font,t<90?"I... AM...":"ATOMIC",e.getWindow().getGuiScaledWidth()/2,
                     e.getWindow().getGuiScaledHeight()-35,0xDDCCFF);
-        } else if(com.cauansilva.arcanecontrol.core.client.PoderesCliente.ativo()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID) {
+        } else if(!com.cauansilva.arcanecontrol.core.client.RpgCliente.recebido()&&com.cauansilva.arcanecontrol.core.client.PoderesCliente.ativo()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID) {
             e.getGuiGraphics().fill(8,8,285,47,0xDD100A1C);
             e.getGuiGraphics().drawString(mc.font,"SHADOW • [P] Poderes",14,14,0xCC99FF);
             e.getGuiGraphics().drawString(mc.font,"[Z] Corte [X] Passo [C] Fios [V] Atomic",14,30,0xE0D8EE);

@@ -32,8 +32,6 @@ public final class PoderesFrieren {
         if(!ProgressaoPoderes.podeUsar(p,id))return;
         int slot=id-21;if(slot<0||slot>3)return;
         var tag=ProgressaoPoderes.tag(p);long agora=ProgressaoPoderes.agora(p);
-        long[] cd=Arrays.copyOf(tag.getLongArray("fri_cds"),4);
-        if(cd[slot]>agora){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Frieren: magia em recuperação."),true);return;}
         Vec3 origem=p.getEyePosition(),dir=p.getLookAngle(),alvo=origem.add(dir.scale(slot==0?32:12));
         var level=p.serverLevel();
         if(slot==0||slot==3){
@@ -41,6 +39,11 @@ public final class PoderesFrieren {
             var bloco=level.clip(new ClipContext(origem,alvo,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p));
             if(bloco.getType()!=HitResult.Type.MISS)alvo=bloco.getLocation();
         }
+        if(slot==3){
+            if(ATIVOS.stream().anyMatch(a->a.jogador==p))return;
+            if(alvo.distanceToSqr(p.position())<9){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Mire em uma área mais distante para formar a singularidade."),true);return;}
+        }
+        if(!com.cauansilva.arcanecontrol.core.rpg.RpgServidor.conjurar(p,PoderAnime.FRIEREN,slot,RECARGAS[slot]))return;
         if(slot==0){
             Vec3 fim=alvo;
             var hit=ProjectileUtil.getEntityHitResult(p,origem,fim,p.getBoundingBox().expandTowards(fim.subtract(origem)).inflate(1),
@@ -68,15 +71,12 @@ public final class PoderesFrieren {
             enviar(p,23,p.position(),dir);
             level.playSound(null,p.blockPosition(),SoundEvents.ELYTRA_FLYING,SoundSource.PLAYERS,1,.8f);
         } else {
-            if(ATIVOS.stream().anyMatch(a->a.jogador==p))return;
-            if(alvo.distanceToSqr(p.position())<9){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Mire em uma área mais distante para formar a singularidade."),true);return;}
             ATIVOS.add(new Singularidade(p,level,alvo,agora));
             if(!com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get())p.displayClientMessage(net.minecraft.network.chat.Component.literal("Destruição de terreno desativada neste mundo."),true);
             p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,PerfilFrieren.ABERTURA,2,false,false));
             enviar(p,24,alvo,dir);
             level.playSound(null,BlockPos.containing(alvo),SoundEvents.BEACON_POWER_SELECT,SoundSource.PLAYERS,2,.5f);
         }
-        cd[slot]=agora+ProgressaoPoderes.recarga(p,PoderAnime.FRIEREN,slot,RECARGAS[slot]);tag.putLongArray("fri_cds",cd);
         ProgressaoPoderes.registrarUso(p,PoderAnime.FRIEREN,slot,new int[]{30,80,100,PerfilFrieren.FIM}[slot]);
     }
     @SubscribeEvent public static void proteger(LivingHurtEvent e){

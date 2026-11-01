@@ -46,19 +46,20 @@ public final class ProgressaoPoderes {
         PoderAnime kit=PoderAnime.daTecnica(tecnica);
         if(kit==null||!p.isAlive()||p.isSpectator())return false;
         int slot=tecnica-(kit.id-1)*10-1;
-        if(!ler(p).podeUsar(kit,slot)){
-            p.displayClientMessage(Component.literal("Selecione um kit desbloqueado em P. Técnicas avançadas exigem nível no kit."),true);return false;
+        if(!com.cauansilva.arcanecontrol.core.rpg.RpgServidor.podeUsar(p,kit,slot)){
+            p.displayClientMessage(Component.literal("Selecione o kit em P e desbloqueie as técnicas na árvore H."),true);return false;
         }
         return true;
     }
     public static int recarga(ServerPlayer p,PoderAnime kit,int slot,int base){return ler(p).recarga(kit,slot,base);}
     public static void registrarUso(ServerPlayer p,PoderAnime kit,int slot,int duracao){
-        var e=ler(p);e.registrarUso(kit,slot);escrever(tag(p),e);bloquear(p,duracao);sincronizar(p);
+        var e=ler(p);e.registrarUso(kit,slot);escrever(tag(p),e);bloquear(p,duracao);com.cauansilva.arcanecontrol.core.rpg.RpgServidor.uso(p,kit);sincronizar(p);
     }
     public static void sincronizar(ServerPlayer p){
         var e=ler(p);int[] xp=e.xps();xp[0]=ProgressaoGojo.ler(p).xp();
         RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),
                 new PacoteEstadoPoderes(e.ativo().id,e.desbloqueados(),e.conhecimento(),xp,e.usos(),p.isCreative()));
+        com.cauansilva.arcanecontrol.core.rpg.RpgServidor.sincronizar(p);
     }
     public static void acao(ServerPlayer p,int acao,int id){
         if(!p.isAlive()||p.isSpectator())return;
@@ -72,7 +73,7 @@ public final class ProgressaoPoderes {
             if(ocupado(p)||p.hurtTime>0){mensagem(p,"Aguarde a técnica terminar antes de trocar de kit.");return;}
             if(!e.selecionar(kit)){mensagem(p,"Esse kit ainda está bloqueado.");return;}
             GerenciadorMagiasGojo.desativarInfinito(p);
-            escrever(tag(p),e);sincronizar(p);return;
+            escrever(tag(p),e);com.cauansilva.arcanecontrol.core.rpg.RpgServidor.aplicarAtributos(p);sincronizar(p);return;
         }
         if(acao!=2||e.tem(kit)){sincronizar(p);return;}
         Item recurso=kit==PoderAnime.CID?Items.AMETHYST_SHARD:Items.LAPIS_LAZULI;

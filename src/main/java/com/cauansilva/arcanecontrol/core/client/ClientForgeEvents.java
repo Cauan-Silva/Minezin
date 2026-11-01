@@ -18,9 +18,8 @@ public class ClientForgeEvents {
         if(TeclasControlo.PODERES.consumeClick()) {
             minecraft.setScreen(new PoderesScreen());return;
         }
-        if(TeclasControlo.ARVORE.consumeClick()) {
-            minecraft.setScreen(PoderesCliente.ativo()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO
-                    ?new ArvoreGojoScreen():new PoderesScreen());return;
+        if(TeclasControlo.ARVORE_RPG.consumeClick()||TeclasControlo.ARVORE.consumeClick()) {
+            minecraft.setScreen(new ArvoreRpgScreen());return;
         }
         var kit=PoderesCliente.ativo();
         var teclas=new net.minecraft.client.KeyMapping[]{TeclasControlo.TECLA_Z,TeclasControlo.TECLA_X,
