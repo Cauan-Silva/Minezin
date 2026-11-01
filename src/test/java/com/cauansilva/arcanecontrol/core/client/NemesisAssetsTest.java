@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 class NemesisAssetsTest {
     @Test void skinsEnviadasUsamUvVanilla64ESegundaCamadaSemFaceModelada()throws Exception{
-        for(int kit:new int[]{2,4}){
+        for(int kit:new int[]{1,2,3,4}){
             var geo=json("geo/nemesis/"+kit+".geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
             assertEquals(64,geo.getAsJsonObject("description").get("texture_width").getAsInt());
             var bones=new HashMap<String,JsonObject>();for(var v:geo.getAsJsonArray("bones")){var b=v.getAsJsonObject();bones.put(b.get("name").getAsString(),b);}
@@ -15,7 +15,7 @@ class NemesisAssetsTest {
             assertEquals(JsonParser.parseString("[8,8]"),head.get(0).getAsJsonObject().getAsJsonObject("uv").getAsJsonObject("north").get("uv"));
             assertEquals(.5,head.get(1).getAsJsonObject().get("inflate").getAsDouble());
             for(String n:new String[]{"body","leftArm","rightArm","leftLeg","rightLeg"})assertEquals(2,bones.get(n).getAsJsonArray("cubes").size());
-            String nome=kit==2?"aurora":"liebe";
+            String nome=kit==1?"toji":kit==2?"aurora":kit==3?"qual":"liebe";
             try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/textures/bosses/"+nome+"_skin.png")){
                 assertNotNull(in);var image=javax.imageio.ImageIO.read(in);assertEquals(64,image.getWidth());assertEquals(64,image.getHeight());
             }

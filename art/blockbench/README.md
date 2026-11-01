@@ -32,6 +32,6 @@ Regenere os bosses com `python tools/build_nemesis_models.py` antes de exportar 
 Revisão no Blockbench desktop: Shadow abriu com atlas, grupos e reprodução do idle; Qual abriu com atlas, 75 cubos e quatro animações. Isso não substitui a validação da luta no Minecraft.
 
 ### Skins enviadas pelo usuário
-Aurora e Liebe usam layout Minecraft 64×64 e segunda camada com inflação. Aurora foi copiada de `Aurora-Witch-of-Calamity-Eminence-in-Shadow-on-planetminecraft-com.png`. Liebe foi transcodificado de `liebe-version-blue-17238469.webp` para PNG, preservando todos os pixels RGBA decodificados. Não são skins criadas neste rework. Toji e Qual ainda usam o atlas anterior e precisam da mesma revisão de pixel art; não confundir o rework geométrico com uma aprovação dessas texturas.
+Aurora e Liebe usam layout Minecraft 64×64 e segunda camada com inflação. Aurora foi copiada de `Aurora-Witch-of-Calamity-Eminence-in-Shadow-on-planetminecraft-com.png`. Liebe foi transcodificado de `liebe-version-blue-17238469.webp` para PNG, preservando todos os pixels RGBA decodificados. Não são skins criadas neste rework. Toji e Qual usam pixel art original em SVG, no mesmo layout 64×64; os PNGs são exportações raster desses SVGs, sem gradientes. A fonte editável é gerada por `tools/build_boss_skin_svg.py` e deve ser exportada em 64×64 sem interpolação.
 
 Os impact frames dos bosses podem ser desligados em `impactFrames` na configuração cliente; `vfxReduzidos` também os desliga. Duram dois ticks, exigem proximidade, direção do olhar e linha de visão do impacto.

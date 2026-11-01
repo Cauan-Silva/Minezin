@@ -60,3 +60,14 @@ def liebe(shape):
             c=copy.deepcopy(c);patch(c,(38,9));horns.append(c)
     b['head']['cubes'].extend(horns)
     return b
+
+def toji(shape):
+    return accessories(shape,['curse','weapon','chain'],{m.BLACK:(0,0),m.SILVER:(1,0),m.PLUM:(2,0),m.IVORY:(3,0),m.GOLD:(4,0),m.SKIN:(5,0),m.NAVY:(6,0),m.RED:(7,0)})
+
+def qual(shape):
+    names=[n for n in shape if n.startswith(('lower_arm_','mantle_'))]
+    b=accessories(shape,names,{m.BLACK:(0,0),m.SILVER:(1,0),m.PLUM:(2,0),m.NAVY:(2,0),m.IVORY:(3,0)})
+    for c in shape['head']['cubes']:
+        if c.get('pivot') and abs(c['size'][0]-c['size'][2])<1e-6 and c['size'][0]<=1.71 and c['origin'][1]>=30:
+            c=copy.deepcopy(c);patch(c,(2,0));b['head']['cubes'].append(c)
+    return b

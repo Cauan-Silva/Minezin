@@ -32,14 +32,16 @@ def human(b,shirt,pants,hair,skin=SKIN):
   cube(b[n],[x,1,-2],[4,11,4],pants);cube(b[n],[x-.1,0,-2.5],[4.2,2.2,4.7],BLACK)
 def toji():
  from boss_reference_shapes import toji as shape
- return shape()
+ from skin_boss_models import toji
+ return toji(shape())
 def aurora():
  from boss_reference_shapes import aurora as shape
  from skin_boss_models import aurora
  return aurora(shape())
 def qual():
  from boss_reference_shapes import qual as shape
- return shape()
+ from skin_boss_models import qual
+ return qual(shape())
 
 def liebe():
  from boss_reference_shapes import liebe as shape
@@ -69,7 +71,7 @@ def animations_for(kit,bones):
 
 def main():
  for i,fn in enumerate([toji,aurora,qual,liebe],1):
-  b=fn();save(A/f'animations/nemesis/{i}.animation.json',{'format_version':'1.8.0','animations':animations_for(i,b)});save(A/f'geo/nemesis/{i}.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':f'geometry.nemesis_{i}','texture_width':64 if i in [2,4] else W,'texture_height':64 if i in [2,4] else H,'visible_bounds_width':4,'visible_bounds_height':4,'visible_bounds_offset':[0,1.5,0]},'bones':list(b.values())}]})
+  b=fn();save(A/f'animations/nemesis/{i}.animation.json',{'format_version':'1.8.0','animations':animations_for(i,b)});save(A/f'geo/nemesis/{i}.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':f'geometry.nemesis_{i}','texture_width':64,'texture_height':64,'visible_bounds_width':4,'visible_bounds_height':4,'visible_bounds_offset':[0,1.5,0]},'bones':list(b.values())}]})
  animations={'idle':{'loop':True,'animation_length':2,'bones':{'body':{'rotation':['math.sin(query.anim_time*180)*1.2',0,0]},'head':{'rotation':[0,'math.sin(query.anim_time*90)*4',0]}}},
  'walk':{'loop':True,'animation_length':1,'bones':{n:{'rotation':[f'math.sin(query.anim_time*360)*{a}',0,0]} for n,a in [('leftArm',-22),('rightArm',22),('leftLeg',25),('rightLeg',-25)]}},
  'cast':{'loop':True,'animation_length':1.5,'bones':{'leftArm':{'rotation':[-75,0,-18]},'rightArm':{'rotation':[-105,0,12]},'head':{'rotation':[-8,0,0]},'body':{'rotation':[0,0,'math.sin(query.anim_time*240)*2']}}}}

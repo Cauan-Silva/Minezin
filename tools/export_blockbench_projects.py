@@ -24,7 +24,7 @@ def read(path):return json.loads(path.read_text(encoding='utf-8'))
 def make_project(name,embedded=False):
     model,animation,kind=PROJECTS[name]
     texture_path=ASSETS/'textures/armor/anime_atlas.png' if model.startswith('geo/nemesis/') else TEXTURE
-    if name in ['aurora','liebe']:texture_path=ASSETS/f'textures/bosses/{name}_skin.png'
+    if name in ['toji','aurora','qual','liebe']:texture_path=ASSETS/f'textures/bosses/{name}_skin.png'
     geo=read(ASSETS/model)['minecraft:geometry'][0]
     elements=[];groups=[];nodes={};groupids={b['name']:uid(name+'/'+b['name']) for b in geo['bones']}
     for bone in geo['bones']:
