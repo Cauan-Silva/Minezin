@@ -3,7 +3,7 @@ import build_nemesis_models as m
 import math
 
 def add(b,n,o,s,t,angle=0,pivot=None):
-    m.cube(b[n],o,s,t,rotation=[0,0,angle] if angle else None,pivot=pivot)
+    m.cube(b[n],o,s,t,rotation=[0,0,-angle] if angle else None,pivot=pivot)
 
 def segment(b,n,start,end,width,t):
     dx,dy,dz=[end[i]-start[i] for i in range(3)]
@@ -50,17 +50,18 @@ def toji():
     add(b,'curse',[-6.4,22,-2.5],[3.4,3.3,4],m.PLUM)
     for x in [-5.9,-4.4]:add(b,'curse',[x,23.6,-2.7],[.55,.5,.25],m.BLACK)
     add(b,'curse',[-5.7,22.5,-2.75],[1.7,.35,.25],m.BLACK)
-    group(b,'weapon',[-6,13,0],'rightArm')
-    add(b,'weapon',[-6.45,2,-.45],[.9,13,.9],m.BLACK)
-    add(b,'weapon',[-7.8,13,-.6],[3.6,.7,1.2],m.SILVER)
-    add(b,'weapon',[-6.65,13.5,-.55],[1.3,7.5,1.1],m.SILVER)
-    for side in [-1,1]:add(b,'weapon',[-6+side*1.5-.35,13.5,-.45],[.7,4.8,.9],m.SILVER)
-    group(b,'chain',[-6,12,0],'weapon')
-    for i in range(9):add(b,'chain',[-5.9+(i%2)*.4,1-i*1.1,.3],[.55,1.35,.55],m.SILVER,(i%2)*45,[-5.6,2-i*1.1,.6])
-    for n in ['weapon','chain']:
-        for c in b[n]['cubes']:
-            c['origin'][2]-=3
-            if 'pivot' in c:c['pivot'][2]-=3
+    # Boss-only inverted spear: grip at the hand, guard/blade below the palm.
+    group(b,'weapon',[-6,13,-2.2],'rightArm')
+    add(b,'weapon',[-6.5,11.8,-2.75],[1,2.6,1.1],m.BLACK)
+    add(b,'weapon',[-7.7,11.2,-2.85],[3.4,.6,1.3],m.SILVER)
+    add(b,'weapon',[-6.6,3.5,-2.7],[1.2,7.7,.95],m.SILVER)
+    add(b,'weapon',[-6.3,2.4,-2.6],[.6,1.2,.75],m.SILVER)
+    for side in [-1,1]:
+        add(b,'weapon',[-6+side*1.3-.3,6.4,-2.7],[.6,4.8,.95],m.SILVER)
+    add(b,'weapon',[-6.6,14.3,-2.8],[1.2,.5,1.2],m.GOLD)
+    group(b,'chain',[-6,14.7,-2.2],'weapon')
+    for i in range(6):
+        add(b,'chain',[-7.1-(i%2)*.2,13.8-i*.9,-2.4],[.5,1.1,.5],m.SILVER)
     return b
 
 def aurora():
@@ -99,7 +100,9 @@ def qual():
         for layer in range(2):
             n=('leftArm' if side>0 else 'rightArm') if layer==0 else group(b,'lower_arm_'+str(side),[side*5,16,0])
             x=4.8 if side>0 else -8.8;y=12 if layer==0 else 6
-            add(b,n,[x,y,-2],[4,10,4],m.SILVER,side*(22.5 if layer==0 else 45),[side*5,y+9,0])
+            add(b,n,[x,y,-2],[4,10,4],m.SILVER)
+            if layer==1:b[n]['rotation']=[0,0,-side*35]
+
             for k in range(3):add(b,n,[x+k*1.1,y-.8,-2.5],[.65,2,1],m.BLACK,0)
         horn(b,side,[(4,30),(6,31),(7.2,33.5),(7,36),(5.5,38)],m.PLUM)
         add(b,'head',[side*4.1-.6,26,-3],[1.2,4,2],m.SILVER,side*22.5,[side*4,28,-2])
@@ -142,9 +145,11 @@ def liebe():
             add(b,n,[x-1.5,top,2.85],[3.3,.6,1],m.PLUM,side*22.5,[x,top,3])
             if i%2==0:add(b,n,[x-.2,bottom-.8,2.9],[.5,top-bottom+1.3,.8],m.PLUM,0)
         for i in range(3):add(b,n,[side*(4+i*6)-.6,25+i*2,2.7],[1.2,6,1.2],m.BLACK,-side*45,[side*(4+i*6),25+i*2,3])
-    # Tail is segmented at its joints so it can move independently of the body.
+    # Connected tail joints: each child starts exactly at its parent's segment end.
+    points=[(0,12),(3,10),(6,10),(8,12),(9,14)]
     parent='body'
-    for i,(o,s,rot) in enumerate([([-1,11,2],[1,6,1],45),([-5,7,2],[1,6,1],-45),([-6,4,2],[1,5,1],-45)]):
-        n=group(b,'tail_'+str(i),[o[0],o[1]+s[1],o[2]],parent);add(b,n,o,s,m.BLACK,rot,b[n]['pivot']);parent=n
-    add(b,parent,[-7,2,1.8],[2,2,1.4],m.BLACK,45,[-6,3,2.5])
+    for i,(start,end) in enumerate(zip(points,points[1:])):
+        n=group(b,'tail_'+str(i),[start[0],start[1],3],parent)
+        segment(b,n,[start[0],start[1],3],[end[0],end[1],3],.8-i*.1,m.BLACK);parent=n
+    segment(b,parent,[9,14,3],[10,15.5,3],1.8,m.BLACK)
     return b

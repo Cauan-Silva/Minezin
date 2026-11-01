@@ -35,7 +35,7 @@ def forma():
 
 def liebe():
  from build_nemesis_models import liebe as shape
- save(A/'geo/nemesis/4.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':'geometry.nemesis_4','texture_width':64,'texture_height':64,'visible_bounds_width':5,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(shape().values())}]})
+ save(A/'geo/nemesis/4.geo.json',{'format_version':'1.12.0','minecraft:geometry':[{'description':{'identifier':'geometry.nemesis_4','texture_width':64,'texture_height':64,'visible_bounds_width':4,'visible_bounds_height':4,'visible_bounds_offset':[0,1.5,0]},'bones':list(shape().values())}]})
 def animations():
  all={}
  for tipo in [200,*range(300,308)]:
@@ -65,7 +65,9 @@ def glyph():
 def main():
  # Reuse the established per-slot exporter without rewriting older authored pieces.
  # Export Asta through a dedicated subset identical to the existing renderer's contract.
- bones=traje();save(A/'geo/armaduras/asta.geo.json',armor.document('asta',bones))
+ from clothing_uv import apply
+ from polish_clothing_shapes import polish
+ bones=apply('asta',polish('asta',traje()));save(A/'geo/armaduras/asta.geo.json',armor.document('asta',bones))
  subsets={'helmet':{'armorHead'},'chestplate':{'armorBody','armorLeftArm','armorRightArm'},'leggings':{'armorLeftLeg','armorRightLeg'},'boots':{'armorLeftBoot','armorRightBoot'}}
  for part,roots in subsets.items():
   icon=copy.deepcopy(bones)

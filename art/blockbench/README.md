@@ -40,3 +40,27 @@ Os impact frames dos bosses podem ser desligados em `impactFrames` na configura�
 Qual: corpo de 5 blocos no mínimo (escala 2.5) com colisão correspondente; o valor antigo 1.4 é elevado ao mínimo no carregamento e na invocação. A régua da prévia usa a mesma escala e o corpo base de 32 unidades = 2 blocos. O altar solicita seis blocos livres de altura, incluindo a folga de invocação.
 
 Toji: skin por **Gabbahh**, https://www.minecraftskins.com/skin/23948308/toji-fushiguro---jujutsu-kaisen/ ; PNG original https://www.minecraftskins.com/uploads/skins/2026/03/25/toji-fushiguro---jujutsu-kaisen-23948308.png . Modelo Classic (braços de 4 pixels), sem alterações nos pixels. Os acessórios usam amostras dessa textura. A antiga skin SVG simplificada do Toji foi removida para não sobrescrever o arquivo externo na regeneração.
+
+## Trajes 3.4.0
+
+Gojo, Frieren, Shadow e Asta usam agora texturas independentes de 128×128 em `textures/armor/trajes/`, com ilhas UV dimensionadas em aproximadamente um pixel por unidade Blockbench. As margens de um pixel evitam amostrar ilhas vizinhas. Cada PNG tem fonte SVG editável, sem blur, ruído aleatório ou gradientes. Os geradores escrevem os SVGs; exporte-os para PNG no tamanho original 128×128, sem redimensionar, antes de empacotar o mod.
+
+Fontes: `tools/armor_reference_shapes.py`, refinamentos em `tools/polish_clothing_shapes.py` e UV/pixel art em `tools/clothing_uv.py`. Execute `build_armor_models.py` e `build_asta_assets.py`, exporte os quatro SVGs para PNG e depois execute `export_blockbench_projects.py`. Alterações manuais no Blockbench devem ser incorporadas às fontes antes da próxima regeneração.
+
+Gojo conserva a gola alta e botão único, com costuras na textura. A venda e a faixa do Asta têm folga para a camada externa da skin. Frieren tem barra mais longa e brincos afastados da cabeça. Shadow tem cinco painéis largos, com barra irregular e forro roxo. Ombreiras do Asta são filhas dos braços, com aba própria na bolsa.
+
+Os ícones dos quatro slots são exportados dos mesmos modelos e UVs. Rosto/cabelo continuam pertencendo à skin do jogador. Cajado, armas e forma demoníaca mantêm seus materiais existentes. A prévia `--poses` mostra poses estáticas sintéticas de repouso, caminhada e braços erguidos; não é captura do Minecraft nem teste da animação em movimento. A prévia usa dois samplers para não aplicar a textura da roupa no cajado ou nos acessórios da forma.
+
+Revisão no Minecraft pendente: skins Classic/Slim com hat layer, combinação de slots, ataques, agachar, primeira/terceira pessoa e recarga de recursos. O controle de tela foi interrompido pelo usuário durante esta etapa; a validação seguiu sem operar aplicativos.
+
+### Correção do ombro e manto do Asta
+As mangas cobrem o topo do braço até Y=24.4 e o contorno da camada externa padrão da skin. Antes, terminavam abaixo de Y=24, expondo toda a tampa do braço ao girar. A correção é na manga presa ao osso do braço, acompanhada de regressão de cobertura para os quatro trajes.
+
+O manto do Asta usa superfícies finas no peito, costas e ombros, barra frontal inclinada e borda dourada mais estreita. Substitui os blocos grossos e inclinados das ombreiras. As peças laterais continuam seguindo os braços. As prévias estáticas foram refeitas sem operar a tela do usuário; validar encaixe em movimento no Minecraft.
+
+### Acessórios dos bosses
+As rotações dos cubos Bedrock passam pela reflexão de X no `BakedModelFactory` do GeckoLib; as coordenadas de autoria vistas sem essa reflexão exigem sinais invertidos em X/Z. A prévia agora segue essa conversão. Segmentos de chifres usam o ângulo convertido e os dedos inferiores do Qual compartilham a rotação do osso do braço. A cauda do Liebe usa juntas conectadas.
+
+A arma visual exclusiva do Toji é filha de `rightArm`, com pivô na palma, cabo em contato com a mão e lâmina abaixo do punho no repouso. Não é um item registrado novo. Os testes de conexão dos chifres e cauda passam pelo conversor real de cubos e pelas matrizes de rotação do GeckoLib, sem depender apenas da prévia externa. Validar a luta e a empunhadura em movimento no Minecraft.
+
+Os trajes também convertem os ângulos de autoria para a convenção do GeckoLib durante a exportação dos UVs. Isso mantém o caimento visto na prévia após a correção da reflexão de coordenadas.

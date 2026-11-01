@@ -6,6 +6,6 @@ public final class ModeloTrajeAnime extends GeoModel<TrajeAnime>{
     public ModeloTrajeAnime(boolean inventario){this.inventario=inventario;}
     private static ResourceLocation id(String p){return new ResourceLocation("arcanecontrol",p);}
     @Override public ResourceLocation getModelResource(TrajeAnime a){return id("geo/armaduras/"+a.estilo+(inventario?"_"+a.getType().name().toLowerCase(java.util.Locale.ROOT):"")+".geo.json");}
-    @Override public ResourceLocation getTextureResource(TrajeAnime a){return id("textures/armor/anime_reference_atlas.png");}
+    @Override public ResourceLocation getTextureResource(TrajeAnime a){return id("textures/armor/trajes/"+a.estilo+".png");}
     @Override public ResourceLocation getAnimationResource(TrajeAnime a){return id("animations/armaduras/"+a.estilo+".animation.json");}
 }
