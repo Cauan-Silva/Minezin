@@ -20,6 +20,16 @@ public final class EfeitosAsta {
     private record Efeito(PacoteEfeitoDespertar p,Object mundo,long inicio){}
     private static final List<Efeito> EFEITOS=new ArrayList<>();
     private static final Vec3 CIMA=new Vec3(0,1,0);
+    public record EstadoVisual(double tempo,double idade,float alpha){}
+    public static EstadoVisual forma(java.util.UUID id,float parcial){
+        var mc=Minecraft.getInstance();if(mc.level==null)return null;
+        for(var f:EFEITOS)if(f.p.tipo()==200&&f.mundo==mc.level&&f.p.dono().equals(id)){
+            double t=mc.level.getGameTime()+parcial-f.inicio;
+            if(t>=0&&t<f.p.ticks())return new EstadoVisual(t,1200-f.p.ticks()+t,(float)Math.min(1,Math.min(t/3,(f.p.ticks()-t)/6)));
+        }
+        return null;
+    }
+
     public static void receber(PacoteEfeitoDespertar p){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
         if(p.tipo()==0){EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));AnimacoesGojo.cancelar(p.dono());if(mc.player!=null&&p.dono().equals(mc.player.getUUID())&&GerenciadorCutscene3D.cutsceneTipo==35)GerenciadorCutscene3D.finalizarCutscene();return;}
@@ -52,11 +62,7 @@ public final class EfeitosAsta {
             var s=e.getPoseStack();s.pushPose();s.translate(origem.x-camera.x,origem.y-camera.y,origem.z-camera.z);
             try{
                 float fade=(float)Math.min(1,Math.min(t/3,(p.ticks()-t)/6));var cam=camera.subtract(origem);
-                if(p.tipo()==200&&dono!=null){
-                    s.mulPose(Axis.YP.rotationDegrees(180-net.minecraft.util.Mth.rotLerp(e.getPartialTick(),dono.yBodyRotO,dono.yBodyRot)));
-                    ModeloFormaAsta.desenhar(s,t,fade,1200-p.ticks()+t);
-                    continue;
-                }
+                if(p.tipo()==200)continue; // Geometry follows the player model in CamadaFormaAsta.
                 if(p.tipo()==104){DesenhoMagia.lote(s,6,true,()->{var c=p.b().subtract(origem);DesenhoMagia.selo(s,cam,c,CIMA,5,t,0xDD294A,fade);DesenhoMagia.anel(s,c,CIMA,5*(1-t/p.ticks()),5*(1-t/p.ticks())+.07,0xF1BAC3,fade,64);});continue;}
                 if(p.tipo()==114||p.tipo()==309){DesenhoMagia.lote(s,7,true,()->{for(int i=0;i<12;i++){double a=i*Math.PI/6;var d=new Vec3(Math.cos(a),.2,Math.sin(a));DesenhoMagia.fita(s,cam,d.scale(t*.13),d.scale(t*.13+2),.12,0,2,0xCE2747,fade);}DesenhoMagia.anel(s,Vec3.ZERO,CIMA,t*.2,t*.2+.25,0xBC2043,fade,64);});continue;}
                 if(p.tipo()==303){
