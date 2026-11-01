@@ -60,6 +60,7 @@ jobs:
           python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
           python tools/preview_cinematic_vfx.py --backend egl --output build/cinematic-vfx.png
+          python tools/preview_armor_models.py --ichigo --backend egl --output build/ichigo-models.png
           python tools/preview_divider.py --backend egl --output build/divider-model.png
           python tools/preview_armor_models.py --backend egl --output build/anime-armor.png
           python tools/preview_armor_models.py --poses --backend egl --output build/armor-poses.png
@@ -74,6 +75,7 @@ jobs:
             build/anime-materials.png
             build/cinematic-vfx.png
             build/divider-model.png
+            build/ichigo-models.png
             build/anime-armor.png
             build/armor-poses.png
             build/anime-nemesis.png

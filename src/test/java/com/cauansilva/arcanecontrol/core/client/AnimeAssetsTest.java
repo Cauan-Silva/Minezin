@@ -11,7 +11,7 @@ class AnimeAssetsTest {
         try(var in=getClass().getResourceAsStream(path)){assertNotNull(in,path);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}
     }
     @Test void mangasCobremOTopoDosBracosIncluindoSegundaCamadaDaSkin()throws Exception{
-        for(String style:new String[]{"gojo","frieren","shadow","asta"}){
+        for(String style:new String[]{"gojo","frieren","shadow","asta","ichigo"}){
             var g=json("/assets/arcanecontrol/geo/armaduras/"+style+".geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
             for(String lado:new String[]{"armorLeftArm","armorRightArm"}){
                 JsonObject manga=null;

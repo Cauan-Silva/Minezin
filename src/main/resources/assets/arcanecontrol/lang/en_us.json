@@ -42,5 +42,10 @@
   "subtitles.arcanecontrol.frieren_cast": "Zoltraak fires",
   "subtitles.arcanecontrol.frieren_barrier": "Magic barrier resonates",
   "subtitles.arcanecontrol.singularity_charge": "Singularity forms",
-  "subtitles.arcanecontrol.singularity_collapse": "Singularity collapses"
+  "subtitles.arcanecontrol.singularity_collapse": "Singularity collapses",
+  "item.arcanecontrol.zangetsu": "Zangetsu",
+  "item.arcanecontrol.ichigo_cabeca": "Shihakusho Headband",
+  "item.arcanecontrol.ichigo_peito": "Shihakusho",
+  "item.arcanecontrol.ichigo_pernas": "Hakama",
+  "item.arcanecontrol.ichigo_botas": "Spiritual Sandals"
 }

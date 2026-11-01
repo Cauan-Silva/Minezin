@@ -18,8 +18,8 @@ def rotation(degrees):
 def transform(obj,gecko=True):
  pivot=np.array(obj.get('pivot',[0,0,0]));r=obj.get('rotation',[0,0,0]);return translation(pivot)@rotation([-r[0],r[1],-r[2]] if gecko else r)@np.diag([*obj.get('scale',[1,1,1]),1])@translation(-pivot)
 def mesh(style,pose_name="idle"):
- bosses={'toji':1,'aurora':2,'qual':3,'liebe':4}
- path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
+ bosses={'toji':1,'aurora':2,'qual':3,'liebe':4,'zangetsu_boss':6}
+ path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else f'geo/ichigo/{style}.geo.json' if style in ['zangetsu','tensa_zangetsu'] else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
  if style=='matadora':
@@ -46,7 +46,7 @@ def mesh(style,pose_name="idle"):
         'east':([1,3,7,5],[1,0,0]),'down':([0,1,5,4],[0,-1,0]),'up':([2,6,7,3],[0,1,0])}
  # Neutral mannequin skin exposes where the real player's own face/hands remain visible.
  skin={'uv':[0,0],'uv_size':[1,1]}
- if style not in ['cajado','toji','aurora','qual','liebe','matadora']:
+ if style not in ['cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora']:
   for n,parent,o,size in [('skin_head','armorHead',[-4,24,-4],[8,8,8]),('skin_left','armorLeftArm',[4,12,-2],[4,12,4]),('skin_right','armorRightArm',[-8,12,-2],[4,12,4])]:
    bones[n]={'name':n,'parent':parent,'cubes':[{'origin':o,'size':size,'uv':{f:skin for f in faces}}]}
   if pose_name!='idle':
@@ -67,7 +67,7 @@ def mesh(style,pose_name="idle"):
 def lookat(eye,target):
  f=(target-eye);f=f/np.linalg.norm(f);s=np.cross(f,[0,1,0]);s=s/np.linalg.norm(s);u=np.cross(s,f)
  m=np.eye(4);m[0,:3]=s;m[1,:3]=u;m[2,:3]=-f;return m@translation(-eye)
-def render(output,backend=None,nemesis=False,asta=False,boss_scale=False,poses=False):
+def render(output,backend=None,nemesis=False,asta=False,boss_scale=False,poses=False,ichigo=False):
  ctx=moderngl.create_standalone_context(require=320,**({'backend':backend}if backend else{}))
  program=ctx.program(vertex_shader='''#version 150
  in vec3 Position;in vec3 Normal;in vec2 UV;in float Textured;uniform mat4 Matrix;uniform mat4 ModelView;
@@ -80,23 +80,25 @@ def render(output,backend=None,nemesis=False,asta=False,boss_scale=False,poses=F
  ctx.enable(moderngl.DEPTH_TEST);ctx.disable(moderngl.CULL_FACE)
  projection=np.diag([2/34,2/45,-2/200,1]);projection[2,3]=-1
  view=lookat(np.array([0.,20.,-60.]),np.array([0.,18.,0.]))
- styles=['gojo','frieren','shadow','asta'] if poses else ['toji','qual','liebe'] if boss_scale else ['asta','matadora','asta_forma','liebe'] if asta else ['toji','aurora','qual'] if nemesis else ['gojo','frieren','shadow','cajado'];rows=1 if boss_scale else len(styles)
+ styles=['ichigo','zangetsu','tensa_zangetsu','zangetsu_boss'] if ichigo else ['gojo','frieren','shadow','asta'] if poses else ['toji','qual','liebe'] if boss_scale else ['asta','matadora','asta_forma','liebe'] if asta else ['toji','aurora','qual'] if nemesis else ['gojo','frieren','shadow','cajado'];rows=1 if boss_scale else len(styles)
  sheet=Image.new('RGB',(width*3,height*rows+58),(11,15,24));draw=ImageDraw.Draw(sheet)
  views=[(style,0) for style in styles] if boss_scale else [(style,yaw) for style in styles for yaw in [0,180,28]]
  for index,(style,yaw)in enumerate(views):
   outfit='asta' if style=='asta_forma' else style
-  image=Image.open(ASSETS/(f'textures/armor/trajes/{outfit}.png' if outfit in ['gojo','frieren','shadow','asta'] else f'textures/bosses/{style}_skin.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.release();texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.NEAREST,moderngl.NEAREST);texture.use()
+  image=Image.open(ASSETS/(f'textures/armor/trajes/{outfit}.png' if outfit in ['gojo','frieren','shadow','asta','ichigo'] else 'textures/bosses/zangetsu_skin.png' if style=='zangetsu_boss' else f'textures/bosses/{style}_skin.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.release();texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.NEAREST,moderngl.NEAREST);texture.use()
   fbo.clear(.14,.15,.18,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
   framing=projection.copy();framing[0,0]=2/(84 if style=='asta_forma' else 48 if style=='liebe' else 34)
   if style=='asta_forma':
    framing[1,1]=2/64;mv=lookat(np.array([0.,26.,-60.]),np.array([0.,26.,0.]))@model
+  if style in ['zangetsu','tensa_zangetsu','zangetsu_boss']:
+   framing[1,1]=2/66;framing[0,0]=2/49;mv=lookat(np.array([0.,18.,-80.]),np.array([0.,16.,0.]))@model
   if boss_scale:
    scale={'toji':1,'qual':2.5,'liebe':.85}[style];model=model@np.diag([scale,scale,scale,1]);framing[0,0]=2/84;framing[1,1]=2/110;mv=lookat(np.array([0.,52.,-60.]),np.array([0.,52.,0.]))@model
   program['Matrix'].write((framing@mv).T.astype('f4').tobytes());program['ModelView'].write(mv.T.astype('f4').tobytes())
   pose_name=['idle','walk','cast'][index%3] if poses else 'idle'
   buf=ctx.buffer(mesh(style,pose_name).tobytes());vao=ctx.vertex_array(program,[(buf,'3f 3f 2f 1f','Position','Normal','UV','Textured')]);vao.render(moderngl.TRIANGLES)
   tile=Image.frombytes('RGBA',(width,height),fbo.read(components=4)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-  data=np.asarray(tile);assert data[:,:,:3].std()>10,f'Blank model render: {style}, std={data[:,:,:3].std()}'
+  data=np.asarray(tile);assert data[:,:,:3].std()>(3 if style=='tensa_zangetsu' else 10),f'Blank model render: {style}, std={data[:,:,:3].std()}'
   x=index%3*width;y=index//3*height;sheet.paste(tile.convert('RGB'),(x,y))
   if boss_scale:
    for block in range(7):
@@ -108,4 +110,4 @@ def render(output,backend=None,nemesis=False,asta=False,boss_scale=False,poses=F
  print('Armor GPU:',ctx.info['GL_RENDERER']);print('Rendered armor models:',output)
  texture.release();accessory_texture.release();program.release();fbo.release();ctx.release()
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--backend');p.add_argument('--poses',action='store_true');p.add_argument('--boss-scale',action='store_true');p.add_argument('--nemesis',action='store_true');p.add_argument('--asta',action='store_true');a=p.parse_args();render(a.output,a.backend,a.nemesis,a.asta,a.boss_scale,a.poses)
+ p=argparse.ArgumentParser();p.add_argument('--ichigo',action='store_true');p.add_argument('--output',required=True);p.add_argument('--backend');p.add_argument('--poses',action='store_true');p.add_argument('--boss-scale',action='store_true');p.add_argument('--nemesis',action='store_true');p.add_argument('--asta',action='store_true');a=p.parse_args();render(a.output,a.backend,a.nemesis,a.asta,a.boss_scale,a.poses,a.ichigo)

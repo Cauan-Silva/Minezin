@@ -70,6 +70,11 @@ public final class NemesisEntity extends Monster implements GeoEntity {
             for(int i=0;i<8;i++){double a=i*Math.PI/4;var c=mira.add(Math.cos(a)*3,0,Math.sin(a)*3);if(p.distanceToSqr(c)<5&&hasLineOfSight(p))p.hurt(damageSources().mobAttack(this),16);l.sendParticles(ParticleTypes.CRIMSON_SPORE,c.x,c.y+1,c.z,12,.4,1,.4,.04);}
             if(p.distanceToSqr(mira)<9&&hasLineOfSight(p))p.hurt(damageSources().mobAttack(this),16);
             EfeitosDespertar.enviar(l,getUUID(),412,mira,mira.add(0,5,0),18,kit());
+        }else if(kit()==6){
+            var inicio=getEyePosition();var dir=mira.add(0,1,0).subtract(inicio).normalize();
+            var fim=l.clip(new net.minecraft.world.level.ClipContext(inicio,inicio.add(dir.scale(24)),net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,this)).getLocation();
+            if(p.getBoundingBox().inflate(.8).clip(inicio,fim).isPresent()&&hasLineOfSight(p))p.hurt(damageSources().mobAttack(this),20);
+            EfeitosDespertar.enviar(l,getUUID(),416,inicio,fim,20,6);
         }else if(kit()==4){
             for(var v:l.getEntitiesOfClass(LivingEntity.class,new AABB(mira,mira).inflate(5),v->v.isAlive()&&v==p))if(hasLineOfSight(v)){
                 v.hurt(damageSources().mobAttack(this),20);v.addEffect(new net.minecraft.world.effect.MobEffectInstance(com.cauansilva.arcanecontrol.core.asta.RegistroAsta.SILENCIO.get(),60,0));
@@ -94,7 +99,7 @@ public final class NemesisEntity extends Monster implements GeoEntity {
     @Override protected boolean shouldDespawnInPeaceful(){return false;}
     @Override public boolean removeWhenFarAway(double d){return false;}
     @Override public void addAdditionalSaveData(CompoundTag t){super.addAdditionalSaveData(t);if(dono!=null)t.putUUID("dono",dono);t.putInt("kit",kit());t.putDouble("ax",arena.x);t.putDouble("ay",arena.y);t.putDouble("az",arena.z);}
-    @Override public void readAdditionalSaveData(CompoundTag t){super.readAdditionalSaveData(t);dono=t.hasUUID("dono")?t.getUUID("dono"):null;configurarTamanho(Math.max(1,Math.min(4,t.getInt("kit"))));arena=new Vec3(t.getDouble("ax"),t.getDouble("ay"),t.getDouble("az"));}
+    @Override public void readAdditionalSaveData(CompoundTag t){super.readAdditionalSaveData(t);dono=t.hasUUID("dono")?t.getUUID("dono"):null;configurarTamanho(t.getInt("kit")==6?6:Math.max(1,Math.min(4,t.getInt("kit"))));arena=new Vec3(t.getDouble("ax"),t.getDouble("ay"),t.getDouble("az"));}
     @Override public AnimatableInstanceCache getAnimatableInstanceCache(){return cache;}
     @Override public void registerControllers(AnimatableManager.ControllerRegistrar r){r.add(new AnimationController<>(this,"corpo",0,s->s.setAndContinue(entityData.get(LIBERANDO)?RawAnimation.begin().thenPlay("release"):entityData.get(CONJURANDO)?RawAnimation.begin().thenPlay("cast"):RawAnimation.begin().thenLoop(s.isMoving()?"walk":"idle"))));}
 }

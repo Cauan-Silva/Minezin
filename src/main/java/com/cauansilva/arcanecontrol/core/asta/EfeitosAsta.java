@@ -42,6 +42,7 @@ public final class EfeitosAsta {
         if(p.tipo()==0){com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(p.dono(),null);ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));AnimacoesGojo.cancelar(p.dono());if(mc.player!=null&&p.dono().equals(mc.player.getUUID())&&GerenciadorCutscene3D.cutsceneTipo==35)GerenciadorCutscene3D.finalizarCutscene();return;}
         if(p.ticks()<1||p.ticks()>1200)return;
         if(p.tipo()==310){EFEITOS.removeIf(e->e.p.dono().equals(p.dono())&&e.p.tipo()==307);receber(new PacoteEfeitoDespertar(p.dono(),309,p.a(),p.b(),p.ticks(),4));return;}
+        com.cauansilva.arcanecontrol.core.client.render.UltimatesTransformadas.receber(p);
         if(p.tipo()==306)com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(p.dono(),"divider",p.a(),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.divider());
         if(p.tipo()==309)ImpactosAnime.programar(p.dono(),p.a().add(0,.7,0),0,0xD5264C,.75,18,4);
         if(p.tipo()==200){
