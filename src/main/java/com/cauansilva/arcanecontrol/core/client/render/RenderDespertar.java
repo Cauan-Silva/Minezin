@@ -22,6 +22,7 @@ public final class RenderDespertar {
     private static final Vec3 CIMA=new Vec3(0,1,0);
     public static void receber(PacoteEfeitoDespertar p){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
+        if(p.kit()==4){com.cauansilva.arcanecontrol.core.asta.EfeitosAsta.receber(p);return;}
         if(p.tipo()==0){EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));INVERTIDOS.remove(p.dono());GerenciadorCutscene3D.cancelarDominioCliente(p.dono());if(p.kit()==2)com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(15,p.dono(),Vec3.ZERO,Vec3.ZERO);AnimacoesGojo.cancelar(p.dono());return;}
         if(p.ticks()<1||p.ticks()>1200||p.kit()<1||p.kit()>3||!finito(p.a())||!finito(p.b()))return;
         if(p.tipo()==200){EFEITOS.removeIf(e->e.p.tipo()==200&&e.p.dono().equals(p.dono()));if(p.kit()==1)GerenciadorCutscene3D.garantirDominio(p.dono(),p.a(),p.ticks());}

@@ -13,7 +13,7 @@ public class TrajeAnime extends ArmorItem implements GeoItem {
     @Override public void appendHoverText(ItemStack s,net.minecraft.world.level.Level l,java.util.List<net.minecraft.network.chat.Component> texto,TooltipFlag f){
         super.appendHoverText(s,l,texto,f);
         texto.add(net.minecraft.network.chat.Component.literal("Conjunto completo: -20% de mana no kit correspondente.").withStyle(net.minecraft.ChatFormatting.DARK_AQUA));
-        texto.add(net.minecraft.network.chat.Component.literal(estilo.equals("shadow")?"Conjunto Shadow: capuz e capa de slime.":estilo.equals("gojo")?"Ferraria: papel + peça de netherita + ametista":"Ferraria: papel + peça de diamante + ouro").withStyle(net.minecraft.ChatFormatting.GRAY));
+        texto.add(net.minecraft.network.chat.Component.literal(estilo.equals("asta")?"Ferraria: papel + peça de netherita + obsidiana":estilo.equals("shadow")?"Conjunto Shadow: capuz e capa de slime.":estilo.equals("gojo")?"Ferraria: papel + peça de netherita + ametista":"Ferraria: papel + peça de diamante + ouro").withStyle(net.minecraft.ChatFormatting.GRAY));
     }
     @Override public void registerControllers(AnimatableManager.ControllerRegistrar r){r.add(new AnimationController<>(this,"tecido",5,s->s.setAndContinue(RawAnimation.begin().thenLoop("animation.traje.idle"))));}
     @Override public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.extensions.common.IClientItemExtensions> consumer){

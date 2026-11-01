@@ -20,8 +20,8 @@ public final class ArvoreRpgScreen extends Screen {
     public ArvoreRpgScreen(PoderAnime foco){super(Component.literal("Árvore de habilidades"));this.foco=foco==null?PoderAnime.GOJO:foco;}
     @Override protected void init(){
         layout=LayoutArvoreRpg.paraTela(width,height);int x=layout.x(),y=layout.y(),w=layout.largura();
-        for(var kit:PoderAnime.values())addRenderableWidget(Button.builder(Component.literal(kit.nome),b->foco=kit)
-                .bounds(x+12+(kit.id-1)*(w-24)/3,y+42,(w-24)/3-4,18).build());
+        for(var kit:PoderAnime.values())addRenderableWidget(Button.builder(Component.literal(kit==PoderAnime.CID?"Shadow":kit.nome),b->foco=kit)
+                .bounds(x+12+kit.ordinal()*(w-24)/PoderAnime.values().length,y+42,(w-24)/PoderAnime.values().length-4,18).build());
         for(var no:NoRpg.values())nos[no.indice]=addRenderableWidget(Button.builder(Component.literal(ROTULOS[no.indice]),b->{
             b.active=false;RegistoRede.ENVIAR.sendToServer(new PacoteAcaoRpg(1,foco.id,no.indice));
         }).bounds(layout.nodeX(no.indice),layout.nodeY(no.indice),layout.nodeLargura(),18).build());

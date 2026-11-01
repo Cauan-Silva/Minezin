@@ -17,7 +17,7 @@ class NemesisAssetsTest {
     private JsonObject json(String path)throws Exception{try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/"+path)){assertNotNull(in,path);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}}
     @Test void tresChefesTemHierarquiaAnimavelCompletaSemCiclos()throws Exception{
         var anim=json("animations/nemesis.animation.json").getAsJsonObject("animations");
-        for(int kit=1;kit<=3;kit++){
+        for(int kit=1;kit<=4;kit++){
             var g=json("geo/nemesis/"+kit+".geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();var bones=new HashMap<String,JsonObject>();int cubos=0;
             for(var v:g.getAsJsonArray("bones")){var b=v.getAsJsonObject();assertNull(bones.put(b.get("name").getAsString(),b));if(b.has("cubes"))cubos+=b.getAsJsonArray("cubes").size();}
             assertTrue(cubos>=30);assertTrue(bones.containsKey("root"));

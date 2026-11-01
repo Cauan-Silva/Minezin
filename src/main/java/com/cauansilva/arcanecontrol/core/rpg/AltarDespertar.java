@@ -33,7 +33,7 @@ public final class AltarDespertar extends Block {
             var destino=centro.add(direcao.scale(5)).add(0,altura,0);var bp=BlockPos.containing(destino);
             if(!level.hasChunkAt(bp)||!level.getWorldBorder().isWithinBounds(bp))continue;
             var candidato=RegistroDespertar.NEMESIS.get().create(level);if(candidato==null)break;candidato.moveTo(destino.x,destino.y,destino.z,p.getYRot()+180,0);
-            if(!level.noCollision(candidato,candidato.getBoundingBox().inflate(1,.1,1))||level.containsAnyLiquid(candidato.getBoundingBox())||!level.getBlockState(bp.below()).isFaceSturdy(level,bp.below(),Direction.UP))continue;
+            if(!level.noCollision(candidato,EspacoInvocacao.volumeLivre(candidato.getBoundingBox()))||level.containsAnyLiquid(candidato.getBoundingBox())||!level.getBlockState(bp.below()).isFaceSturdy(level,bp.below(),Direction.UP))continue;
             chefe=candidato;
         }
         if(chefe==null){p.displayClientMessage(Component.literal("Libere uma área com chão firme, a cinco blocos à frente do altar."),true);return InteractionResult.CONSUME;}

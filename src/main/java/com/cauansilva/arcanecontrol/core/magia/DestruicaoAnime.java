@@ -23,6 +23,16 @@ public final class DestruicaoAnime {
         if(CRATERAS.size()>=8)return;
         CRATERAS.add(new Cratera(p,p.serverLevel(),BlockPos.containing(centro),PerfilCratera.planejar(raio,profundidade).iterator()));
     }
+    public static void fenda(ServerPlayer p,Vec3 origem,Vec3 dir,int alcance){
+        if(CRATERAS.size()>=8)return;
+        var plano=new ArrayList<PerfilCratera.Bloco>();var vistos=new HashSet<BlockPos>();
+        Vec3 lado=new Vec3(-dir.z,0,dir.x);
+        for(int i=1;i<=Math.min(24,alcance);i++)for(int largura=-1;largura<=1;largura++)for(int y=-3;y<=0;y++){
+            var pos=BlockPos.containing(dir.scale(i).add(lado.scale(largura)).add(0,y,0));
+            if(vistos.add(pos))plano.add(new PerfilCratera.Bloco(pos.getX(),pos.getY(),pos.getZ()));
+        }
+        CRATERAS.add(new Cratera(p,p.serverLevel(),BlockPos.containing(origem),plano.iterator()));
+    }
     private static boolean podeRemover(ServerPlayer p,ServerLevel level,BlockPos pos){
         if(!level.hasChunkAt(pos)||!level.getWorldBorder().isWithinBounds(pos)||!level.mayInteract(p,pos))return false;
         var state=level.getBlockState(pos);

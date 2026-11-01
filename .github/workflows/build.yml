@@ -52,6 +52,7 @@ jobs:
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
           python tools/preview_armor_models.py --backend egl --output build/anime-armor.png
           python tools/preview_armor_models.py --nemesis --backend egl --output build/anime-nemesis.png
+          python tools/preview_armor_models.py --asta --backend egl --output build/anime-asta.png
       - uses: actions/upload-artifact@v4
         with:
           name: anime-visual-previews
@@ -60,6 +61,7 @@ jobs:
             build/anime-materials.png
             build/anime-armor.png
             build/anime-nemesis.png
+            build/anime-asta.png
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:

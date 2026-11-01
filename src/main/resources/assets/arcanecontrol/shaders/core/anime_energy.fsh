@@ -48,11 +48,20 @@ void main(){
         float dissolve=fbm(uv*13.0+vec2(t*.8,-t*.2));
         color=mix(vec3(.008,.004,.018),vertexColor.rgb,.12+pow(1.0-edge,3.0));
         alpha*=smoothstep(.15,.5,dissolve)*(1.0-smoothstep(.43,.5,abs(uv.x-.5)));
-    } else {
+    } else if(m<6.5){
         float core=exp(-pow((uv.y-.5)*20.0,2.0));
         float pulse=.6+.4*noise(vec2(uv.x*12.0-t*2.0,uv.y*3.0));
         color=mix(color,vec3(1.0,.97,.9),core*.8);
         alpha*=pulse*(1.0-smoothstep(.3,.5,abs(uv.y-.5)));
+    }
+    if(m>=6.5&&m<7.5){
+        float d=abs(uv.y-.5),warp=(fbm(uv*vec2(5.,9.)-vec2(t*2.,t))-.5)*.12;
+        float rim=exp(-pow((d-.34+warp)*35.,2.));
+        color=mix(vertexColor.rgb*.07,vec3(.88,.035,.14),rim);
+        color+=vec3(.6,.06,.12)*pow(noise(uv*24.-t),8.);
+        alpha=vertexColor.a*(1.-smoothstep(.37,.5,d));
+    }else if(m>=7.5){
+        color=vertexColor.rgb*(.85+.15*noise(uv*4.));alpha=vertexColor.a;
     }
     if(alpha<.004)discard;fragColor=vec4(color,alpha);
 }

@@ -58,6 +58,11 @@ public final class AnimacoesGojo {
         }
         PRIORIDADES.remove(id);
     }
+    public static void tocarAsta(UUID id,int tipo){
+        var mc=Minecraft.getInstance();if(mc.level==null)return;
+        if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
+        var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,"asta_"+tipo);
+    }
     public static void tocarCid(UUID id, int tipo) {
         var mc = Minecraft.getInstance();
         if(mc.level == null || tipo < 11 || tipo > 14) return;

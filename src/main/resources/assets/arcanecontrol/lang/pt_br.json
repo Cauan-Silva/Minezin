@@ -26,5 +26,11 @@
   "key.minezin.g": "Despertar",
   "block.arcanecontrol.altar_despertar": "Altar do Despertar",
   "item.arcanecontrol.alma_despertar": "Alma do Despertar",
-  "entity.arcanecontrol.nemesis": "Nêmesis"
+  "entity.arcanecontrol.nemesis": "Nêmesis",
+  "item.arcanecontrol.matadora_demonios": "Espada Matadora de Demônios",
+  "item.arcanecontrol.asta_cabeca": "Faixa dos Touros Negros",
+  "item.arcanecontrol.asta_peito": "Manto dos Touros Negros",
+  "item.arcanecontrol.asta_pernas": "Calças dos Touros Negros",
+  "item.arcanecontrol.asta_botas": "Botas dos Touros Negros",
+  "effect.arcanecontrol.silencio": "Silenciado"
 }

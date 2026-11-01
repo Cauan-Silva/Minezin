@@ -64,6 +64,7 @@ public final class RpgServidor {
     }
     public static boolean podeUsar(ServerPlayer p,PoderAnime kit,int slot){
         if(kit==null||slot<0||slot>=kit.tecnicas.length||!p.isAlive()||p.isSpectator())return false;
+        if(p.hasEffect(com.cauansilva.arcanecontrol.core.asta.RegistroAsta.SILENCIO.get())){p.displayClientMessage(Component.literal("Silenciado: aguarde a antimagia terminar."),true);return false;}
         var e=ProgressaoPoderes.ler(p);if(!e.tem(kit)||e.ativo()!=kit)return false;
         if(slot==4)return mestria(p,kit.id).despertarLiberado();
         return p.isCreative()||mestria(p,kit.id).podeUsarSlot(slot);
@@ -78,6 +79,11 @@ public final class RpgServidor {
             mensagem(p,resultado==ConjuracaoRpg.Resultado.MANA?"Mana insuficiente.":resultado==ConjuracaoRpg.Resultado.RECARGA?"Técnica em recuperação.":"Técnica bloqueada. Abra H.");return false;
         }
         var tag=dados(p);tag.putDouble("mana",mana.atual());PerfilRpgNbt.salvarRecargas(tag,cds);sincronizar(p);return true;
+    }
+    public static boolean consumirMana(ServerPlayer p,PoderAnime kit,double custo){
+        if(p.isCreative())return true;var mana=new RecursoMana(dados(p).getDouble("mana"));
+        if(!mana.consumir(custo,conjuntoCompleto(p,kit)))return false;
+        dados(p).putDouble("mana",mana.atual());sincronizar(p);return true;
     }
     public static void uso(ServerPlayer p,PoderAnime kit){ganharXp(p,kit,5);}
     public static void ganharXp(ServerPlayer p,PoderAnime kit,int xp){
@@ -121,6 +127,7 @@ public final class RpgServidor {
         Item[] itens=switch(kit){
             case GOJO->new Item[]{RegistroTrajes.GOJO_CABECA.get(),RegistroTrajes.GOJO_PEITO.get(),RegistroTrajes.GOJO_PERNAS.get(),RegistroTrajes.GOJO_BOTAS.get()};
             case CID->new Item[]{EspadaCid.CAPUZ.get(),EspadaCid.MANTO.get(),EspadaCid.CALCAS.get(),EspadaCid.BOTAS.get()};
+            case ASTA->com.cauansilva.arcanecontrol.core.asta.RegistroAsta.conjunto();
             case FRIEREN->new Item[]{RegistroTrajes.FRI_CABECA.get(),RegistroTrajes.FRI_PEITO.get(),RegistroTrajes.FRI_PERNAS.get(),RegistroTrajes.FRI_BOTAS.get()};
         };
         EquipmentSlot[] slots={EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET};

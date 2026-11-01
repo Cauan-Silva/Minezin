@@ -2,7 +2,13 @@
 
 O usuário confirmou a adoção integral dos movesets e teclas de `GDD_Minezin_RPG_Movesets_v2.docx`. Essa decisão substitui as posições anteriores das habilidades: Gojo recebe Teleporte Curto em C e domínio em G; Shadow recebe Lâmina Oculta em V e Atomic em G; Frieren recebe Gaiola de Vento em V e Buraco Negro no C da forma transformada. P continua destinado à seleção entre kits desbloqueados, conforme a preferência anterior. H será a árvore geral e G o despertar.
 
-## Estado desta entrega
+## Estado atual — versão 3.1.0
+
+As etapas de persistência, rede, árvore H, mana, altar, almas e formas de Gojo/Shadow/Frieren já foram integradas na main até o PR #14. Esta etapa adiciona Asta como quarto kit jogável, com antimagia, equipamento, Liebe e Assimilação Demoníaca. Consulte `../testing/asta-3.1.md` para comandos e roteiro de validação. Ichigo e Tanjiro são os próximos da leva; seus kits ainda não estão habilitados.
+
+As notas abaixo registram a primeira entrega de catálogo (PR #12); não representam o estado de execução atual.
+
+## Estado original da primeira camada
 
 Esta é a primeira camada de implementação, voltada às regras e ao catálogo. Não é uma versão jogável com os quinze personagens. A experiência em jogo continua a da 2.2.0: nenhuma habilidade nova é anunciada como disponível, não há item de alma/altar registrado e nenhuma tecla foi remapeada nesta etapa. Não há mudança de protocolo, versão de distribuição ou dependência.
 
