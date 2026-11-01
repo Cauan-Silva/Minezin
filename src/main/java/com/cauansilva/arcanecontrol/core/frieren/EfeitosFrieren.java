@@ -18,6 +18,7 @@ public final class EfeitosFrieren {
     public static void iniciar(int tipo,UUID id,Vec3 origem,Vec3 alvo){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
         if(tipo==25||tipo==26){
+            if(tipo==25)ImpactosAnime.cancelar(id);
             EFEITOS.removeIf(e->e.jogador.equals(id)&&(tipo==25||e.tipo==22));
             if(tipo==25&&mc.player!=null&&mc.player.getUUID().equals(id)&&GerenciadorCutscene3D.cutsceneTipo==24)GerenciadorCutscene3D.finalizarCutscene();
             if(tipo==26)EmissoresAnime.pulso(id,origem.add(0,1,0),0xD5EFFF,18,3,.1,18);
@@ -26,6 +27,7 @@ public final class EfeitosFrieren {
         if(tipo<21||tipo>24)return;if(EFEITOS.size()>=32)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(tipo,id,origem,alvo,mc.level.getGameTime(),mc.level));
         AnimacoesGojo.tocarFrieren(id,tipo);
+        if(tipo==24){ImpactosAnime.programar(id,origem,PerfilFrieren.ABERTURA,0xEACF95,.45,28,3);ImpactosAnime.programar(id,origem,PerfilFrieren.COLAPSO,0xEACF95,1,40,3);}
         if(tipo==21)EmissoresAnime.pulso(id,alvo,0xDFEBFF,12,2,.1,12);
         if(tipo==24&&mc.player!=null&&mc.player.getUUID().equals(id))GerenciadorCutscene3D.iniciarCutsceneLocal(24,PerfilFrieren.FIM);
     }

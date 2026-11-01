@@ -46,8 +46,9 @@ public final class RoteiroGojo {
     private static final Chave[] ASTA={
         new Chave(0,new Quadro(1.8,.1,2.8,0,.85)),
         new Chave(18,new Quadro(-1.4,.5,3.3,0,.75)),
-        new Chave(32,new Quadro(-3.6,1.5,-3,0,1.4,1)),
-        new Chave(45,new Quadro(3.5,1.5,-4,0,1.25,.5)),
+        new Chave(32,new Quadro(-2.4,.8,3.8,0,.8,.4)),
+        new Chave(45,new Quadro(-2.8,.9,3.5,0,.78,.5)),
+        new Chave(47,new Quadro(-3.6,1.5,-3,0,1.4,1)),
         new Chave(55,new Quadro(2,1,-4,0,1))
     };
     public static double suave(double k) {
@@ -71,7 +72,7 @@ public final class RoteiroGojo {
     }
 
     public static double impacto(int tipo, double tick) {
-        if(tipo==35){double d=tick-28;return d<0?0:.75*Math.max(0,1-d/16);}
+        if(tipo==35){double d=tick-com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.FORMA_IMPACTO;return d<0?0:.75*Math.max(0,1-d/16);}
         if(tipo==24){double d=tick>=220?tick-220:tick-70;return d<0?0:.65*Math.max(0,1-d/12);}
         double desde = tick - (tipo == 14 ? 90 : tipo == 5 ? 35 : 30);
         return desde < 0 ? 0 : .65 * Math.max(0, 1 - desde / 12);

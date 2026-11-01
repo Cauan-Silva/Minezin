@@ -37,7 +37,7 @@ class AstaTest {
         assertArrayEquals(new int[]{80,160,240,500},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,false)).toArray());
         assertArrayEquals(new int[]{60,200,300,400},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,true)).toArray());
         assertEquals(1200,new EstadoDespertar(PersonagemRpg.ASTA,0).restante(0));
-        assertEquals(0,PerfilAsta.alcanceOnda(8));assertEquals(24,PerfilAsta.alcanceOnda(28));assertEquals(0,RoteiroGojo.impacto(35,27));assertTrue(RoteiroGojo.impacto(35,28)>0);assertEquals(1,RoteiroGojo.amostrar(35,55).fov());
+        assertEquals(0,PerfilAsta.alcanceOnda(8));assertEquals(24,PerfilAsta.alcanceOnda(28));assertEquals(0,RoteiroGojo.impacto(35,28));assertEquals(0,RoteiroGojo.impacto(35,46));assertTrue(RoteiroGojo.impacto(35,47)>0);assertEquals(1,RoteiroGojo.amostrar(35,55).fov());
         for(double t=0;t<55;t+=.1){var q=RoteiroGojo.amostrar(35,t);assertTrue(Double.isFinite(q.x())&&Double.isFinite(q.y())&&q.fov()>=.7&&q.fov()<=1.4);}
     }
     private JsonObject json(String path)throws Exception{try(var in=getClass().getResourceAsStream(path)){assertNotNull(in,path);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}}

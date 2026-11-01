@@ -59,6 +59,7 @@ jobs:
           python -m pip install moderngl==5.13.0 numpy==2.5.4 pillow==13.0.0
           python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
+          python tools/preview_cinematic_vfx.py --backend egl --output build/cinematic-vfx.png
           python tools/preview_armor_models.py --backend egl --output build/anime-armor.png
           python tools/preview_armor_models.py --poses --backend egl --output build/armor-poses.png
           python tools/preview_armor_models.py --boss-scale --backend egl --output build/boss-scale.png
@@ -70,6 +71,7 @@ jobs:
           path: |
             build/gojo-materials.png
             build/anime-materials.png
+            build/cinematic-vfx.png
             build/anime-armor.png
             build/armor-poses.png
             build/anime-nemesis.png

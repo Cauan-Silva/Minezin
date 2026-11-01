@@ -1,0 +1,75 @@
+"""Authored, reproducible gestures. Values are degrees; times derive from server ticks."""
+import json
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]/'src/main/resources/assets/arcanecontrol/player_animation'
+
+def channel(frames):
+    return {'rotation':{str(t):{'vector':v,'easing':ease} for t,v,ease in frames}}
+
+def gesture(length,poses):
+    return {'animation_length':length,'loop':False,'bones':{name:channel(frames) for name,frames in poses.items()}}
+
+def refine(animations,kit):
+    z=[0,0,0]
+    if kit=='cid':
+        animations['cid_4']=gesture(5,{
+            'right_arm':[(0,z,'easeInOutSine'),(.65,[-65,-25,-12],'easeOutQuad'),(1.4,[-112,-8,8],'easeInOutSine'),(3.85,[-112,-8,8],'linear'),(4.4,[-116,-12,6],'easeInQuad'),(4.5,[-82,38,-12],'linear'),(4.65,[-82,38,-12],'linear'),(4.82,[-72,25,-8],'easeOutQuad'),(5,z,'easeInOutSine')],
+            'left_arm':[(0,z,'easeOutQuad'),(1.4,[-38,24,-22],'easeOutQuad'),(4.4,[-38,24,-22],'linear'),(4.5,[-80,-24,-18],'linear'),(4.65,[-80,-24,-18],'linear'),(5,z,'easeInOutSine')],
+            'torso':[(0,z,'easeOutQuad'),(1.4,[-5,-10,-2],'easeInOutSine'),(4.4,[-7,-12,-2],'easeInQuad'),(4.5,[7,14,2],'linear'),(4.65,[7,14,2],'linear'),(5,z,'easeOutQuad')],
+            'head':[(0,z,'easeOutQuad'),(1.4,[9,8,0],'easeOutQuad'),(4.4,[9,8,0],'linear'),(4.5,[-7,-8,0],'linear'),(4.65,[-7,-8,0],'linear'),(5,z,'easeOutQuad')]})
+    if kit=='frieren':
+        a=animations['frieren_4']
+        for name,frames in {
+            'right_arm':[(0,z,'easeOutQuad'),(1.1,[-104,-18,8],'easeOutQuad'),(3.35,[-108,-18,8],'easeInQuad'),(3.5,[-83,8,5],'linear'),(3.65,[-83,8,5],'linear'),(10.55,[-67,4,5],'easeInOutSine'),(10.9,[-110,-15,6],'easeInQuad'),(11,[-76,12,8],'linear'),(11.15,[-76,12,8],'linear'),(11.4,[-60,8,8],'easeOutQuad'),(14,z,'easeInOutSine')],
+            'left_arm':[(0,z,'easeOutQuad'),(1.1,[-92,30,-18],'easeOutQuad'),(3.35,[-94,34,-18],'easeInQuad'),(3.5,[-84,-24,-10],'linear'),(3.65,[-84,-24,-10],'linear'),(10.55,[-60,-10,-8],'easeInOutSine'),(10.9,[-104,28,-15],'easeInQuad'),(11,[-78,-22,-8],'linear'),(11.15,[-78,-22,-8],'linear'),(14,z,'easeInOutSine')],
+            'torso':[(0,z,'easeOutQuad'),(1.1,[-4,0,0],'easeOutQuad'),(3.35,[-5,0,0],'easeInQuad'),(3.5,[4,0,0],'linear'),(3.65,[4,0,0],'linear'),(10.55,z,'easeInOutSine'),(10.9,[-5,0,0],'easeInQuad'),(11,[6,0,0],'linear'),(11.15,[6,0,0],'linear'),(14,z,'easeOutQuad')]
+        }.items():a['bones'][name]=channel(frames)
+    if kit=='asta':
+        animations['asta_200']=gesture(2.75,{
+            'right_arm':[(0,[-15,-15,-20],'easeInQuad'),(.7,[-100,8,-14],'easeOutQuad'),(1.65,[-42,20,-38],'easeInOutSine'),(2.25,[-50,22,-42],'easeInQuad'),(2.35,[-68,18,-22],'linear'),(2.5,[-68,18,-22],'linear'),(2.75,z,'easeOutQuad')],
+            'left_arm':[(0,z,'easeOutQuad'),(.7,[-30,-20,-18],'easeOutQuad'),(1.65,[-55,-28,-28],'easeInOutSine'),(2.25,[-60,-30,-30],'easeInQuad'),(2.35,[-25,-18,-38],'linear'),(2.5,[-25,-18,-38],'linear'),(2.75,z,'easeOutQuad')],
+            'torso':[(0,z,'easeOutQuad'),(.7,[7,-8,-2],'easeOutQuad'),(1.65,[10,18,-4],'easeInOutSine'),(2.25,[12,22,-5],'easeInQuad'),(2.35,[-4,-8,3],'linear'),(2.5,[-4,-8,3],'linear'),(2.75,z,'easeOutQuad')],
+            'head':[(0,z,'easeOutQuad'),(1.65,[12,-10,-4],'easeInOutSine'),(2.25,[14,-12,-4],'easeInQuad'),(2.35,[-8,6,0],'linear'),(2.5,[-8,6,0],'linear'),(2.75,z,'easeOutQuad')]})
+
+def awakened():
+    out={};z=[0,0,0]
+    # (kit, effect, duration, preparation, release, right arm, left arm, torso)
+    specs=[
+        (1,32,5.5,0,.1,[-92,-12,8],[-92,12,-8],[-3,0,0]),
+        (1,40,3.5,0,.15,[-102,-18,10],[-55,30,-20],[-2,10,0]),
+        (1,41,.9,0,.1,[-45,-20,15],[-45,20,-15],[0,12,0]),
+        (2,34,3.2,1.05,1.2,[-160,-10,10],[-80,25,-20],[-5,-8,0]),
+        (2,35,5,0,.25,[-102,-20,8],[-102,20,-8],[-6,0,0]),
+        (2,36,2.25,0,.15,[-35,-20,25],[-35,20,-25],[-4,0,0]),
+        (3,30,6,0,.2,[-90,-12,10],[-85,25,-12],[-2,0,0]),
+        (3,37,2,0,.1,[-92,-12,8],[-85,12,-10],[-3,0,0]),
+        (3,38,2,1.1,1.25,[-160,-10,8],[-90,25,-15],[-5,0,0]),
+        (3,39,6,0,.2,[-85,-30,15],[-85,30,-15],[-4,0,0]),
+        (3,200,3,.7,1.1,[-95,-18,12],[-95,18,-12],[-4,0,0])]
+    for kit,effect,length,prep,hit,right,left,torso in specs:
+        poses={}
+        for name,pose in [('right_arm',right),('left_arm',left),('torso',torso)]:
+            wind=[pose[0]*1.08,pose[1],pose[2]]
+            frames=[(0,z,'easeOutQuad')]
+            if prep>0:frames.append((prep,wind,'easeInQuad'))
+            frames.extend([(hit,pose,'linear'),(round(min(length-.2,hit+.1),3),pose,'linear'),(round(length-.15,3),pose,'easeInOutSine'),(length,z,'easeOutQuad')])
+            poses[name]=frames
+        out[f'desperto_{kit}_{effect}']=gesture(length,poses)
+    # Four discrete cuts, matching the server's t=0/3/6/9 sequence.
+    poses={n:[] for n in ['right_arm','left_arm','torso']}
+    for i,t in enumerate([0,.15,.3,.45]):
+        for name in poses:
+            pose=([-95,(-1)**i*65,(-1)**i*25] if name=='right_arm' else [-40,(-1)**i*-25,-15] if name=='left_arm' else [3,(-1)**i*15,0])
+            poses[name].extend([(t,pose,'linear'),(round(t+.05,3),pose,'linear')])
+    for frames in poses.values():frames.append((.6,z,'easeOutQuad'))
+    out['desperto_2_33']=gesture(.6,poses)
+    return out
+
+def save(path,data):path.write_bytes((json.dumps(data,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
+
+def main():
+    for kit in ['cid','frieren','asta']:
+        p=ROOT/f'{kit}.json';data=json.loads(p.read_text(encoding='utf-8'));refine(data['animations'],kit);save(p,data)
+    save(ROOT/'despertos.json',{'format_version':'1.8.0','geckolib_format_version':2,'animations':awakened()})
+    print('Authored 12 awakening gestures and three ultimate sequences.')
+if __name__=='__main__':main()

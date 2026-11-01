@@ -25,6 +25,7 @@ import java.util.UUID;
 public final class AnimacoesGojo {
     private static final ResourceLocation CAMADA = new ResourceLocation("arcanecontrol", "gojo_gestos");
     private static final String[] NOMES = {"azul", "vermelho", "infinito", "roxo", "dominio"};
+    private static final Map<UUID, Integer> TIPOS = new HashMap<>();
     private static final Map<UUID, Integer> PRIORIDADES = new HashMap<>();
 
     public static void registrar() {
@@ -56,12 +57,18 @@ public final class AnimacoesGojo {
             var camada = camada(jogador);
             if(camada != null) camada.setAnimation(null);
         }
-        PRIORIDADES.remove(id);
+        PRIORIDADES.remove(id);TIPOS.remove(id);
     }
+    public static void cancelarSeTipo(UUID id,int tipo){if(TIPOS.getOrDefault(id,-1)==tipo)cancelar(id);}
     public static void tocarAsta(UUID id,int tipo){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
         if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
         var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,"asta_"+tipo);
+    }
+    public static void tocarDesperto(UUID id,int kit,int tipo){
+        var mc=Minecraft.getInstance();if(mc.level==null)return;
+        if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
+        var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,"desperto_"+kit+"_"+tipo);
     }
     public static void tocarCid(UUID id, int tipo) {
         var mc = Minecraft.getInstance();
@@ -79,8 +86,9 @@ public final class AnimacoesGojo {
     private static void reproduzir(AbstractClientPlayer jogador, ModifierLayer<IAnimation> camada, UUID id, int tipo, String nome) {
         KeyframeAnimation animacao = PlayerAnimationRegistry.getAnimation(new ResourceLocation("arcanecontrol",nome));
         if (animacao == null) return;
-        camada.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(3, Ease.OUTQUAD),
+        camada.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(tipo==33?1:3, Ease.OUTQUAD),
                 new KeyframeAnimationPlayer(animacao));
+        TIPOS.put(id,tipo);
         PRIORIDADES.put(id,(tipo==4||tipo==5||tipo==14||tipo==24)?4:1);
     }
 
@@ -88,16 +96,17 @@ public final class AnimacoesGojo {
     public static void tick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
         if (event.phase != TickEvent.Phase.END || mc.level == null) return;
+        TIPOS.keySet().removeIf(id -> mc.level.getPlayerByUUID(id) == null);
         PRIORIDADES.keySet().removeIf(id -> mc.level.getPlayerByUUID(id) == null);
         for (AbstractClientPlayer jogador : mc.level.players()) {
             if (!jogador.isAlive()) {
                 ModifierLayer<IAnimation> camada = camada(jogador);
                 if (camada != null) camada.setAnimation(null);
-                PRIORIDADES.remove(jogador.getUUID());
+                PRIORIDADES.remove(jogador.getUUID());TIPOS.remove(jogador.getUUID());
             }
         }
     }
 
     @SubscribeEvent
-    public static void sair(ClientPlayerNetworkEvent.LoggingOut event) { PRIORIDADES.clear(); }
+    public static void sair(ClientPlayerNetworkEvent.LoggingOut event) { PRIORIDADES.clear();TIPOS.clear(); }
 }

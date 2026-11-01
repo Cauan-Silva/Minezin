@@ -60,8 +60,20 @@ void main(){
         color=mix(vertexColor.rgb*.07,vec3(.88,.035,.14),rim);
         color+=vec3(.6,.06,.12)*pow(noise(uv*24.-t),8.);
         alpha=vertexColor.a*(1.-smoothstep(.37,.5,d));
-    }else if(m>=7.5){
+    }else if(m>=7.5&&m<8.5){
         color=vertexColor.rgb*(.85+.15*noise(uv*4.));alpha=vertexColor.a;
+    }
+    if(m>=8.5&&m<9.5){
+        float bend=fbm(vec2(uv.x*9.-t*.55,uv.y*7.+t*.12));
+        float filament=pow(max(0.,sin(uv.x*38.-uv.y*17.+bend*4.-t*1.6)),12.);
+        float edge=pow(max(0.,sin(clamp(uv.y,0.,1.)*PI)),1.4);
+        color=mix(vertexColor.rgb*.25,vec3(.83,.88,1.),filament*.8);
+        alpha*=edge*(.08+filament*.65);
+    }else if(m>=9.5&&m<10.5){
+        float d=abs(uv.y-.5),tip=pow(max(0.,sin(clamp(uv.x/4.,0.,1.)*PI)),.3);
+        float core=exp(-d*d*240.);
+        color=mix(vertexColor.rgb,vec3(1.,.8,.84),core*.8);
+        alpha*=exp(-d*d*45.)*tip;
     }
     if(alpha<.004)discard;fragColor=vec4(color,alpha);
 }

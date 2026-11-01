@@ -32,12 +32,13 @@ public final class EfeitosAsta {
 
     public static void receber(PacoteEfeitoDespertar p){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
-        if(p.tipo()==0){EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));AnimacoesGojo.cancelar(p.dono());if(mc.player!=null&&p.dono().equals(mc.player.getUUID())&&GerenciadorCutscene3D.cutsceneTipo==35)GerenciadorCutscene3D.finalizarCutscene();return;}
+        if(p.tipo()==0){ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));AnimacoesGojo.cancelar(p.dono());if(mc.player!=null&&p.dono().equals(mc.player.getUUID())&&GerenciadorCutscene3D.cutsceneTipo==35)GerenciadorCutscene3D.finalizarCutscene();return;}
         if(p.ticks()<1||p.ticks()>1200)return;
         if(p.tipo()==310){EFEITOS.removeIf(e->e.p.dono().equals(p.dono())&&e.p.tipo()==307);receber(new PacoteEfeitoDespertar(p.dono(),309,p.a(),p.b(),p.ticks(),4));return;}
+        if(p.tipo()==309)ImpactosAnime.programar(p.dono(),p.a().add(0,.7,0),0,0xD5264C,.75,18,4);
         if(p.tipo()==200){
             EFEITOS.removeIf(e->e.p.dono().equals(p.dono())&&e.p.tipo()==200);
-            if(p.ticks()==1200){AnimacoesGojo.tocarAsta(p.dono(),200);if(mc.player!=null&&p.dono().equals(mc.player.getUUID()))GerenciadorCutscene3D.iniciarCutsceneLocal(35,PerfilAsta.ABERTURA);}
+            if(p.ticks()==1200){ImpactosAnime.programar(p.dono(),p.a().add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.FORMA_IMPACTO,0xD5264C,.85,24,4);AnimacoesGojo.tocarAsta(p.dono(),200);if(mc.player!=null&&p.dono().equals(mc.player.getUUID()))GerenciadorCutscene3D.iniciarCutsceneLocal(35,PerfilAsta.ABERTURA);}
         }else if(p.tipo()>=300&&p.tipo()<=307)AnimacoesGojo.tocarAsta(p.dono(),p.tipo());
         if(EFEITOS.size()>=64)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime()));
@@ -47,7 +48,7 @@ public final class EfeitosAsta {
         EFEITOS.removeIf(f->mc.level==null||f.mundo!=mc.level||mc.level.getGameTime()-f.inicio>=f.p.ticks()||f.p.tipo()==200&&(mc.level.getPlayerByUUID(f.p.dono())==null||!mc.level.getPlayerByUUID(f.p.dono()).isAlive()));
         if(mc.level==null)return;
         for(var f:EFEITOS)if(f.p.tipo()==200){int idade=1200-f.p.ticks()+(int)(mc.level.getGameTime()-f.inicio);var p=mc.level.getPlayerByUUID(f.p.dono());
-            if(idade==55)AnimacoesGojo.cancelar(f.p.dono());
+            if(idade==55)AnimacoesGojo.cancelarSeTipo(f.p.dono(),200);
             if(p!=null&&idade<55&&idade%3==0&&!mc.isPaused())for(int i=0;i<3;i++){double a=idade*.3+i*2.094;mc.level.addParticle(ParticleTypes.SQUID_INK,p.getX()+Math.cos(a),p.getY()+1+i*.3,p.getZ()+Math.sin(a),0,.04,0);}
         }
     }
@@ -62,7 +63,28 @@ public final class EfeitosAsta {
             var s=e.getPoseStack();s.pushPose();s.translate(origem.x-camera.x,origem.y-camera.y,origem.z-camera.z);
             try{
                 float fade=(float)Math.min(1,Math.min(t/3,(p.ticks()-t)/6));var cam=camera.subtract(origem);
-                if(p.tipo()==200)continue; // Geometry follows the player model in CamadaFormaAsta.
+                if(p.tipo()==200){
+                    double idade=1200-p.ticks()+t;
+                    if(idade<55){
+                        float aura=(float)(Math.min(1,idade/8)*Math.min(1,(55-idade)/8));
+                        int n=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?3:6;
+                        DesenhoMagia.lote(s,7,false,()->{
+                            for(int j=0;j<n;j++)for(int i=0;i<14;i++){
+                                double u=i/14d,v=(i+1)/14d,a=j*Math.PI*2/n+idade*.065+u*2.5,b=a+(v-u)*2.5;
+                                double r=.7+Math.sin(u*Math.PI)*.6;
+                                DesenhoMagia.fita(s,cam,new Vec3(Math.cos(a)*r,u*3,Math.sin(a)*r),new Vec3(Math.cos(b)*r,v*3,Math.sin(b)*r),.18*Math.sin(u*Math.PI),u*4,v*4,0x140B19,aura*.7f);
+                            }
+                        });
+                        DesenhoMagia.lote(s,10,true,()->{
+                            for(int j=0;j<n;j++)for(int i=0;i<14;i++){
+                                double u=i/14d,v=(i+1)/14d,a=j*Math.PI*2/n+idade*.065+u*2.5,b=a+(v-u)*2.5;
+                                double r=.72+Math.sin(u*Math.PI)*.6;
+                                DesenhoMagia.fita(s,cam,new Vec3(Math.cos(a)*r,u*3,Math.sin(a)*r),new Vec3(Math.cos(b)*r,v*3,Math.sin(b)*r),.03,u*4,v*4,0xE82951,aura*.7f);
+                            }
+                        });
+                    }
+                    continue; // Attached wing/horn/arm geometry is drawn by CamadaFormaAsta.
+                }
                 if(p.tipo()==104){DesenhoMagia.lote(s,6,true,()->{var c=p.b().subtract(origem);DesenhoMagia.selo(s,cam,c,CIMA,5,t,0xDD294A,fade);DesenhoMagia.anel(s,c,CIMA,5*(1-t/p.ticks()),5*(1-t/p.ticks())+.07,0xF1BAC3,fade,64);});continue;}
                 if(p.tipo()==114||p.tipo()==309){DesenhoMagia.lote(s,7,true,()->{for(int i=0;i<12;i++){double a=i*Math.PI/6;var d=new Vec3(Math.cos(a),.2,Math.sin(a));DesenhoMagia.fita(s,cam,d.scale(t*.13),d.scale(t*.13+2),.12,0,2,0xCE2747,fade);}DesenhoMagia.anel(s,Vec3.ZERO,CIMA,t*.2,t*.2+.25,0xBC2043,fade,64);});continue;}
                 if(p.tipo()==303){
@@ -71,27 +93,58 @@ public final class EfeitosAsta {
                     DesenhoMagia.lote(s,6,true,()->DesenhoMagia.anel(s,c,dir,2.2,2.35,0xEC4A68,fade,64));continue;
                 }
                 if(p.tipo()==308){DesenhoMagia.lote(s,7,true,()->{DesenhoMagia.anel(s,Vec3.ZERO,p.b(),.15+t*.06,.25+t*.06,0xFF5A70,fade,40);for(int i=0;i<6;i++){double a=i*Math.PI/3;var v=new Vec3(Math.cos(a),Math.sin(a),0);DesenhoMagia.fita(s,cam,v.scale(.3),v.scale(1.2),.04,0,2,0xF5B2BB,fade);}});continue;}
-                Vec3 dir=p.b().normalize();Vec3 lado=dir.cross(CIMA).normalize();if(lado.lengthSqr()<.1)lado=new Vec3(1,0,0);Vec3 alto=lado.cross(dir).normalize();final Vec3 lateral=lado,vertical=alto;
+                Vec3 dir=p.b().normalize();if(dir.lengthSqr()<1e-8)dir=new Vec3(0,0,1);
+                Vec3 lado=dir.cross(CIMA).normalize();if(lado.lengthSqr()<.1)lado=new Vec3(1,0,0);
+                final Vec3 frente=dir,lateral=lado,vertical=lado.cross(dir).normalize();
                 boolean transformado=p.tipo()>=304;int slot=(p.tipo()-300)%4;
-                if(transformado&&slot==1){
-                    DesenhoMagia.lote(s,7,true,()->{for(int j=0;j<5;j++)for(int i=0;i<32;i++){double a=i*.23+t*.17+j*Math.PI*.4,b=a+.23;double r=2+Math.min(6,t*.25);DesenhoMagia.fita(s,cam,new Vec3(Math.cos(a)*r,i*.15,Math.sin(a)*r),new Vec3(Math.cos(b)*r,(i+1)*.15,Math.sin(b)*r),.08,0,1,0xC32348,fade);}});continue;
+                int acerto=PerfilAsta.impacto(slot,transformado);
+                // No completed slash before the server's hit. Charge stays near the weapon/hand.
+                if(t<acerto-2){
+                    float carga=(float)Math.min(1,(t+1)/Math.max(1,acerto));
+                    DesenhoMagia.lote(s,1,true,()->{
+                        Vec3 mao=lateral.scale(.55).add(0,1.1,0).add(frente.scale(.7));
+                        for(int i=0;i<4;i++){
+                            double a=i*Math.PI/2+t*.2;Vec3 v=lateral.scale(Math.cos(a)).add(vertical.scale(Math.sin(a)));
+                            DesenhoMagia.fita(s,cam,mao.add(v.scale(.7*(1-carga))),mao,.025,0,1,0xD62348,carga*.7f);
+                        }
+                    });continue;
                 }
-                if(transformado&&slot==0){DesenhoMagia.lote(s,7,true,()->{for(int i=0;i<7;i++){double a=i*Math.PI*2/7+t*.1;Vec3 v=lateral.scale(Math.cos(a)).add(vertical.scale(Math.sin(a)));DesenhoMagia.fita(s,cam,v.add(0,1,0),v.subtract(dir.scale(Math.min(18,t*.9))).add(0,1,0),.15,0,4,0xA31538,fade);}});continue;}
-                double distancia=transformado&&slot==3?PerfilAsta.alcanceOnda((int)t):3;Vec3 centro=dir.scale(distancia).add(0,1.2,0);
-                DesenhoMagia.lote(s,7,false,()->{
-                    int n=32;double plano=slot==1||slot==2?Math.PI/2:0;
-                    for(int i=0;i<n;i++){
-                        double arco=slot==0&&!transformado?Math.PI*2/3:Math.PI*1.3;double giro=slot==1?t*.08:0;double a=-arco/2+i*arco/n+giro,b=a+arco/n;
-                        Vec3 eixo=lateral.scale(Math.cos(plano)).add(vertical.scale(Math.sin(plano)));
-                        Vec3 v=eixo.scale(Math.cos(a)).add(vertical.scale(Math.sin(a))),w=eixo.scale(Math.cos(b)).add(vertical.scale(Math.sin(b)));
-                        if(slot==1||slot==2){v=vertical.scale(Math.cos(a)).add(dir.scale(Math.sin(a)));w=vertical.scale(Math.cos(b)).add(dir.scale(Math.sin(b)));}
-                        double r=transformado?4:2.7;
-                        DesenhoMagia.fita(s,cam,centro.add(v.scale(r)),centro.add(w.scale(r)),.25,0,1,0x110912,fade);
+                float alfa=transformado&&slot==3?fade:(float)com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.corte(t,acerto);
+                if(transformado&&slot==1){
+                    double abertura=com.cauansilva.arcanecontrol.core.vfx.PerfilVfxGojo.suave((t-acerto+2)/7);
+                    DesenhoMagia.lote(s,7,false,()->{for(int j=0;j<3;j++){
+                        double a=t*.15+j*Math.PI*2/3;Vec3 eixo=lateral.scale(Math.cos(a)).add(frente.scale(Math.sin(a)));
+                        GeometriaCinematica.arco(s,cam,new Vec3(0,1,0),eixo,CIMA,1+7*abertura,.5,Math.PI*1.8,.24,0x130A14,alfa);
+                    }});
+                    DesenhoMagia.lote(s,10,true,()->{for(int j=0;j<3;j++){
+                        double a=t*.15+j*Math.PI*2/3;Vec3 eixo=lateral.scale(Math.cos(a)).add(frente.scale(Math.sin(a)));
+                        GeometriaCinematica.arco(s,cam,new Vec3(0,1,0),eixo,CIMA,1+7*abertura,.5,Math.PI*1.8,.07,0xD92C50,alfa);
+                    }});continue;
+                }
+                if(transformado&&slot==0){
+                    DesenhoMagia.lote(s,7,false,()->{for(int i=0;i<5;i++){
+                        double a=i*Math.PI*2/5+t*.13;Vec3 v=lateral.scale(Math.cos(a)).add(vertical.scale(Math.sin(a)));
+                        DesenhoMagia.fita(s,cam,v.add(0,1,0),v.subtract(frente.scale(Math.min(12,t*.8))).add(0,1,0),.24,0,4,0x160B18,alfa);
+                    }});
+                    DesenhoMagia.lote(s,10,true,()->{for(int i=0;i<5;i++){
+                        double a=i*Math.PI*2/5+t*.13;Vec3 v=lateral.scale(Math.cos(a)).add(vertical.scale(Math.sin(a)));
+                        DesenhoMagia.fita(s,cam,v.add(0,1,0),v.subtract(frente.scale(Math.min(12,t*.8))).add(0,1,0),.045,0,4,0xE8274D,alfa);
+                    }});continue;
+                }
+                double distancia=transformado&&slot==3?PerfilAsta.alcanceOnda((int)t):2.1;
+                Vec3 centro=frente.scale(distancia).add(0,1.2,0);
+                final Vec3 eixo=slot==1||slot==2?vertical:lateral;
+                final Vec3 alto=slot==1||slot==2?frente:vertical;
+                double progresso=com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.varredura(t,acerto);
+                double raio=transformado?4:2.7,arco=slot==0?Math.PI*1.25:Math.PI*1.5;
+                // Identical plane, center and radius for black body, red rim and white edge.
+                DesenhoMagia.lote(s,7,false,()->GeometriaCinematica.arco(s,cam,centro,eixo,alto,raio,progresso,arco,.32,0x130A15,alfa));
+                DesenhoMagia.lote(s,10,true,()->{
+                    GeometriaCinematica.arco(s,cam,centro,eixo,alto,raio+.05,progresso,arco,.065,0xED264E,alfa);
+                    if(transformado&&slot==2&&t>=acerto)for(int i=0;i<18;i++){
+                        var c=frente.multiply(1,0,1).normalize().scale(i).add(0,.08,0);
+                        DesenhoMagia.fita(s,cam,c,c.add(lateral.scale(Math.sin(i*3)*.5)).add(frente),.09,0,1,0xE52848,alfa);
                     }
-                });
-                DesenhoMagia.lote(s,7,true,()->{
-                    for(int i=0;i<28;i++){double arco=slot==0&&!transformado?Math.PI*2/3:Math.PI*1.3;double a=-arco/2+i*arco/28+(slot==1?t*.08:0),b=a+arco/28;Vec3 v=lateral.scale(Math.cos(a)).add(vertical.scale(Math.sin(a))),w=lateral.scale(Math.cos(b)).add(vertical.scale(Math.sin(b)));double r=transformado?4.1:2.8;DesenhoMagia.fita(s,cam,centro.add(v.scale(r)),centro.add(w.scale(r)),.045,0,1,0xDF2449,fade);}
-                    if(transformado&&slot==2)for(int i=0;i<18;i++){var c=dir.multiply(1,0,1).normalize().scale(i).add(0,.08,0);DesenhoMagia.fita(s,cam,c,c.add(lateral.scale(Math.sin(i*3)*.5)).add(dir),.08,0,1,0xE52848,fade);}
                 });
             }finally{s.popPose();DesenhoMagia.terminar();}
         }

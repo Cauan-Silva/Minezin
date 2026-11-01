@@ -18,15 +18,15 @@ import java.util.*;
 public final class RenderDespertar {
     private record Efeito(PacoteEfeitoDespertar p,Object mundo,long inicio){}
     private static final List<Efeito> EFEITOS=new ArrayList<>();
-    private static final Set<UUID> INVERTIDOS=new HashSet<>();
     private static final Vec3 CIMA=new Vec3(0,1,0);
     public static void receber(PacoteEfeitoDespertar p){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
         if(com.cauansilva.arcanecontrol.core.rpg.PerfilBoss.efeito(p.tipo())){RenderBossVfx.receber(p);return;}
         if(p.kit()==4){com.cauansilva.arcanecontrol.core.asta.EfeitosAsta.receber(p);return;}
-        if(p.tipo()==0){EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));INVERTIDOS.remove(p.dono());GerenciadorCutscene3D.cancelarDominioCliente(p.dono());if(p.kit()==2)com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(15,p.dono(),Vec3.ZERO,Vec3.ZERO);AnimacoesGojo.cancelar(p.dono());return;}
+        if(p.tipo()==0){ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));GerenciadorCutscene3D.cancelarDominioCliente(p.dono());if(p.kit()==2)com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(15,p.dono(),Vec3.ZERO,Vec3.ZERO);AnimacoesGojo.cancelar(p.dono());return;}
         if(p.ticks()<1||p.ticks()>1200||p.kit()<1||p.kit()>3||!finito(p.a())||!finito(p.b()))return;
         if(p.tipo()==200){EFEITOS.removeIf(e->e.p.tipo()==200&&e.p.dono().equals(p.dono()));if(p.kit()==1)GerenciadorCutscene3D.garantirDominio(p.dono(),p.a(),p.ticks());}
+        if((p.tipo()>=30&&p.tipo()<=41&&p.tipo()!=31&&(p.tipo()!=34||p.ticks()>10))||p.tipo()==200&&p.kit()==3&&p.ticks()==900)AnimacoesGojo.tocarDesperto(p.dono(),p.kit(),p.tipo());
         if(EFEITOS.size()>=128)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime()));
     }
@@ -34,33 +34,15 @@ public final class RenderDespertar {
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e){
         if(e.phase!=TickEvent.Phase.END)return;var mc=Minecraft.getInstance();
         EFEITOS.removeIf(f->mc.level==null||f.mundo!=mc.level||mc.level.getGameTime()-f.inicio>=f.p.ticks());
-        INVERTIDOS.removeIf(id->EFEITOS.stream().noneMatch(f->f.p.tipo()==200&&f.p.dono().equals(id)));
         if(mc.level==null)return;
-        for(var f:EFEITOS)if(f.p.tipo()==200){long t=mc.level.getGameTime()-f.inicio;int idade=(f.p.kit()==1?400:f.p.kit()==2?800:900)-f.p.ticks()+(int)t;if(idade==(f.p.kit()==2?100:60))AnimacoesGojo.cancelar(f.p.dono());}
+        for(var f:EFEITOS)if(f.p.tipo()==200){long t=mc.level.getGameTime()-f.inicio;int idade=(f.p.kit()==1?400:f.p.kit()==2?800:900)-f.p.ticks()+(int)t;if(idade==(f.p.kit()==2?100:60))AnimacoesGojo.cancelarSeTipo(f.p.dono(),f.p.kit()==2?14:f.p.kit()==1?5:200);}
     }
-    @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e){EFEITOS.clear();INVERTIDOS.clear();}
+    @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e){EFEITOS.clear();}
     @SubscribeEvent public static void tremor(net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles e){
         var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null||!com.cauansilva.arcanecontrol.ConfigCliente.CINEMATICAS.get())return;
         for(var f:EFEITOS)if(f.p.tipo()==200&&f.p.kit()==3&&mc.player.distanceToSqr(f.p.a())<24*24){
             double t=mc.level.getGameTime()+e.getPartialTick();float intensidade=(float)((1-Math.sqrt(mc.player.distanceToSqr(f.p.a()))/24)*.08);
             e.setYaw(e.getYaw()+(float)Math.sin(t*1.7)*intensidade);e.setPitch(e.getPitch()+(float)Math.cos(t*1.3)*intensidade);break;
-        }
-    }
-    @SubscribeEvent public static void inverter(net.minecraftforge.client.event.RenderGuiOverlayEvent.Post e){
-        var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null||!com.cauansilva.arcanecontrol.ConfigCliente.CLARAO.get()
-                ||!e.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id()))return;
-        for(var f:EFEITOS)if(f.p.tipo()==200&&f.p.kit()==2&&mc.player.distanceToSqr(f.p.a())<40*40){
-            long idade=800-f.p.ticks()+mc.level.getGameTime()-f.inicio;
-            if(idade<90||idade>92||!INVERTIDOS.add(f.p.dono()))continue;
-            var g=e.getGuiGraphics();g.flush();var m=g.pose().last().pose();int w=e.getWindow().getGuiScaledWidth(),h=e.getWindow().getGuiScaledHeight();
-            com.mojang.blaze3d.systems.RenderSystem.enableBlend();com.mojang.blaze3d.systems.RenderSystem.disableDepthTest();
-            com.mojang.blaze3d.systems.RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR,com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO);
-            try{
-                com.mojang.blaze3d.systems.RenderSystem.setShader(net.minecraft.client.renderer.GameRenderer::getPositionColorShader);
-                var b=com.mojang.blaze3d.vertex.Tesselator.getInstance().getBuilder();b.begin(com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS,com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR);
-                b.vertex(m,0,h,0).color(255,255,255,255).endVertex();b.vertex(m,w,h,0).color(255,255,255,255).endVertex();b.vertex(m,w,0,0).color(255,255,255,255).endVertex();b.vertex(m,0,0,0).color(255,255,255,255).endVertex();com.mojang.blaze3d.vertex.Tesselator.getInstance().end();
-            }finally{com.mojang.blaze3d.systems.RenderSystem.defaultBlendFunc();com.mojang.blaze3d.systems.RenderSystem.disableBlend();com.mojang.blaze3d.systems.RenderSystem.enableDepthTest();}
-            break;
         }
     }
     @SubscribeEvent public static void render(RenderLevelStageEvent e){
@@ -99,6 +81,17 @@ public final class RenderDespertar {
                 if(p.tipo()==38)for(int i=0;i<5;i++)DesenhoMagia.anel(s,new Vec3(0,3+i*4,0),CIMA,r*.5,r*.5+.06,cor,fade*.5f,48);
             });return;
         }
+        if(p.tipo()==31&&p.kit()==2){
+            Vec3 eixo=cam.cross(CIMA).normalize();if(eixo.lengthSqr()<1e-8)eixo=new Vec3(1,0,0);
+            final Vec3 x=eixo;
+            float a=(float)Math.max(0,1-t/p.ticks());
+            DesenhoMagia.lote(s,0,false,()->{
+                for(int j=0;j<2;j++)GeometriaCinematica.arco(s,cam,fim,x,CIMA,1.5,.5+j*.22,Math.PI*1.2,.16,cor,a);
+            });
+            DesenhoMagia.lote(s,1,true,()->{
+                for(int j=0;j<2;j++)GeometriaCinematica.arco(s,cam,fim,x,CIMA,1.5,.5+j*.22,Math.PI*1.2,.035,0xE5D3FF,a);
+            });return;
+        }
         if(p.tipo()==30){
             DesenhoMagia.lote(s,6,true,()->{DesenhoMagia.selo(s,cam,Vec3.ZERO,CIMA,5,t,cor,fade*.7f);
                 for(int j=0;j<4;j++)for(int i=0;i<48;i++){double a=i*.22+t*.13+j*Math.PI/2,b=a+.22;double y=i*.1;DesenhoMagia.fita(s,cam,new Vec3(Math.cos(a)*4.5,y,Math.sin(a)*4.5),new Vec3(Math.cos(b)*4.5,y+.1,Math.sin(b)*4.5),.045,0,1,0xC8F4DE,fade*.65f);}
@@ -119,7 +112,21 @@ public final class RenderDespertar {
         if(p.tipo()==112){DesenhoMagia.lote(s,1,true,()->{for(int i=0;i<9;i++){double a=i*Math.PI/4;var v=i==8?Vec3.ZERO:new Vec3(Math.cos(a)*3,0,Math.sin(a)*3);DesenhoMagia.fita(s,cam,v,v.add(0,4,0),.25,0,4,0xF02C64,fade);}});return;}
         if(p.tipo()==36||p.tipo()==40){DesenhoMagia.lote(s,6,true,()->{for(int i=0;i<8;i++){double a=t*.05+i*Math.PI/4;var v=new Vec3(Math.cos(a)*3,0,Math.sin(a)*3);DesenhoMagia.fita(s,cam,v,v.add(0,6,0),.06,0,5,cor,fade*.7f);}DesenhoMagia.selo(s,cam,Vec3.ZERO,CIMA,4,t,cor,fade);});return;}
         if(p.tipo()==37)return; // Os vinte raios recebem extremidades reais por pacotes 113.
-        if(p.tipo()==33){DesenhoMagia.lote(s,1,true,()->{for(int i=0;i<12;i++){double a=i*2.399+t*.5;Vec3 v=new Vec3(Math.cos(a)*14,Math.sin(a*2)*2+1,Math.sin(a)*14);DesenhoMagia.fita(s,cam,v,v.scale(-.4).add(0,1,0),.03,0,6,0xFAE8FF,fade);}});return;}
+        if(p.tipo()==33){
+            float a=(float)Math.max(0,1-t/p.ticks());
+            DesenhoMagia.lote(s,0,false,()->{
+                for(int i=0;i<6;i++){
+                    double ang=i*Math.PI/3+Math.floor(t/3)*.7;Vec3 radial=new Vec3(Math.cos(ang),0,Math.sin(ang));
+                    GeometriaCinematica.arco(s,cam,radial.scale(4).add(0,1.2,0),radial,CIMA,2.4,.5,Math.PI*1.4,.22,cor,a);
+                }
+            });
+            DesenhoMagia.lote(s,1,true,()->{
+                for(int i=0;i<6;i++){
+                    double ang=i*Math.PI/3+Math.floor(t/3)*.7;Vec3 radial=new Vec3(Math.cos(ang),0,Math.sin(ang));
+                    GeometriaCinematica.arco(s,cam,radial.scale(4).add(0,1.2,0),radial,CIMA,2.4,.5,Math.PI*1.4,.035,0xEAD6FF,a);
+                }
+            });return;
+        }
         DesenhoMagia.lote(s,1,true,()->{
             DesenhoMagia.fita(s,cam,Vec3.ZERO,fim,p.tipo()==113?.32:.15,0,Math.max(1,fim.length()/2),cor,fade*.55f);
             DesenhoMagia.fita(s,cam,Vec3.ZERO,fim,p.tipo()==113?.07:.035,0,4,0xFFFFFF,fade);

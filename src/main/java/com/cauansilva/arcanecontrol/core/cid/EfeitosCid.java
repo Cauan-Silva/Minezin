@@ -28,6 +28,7 @@ public final class EfeitosCid {
         if(tipo==16){if(DESTINOS.size()>=64)DESTINOS.clear();DESTINOS.put(jogador,new Destino(origem,mc.level.getGameTime(),mc.level));return;}
         if(tipo==15){
             PhotonAtomic.cancelar(jogador);
+            ImpactosAnime.cancelar(jogador);
             AnimacoesGojo.cancelar(jogador);
             EFEITOS.removeIf(f->f.jogador.equals(jogador)&&f.tipo==14);
             if(mc.player!=null && mc.player.getUUID().equals(jogador)) GerenciadorCutscene3D.finalizarCutscene();
@@ -35,7 +36,7 @@ public final class EfeitosCid {
         }
         if (EFEITOS.size() >= 24) EFEITOS.remove(0);
         EFEITOS.add(new Efeito(tipo,jogador,origem,direcao,mc.level.getGameTime(),mc.level));
-        if(tipo==14) PhotonAtomic.iniciar(jogador,origem);
+        if(tipo==14){PhotonAtomic.iniciar(jogador,origem);ImpactosAnime.programar(jogador,origem.add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.IMPACTO,0xB76BFF,1,44,2);}
         AnimacoesGojo.tocarCid(jogador,tipo);
         if (tipo == 14 && mc.player != null && mc.player.getUUID().equals(jogador))
             GerenciadorCutscene3D.iniciarCutsceneLocal(14,100);
@@ -194,10 +195,6 @@ public final class EfeitosCid {
         if(mc.player==null || mc.options.hideGui || !e.getOverlay().id().equals(net.minecraftforge.client.gui.overlay.VanillaGuiOverlay.HOTBAR.id())) return;
         if(GerenciadorCutscene3D.cutsceneTipo==14) {
             int t=GerenciadorCutscene3D.cutsceneTick;
-            if(com.cauansilva.arcanecontrol.ConfigCliente.CLARAO.get() && t>=90 && t<96) {
-                int alpha=(int)(180*(1-(t-90+mc.getFrameTime())/6f));
-                e.getGuiGraphics().fill(0,0,e.getWindow().getGuiScaledWidth(),e.getWindow().getGuiScaledHeight(),(Math.max(0,alpha)<<24)|0xEEDFFF);
-            }
             e.getGuiGraphics().drawCenteredString(mc.font,t<90?"I... AM...":"ATOMIC",e.getWindow().getGuiScaledWidth()/2,
                     e.getWindow().getGuiScaledHeight()-35,0xDDCCFF);
         } else if(!com.cauansilva.arcanecontrol.core.client.RpgCliente.recebido()&&com.cauansilva.arcanecontrol.core.client.PoderesCliente.ativo()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID) {
