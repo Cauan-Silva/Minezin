@@ -72,12 +72,13 @@ public final class ProgressaoPoderes {
         if(acao==1){
             if(ocupado(p)||com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.ativo(p)||p.hurtTime>0){mensagem(p,"Aguarde a técnica terminar antes de trocar de kit.");return;}
             if(!e.selecionar(kit)){mensagem(p,"Esse kit ainda está bloqueado.");return;}
+            if(ler(p).ativo()==PoderAnime.ASTA)com.cauansilva.arcanecontrol.core.asta.PoderesAsta.limpar(p);
             GerenciadorMagiasGojo.desativarInfinito(p);
             escrever(tag(p),e);com.cauansilva.arcanecontrol.core.rpg.RpgServidor.aplicarAtributos(p);sincronizar(p);return;
         }
         if(acao!=2||e.tem(kit)){sincronizar(p);return;}
-        Item recurso=kit==PoderAnime.CID?Items.AMETHYST_SHARD:Items.LAPIS_LAZULI;
-        Item secundario=kit==PoderAnime.CID?Items.OBSIDIAN:Items.AMETHYST_SHARD;
+        Item recurso=kit==PoderAnime.ASTA?Items.IRON_INGOT:kit==PoderAnime.CID?Items.AMETHYST_SHARD:Items.LAPIS_LAZULI;
+        Item secundario=kit==PoderAnime.CID||kit==PoderAnime.ASTA?Items.OBSIDIAN:Items.AMETHYST_SHARD;
         if(!p.isCreative()&&(!e.podeDesbloquear(kit)||contar(p,recurso)<8||contar(p,secundario)<4)){
             mensagem(p,"Faltam conhecimento ou materiais para pesquisar esse kit.");return;
         }

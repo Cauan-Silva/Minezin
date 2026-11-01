@@ -18,10 +18,13 @@ def rotation(degrees):
 def transform(obj):
  pivot=np.array(obj.get('pivot',[0,0,0]));return translation(pivot)@rotation(obj.get('rotation',[0,0,0]))@translation(-pivot)
 def mesh(style):
- bosses={'toji':1,'aurora':2,'qual':3}
- path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
+ bosses={'toji':1,'aurora':2,'qual':3,'liebe':4}
+ path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
+ if style=='asta_forma':
+  armor=json.loads((ASSETS/'geo/armaduras/asta.geo.json').read_text(encoding='utf-8'))['minecraft:geometry'][0]
+  for b in armor['bones']:bones[b['name']]=b
  if style=='frieren':
   staff=json.loads((ASSETS/'geo/frieren/cajado.geo.json').read_text(encoding='utf-8'))['minecraft:geometry'][0]
   for b in staff['bones']:
@@ -30,14 +33,14 @@ def mesh(style):
    bones[b['name']]=b
  def bone_matrix(name):
   if name not in cache:
-   b=bones[name];base=bone_matrix(b['parent']) if 'parent'in b else translation([9,17,0]) if name=='staff_root' else translation([0,18,0]) if style=='cajado' else np.eye(4)
+   b=bones[name];base=bone_matrix(b['parent']) if 'parent'in b else translation([9,17,0]) if name=='staff_root' else translation([0,6,0]) if style=='matadora' else translation([0,18,0]) if style=='cajado' else np.eye(4)
    cache[name]=base@transform(b)
   return cache[name]
  faces={'north':([0,2,3,1],[0,0,-1]),'south':([4,5,7,6],[0,0,1]),'west':([0,4,6,2],[-1,0,0]),
         'east':([1,3,7,5],[1,0,0]),'down':([0,1,5,4],[0,-1,0]),'up':([2,6,7,3],[0,1,0])}
  # Neutral mannequin skin exposes where the real player's own face/hands remain visible.
  skin={'uv':[0,0],'uv_size':[1,1]}
- if style not in ['cajado','toji','aurora','qual']:bones['mannequin']={'name':'mannequin','cubes':[
+ if style not in ['cajado','toji','aurora','qual','liebe','matadora']:bones['mannequin']={'name':'mannequin','cubes':[
   {'origin':[-4,24,-4],'size':[8,8,8],'uv':{f:skin for f in faces}},
   {'origin':[4,12,-2],'size':[4,3,4],'uv':{f:skin for f in faces}},
   {'origin':[-8,12,-2],'size':[4,3,4],'uv':{f:skin for f in faces}}]}
@@ -54,7 +57,7 @@ def mesh(style):
 def lookat(eye,target):
  f=(target-eye);f=f/np.linalg.norm(f);s=np.cross(f,[0,1,0]);s=s/np.linalg.norm(s);u=np.cross(s,f)
  m=np.eye(4);m[0,:3]=s;m[1,:3]=u;m[2,:3]=-f;return m@translation(-eye)
-def render(output,backend=None,nemesis=False):
+def render(output,backend=None,nemesis=False,asta=False):
  ctx=moderngl.create_standalone_context(require=320,**({'backend':backend}if backend else{}))
  program=ctx.program(vertex_shader='''#version 150
  in vec3 Position;in vec3 Normal;in vec2 UV;in float Textured;uniform mat4 Matrix;uniform mat4 ModelView;
@@ -67,14 +70,16 @@ def render(output,backend=None,nemesis=False):
  ctx.enable(moderngl.DEPTH_TEST);ctx.disable(moderngl.CULL_FACE)
  projection=np.diag([2/34,2/45,-2/200,1]);projection[2,3]=-1
  view=lookat(np.array([0.,20.,-60.]),np.array([0.,18.,0.]))
- styles=['toji','aurora','qual'] if nemesis else ['gojo','frieren','shadow','cajado'];rows=len(styles)
+ styles=['asta','matadora','asta_forma','liebe'] if asta else ['toji','aurora','qual'] if nemesis else ['gojo','frieren','shadow','cajado'];rows=len(styles)
  sheet=Image.new('RGB',(width*3,height*rows+58),(11,15,24));draw=ImageDraw.Draw(sheet)
  for index,(style,yaw)in enumerate([(style,yaw) for style in styles for yaw in [0,180,28]]):
+  image=Image.open(ASSETS/('textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.write(image.tobytes())
   fbo.clear(.035,.045,.067,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
-  program['Matrix'].write((projection@mv).T.astype('f4').tobytes());program['ModelView'].write(mv.T.astype('f4').tobytes())
+  framing=projection.copy();framing[0,0]=2/(72 if style=='asta_forma' else 48 if style=='liebe' else 34)
+  program['Matrix'].write((framing@mv).T.astype('f4').tobytes());program['ModelView'].write(mv.T.astype('f4').tobytes())
   buf=ctx.buffer(mesh(style).tobytes());vao=ctx.vertex_array(program,[(buf,'3f 3f 2f 1f','Position','Normal','UV','Textured')]);vao.render(moderngl.TRIANGLES)
   tile=Image.frombytes('RGBA',(width,height),fbo.read(components=4)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-  data=np.asarray(tile);assert data[:,:,:3].std()>10,'Blank armor render'
+  data=np.asarray(tile);assert data[:,:,:3].std()>10,f'Blank model render: {style}, std={data[:,:,:3].std()}'
   x=index%3*width;y=index//3*height;sheet.paste(tile.convert('RGB'),(x,y))
   draw.text((x+12,y+12),style.upper()+(' - FRENTE' if yaw==0 else ' - COSTAS' if yaw==180 else ' - PERSPECTIVA'),fill=(230,235,245));vao.release();buf.release()
  draw.text((12,height*rows+12),'MODELOS E TEXTURA REAIS EM OPENGL'+(' - CHEFES' if nemesis else ' - MANEQUIM NEUTRO'),fill=(230,235,245))
@@ -83,4 +88,4 @@ def render(output,backend=None,nemesis=False):
  print('Armor GPU:',ctx.info['GL_RENDERER']);print('Rendered armor models:',output)
  texture.release();program.release();fbo.release();ctx.release()
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--backend');p.add_argument('--nemesis',action='store_true');a=p.parse_args();render(a.output,a.backend,a.nemesis)
+ p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--backend');p.add_argument('--nemesis',action='store_true');p.add_argument('--asta',action='store_true');a=p.parse_args();render(a.output,a.backend,a.nemesis,a.asta)

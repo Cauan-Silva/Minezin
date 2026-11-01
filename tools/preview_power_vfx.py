@@ -48,8 +48,8 @@ def render(output,backend=None):
   if 'Viewer' in program:program['Viewer'].value=(0,0,1)
   ctx.blend_func=(moderngl.SRC_ALPHA,moderngl.ONE if additive else moderngl.ONE_MINUS_SRC_ALPHA)
   vbo=ctx.buffer(vertices.tobytes());vao=ctx.vertex_array(program,[(vbo,'3f 4f 2f','Position','Color','UV0')]);vao.render(moderngl.TRIANGLES);vao.release();vbo.release()
- labels=['CORTE DE SLIME','ZOLTRAAK','BARREIRA HEXAGONAL','BURACO NEGRO','DISCO DE ACRECAO','SOMBRA / MIRAGEM','SELO ARCANO','ATOMIC - NUCLEO','RAIOS DO VAZIO ROXO']
- sheet=Image.new('RGB',(width*3,height*3+65),(10,14,23));text=ImageDraw.Draw(sheet)
+ labels=['CORTE DE SLIME','ZOLTRAAK','BARREIRA HEXAGONAL','BURACO NEGRO','DISCO DE ACRECAO','SOMBRA / MIRAGEM','SELO ARCANO','ATOMIC - NUCLEO','RAIOS DO VAZIO ROXO','ANTIMAGIA - ASTA','ASA / CHIFRE - ASTA']
+ sheet=Image.new('RGB',(width*3,height*4+65),(10,14,23));text=ImageDraw.Draw(sheet)
  ctx.enable(moderngl.DEPTH_TEST|moderngl.BLEND);ctx.disable(moderngl.CULL_FACE)
  for index,label in enumerate(labels):
   fbo.clear(.028,.036,.055,1,depth=1);ctx.depth_mask=False
@@ -65,16 +65,19 @@ def render(output,backend=None):
   elif index==5:draw(base,5,quad(.55,1.6,violet,u=1))
   elif index==6:draw(add,6,ring(1.25,1.38,[0,0,1],gold),True)
   elif index==7:draw(atomic,1,mesh(1.5,color=(1,1,1,.7)),True,time=5)
-  else:
+  elif index==8:
    draw(load_roxo,2,mesh(1.1,color=(.7,.3,1,1)))
    draw(gojo,8,lightning((.9,.83,1,1)),True)
+  elif index==9:
+   draw(base,7,quad(2.4,.6,(.08,.03,.05,1)));draw(add,7,ring(1.1,1.3,[0,0,1],(.8,.07,.2,1)),True)
+  else:draw(base,8,quad(2.1,.8,(.17,.07,.11,1),u=1))
   tile=Image.frombytes('RGBA',(width,height),fbo.read(components=4)).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
   data=np.asarray(tile);assert data[:,:,:3].std()>1.5,f'Blank VFX: {label}'
   x=index%3*width;y=index//3*height;sheet.paste(tile.convert('RGB'),(x,y));text.text((x+12,y+12),label,fill=(230,234,245))
- text.text((12,height*3+12),'MATERIAIS REAIS EM OPENGL - NAO E CAPTURA DO MINECRAFT',fill=(230,234,245))
- text.text((12,height*3+33),'Sem bloom Photon, personagens ou composicao completa de cada habilidade.',fill=(160,178,202))
+ text.text((12,height*4+12),'MATERIAIS REAIS EM OPENGL - NAO E CAPTURA DO MINECRAFT',fill=(230,234,245))
+ text.text((12,height*4+33),'Sem bloom Photon, personagens ou composicao completa de cada habilidade.',fill=(160,178,202))
  output=Path(output);output.parent.mkdir(parents=True,exist_ok=True);sheet.save(output)
- print('Power VFX GPU:',ctx.info['GL_RENDERER']);print('Rendered 9 power materials:',output)
+ print('Power VFX GPU:',ctx.info['GL_RENDERER']);print('Rendered 11 power materials:',output)
  for p in [base,add,atomic,gojo,load_roxo]:p.release()
  fbo.release();ctx.release()
 if __name__=='__main__':

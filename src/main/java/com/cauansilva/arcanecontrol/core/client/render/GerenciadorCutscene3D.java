@@ -267,6 +267,11 @@ public class GerenciadorCutscene3D {
     public static void onFovUpdate(ComputeFovModifierEvent event) {
         if (cutsceneTipo == 0) return;
         double tempo = cutsceneTick + Minecraft.getInstance().getFrameTime();
+        if(cutsceneTipo==35){
+            double fase=RoteiroGojo.suave((tempo-20)/8)*RoteiroGojo.suave((55-tempo)/10);
+            double alvo=120.0/Math.max(30,Minecraft.getInstance().options.fov().get());
+            event.setNewFovModifier((float)(event.getNewFovModifier()*(1-fase)+alvo*fase));return;
+        }
         event.setNewFovModifier((float) (event.getNewFovModifier()
                 * RoteiroGojo.amostrar(cutsceneTipo, tempo).fov()));
     }

@@ -14,9 +14,9 @@ public final class PoderesScreen extends Screen {
     public PoderesScreen(){super(Component.literal("Poderes de Anime"));}
     @Override protected void init(){
         w=Math.min(480,width-20);h=Math.min(260,height-16);x=(width-w)/2;y=(height-h)/2;
-        int tab=(w-24)/3;
-        for(PoderAnime p:PoderAnime.values())addRenderableWidget(Button.builder(Component.literal(p.nome),b->foco=p)
-                .bounds(x+12+(p.id-1)*tab,y+42,tab-3,18).build());
+        int tab=(w-24)/PoderAnime.values().length;
+        for(PoderAnime p:PoderAnime.values())addRenderableWidget(Button.builder(Component.literal(p==PoderAnime.CID?"Shadow":p.nome),b->foco=p)
+                .bounds(x+12+p.ordinal()*tab,y+42,tab-3,18).build());
         acao=addRenderableWidget(Button.builder(Component.literal("Selecionar"),b->{
             b.active=false;RegistoRede.ENVIAR.sendToServer(new PacoteAcaoPoder(PoderesCliente.estado.tem(foco)?1:2,foco.id));
         }).bounds(x+12,y+h-30,w-112,20).build());
@@ -33,7 +33,7 @@ public final class PoderesScreen extends Screen {
         String estado=p.tem(foco)?p.ativo()==foco?"ATIVO":"DESBLOQUEADO":"BLOQUEADO";
         g.drawString(font,foco.nome+" • "+estado,x+12,y+70,foco.cor);
         g.renderItem(new net.minecraft.world.item.ItemStack(foco==PoderAnime.GOJO?com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.GOJO_CABECA.get()
-                :foco==PoderAnime.CID?com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get():com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.FRI_CABECA.get()),x+w-32,y+68);
+                :foco==PoderAnime.ASTA?com.cauansilva.arcanecontrol.core.asta.RegistroAsta.ESPADA.get():foco==PoderAnime.CID?com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get():com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.FRI_CABECA.get()),x+w-32,y+68);
         int nivel=RpgCliente.recebido()?RpgCliente.mestria(foco.id).nivel():p.nivel(foco),xp=RpgCliente.recebido()?RpgCliente.mestria(foco.id).xp():p.xp(foco);
         g.drawString(font,"Nível "+nivel+" • "+xp+" XP",x+12,y+84,0xE5E9F2);
         int barra=w-24;g.fill(x+12,y+97,x+w-12,y+100,0xFF253247);
@@ -46,8 +46,8 @@ public final class PoderesScreen extends Screen {
             g.drawString(font,"["+teclas[i]+"] "+(RpgCliente.forma()&&foco.id==RpgCliente.ativo()?NomesMovesets.nome(foco.id,i):foco.tecnicas[i])+" • "+detalhe,x+12,y+109+i*linha,aprendida?0xDCE8FA:0x7E899B);
         }
         String custo=foco==PoderAnime.GOJO?"Árvore em H. Uso: +5 XP; dano e inimigos também dão XP."
-                :p.tem(foco)?"Uso: +5 XP; inimigo: +25 XP. "+(foco==PoderAnime.CID?"Requer a Lâmina Shadow.":"Magia pode ser usada sem cajado.")
-                :foco.custo+" conhecimento + "+(foco==PoderAnime.CID?"8 ametistas + 4 obsidianas":"8 lápis-lazúli + 4 ametistas");
+                :p.tem(foco)?"Uso: +5 XP; inimigo: +25 XP. "+(foco==PoderAnime.ASTA?"Requer a Espada Matadora.":foco==PoderAnime.CID?"Requer a Lâmina Shadow.":"Magia pode ser usada sem cajado.")
+                :foco.custo+" conhecimento + "+(foco==PoderAnime.ASTA?"8 ferros + 4 obsidianas":foco==PoderAnime.CID?"8 ametistas + 4 obsidianas":"8 lápis-lazúli + 4 ametistas");
         g.drawWordWrap(font,Component.literal(custo),x+12,y+h-64,w-24,0xABB8CC);
         acao.setMessage(Component.literal(p.tem(foco)?p.ativo()==foco?"Kit selecionado":"Selecionar kit":PoderesCliente.criativo?"Desbloquear (Criativo)":"Pesquisar kit"));
         acao.active=PoderesCliente.recebido&&(p.tem(foco)?p.ativo()!=foco:PoderesCliente.criativo||p.podeDesbloquear(foco));

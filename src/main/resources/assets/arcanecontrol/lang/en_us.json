@@ -26,5 +26,11 @@
   "key.minezin.g": "Awakening",
   "block.arcanecontrol.altar_despertar": "Awakening Altar",
   "item.arcanecontrol.alma_despertar": "Awakening Soul",
-  "entity.arcanecontrol.nemesis": "Nemesis"
+  "entity.arcanecontrol.nemesis": "Nemesis",
+  "item.arcanecontrol.matadora_demonios": "Demon Slayer Sword",
+  "item.arcanecontrol.asta_cabeca": "Faixa dos Touros Negros",
+  "item.arcanecontrol.asta_peito": "Manto dos Touros Negros",
+  "item.arcanecontrol.asta_pernas": "Calças dos Touros Negros",
+  "item.arcanecontrol.asta_botas": "Botas dos Touros Negros",
+  "effect.arcanecontrol.silencio": "Silenced"
 }

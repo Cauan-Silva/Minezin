@@ -6,6 +6,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RpgRedeTest {
+    @Test void selecaoExpandeArraysAntigosSemPerderPerfisOuOQuartoKit(){
+        var p=new PacoteEstadoPoderes(4,15,20,new int[]{100,200,300,400},new int[]{7,8,9},false);
+        var b=new FriendlyByteBuf(Unpooled.buffer());
+        try{PacoteEstadoPoderes.encode(p,b);var lido=PacoteEstadoPoderes.decode(b);assertEquals(4,lido.ativo());assertEquals(15,lido.xp().length);assertEquals(75,lido.usos().length);assertEquals(400,lido.xp()[3]);assertEquals(300,lido.xp()[2]);assertEquals(7,lido.usos()[0]);assertEquals(0,b.readableBytes());}finally{b.release();}
+    }
     @Test void efeitoDeChefeTransportaUuidEExtremidadesSemDependerDePlayer(){
         var pacote=new PacoteEfeitoDespertar(java.util.UUID.randomUUID(),103,new net.minecraft.world.phys.Vec3(1.25,64,-10),new net.minecraft.world.phys.Vec3(7,65,8),30,3);
         var buf=new FriendlyByteBuf(Unpooled.buffer());

@@ -7,15 +7,15 @@ public final class EstadoPoderes {
     private PoderAnime ativo;
     private int desbloqueados,conhecimento;
     private final int[] xp,usos;
-    public EstadoPoderes(){this(1,1,0,new int[3],new int[15]);}
+    public EstadoPoderes(){this(1,1,0,new int[15],new int[75]);}
     public EstadoPoderes(int ativo,int desbloqueados,int conhecimento,int[] xp,int[] usos){
-        this.desbloqueados=(desbloqueados&7)|1;
+        int disponiveis=0;for(var kit:PoderAnime.values())disponiveis|=kit.bit();this.desbloqueados=(desbloqueados&disponiveis)|1;
         PoderAnime escolhido=PoderAnime.porId(ativo);
         this.ativo=escolhido!=null&&tem(escolhido)?escolhido:PoderAnime.GOJO;
         this.conhecimento=Math.max(0,Math.min(100000,conhecimento));
-        this.xp=Arrays.copyOf(xp,3);this.usos=Arrays.copyOf(usos,15);
-        for(int i=0;i<3;i++) this.xp[i]=Math.max(0,Math.min(1900,this.xp[i]));
-        for(int i=0;i<15;i++) this.usos[i]=Math.max(0,Math.min(100,this.usos[i]));
+        this.xp=Arrays.copyOf(xp,15);this.usos=Arrays.copyOf(usos,75);
+        for(int i=0;i<15;i++) this.xp[i]=Math.max(0,Math.min(1900,this.xp[i]));
+        for(int i=0;i<75;i++) this.usos[i]=Math.max(0,Math.min(100,this.usos[i]));
     }
     public PoderAnime ativo(){return ativo;}
     public int desbloqueados(){return desbloqueados;}

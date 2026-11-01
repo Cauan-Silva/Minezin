@@ -43,13 +43,20 @@ public final class RoteiroGojo {
         new Chave(220,new Quadro(-7,4,-6,12,.9)),
         new Chave(280,new Quadro(3,1.4,-5,8,1))
     };
+    private static final Chave[] ASTA={
+        new Chave(0,new Quadro(1.8,.1,2.8,0,.85)),
+        new Chave(18,new Quadro(-1.4,.5,3.3,0,.75)),
+        new Chave(32,new Quadro(-3.6,1.5,-3,0,1.4,1)),
+        new Chave(45,new Quadro(3.5,1.5,-4,0,1.25,.5)),
+        new Chave(55,new Quadro(2,1,-4,0,1))
+    };
     public static double suave(double k) {
         k = Math.max(0, Math.min(1, k));
         return k * k * (3 - 2 * k);
     }
 
     public static Quadro amostrar(int tipo, double tick) {
-        Chave[] chaves = tipo==24?SINGULARIDADE:tipo == 14 ? ATOMIC : tipo == 5 ? DOMINIO : ROXO;
+        Chave[] chaves = tipo==35?ASTA:tipo==24?SINGULARIDADE:tipo == 14 ? ATOMIC : tipo == 5 ? DOMINIO : ROXO;
         if (tick <= 0) return chaves[0].quadro;
         for (int i = 1; i < chaves.length; i++) {
             Chave a = chaves[i - 1], b = chaves[i];
@@ -64,6 +71,7 @@ public final class RoteiroGojo {
     }
 
     public static double impacto(int tipo, double tick) {
+        if(tipo==35){double d=tick-28;return d<0?0:.75*Math.max(0,1-d/16);}
         if(tipo==24){double d=tick>=220?tick-220:tick-70;return d<0?0:.65*Math.max(0,1-d/12);}
         double desde = tick - (tipo == 14 ? 90 : tipo == 5 ? 35 : 30);
         return desde < 0 ? 0 : .65 * Math.max(0, 1 - desde / 12);
