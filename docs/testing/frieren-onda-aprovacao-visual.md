@@ -1,6 +1,8 @@
 # Frieren — onda de qualidade
 
-Iniciada em **02/11/2026**, sobre a `main` em `1ec0aab` (merge do PR #26, onda Gojo). Alterações locais, sem commit. Mecânicas do servidor (dano, alcance, atração, cratera, tempos) preservadas.
+Iniciada em **02/11/2026**, sobre a `main` em `1ec0aab` (merge do PR #26, onda Gojo). Mecânicas do servidor (dano, alcance, atração, cratera, tempos) preservadas.
+
+**Publicação:** commit `59eaf29` na branch `feat/frieren-onda-qualidade`, PR #27 para `main` com CI de build aprovado e **merge em 02/11/2026, commit `7b5f88e`**. Versão publicada: `3.8.0-frieren-preview.2`. Onda integrada; teste completo no Minecraft ainda pendente (ver roteiro abaixo).
 
 ## Buraco Negro — aprovado em prévia
 

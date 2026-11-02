@@ -12,7 +12,7 @@ Qualidade tem prioridade sobre velocidade de entrega. Cada habilidade deve comun
 
 ## 2. Estado verificável desta entrega
 
-> **Atualização de 02/11/2026 (onda Frieren).** A onda Gojo foi publicada e integrada: PR #26 mergeado na `main` (`1ec0aab`), CI de build aprovado. A onda Frieren (técnicas, forma desperta, traje com tecido, cajado, Qual e SFX) foi aprovada em prévias, entregue como `minezin-3.8.0-frieren-preview.2.jar` e publicada em PR para `main`. Teste completo no Minecraft ainda pendente; a preview.1 teve o Zoltraak corrigido na preview.2. Detalhes, hashes e roteiro: [frieren-onda-aprovacao-visual.md](testing/frieren-onda-aprovacao-visual.md). A tabela abaixo descreve a entrega anterior (Gojo).
+> **Atualização de 02/11/2026 (onda Frieren).** A onda Gojo foi publicada e integrada: PR #26 mergeado na `main` (`1ec0aab`), CI de build aprovado. A onda Frieren (técnicas, forma desperta, traje com tecido, cajado, Qual e SFX) foi aprovada em prévias, entregue como `minezin-3.8.0-frieren-preview.2.jar` e integrada pelo PR #27 (merge `7b5f88e`). Teste completo no Minecraft ainda pendente; a preview.1 teve o Zoltraak corrigido na preview.2. Detalhes, hashes e roteiro: [frieren-onda-aprovacao-visual.md](testing/frieren-onda-aprovacao-visual.md). A tabela abaixo descreve a entrega anterior (Gojo).
 
 | Item | Estado em 02/11/2026 |
 | --- | --- |
@@ -151,7 +151,7 @@ Existem **cinco kits implementados** na base de trabalho; o catálogo maior é p
 | --- | --- | --- |
 | Cid / Shadow | Moveset, Atomic, equipamento, Aurora, despertar, tecido direcional e controle de terreno | Referência de qualidade aprovada pelo usuário; integrada na base até PR #25. Preservar durante as próximas ondas |
 | Gojo | Técnicas base, Domínio, Toji, progressão e roupa | Primeira onda: aprovada visualmente e integrada pelo PR #26; teste de jogo da 3.7.0 pendente |
-| Frieren | Kit base/transformado, cajado, traje e Qual | Segunda onda: aprovada em prévias com referências do anime; JAR 3.8.0-frieren-preview.2 entregue; publicada em PR; teste de jogo pendente |
+| Frieren | Kit base/transformado, cajado, traje e Qual | Segunda onda: aprovada em prévias com referências do anime; JAR 3.8.0-frieren-preview.2 entregue; integrada pelo PR #27; teste de jogo pendente |
 | Asta | Antimagia, espadas, traje, Assimilação Demoníaca e Liebe | Próxima candidata: revisar animações, Black Divider, forma e tecido; testar empunhadura no jogo |
 | Ichigo | Zangetsu/Tensa Zangetsu, Bankai, máscara, roupa e Zangetsu Interior | Implementado antes da onda Gojo; ainda não recebeu esta onda de acabamento equivalente ao Cid |
 
