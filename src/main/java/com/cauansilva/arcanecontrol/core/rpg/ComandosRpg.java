@@ -3,6 +3,8 @@ import com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import net.minecraft.commands.Commands;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.cauansilva.arcanecontrol.ConfigServidor;
 import net.minecraft.commands.CommandSourceStack;
 import com.cauansilva.arcanecontrol.core.poderes.PoderAnime;
 import net.minecraft.network.chat.Component;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 public final class ComandosRpg {
     @SubscribeEvent public static void registrar(RegisterCommandsEvent e){
         e.getDispatcher().register(Commands.literal("minezin").requires(s->s.hasPermission(2))
+            .then(comandoAtomic())
             .then(Commands.literal("rpg")
                 .then(comandoMaestria())
                 .then(Commands.literal("restaurar_recursos").executes(c->{
@@ -32,6 +35,16 @@ public final class ComandosRpg {
                     var p=c.getSource().getPlayerOrException();RpgServidor.dados(p).putDouble("mana",new RecursoMana(DoubleArgumentType.getDouble(c,"valor")).atual());RpgServidor.sincronizar(p);
                     c.getSource().sendSuccess(()->Component.literal("Mana ajustada."),false);return 1;
                 })))));
+    }
+    static com.mojang.brigadier.builder.LiteralArgumentBuilder<CommandSourceStack> comandoAtomic(){
+        return Commands.literal("atomic").then(Commands.literal("terreno")
+            .executes(c->{c.getSource().sendSuccess(()->Component.literal("Destruição de terreno da Atomic: "+(ConfigServidor.DESTRUIR.get()?"ATIVADA":"DESATIVADA")+" (todos os jogadores e dimensões deste mundo/servidor)."),false);return 1;})
+            .then(Commands.argument("ativo",BoolArgumentType.bool()).executes(c->{
+                boolean antes=ConfigServidor.DESTRUIR.get(),ativo=BoolArgumentType.getBool(c,"ativo");
+                try{ConfigServidor.DESTRUIR.set(ativo);ConfigServidor.SPEC.save();}
+                catch(RuntimeException ex){try{ConfigServidor.DESTRUIR.set(antes);}catch(RuntimeException rollback){ex.addSuppressed(rollback);}c.getSource().sendFailure(Component.literal("Não foi possível salvar a configuração Atomic. Consulte o log do servidor."));com.mojang.logging.LogUtils.getLogger().warn("Falha ao salvar a configuração Atomic",ex);return 0;}
+                c.getSource().sendSuccess(()->Component.literal("Destruição de terreno da Atomic "+(ativo?"ATIVADA":"DESATIVADA")+" e salva. Aplica-se a todos; dano contra entidades e VFX mantidos. Blocos já destruídos não são restaurados."),true);return 1;
+            })));
     }
     private static com.mojang.brigadier.builder.LiteralArgumentBuilder<CommandSourceStack> comandoMaestria(){
         var maxima=Commands.literal("maxima").executes(c->maximizar(c.getSource(),null,false));

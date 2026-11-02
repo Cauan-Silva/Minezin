@@ -1,4 +1,4 @@
-# Comandos administrativos de teste — 3.6.0-preview.1
+# Comandos administrativos de teste — 3.6.0-preview.5
 
 Exigem cheats habilitados ou operador com nível de permissão 2. Executam no próprio jogador; o console deve executar via `execute as <jogador> run ...`.
 
@@ -14,3 +14,5 @@ A maestria máxima fica salva no perfil RPG e é sincronizada com a interface. O
 Restaurar recursos não cancela técnicas em execução, não remove silêncio/antimagia nem encerra o tempo de ocupação ou de transformação. Aguarde a ação terminar para repetir. A progressão survival normal mantém seus requisitos; somente a execução explícita dos comandos concede os benefícios.
 
 Validação: build Forge e teste de perfil máximo/releitura; comandos ainda precisam de execução dentro do Minecraft, incluindo permissões, reconexão e seleção entre kits. Sem commit, push ou PR nesta entrega.
+
+Atomic (somente Cid, global e persistente): `/minezin atomic terreno false` desativa quebra de blocos; `true` reativa; sem valor consulta. Dano a entidades e VFX continuam. Não restaura blocos destruídos.

@@ -15,13 +15,17 @@ import java.util.*;
 /** Destruicao real, com orÃ§amento global por tick e eventos de proteÃ§Ã£o por bloco. */
 @Mod.EventBusSubscriber(modid="arcanecontrol")
 public final class DestruicaoAnime {
-    private record Cratera(ServerPlayer dono,ServerLevel nivel,BlockPos centro,Iterator<PerfilCratera.Bloco> plano){}
+    private record Cratera(ServerPlayer dono,ServerLevel nivel,BlockPos centro,Iterator<PerfilCratera.Bloco> plano,boolean atomic){}
     private record Fragmento(FallingBlockEntity entidade,UUID dono,Vec3 centro,long fim){}
     private static final List<Cratera> CRATERAS=new ArrayList<>();
     private static final List<Fragmento> FRAGMENTOS=new ArrayList<>();
     public static void cratera(ServerPlayer p,Vec3 centro,int raio,int profundidade){
         if(CRATERAS.size()>=8)return;
-        CRATERAS.add(new Cratera(p,p.serverLevel(),BlockPos.containing(centro),PerfilCratera.planejar(raio,profundidade).iterator()));
+        CRATERAS.add(new Cratera(p,p.serverLevel(),BlockPos.containing(centro),PerfilCratera.planejar(raio,profundidade).iterator(),false));
+    }
+    public static void crateraAtomic(ServerPlayer p,Vec3 centro,int raio,int profundidade){
+        if(CRATERAS.size()>=8||!com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get())return;
+        CRATERAS.add(new Cratera(p,p.serverLevel(),BlockPos.containing(centro),PerfilCratera.planejar(raio,profundidade).iterator(),true));
     }
     public static void fenda(ServerPlayer p,Vec3 origem,Vec3 dir,int alcance){
         if(CRATERAS.size()>=8)return;
@@ -31,7 +35,7 @@ public final class DestruicaoAnime {
             var pos=BlockPos.containing(dir.scale(i).add(lado.scale(largura)).add(0,y,0));
             if(vistos.add(pos))plano.add(new PerfilCratera.Bloco(pos.getX(),pos.getY(),pos.getZ()));
         }
-        CRATERAS.add(new Cratera(p,p.serverLevel(),BlockPos.containing(origem),plano.iterator()));
+        CRATERAS.add(new Cratera(p,p.serverLevel(),BlockPos.containing(origem),plano.iterator(),false));
     }
     private static boolean podeRemover(ServerPlayer p,ServerLevel level,BlockPos pos){
         if(!level.hasChunkAt(pos)||!level.getWorldBorder().isWithinBounds(pos)||!level.mayInteract(p,pos))return false;
@@ -62,7 +66,7 @@ public final class DestruicaoAnime {
         if(e.phase!=TickEvent.Phase.END)return;
         int orcamento=384;var it=CRATERAS.iterator();
         while(it.hasNext()){
-            var c=it.next();if(c.dono.hasDisconnected()||c.dono.serverLevel()!=c.nivel){it.remove();continue;}
+            var c=it.next();if(c.atomic&&!com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get()||c.dono.hasDisconnected()||c.dono.serverLevel()!=c.nivel){it.remove();continue;}
             int local=0;
             while(c.plano.hasNext()&&orcamento>0&&local++<192){
                 var offset=c.plano.next();var pos=c.centro.offset(offset.x(),offset.y(),offset.z());orcamento--;

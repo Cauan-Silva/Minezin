@@ -22,6 +22,13 @@ def mesh(style,pose_name="idle"):
  path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else f'geo/ichigo/{style}.geo.json' if style in ['zangetsu','tensa_zangetsu'] else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
+ if style=='shadow' and pose_name.startswith('cid_'):
+  samples=json.loads((ROOT/'build/cid-cape-samples.json').read_text());sample=samples[pose_name[4:]]
+  for name,bone in bones.items():
+   if name.startswith('cid_cape_'):
+    panel,segment=map(int,name[len('cid_cape_'):].split('_'));x,y,z=samples['paineis'][pose_name[4:]][panel][segment];bone['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
+   elif name in samples.get('detalhes',{}).get(pose_name[4:],{}):
+    x,y,z=samples['detalhes'][pose_name[4:]][name];bone['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
  if style=='matadora':
   if pose_name=='divider':bones['blade']['scale']=[1.55,3.6,1]
   else:bones['energia_divider']['cubes']=[]
@@ -49,7 +56,7 @@ def mesh(style,pose_name="idle"):
  if style not in ['cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora']:
   for n,parent,o,size in [('skin_head','armorHead',[-4,24,-4],[8,8,8]),('skin_left','armorLeftArm',[4,12,-2],[4,12,4]),('skin_right','armorRightArm',[-8,12,-2],[4,12,4])]:
    bones[n]={'name':n,'parent':parent,'cubes':[{'origin':o,'size':size,'uv':{f:skin for f in faces}}]}
-  if pose_name!='idle':
+  if pose_name!='idle' and not pose_name.startswith('cid_'):
    for n,angle in [('armorLeftArm',-35 if pose_name=='walk' else -75),('armorRightArm',35 if pose_name=='walk' else -115),('armorLeftLeg',30 if pose_name=='walk' else 0),('armorRightLeg',-30 if pose_name=='walk' else 0),('armorLeftBoot',30 if pose_name=='walk' else 0),('armorRightBoot',-30 if pose_name=='walk' else 0)]:bones[n]['rotation']=[angle,0,0]
  out=[];tw,th=d['description']['texture_width'],d['description']['texture_height']
  for name,b in bones.items():

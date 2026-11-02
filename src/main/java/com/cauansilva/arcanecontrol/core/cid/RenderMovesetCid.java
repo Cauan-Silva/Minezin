@@ -9,16 +9,17 @@ import java.util.*;
 
 public final class RenderMovesetCid {
     private static final int VIOLETA=0xB76BFF,CLARO=0xE2CFFF;
-    public static void selosAtomic(PoseStack pose,double t,Vec3 cam){
+    public static void selosAtomic(PoseStack pose,double t,Vec3 cam,Vec3 ancora){
         if(t<0||t>=130||!DesenhoMagia.iniciar(t))return;
         try{
             if(t<90){
                 float alpha=(float)(Math.min(1,t/20)*Math.min(1,(100-t)/10));
                 DesenhoMagia.lote(pose,6,true,()->{
                     for(int j=0;j<3;j++){
-                        double r=1.2+j*.65;
-                        DesenhoMagia.anel(pose,new Vec3(0,.04+j*.01,0),new Vec3(0,1,0),r,r+.045,j==1?CLARO:VIOLETA,alpha*.6f,64);
-                        DesenhoMagia.selo(pose,cam,new Vec3(0,.06+j*.01,0),new Vec3(0,1,0),r,t*(j%2==0?1:-1),VIOLETA,alpha*.35f);
+                        double r=com.cauansilva.arcanecontrol.core.vfx.PerfilSelosCid.raio(t,j);
+                        var centro=ancora.scale(com.cauansilva.arcanecontrol.core.vfx.PerfilSelosCid.elevar(t));
+                        DesenhoMagia.anel(pose,centro.add(0,.04+j*.01,0),new Vec3(0,1,0),r,r+.045,j==1?CLARO:VIOLETA,alpha*.6f,64);
+                        DesenhoMagia.selo(pose,cam,centro.add(0,.06+j*.01,0),new Vec3(0,1,0),r,t*(j%2==0?1:-1),VIOLETA,alpha*.35f);
                     }
                     // Negative pressure: disconnected streaks collapse toward the blade before detonation.
                     for(int i=0;i<16;i++){
