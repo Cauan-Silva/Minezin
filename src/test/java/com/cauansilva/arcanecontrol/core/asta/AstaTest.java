@@ -40,6 +40,35 @@ class AstaTest {
         assertEquals(0,PerfilAsta.alcanceOnda(8));assertEquals(24,PerfilAsta.alcanceOnda(28));assertEquals(0,RoteiroGojo.impacto(35,28));assertEquals(0,RoteiroGojo.impacto(35,46));assertTrue(RoteiroGojo.impacto(35,47)>0);assertEquals(1,RoteiroGojo.amostrar(35,55).fov());
         for(double t=0;t<55;t+=.1){var q=RoteiroGojo.amostrar(35,t);assertTrue(Double.isFinite(q.x())&&Double.isFinite(q.y())&&q.fov()>=.7&&q.fov()<=1.4);}
     }
+    @Test void devilUnionColaNoCorpoDoJogador()throws Exception{
+        // The outfit hides during the form, so the black coating (each part's largest cube) hugs the vanilla body.
+        var limites=java.util.Map.of("armorBody",new double[]{-4,4,12,24,-2,2},"armorRightArm",new double[]{-8,-4,12,24,-2,2},"armorLeftArm",new double[]{4,8,12,24,-2,2},
+                "armorRightLeg",new double[]{-4,0,0,12,-2,2},"armorLeftLeg",new double[]{0,4,0,12,-2,2});
+        int revestimentos=0;
+        for(var b:json("/assets/arcanecontrol/geo/armaduras/asta_forma.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject().getAsJsonArray("bones")){
+            var o=b.getAsJsonObject();var lim=limites.get(o.get("name").getAsString());if(lim==null)continue;
+            JsonObject maior=null;double volume=0;
+            for(var c:o.getAsJsonArray("cubes")){var s=c.getAsJsonObject().getAsJsonArray("size");double v=s.get(0).getAsDouble()*s.get(1).getAsDouble()*s.get(2).getAsDouble();if(v>volume){volume=v;maior=c.getAsJsonObject();}}
+            assertNotNull(maior);revestimentos++;var or=maior.getAsJsonArray("origin");var sz=maior.getAsJsonArray("size");
+            for(int i=0;i<3;i++){
+                // Arms may cap the shoulder like the outfits do (outer sleeve layer ends at 24.25).
+                double a=or.get(i).getAsDouble(),f=a+sz.get(i).getAsDouble(),folga=i==1?.55:.3;
+                assertTrue(a>=lim[i*2]-folga&&f<=lim[i*2+1]+folga,o.get("name")+" eixo "+i+": "+a+".."+f);
+            }
+        }
+        assertEquals(5,revestimentos,"um revestimento por parte do corpo");
+    }
+    @Test void matadoraDespertaMantemCaboEOssosDaNormal()throws Exception{
+        // Same bones, pivots and grip: the held transform and the Black Divider scaling must not jump on the swap.
+        var normal=new HashMap<String,JsonObject>();var desperta=new HashMap<String,JsonObject>();
+        for(var b:json("/assets/arcanecontrol/geo/asta/matadora.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject().getAsJsonArray("bones"))normal.put(b.getAsJsonObject().get("name").getAsString(),b.getAsJsonObject());
+        for(var b:json("/assets/arcanecontrol/geo/asta/matadora_desperta.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject().getAsJsonArray("bones"))desperta.put(b.getAsJsonObject().get("name").getAsString(),b.getAsJsonObject());
+        assertEquals(normal.keySet(),desperta.keySet());
+        for(String osso:normal.keySet())assertEquals(normal.get(osso).get("pivot"),desperta.get(osso).get("pivot"),osso);
+        var caboNormal=normal.get("root").getAsJsonArray("cubes").get(0).getAsJsonObject();var caboDesperta=desperta.get("root").getAsJsonArray("cubes").get(0).getAsJsonObject();
+        assertEquals(caboNormal.get("origin"),caboDesperta.get("origin"));assertEquals(caboNormal.get("size"),caboDesperta.get("size"));
+        assertNotNull(getClass().getResourceAsStream("/assets/arcanecontrol/textures/armor/trajes/matadora_desperta_glowmask.png"));
+    }
     private JsonObject json(String path)throws Exception{try(var in=getClass().getResourceAsStream(path)){assertNotNull(in,path);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}}
     @Test void noveGestosCarregamNoPlayerAnimatorSemLoopPersistente()throws Exception{
         try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/asta.json")){assertNotNull(in);var gestos=AnimationSerializing.deserializeAnimation(in);assertEquals(9,gestos.size());for(var g:gestos){assertFalse(g.isInfinite);assertTrue(g.endTick>0&&g.endTick<=55);}}
@@ -47,7 +76,13 @@ class AstaTest {
     @Test void armaduraNaoImpõeCabeloEFormaTemAsaEChifreSeparados()throws Exception{
         var g=json("/assets/arcanecontrol/geo/armaduras/asta.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
         for(var b:g.getAsJsonArray("bones")){var o=b.getAsJsonObject();assertFalse(o.get("name").getAsString().toLowerCase().contains("hair"));assertFalse(o.get("name").getAsString().toLowerCase().contains("cabelo"));if(o.get("name").getAsString().equals("armorHead"))for(var c:o.getAsJsonArray("cubes"))assertTrue(c.getAsJsonObject().getAsJsonArray("origin").get(1).getAsDouble()>=30,"A faixa deve ficar na testa e preservar os olhos da skin");}
-        var forma=json("/assets/arcanecontrol/models/effects/asta_forma.json").getAsJsonArray("pieces");int asa=0,chifre=0;for(var c:forma){if(c.getAsJsonObject().get("attachment").getAsString().equals("body"))asa++;else if(c.getAsJsonObject().get("attachment").getAsString().equals("head"))chifre++;}assertTrue(asa>=12);assertEquals(6,chifre);
+        // Devil Union head: crown (band, 13 teeth, diamond) and two 6-piece horns, no hair; mirrored bat wings on the back.
+        int asaEsq=0,asaDir=0,cabeca=0;
+        for(var c:json("/assets/arcanecontrol/geo/armaduras/asta_forma.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject().getAsJsonArray("bones")){
+            var o=c.getAsJsonObject();String n=o.get("name").getAsString();
+            if(n.startsWith("du_asa_e_"))asaEsq++;else if(n.startsWith("du_asa_d_"))asaDir++;else if(n.equals("armorHead"))cabeca=o.getAsJsonArray("cubes").size();
+        }
+        assertTrue(asaEsq>=20);assertEquals(asaEsq,asaDir);assertEquals(27,cabeca);
         var espada=json("/assets/arcanecontrol/models/item/matadora_demonios.json");assertEquals("builtin/entity",espada.get("parent").getAsString());assertTrue(espada.getAsJsonObject("display").has("firstperson_lefthand"));
         for(String item:new String[]{"asta_cabeca","asta_peito","asta_pernas","asta_botas","matadora_demonios"}){
             var recipe=json("/data/arcanecontrol/recipes/"+item+".json");assertEquals("minecraft:smithing_transform",recipe.get("type").getAsString());assertEquals("arcanecontrol:"+item,recipe.getAsJsonObject("result").get("item").getAsString());

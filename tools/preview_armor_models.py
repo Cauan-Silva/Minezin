@@ -17,9 +17,9 @@ def rotation(degrees):
  return rz@ry@rx
 def transform(obj,gecko=True):
  pivot=np.array(obj.get('pivot',[0,0,0]));r=obj.get('rotation',[0,0,0]);return translation(pivot)@rotation([-r[0],r[1],-r[2]] if gecko else r)@np.diag([*obj.get('scale',[1,1,1]),1])@translation(-pivot)
-def mesh(style,pose_name="idle",pose_rotations=None):
+def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
  bosses={'toji':1,'aurora':2,'qual':3,'liebe':4,'zangetsu_boss':6}
- path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else f'geo/ichigo/{style}.geo.json' if style in ['zangetsu','tensa_zangetsu'] else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
+ path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else f'geo/ichigo/{style}.geo.json' if style in ['zangetsu','tensa_zangetsu'] else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/matadora_desperta.geo.json' if style=='matadora_desperta' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
  if style=='gojo' and pose_name.startswith('gojo_cloth_'):
@@ -35,15 +35,15 @@ def mesh(style,pose_name="idle",pose_rotations=None):
     panel,segment=map(int,name[len('cid_cape_'):].split('_'));x,y,z=samples['paineis'][pose_name[4:]][panel][segment];bone['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
    elif name in samples.get('detalhes',{}).get(pose_name[4:],{}):
     x,y,z=samples['detalhes'][pose_name[4:]][name];bone['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
- if style=='matadora':
+ # Devil Union wing/tail deltas (geo degrees) from DevilUnionTecidoTest samples.
+ if bone_rotations:
+  for name,r in bone_rotations.items():
+   if name in bones:bones[name]['rotation']=r
+ if style in ['matadora','matadora_desperta']:
   if pose_name=='divider':bones['blade']['scale']=[1.55,3.6,1]
   else:bones['energia_divider']['cubes']=[]
- materials={n:(d['description']['texture_width'],d['description']['texture_height'],2 if style=='asta_forma' else 1) for n in bones}
- native_form=set(bones) if style=='asta_forma' else set()
- if style=='asta_forma':
-  armor=json.loads((ASSETS/'geo/armaduras/asta.geo.json').read_text(encoding='utf-8'))['minecraft:geometry'][0]
-  for b in armor['bones']:
-   bones[b['name']]=b;materials[b['name']]=(armor['description']['texture_width'],armor['description']['texture_height'],1)
+ materials={n:(d['description']['texture_width'],d['description']['texture_height'],1) for n in bones}
+ native_form=set()
  if style=='frieren':
   staff=json.loads((ASSETS/'geo/frieren/cajado.geo.json').read_text(encoding='utf-8'))['minecraft:geometry'][0]
   for b in staff['bones']:
@@ -52,17 +52,17 @@ def mesh(style,pose_name="idle",pose_rotations=None):
    bones[b['name']]=b;materials[b['name']]=(staff['description']['texture_width'],staff['description']['texture_height'],2)
  def bone_matrix(name):
   if name not in cache:
-   b=bones[name];base=bone_matrix(b['parent']) if 'parent'in b else translation([9,17,0]) if name=='staff_root' else translation([0,6,0]) if style=='matadora' else translation([0,18,0]) if style=='cajado' else np.eye(4)
+   b=bones[name];base=bone_matrix(b['parent']) if 'parent'in b else translation([9,17,0]) if name=='staff_root' else translation([0,6,0]) if style in ['matadora','matadora_desperta'] else translation([0,18,0]) if style=='cajado' else np.eye(4)
    cache[name]=base@transform(b,name not in native_form)
   return cache[name]
  faces={'north':([0,2,3,1],[0,0,-1]),'south':([4,5,7,6],[0,0,1]),'west':([0,4,6,2],[-1,0,0]),
         'east':([1,3,7,5],[1,0,0]),'down':([0,1,5,4],[0,-1,0]),'up':([2,6,7,3],[0,1,0])}
  # Neutral mannequin skin exposes where the real player's own face/hands remain visible.
  skin={'uv':[0,0],'uv_size':[1,1]}
- if style not in ['cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora']:
+ if style not in ['cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora','matadora_desperta']:
   for n,parent,o,size in [('skin_head','armorHead',[-4,24,-4],[8,8,8]),('skin_left','armorLeftArm',[4,12,-2],[4,12,4]),('skin_right','armorRightArm',[-8,12,-2],[4,12,4])]:
    bones[n]={'name':n,'parent':parent,'cubes':[{'origin':o,'size':size,'uv':{f:skin for f in faces}}]}
-  if pose_name!='idle' and not pose_name.startswith(('cid_','gojo_cloth_','frieren_cloth_')):
+  if pose_name!='idle' and not pose_name.startswith(('cid_','gojo_cloth_','frieren_cloth_','du_')):
    for n,angle in [('armorLeftArm',-35 if pose_name=='walk' else -75),('armorRightArm',35 if pose_name=='walk' else -115),('armorLeftLeg',30 if pose_name=='walk' else 0),('armorRightLeg',-30 if pose_name=='walk' else 0),('armorLeftBoot',30 if pose_name=='walk' else 0),('armorRightBoot',-30 if pose_name=='walk' else 0)]:bones[n]['rotation']=[angle,0,0]
  if pose_rotations:
   for source,target in [('right_arm','armorRightArm'),('left_arm','armorLeftArm'),('head','armorHead'),('torso','armorBody')]:
@@ -100,8 +100,8 @@ def render(output,backend=None,nemesis=False,asta=False,boss_scale=False,poses=F
  sheet=Image.new('RGB',(width*3,height*rows+58),(11,15,24));draw=ImageDraw.Draw(sheet)
  views=[(style,0) for style in styles] if boss_scale else [(style,yaw) for style in styles for yaw in [0,180,28]]
  for index,(style,yaw)in enumerate(views):
-  outfit='asta' if style=='asta_forma' else style
-  image=Image.open(ASSETS/(f'textures/armor/trajes/{outfit}.png' if outfit in ['gojo','frieren','shadow','asta','ichigo'] else 'textures/bosses/zangetsu_skin.png' if style=='zangetsu_boss' else f'textures/bosses/{style}_skin.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.release();texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.NEAREST,moderngl.NEAREST);texture.use()
+  outfit=style
+  image=Image.open(ASSETS/(f'textures/armor/trajes/{outfit}.png' if outfit in ['gojo','frieren','shadow','asta','ichigo','asta_forma'] else 'textures/bosses/zangetsu_skin.png' if style=='zangetsu_boss' else f'textures/bosses/{style}_skin.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_atlas.png' if style in ['toji','aurora','qual','liebe'] else 'textures/armor/anime_reference_atlas.png')).convert('RGBA');texture.release();texture=ctx.texture(image.size,4,image.tobytes());texture.filter=(moderngl.NEAREST,moderngl.NEAREST);texture.use()
   fbo.clear(.14,.15,.18,1,depth=1);model=rotation([0,yaw,0]);mv=view@model
   framing=projection.copy();framing[0,0]=2/(84 if style=='asta_forma' else 48 if style=='liebe' else 34)
   if style=='asta_forma':

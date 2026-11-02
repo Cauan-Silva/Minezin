@@ -179,39 +179,88 @@ def asta():
     c(b,'grimoire',[-6.15,11.4,1.6],[.15,.7,.65],a.GOLD)
     return b
 
+# Devil Union layout shared with DevilUnionTecido (Java). Bat wing in the back plane (x outward, y up, pixels):
+# shoulder root, wrist (claw) and outer tip on the leading edge; finger tips on the scalloped lower edge; the
+# membrane is ASA_FAIXAS hanging strips of ASA_SEGMENTOS linked bones (cloth), fingers ride on the strips.
+ASA_RAIZ=(2.0,23.0,2.45);ASA_PULSO=(9.0,37.0);ASA_PONTA=(27.0,22.0);ASA_DEDOS=[(4.5,14.0),(11.0,9.5),(17.5,8.5),(23.5,13.0)]
+ASA_FAIXAS=8;ASA_SEGMENTOS=3;ASA_X0=4.0;ASA_PASSO=3.0
+# Tail links: (angle back from straight down, sideways angle; negative = toward the player's right), deg.
+CAUDA_DIRECOES=[(15,0),(25,-10),(28,-25),(24,-45),(15,-65),(6,-80),(-4,-95),(-8,-105)]
+CAUDA_COMPRIMENTO=[2.4,2.3,2.2,2.1,2.0,1.9,1.8,1.6];CAUDA_RAIZ=(0,12.6,2.3)
+def _borda_superior(x):
+    (rx,ry),(px,py),(tx,ty)=(ASA_X0,ASA_RAIZ[1]),ASA_PULSO,ASA_PONTA
+    return ry+(py-ry)*(x-rx)/(px-rx) if x<=px else py+(ty-py)*(x-px)/(tx-px)
+def _borda_inferior(x):
+    # Scallops: straight between finger tips, cut upward in the middle of each span.
+    pts=ASA_DEDOS+[ASA_PONTA]
+    for (ax,ay),(bx,by) in zip(pts,pts[1:]):
+        if ax<=x<=bx:u=(x-ax)/(bx-ax);return ay+(by-ay)*u+math.sin(math.pi*u)*2.6
+    return pts[0][1] if x<pts[0][0] else pts[-1][1]
 def asta_forma():
-    pieces=[]
-    def piece(o,s,color,pivot,rot=(0,0,0),attachment='body'):
-        pieces.append({'origin':o,'size':s,'color':color,'pivot':pivot,'rotation':list(rot),
-                       'wing':attachment=='body','attachment':attachment})
-    def spar(start,end,width,color):
-        dx,dy=end[0]-start[0],end[1]-start[1]
-        piece([start[0]-width/2,start[1],3.5],[width,math.hypot(dx,dy),1.2],color,
-              [start[0],start[1],4],(0,0,-math.degrees(math.atan2(dx,dy))))
-    # A high, torn membrane wing, following the supplied Black Asta silhouette.
-    spar([-4,23],[-15,39],2.3,'12131E')
-    spar([-15,39],[-35,48],1.7,'17121D')
-    for i in range(8):
-        x=-10-i*3.15;top=[30,34,38,41,43,45,46.5,48][i]
-        bottom=[17,15,18,20,24,29,33,39][i]
-        piece([x,bottom+2,4],[3.7,top-bottom-2,.65],'12121B',[-4,23,4])
-        piece([x,bottom,4],[1.5,3,.65],'17121D',[-4,23,4])
-        if i%3==0:piece([x+1.4,bottom+4,3.85],[.18,top-bottom-5,.16],'621526',[-4,23,4])
-    # Hook on the upper joint and thin bony tips, kept separate from the skin.
-    for i in range(3):
-        piece([-15.7-i*.65,38.3-i*.8,2.8],[1.2-i*.2,2,1.1-i*.2],'77727B',[-15,39,3],(0,0,35+i*20))
-    # Curved demon horn attached to the head, not a hair replacement.
-    for i in range(6):
-        angle=i*.34
-        piece([-4.8-math.sin(angle)*2.2,31.0+i*.7,-2.8-i*.15],
-              [1.8-i*.22,1.7-i*.13,1.5-i*.18],'20151F',[-4.3,31.0,-2.6],
-              (0,0,-20-i*15),'head')
-    # The right arm uses the player's animated arm transform in the renderer.
-    piece([-8.18,12,-2.2],[4.36,10.5,4.4],'12121A',[-5,22,0],attachment='right_arm')
-    piece([-8.3,11.55,-2.3],[4.6,3.5,4.6],'17121E',[-5,22,0],attachment='right_arm')
-    for i in range(3):
-        piece([-7.75+i*1.05,10.6,-2.35],[.7,1.4,.8],'21121D',[-5,22,0],
-              (0,0,-6+i*5),'right_arm')
-    for x,y,length in [(-7.6,16,5.2),(-5.4,13.5,4.6)]:
-        piece([x,y,-2.25],[.18,length,.16],'76182D',[-5,22,0],(0,0,-8),'right_arm')
-    return pieces
+    """Devil Union after the user's Minecraft reference video (and concept art for the tail), built like the outfits
+    (GeckoLib bones, UV texture, glowmask): a slim black body hugging the bare player (+0.25 px; RenderTrajeAnime
+    hides the outfit meanwhile) whose glowing red sigils are painted by build_asta_assets (chest star, belly cross,
+    shoulder X, arm strokes, leg ribs, spine), boxy shoulder pads, a glowing crown with teeth and a diamond, two
+    horns on top of the head (no hair), bat wings with glowing fingers and hem whose membrane is linked cloth
+    strips, and a linked tail curling to the side. Rest pose is baked here; DevilUnionTecido only adds deltas."""
+    b=a.skeleton();c=garment
+    def bar(bone,p,q,width,z,tile,thick=.3,parent_pivot=None):
+        dx,dy=q[0]-p[0],q[1]-p[1]
+        c(b,bone,[p[0]-width/2,p[1],z],[width,math.hypot(dx,dy),thick],tile,[p[0],p[1],z],[0,0,-math.degrees(math.atan2(dx,dy))])
+    c(b,'armorBody',[-4.25,11.75,-2.25],[8.5,12.5,4.5],a.BLACK)
+    # Crown on the forehead: glowing band, light teeth on top, diamond in front (eyes stay the player's skin).
+    c(b,'armorHead',[-4.6,29.5,-4.6],[9.2,1.5,9.2],a.RUBY)
+    for x in [-3.6,-2.2,2.2,3.6]:c(b,'armorHead',[x-.45,31.0,-4.7],[.9,1.0,.45],a.STEEL)
+    c(b,'armorHead',[-.5,31.2,-4.7],[1.0,1.4,.45],a.STEEL)
+    for side in [-1,1]:
+        for z in [-3.0,-1.0,1.0,3.0]:c(b,'armorHead',[side*4.6-.22,31.0,z-.45],[.45,1.0,.9],a.STEEL)
+    c(b,'armorHead',[-.8,29.3,-4.95],[1.6,1.6,.4],a.RUBY,[0,30.1,-4.8],[0,0,45])
+    for side in [-1,1]:
+        s='e' if side<0 else 'd'
+        # Horns on top of the head, behind the crown: up, slightly out, tips leaning back out.
+        hx,hy=side*2.4,32.0
+        for i in range(6):
+            phi=math.radians(8+6*i);w=1.6-i*.2;L=1.15
+            c(b,'armorHead',[hx-w/2,hy-.3,.2-w/2],[w,L+.3,w],a.INK,[hx,hy,.2],[-10-i*4,0,-side*math.degrees(phi)])
+            hx+=side*math.sin(phi)*L;hy+=math.cos(phi)*L
+        arm='armorRightArm' if side<0 else 'armorLeftArm';x0=-8.25 if side<0 else 3.75
+        c(b,arm,[x0,11.75,-2.25],[4.5,12.75,4.5],a.BLACK)
+        # Boxy shoulder pad, painted with the glowing X.
+        c(b,arm,[x0-.5,20.4,-2.75],[5.5,4.4,5.5],a.SHADOW)
+        leg='armorRightLeg' if side<0 else 'armorLeftLeg';lx=-4.25 if side<0 else -.25
+        # PLUM is painted the same black for the form: it only keeps the legs' UV islands apart from the arms'.
+        c(b,leg,[lx,-.25,-2.25],[4.5,12.5,4.5],a.PLUM)
+        # Bat wing: leading-edge arm (rigid on the root), wrist claw, membrane strips and the fingers on them.
+        raiz=f'du_asa_{s}';rx,ry,rz=ASA_RAIZ;b[raiz]=a.bone(raiz,[side*rx,ry,rz],'armorBody');px,py=ASA_PULSO;tx,ty=ASA_PONTA
+        bar(raiz,(side*rx,ry),(side*px,py),2.2,rz-.35,a.INK,.9)
+        bar(raiz,(side*px,py),(side*tx,ty),1.6,rz-.3,a.INK,.8)
+        c(b,raiz,[side*px-.6,py,rz-.3],[1.2,2.6,.8],a.INK,[side*px,py,rz],[0,0,-side*30])
+        faixas=[]
+        for i in range(ASA_FAIXAS):
+            x=ASA_X0+ASA_PASSO*(i+.5);top=_borda_superior(x)-.6;bottom=_borda_inferior(x);seg=(top-bottom)/ASA_SEGMENTOS;parent=raiz
+            for j in range(ASA_SEGMENTOS):
+                name=f'du_asa_{s}_{i}_{j}';y0=top-j*seg;b[name]=a.bone(name,[side*x,y0,rz],parent);faixas.append((x,y0-seg,y0,name))
+                # The hem segment gets its own material so its glowing edge is not shared with the upper links.
+                c(b,name,[side*x-ASA_PASSO*.55,y0-seg-(0 if j==ASA_SEGMENTOS-1 else .4),rz],[ASA_PASSO*1.1,seg+(0 if j==ASA_SEGMENTOS-1 else .4),.3],a.SHADOW if j==ASA_SEGMENTOS-1 else a.BLACK)
+                parent=name
+        # Finger ridges from the wrist to each scallop tip, cut into short pieces carried by the strip segment under
+        # each piece, so the fingers bend with the membrane instead of floating over it.
+        for fx,fy in ASA_DEDOS[1:]:
+            n=max(2,int(math.hypot(fx-px,fy-py)/1.4));ang=math.degrees(math.atan2(side*(fx-px),fy-py))
+            for k in range(n):
+                u=(k+.5)/n;x,y=px+(fx-px)*u,py+(fy-py)*u
+                dono=next((nm for fx0,y1,y2,nm in faixas if abs(x-fx0)<=ASA_PASSO*.55 and y1-.2<=y<=y2+.2),None)
+                if dono:c(b,dono,[side*x-.35,y-.9,rz-.3],[.7,1.8,.4],a.RUBY,[side*x,y,rz],[0,0,-ang])
+    # Long thin tail from the lower back, curling out to the player's right, linked bone by bone.
+    px,py,pz=CAUDA_RAIZ;parent='armorBody';rot=(0,0)
+    for i,((back,lado),length) in enumerate(zip(CAUDA_DIRECOES,CAUDA_COMPRIMENTO)):
+        name=f'du_cauda_{i}';b[name]=a.bone(name,[px,py,pz],parent);w=.9-i*.05;ra,rg=math.radians(back),math.radians(lado)
+        extra=0 if i==len(CAUDA_DIRECOES)-1 else .4
+        c(b,name,[px-w/2,py-length-extra,pz-w/2],[w,length+extra,w],a.BLACK,[px,py,pz],[-back,0,lado])
+        px+=math.cos(ra)*math.sin(rg)*length;py-=math.cos(ra)*math.cos(rg)*length;pz+=math.sin(ra)*length;parent=name;rot=(back,lado)
+    # Arrowhead: a stepped triangle continuing the last link, flat toward the back so it reads from behind.
+    back,lado=rot;ra,rg=math.radians(back),math.radians(lado);d=(math.cos(ra)*math.sin(rg),-math.cos(ra)*math.cos(rg),math.sin(ra))
+    for k,(w,l) in enumerate([(2.8,.9),(1.9,.9),(1.0,.9)]):
+        o=[px+d[0]*k*.85,py+d[1]*k*.85,pz+d[2]*k*.85]
+        c(b,parent,[o[0]-w/2,o[1]-l,o[2]-.2],[w,l,.4],a.BLACK,o,[-back,0,lado])
+    return b

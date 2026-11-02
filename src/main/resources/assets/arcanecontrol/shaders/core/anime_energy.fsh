@@ -161,5 +161,13 @@ void main(){
         color=mix(vertexColor.rgb,vec3(.04,.02,.07),core)+vec3(.9,.85,1.)*spark;
         alpha*=clamp(max(core,edge*.55+spark),0.,1.);
     }
+    if(m>=21.5&&m<22.5){
+        // Asta's anti-magic ink: flat black body, thin red outline, torn ragged edges (non-additive).
+        float d=abs(uv.y-.5)*2.,tear=fbm(vec2(uv.x*7.-t*.6,uv.y*3.));
+        float edge=.78+(tear-.5)*.42;
+        float rim=smoothstep(edge-.14,edge-.05,d);
+        color=mix(vec3(.02,.012,.02),vec3(.86,.06,.13),rim);
+        alpha*=1.-smoothstep(edge-.02,edge+.02,d);
+    }
     if(alpha<.004)discard;fragColor=vec4(color,alpha);
 }

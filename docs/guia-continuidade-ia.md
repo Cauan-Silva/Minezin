@@ -69,9 +69,9 @@ nome, tamanho, SHA-256, o que foi conferido, roteiro no Minecraft (tabela cenár
 | --- | --- |
 | Repositório | `Cauan-Silva/Minezin`, modid `arcanecontrol`, Minecraft 1.20.1 / Forge 47.2.0, Java 17 |
 | Clone local | `C:\Users\Usuário\Documents\Projetos\Minezin` |
-| `main` | `fad7cb6` (merge do PR #28, docs) sobre `7b5f88e` (merge do PR #27, onda Frieren) |
-| Versão | `3.8.0-frieren-preview.2`; JAR em `C:\Users\Usuário\Documents\Projetos\minezin-outputs` |
-| Testes | 186 testes Java + 3 testes Python de projetos Blockbench, zero falhas |
+| `main` | `a698e32` (merge do PR #29, guia) sobre `fad7cb6` (PR #28) e `7b5f88e` (PR #27, onda Frieren) |
+| Versão | `3.9.0-asta-preview.2` (onda Asta, parte 1); JAR em `C:\Users\Usuário\Documents\Projetos\minezin-outputs` |
+| Testes | 203 testes Java + 3 testes Python de projetos Blockbench, zero falhas |
 | Protocolo de rede | 15 (efeito novo 115 exige cliente e servidor na mesma versão) |
 
 | Personagem | Situação |
@@ -79,7 +79,7 @@ nome, tamanho, SHA-256, o que foi conferido, roteiro no Minecraft (tabela cenár
 | Cid / Shadow | Referência de qualidade, integrado |
 | Gojo | Onda integrada (PR #26); teste de jogo da 3.7.0 pendente |
 | Frieren | Onda integrada (PR #27); teste completo no jogo pendente (a preview.1 tinha o Zoltraak apontando sempre para a mesma direção, corrigido na preview.2) |
-| Asta | **Próxima onda** pelo roadmap: Black Divider, antimagia, Assimilação, traje, Liebe, empunhadura |
+| Asta | **Onda em andamento** ([testing/asta-onda-aprovacao-visual.md](testing/asta-onda-aprovacao-visual.md)): Black Divider, golpes base, Devil Union (modelo GeckoLib com asas e cauda em tecido) e Matadora desperta aprovados; faltam Black Meteorite e golpes X/V da forma, roupa com tecido, SFX e Liebe |
 | Ichigo | Depois do Asta: Getsuga, Bankai, máscara, Zangetsu |
 
 Melhorias anotadas fora das ondas:
@@ -174,7 +174,7 @@ JAR: `build/libs/minezin-<versão>.jar`. Conferir integridade do zip, `version=`
 ### 3.7 Sugestão de início para a onda Asta
 
 1. Conferir `main`, status e versão; criar o documento da onda pelo modelo da parte 1.
-2. Inventário: `core/asta/*` (`PoderesAsta`, `EfeitosAsta`, `RenderEspadaAsta`, `ModeloFormaAsta`, `PivoFormaAsta`), boss Liebe (kit 4), efeitos 114 e 304–306.
+2. Inventário: `core/asta/*` (`PoderesAsta`, `EfeitosAsta`, `RenderEspadaAsta`, `RenderFormaAsta`, `TecidoDevilUnionCliente`), boss Liebe (kit 4), efeitos 114 e 304–310.
 3. Pedir ao usuário vídeos das cenas (Black Divider, Assimilação Demoníaca, Liebe) ou pesquisar na wiki de Black Clover; registrar o que é canônico.
 4. Começar pela técnica de maior identidade (Black Divider), com geometria pura + teste exportando amostras + prévia.
 5. Revisar empunhadura (mão esquerda/direita, primeira/terceira pessoa) e trocar os sons emprestados por SFX próprios do Asta.

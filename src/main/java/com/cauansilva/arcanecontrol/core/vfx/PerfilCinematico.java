@@ -20,11 +20,22 @@ public final class PerfilCinematico {
     public static int raios(boolean reduzido){return reduzido?4:10;}
     public static double revelarForma(double idade,String attachment){
         return switch(attachment){
-            case "right_arm"->PerfilVfxGojo.suave((idade-4)/14);
+            case "right_arm","left_arm"->PerfilVfxGojo.suave((idade-4)/14);
+            case "right_leg","left_leg"->PerfilVfxGojo.suave((idade-10)/14);
             case "head"->PerfilVfxGojo.suave((idade-18)/16);
             case "body"->PerfilVfxGojo.suave((idade-30)/17);
             default->0;
         };
+    }
+    /** The Devil Union coating hugs the body, so an outfit piece hides only once every part it covers is fully opaque black. */
+    public static boolean trajeCoberto(double idade,double alpha,String... partes){
+        if(!(alpha>=.95)||partes.length==0)return false;
+        for(String p:partes)if(alpha*revelarForma(idade,p)<.95)return false;
+        return true;
+    }
+    /** The Demon-Slayer Sword turns with the power: it swaps when the sword arm is half coated and back on the fade out. */
+    public static boolean espadaDesperta(double idade,double alpha){
+        return Double.isFinite(alpha)&&alpha*revelarForma(idade,"right_arm")>=.5;
     }
     public static double abrirAsa(double idade){return PerfilVfxGojo.suave((idade-26)/21);}
     public static Ponto orbita(int indice,double tick,double nucleo){

@@ -12,7 +12,7 @@ OUT=ROOT/'art/blockbench'
 TEXTURE=ASSETS/'textures/armor/anime_reference_atlas.png'
 PROJECTS={
     **{n:(f'geo/armaduras/{n}.geo.json',f'animations/armaduras/{n}.animation.json','Armor') for n in ['gojo','frieren','shadow','asta']},
-    'asta_black':('geo/asta/forma.geo.json',None,'Entity'),
+    'asta_black':('geo/armaduras/asta_forma.geo.json','animations/armaduras/asta_forma.animation.json','Armor'),
     **{n:(f'geo/nemesis/{i}.geo.json',f'animations/nemesis/{i}.animation.json','Entity') for i,n in enumerate(['toji','aurora','qual','liebe'],1)},
 }
 
@@ -26,6 +26,7 @@ def make_project(name,embedded=False):
     texture_path=ASSETS/'textures/armor/anime_atlas.png' if model.startswith('geo/nemesis/') else TEXTURE
     if name in ['toji','aurora','qual','liebe']:texture_path=ASSETS/f'textures/bosses/{name}_skin.png'
     if name in ['gojo','frieren','shadow','asta']:texture_path=ASSETS/f'textures/armor/trajes/{name}.png'
+    if name=='asta_black':texture_path=ASSETS/'textures/armor/trajes/asta_forma.png'
     geo=read(ASSETS/model)['minecraft:geometry'][0]
     elements=[];groups=[];nodes={};groupids={b['name']:uid(name+'/'+b['name']) for b in geo['bones']}
     for bone in geo['bones']:
