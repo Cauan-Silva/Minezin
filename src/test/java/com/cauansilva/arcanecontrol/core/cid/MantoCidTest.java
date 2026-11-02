@@ -46,7 +46,20 @@ class MantoCidTest {
         m.reset();for(int i=0;i<100;i++)m.tick(new MolaMantoCid.Entrada(0,.22,0,0,true));capture(root,detalhes,paineis,"direita",m);
         m.reset();for(int i=0;i<100;i++)m.tick(new MolaMantoCid.Entrada(0,-.22,0,0,true));capture(root,detalhes,paineis,"esquerda",m);
         m.reset();for(int i=0;i<60;i++)m.tick(new MolaMantoCid.Entrada(.27,0,0,0,true));for(int i=0;i<5;i++)m.tick(PARADO);capture(root,detalhes,paineis,"freando",m);
-        assertTrue(root.getAsJsonArray("correndo").get(3).getAsJsonArray().get(0).getAsDouble()<-.1);
+        for(int tipo:new int[]{11,12,13,14,17}){
+            m.reset();int fim=tipo==14?96:tipo==11?8:tipo==12?4:tipo==13?12:10;
+            for(int i=0;i<=fim;i++){var impulso=RoteiroTecidoCid.amostrar(tipo,i);m.tick(new MolaMantoCid.Entrada(impulso.frente(),impulso.lado(),0,impulso.giro(),true));}
+            capture(root,detalhes,paineis,"acao"+tipo,m);
+        }
+        assertTrue(root.getAsJsonArray("correndo").get(0).getAsJsonArray().get(0).getAsDouble()<-.1);
+        m.reset();
+        for(int frame=0;frame<220;frame++){
+            double frente=frame<35?.25:frame<70?.12:0,lado=frame>=35&&frame<70?.2:frame>=70&&frame<100?-.2:0,giro=frame>=100&&frame<120?.12:0;
+            var impulso=RoteiroTecidoCid.amostrar(17,frame-120);
+            double vertical=frame>=140&&frame<180?-.65:0;
+            m.tick(new MolaMantoCid.Entrada(frente+impulso.frente(),lado+impulso.lado(),vertical,giro+impulso.giro(),true));
+            capture(root,detalhes,paineis,"frame"+frame,m);
+        }
         Files.createDirectories(Path.of("build"));Files.writeString(Path.of("build/cid-cape-samples.json"),root.toString());
     }
     private static void capture(JsonObject root,JsonObject detalhes,JsonObject paineis,String nome,MantoDirecionalCid m){

@@ -62,9 +62,9 @@ public final class PoderesCid {
             RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),
                     new PacoteSincronizarCutscene3D(16,p.getUUID(),destino.x,destino.y,destino.z,0,0,0));
         } else if (slot == 3) {
-            dados.putLong("cid_ocupado", agora + 240);
+            dados.putLong("cid_ocupado", agora + com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO);
             if(!com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get())p.displayClientMessage(net.minecraft.network.chat.Component.literal("Destruição de terreno desativada neste mundo."),true);
-            p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,240,5,false,false));
+            p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO,5,false,false));
             ATIVOS.add(new Atomic(p, p.serverLevel(), origem, agora));
         } else if(slot==0) CORTES.add(new Corte(p,p.serverLevel(),p.getEyePosition(),dir,agora));
         else FIOS.add(new Fios(p,p.serverLevel(),new ArrayList<>(),agora));
@@ -73,12 +73,12 @@ public final class PoderesCid {
         p.serverLevel().playSound(null, p.blockPosition(), slot == 3 ? SoundEvents.WARDEN_HEARTBEAT : SoundEvents.PLAYER_ATTACK_SWEEP,
                 SoundSource.PLAYERS, 1.2f, .65f);
         com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.registrarUso(p,
-                com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID,slot,slot==3?240:slot==1?12:slot==2?48:25);
+                com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID,slot,slot==3?com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO:slot==1?12:slot==2?48:25);
     }
 
     public static void iniciarDespertar(ServerPlayer p){
-        long agora=p.server.overworld().getGameTime();dados(p).putLong("cid_ocupado",agora+100);
-        p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100,5,false,false));
+        long agora=p.server.overworld().getGameTime();dados(p).putLong("cid_ocupado",agora+com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO);
+        p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO,5,false,false));
         ATIVOS.add(new Atomic(p,p.serverLevel(),p.position(),agora));
         var o=p.position();var d=p.getLookAngle();RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),new PacoteSincronizarCutscene3D(14,p.getUUID(),o.x,o.y,o.z,d.x,d.y,d.z));
     }
@@ -115,19 +115,23 @@ public final class PoderesCid {
         Iterator<Atomic> it = ATIVOS.iterator();
         while (it.hasNext()) {
             Atomic a = it.next();
-            if (!a.jogador.isAlive() || a.jogador.hasDisconnected() || a.jogador.serverLevel() != a.nivel || !com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.ativo(a.jogador)) { it.remove(); continue; }
+            if (!a.jogador.isAlive() || a.jogador.hasDisconnected() || a.jogador.serverLevel() != a.nivel || !com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.ativo(a.jogador)) { AtordoamentoAtomic.liberar(a.jogador.getUUID());it.remove(); continue; }
             long t = event.getServer().overworld().getGameTime() - a.inicio;
-            if (com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.cancelarPorMovimento(t,a.jogador.distanceToSqr(a.centro))) {
+            if ((t<com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO&&AtordoamentoAtomic.ativo(a.jogador))||com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.cancelarPorMovimento(com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(t),a.jogador.distanceToSqr(a.centro))) {
+                AtordoamentoAtomic.liberar(a.jogador.getUUID());
                 dados(a.jogador).putLong("cid_ocupado",0);
+                com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.finalizarAtomic(a.jogador);
                 RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> a.jogador),
                     new PacoteSincronizarCutscene3D(15,a.jogador.getUUID(),0,0,0,0,0,0));
                 it.remove();continue;
             }
-            if (t < 90 && t % 12 == 0) {
+            if(t<com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO)AtordoamentoAtomic.aplicar(a.jogador,a.centro);
+            if (t < 380 && t % 30 == 0) {
                 a.nivel.playSound(null, a.jogador.blockPosition(), SoundEvents.WARDEN_HEARTBEAT,
-                        SoundSource.PLAYERS, 1.8f, (float)(.55 + t / 130.0));
+                        SoundSource.PLAYERS, 1.8f, (float)(.55 + com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(t) / 130.0));
             }
-            if (t == 90) {
+            if (t == com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO) {
+                AtordoamentoAtomic.liberar(a.jogador.getUUID());
                 a.jogador.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,180,0,false,false));
                 if (com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get()) {
                     com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.crateraAtomic(a.jogador,a.centro,com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get(),8);
@@ -146,7 +150,7 @@ public final class PoderesCid {
                 }
                 a.nivel.playSound(null, net.minecraft.core.BlockPos.containing(a.centro), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 3, .5f);
             }
-            if (t >= 240) it.remove();
+            if (t >= com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM){com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.finalizarAtomic(a.jogador);it.remove();}
         }
     }
     @SubscribeEvent public static void parar(net.minecraftforge.event.server.ServerStoppedEvent e) { ATIVOS.clear();CORTES.clear();FIOS.clear(); }

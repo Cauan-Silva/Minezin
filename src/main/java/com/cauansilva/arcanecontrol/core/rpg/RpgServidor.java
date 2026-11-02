@@ -63,6 +63,7 @@ public final class RpgServidor {
         return PerfilRpgNbt.ler(raiz,kit);
     }
     public static boolean podeUsar(ServerPlayer p,PoderAnime kit,int slot){
+        if(com.cauansilva.arcanecontrol.core.cid.AtordoamentoAtomic.ativo(p))return false;
         if(kit==null||slot<0||slot>=kit.tecnicas.length||!p.isAlive()||p.isSpectator())return false;
         if(p.hasEffect(com.cauansilva.arcanecontrol.core.asta.RegistroAsta.SILENCIO.get())){p.displayClientMessage(Component.literal("Silenciado: aguarde a antimagia terminar."),true);return false;}
         var e=ProgressaoPoderes.ler(p);if(!e.tem(kit)||e.ativo()!=kit)return false;
@@ -111,7 +112,7 @@ public final class RpgServidor {
         int[] restante=new int[5],duracao=new int[5];var cds=recargas(p);var atual=PersonagemRpg.porId(legado.ativo().id);
         for(int i=0;i<5;i++){restante[i]=cds.restante(atual,i,agora(p),DespertaresServidor.ativo(p));duracao[i]=cds.duracao(atual,i,DespertaresServidor.ativo(p));}
         RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),new PacoteEstadoRpg(legado.ativo().id,legado.desbloqueados(),xp,nos,despertar,
-                (float)new RecursoMana(dados(p).getDouble("mana")).atual(),restante,duracao,p.isCreative(),dados(p).getBoolean("dominioLegado"),conjuntoCompleto(p,legado.ativo()),DespertaresServidor.restante(p),DespertaresServidor.exclusivoUsado(p)));
+                (float)new RecursoMana(dados(p).getDouble("mana")).atual(),restante,duracao,p.isCreative(),dados(p).getBoolean("dominioLegado"),conjuntoCompleto(p,legado.ativo()),DespertaresServidor.prazoRestante(p),DespertaresServidor.exclusivoUsado(p)));
     }
     public static void aplicarAtributos(ServerPlayer p){
         var m=mestria(p,ProgressaoPoderes.ler(p).ativo().id);

@@ -27,12 +27,16 @@ public final class RoteiroGojo {
 
     private static final Chave[] ATOMIC = {
         new Chave(0,new Quadro(2,.3,3,0,.95)),
-        new Chave(35,new Quadro(-2,.4,3,0,.8)),
-        new Chave(50,new Quadro(-6,3,-7,0,.9,10)),
-        new Chave(75,new Quadro(-11,7,-12,0,1.05,12)),
-        new Chave(90,new Quadro(-5,2,-4,0,.9)),
-        new Chave(110,new Quadro(-18,10,-20,0,1.15)),
-        new Chave(170,new Quadro(16,9,-16,0,1.1)),
+        new Chave(12,new Quadro(-5,5,-8,0,.95)),
+        new Chave(25,new Quadro(.2,30,-.2,0,1.1)),
+        new Chave(42,new Quadro(-18,9,-20,0,1.1,8)),
+        new Chave(60,new Quadro(3,2,-5,0,1,20)),
+        new Chave(78,new Quadro(0,.6,-4,0,.9,1)),
+        new Chave(88,new Quadro(0,.6,-4,0,.88,1)),
+        new Chave(90,new Quadro(-5,2,-7,0,1.05,28)),
+        new Chave(105,new Quadro(-22,9,-28,0,1.15,18)),
+        new Chave(170,new Quadro(24,11,-30,0,1.1,18)),
+        new Chave(220,new Quadro(-18,8,-24,0,1.05,10)),
         new Chave(240,new Quadro(-6,3,-7,0,1))
     };
     private static final Chave[] SINGULARIDADE={

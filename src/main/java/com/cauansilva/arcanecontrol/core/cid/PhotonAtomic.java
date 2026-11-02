@@ -22,8 +22,8 @@ public final class PhotonAtomic {
         if(mc.level == null || !ConfigCliente.PHOTON.get() || ATIVOS.size() >= 4) return;
         int escala = ConfigCliente.VFX_REDUZIDOS.get() ? 2 : 1;
         FX fx = new FX();
-        fx.getMainFX().objects().add(emissor("convergencia",80,42,6/escala,7,-3,.16,0xFFAC55FF,true));
-        fx.getMainFX().objects().add(emissor("centelhas",68,25,3/escala,4,-3,.09,0xFFF1DFFF,true));
+        fx.getMainFX().objects().add(emissor("convergencia",360,42,6/escala,7,-3,.16,0xFFAC55FF,true));
+        fx.getMainFX().objects().add(emissor("centelhas",240,25,3/escala,4,-3,.09,0xFFF1DFFF,true));
         fx.getMainFX().objects().add(emissor("explosao",3,38,60/escala,.3,12,.45,0xFFDDAAFF,true));
         fx.getMainFX().objects().add(emissor("corona",5,25,12/escala,.5,7,2.5,0xAABB66FF,true));
         fx.getMainFX().objects().add(emissor("poeira",70,75,3/escala,8,.3,2.2,0x66554865,false));
@@ -35,13 +35,13 @@ public final class PhotonAtomic {
         // startDelay de ParticleConfig atrasa cada particula, nao o emissor.
         for(var objeto:runtime.getObjects().values()) {
             if(objeto instanceof ParticleEmitter emissor) emissor.setDelay(switch(emissor.getName()) {
-                case "atomic_centelhas" -> 20;
-                case "atomic_explosao", "atomic_corona" -> 90;
-                case "atomic_poeira" -> 94;
+                case "atomic_centelhas" -> 120;
+                case "atomic_explosao", "atomic_corona" -> com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO;
+                case "atomic_poeira" -> com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO+8;
                 default -> 0;
             });
         }
-        ATIVOS.put(jogador,new Ativo(runtime,mundo,mundo.getGameTime()+245));
+        ATIVOS.put(jogador,new Ativo(runtime,mundo,mundo.getGameTime()+com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM+5));
     }
 
     private static ParticleEmitter emissor(String nome,int duracao,int vida,int taxa,

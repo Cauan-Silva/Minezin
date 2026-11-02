@@ -1,19 +1,19 @@
 {
   "atomic_charge": {
-    "duration": 4.5,
+    "duration": 21.0,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.66934,
-    "rms": 0.12371,
-    "sha256": "584a2ffb23417b2af704ea918d90d654fa16cf201caee143b0803fe95477faf3"
+    "peak": 0.61846,
+    "rms": 0.10243,
+    "sha256": "a412c7fd2a603ff1c45ddfd7408453fcea38d9649bc7d7035276116fef12c598"
   },
   "atomic_release": {
-    "duration": 3.5,
+    "duration": 18.0,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.77026,
-    "rms": 0.11114,
-    "sha256": "c13e19843b5b0e76ad1b245638152edcb67242b42637a3a2ffb5f46b3f3a5327"
+    "peak": 0.76094,
+    "rms": 0.08984,
+    "sha256": "74f1b5cfef86381dc3232cdc886ad8292254a0b73d5ebd179c19506c9e489b8d"
   },
   "divider_charge": {
     "duration": 0.9,

@@ -29,7 +29,7 @@ public final class MantoCidCliente {
             if(s.mundo!=mc.level||s.pos==null||s.entidade!=p.getId()||pos.distanceToSqr(s.pos)>16){s.mola.reset();s.mundo=mc.level;s.pos=pos;s.yaw=p.yBodyRot;s.entidade=p.getId();continue;}
             var delta=pos.subtract(s.pos);double rad=Math.toRadians(p.yBodyRot),giro=Math.toRadians(Mth.wrapDegrees(p.yBodyRot-s.yaw));
             double frente=-Math.sin(rad)*delta.x+Math.cos(rad)*delta.z,lado=Math.cos(rad)*delta.x+Math.sin(rad)*delta.z;
-            s.mola.tick(new MolaMantoCid.Entrada(frente,lado,delta.y,giro,p.onGround()));s.pos=pos;s.yaw=p.yBodyRot;
+            var magia=EfeitosCid.tecido(id);s.mola.tick(new MolaMantoCid.Entrada(frente+magia.frente(),lado+magia.lado(),delta.y,giro+magia.giro(),p.onGround()));s.pos=pos;s.yaw=p.yBodyRot;
         }
         ESTADOS.keySet().removeIf(id->!vistos.contains(id));
     }

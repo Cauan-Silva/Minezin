@@ -9,6 +9,21 @@ def channel(frames):
 def gesture(length,poses):
     return {'animation_length':length,'loop':False,'bones':{name:channel(frames) for name,frames in poses.items()}}
 
+def retime_atomic(clip):
+    import re
+    # ROOT is resources/assets/modid/player_animation; use repository main explicitly.
+    source=(Path(__file__).resolve().parents[1]/'src/main/java/com/cauansilva/arcanecontrol/core/vfx/RelogioAtomic.java').read_text(encoding='utf-8')
+    real=[float(v) for v in re.search(r'REAL=\{([^}]+)',source).group(1).split(',')]
+    visual=[float(v) for v in re.search(r'VISUAL=\{([^}]+)',source).group(1).split(',')]
+    def raw(t):
+        for i in range(1,len(visual)):
+            if t<=visual[i]:return real[i-1]+(real[i]-real[i-1])*(t-visual[i-1])/(visual[i]-visual[i-1])
+        return real[-1]
+    for bone in clip['bones'].values():
+        for channel,keys in list(bone.items()):
+            if isinstance(keys,dict):bone[channel]={str(round(raw(float(t)*20)/20,4)):value for t,value in keys.items()}
+    clip['animation_length']=round(raw(100)/20,4)
+
 def refine(animations,kit):
     z=[0,0,0]
     if kit=='gojo':
@@ -24,6 +39,7 @@ def refine(animations,kit):
             'left_arm':[(0,z,'easeOutQuad'),(1.4,[-38,24,-22],'easeOutQuad'),(4.4,[-38,24,-22],'linear'),(4.5,[-80,-24,-18],'linear'),(4.65,[-80,-24,-18],'linear'),(5,z,'easeInOutSine')],
             'torso':[(0,z,'easeOutQuad'),(1.4,[-5,-10,-2],'easeInOutSine'),(4.4,[-7,-12,-2],'easeInQuad'),(4.5,[7,14,2],'linear'),(4.65,[7,14,2],'linear'),(5,z,'easeOutQuad')],
             'head':[(0,z,'easeOutQuad'),(1.4,[9,8,0],'easeOutQuad'),(4.4,[9,8,0],'linear'),(4.5,[-7,-8,0],'linear'),(4.65,[-7,-8,0],'linear'),(5,z,'easeOutQuad')]})
+        retime_atomic(animations['cid_4'])
     if kit=='frieren':
         a=animations['frieren_4']
         for name,frames in {

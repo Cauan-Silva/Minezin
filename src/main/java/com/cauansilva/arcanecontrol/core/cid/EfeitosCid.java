@@ -30,16 +30,23 @@ public final class EfeitosCid {
             PhotonAtomic.cancelar(jogador);com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(jogador,"atomic");
             ImpactosAnime.cancelar(jogador);
             AnimacoesGojo.cancelar(jogador);
-            EFEITOS.removeIf(f->f.jogador.equals(jogador)&&f.tipo==14);
+            EFEITOS.removeIf(f->f.jogador.equals(jogador)&&(f.tipo==14||f.tipo==17));
             if(mc.player!=null && mc.player.getUUID().equals(jogador)) GerenciadorCutscene3D.finalizarCutscene();
             return;
         }
         if (EFEITOS.size() >= 24) EFEITOS.remove(0);
         EFEITOS.add(new Efeito(tipo,jogador,origem,direcao,mc.level.getGameTime(),mc.level));
-        if(tipo==14){com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(jogador,"atomic",origem,com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.atomic());PhotonAtomic.iniciar(jogador,origem);ImpactosAnime.programar(jogador,origem.add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.IMPACTO,0xB76BFF,1,44,2);}
+        if(tipo==14){com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(jogador,"atomic",origem,com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.atomic());PhotonAtomic.iniciar(jogador,origem);ImpactosAnime.programar(jogador,origem.add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO,0xB76BFF,1,44,2);}
         AnimacoesGojo.tocarCid(jogador,tipo);
         if (tipo == 14 && mc.player != null && mc.player.getUUID().equals(jogador))
-            GerenciadorCutscene3D.iniciarCutsceneLocal(14,180);
+            GerenciadorCutscene3D.iniciarCutsceneLocal(14,com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM);
+    }
+    public static RoteiroTecidoCid.Impulso tecido(UUID id){
+        var mc=Minecraft.getInstance();double frente=0,lado=0,giro=0;
+        if(mc.level!=null)for(var e:EFEITOS)if(e.mundo==mc.level&&e.jogador.equals(id)){
+            var p=RoteiroTecidoCid.amostrar(e.tipo,e.tipo==14?com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(mc.level.getGameTime()-e.inicio):mc.level.getGameTime()-e.inicio);frente+=p.frente();lado+=p.lado();giro+=p.giro();
+        }
+        return new RoteiroTecidoCid.Impulso(Math.max(-.1,Math.min(.3,frente)),Math.max(-.18,Math.min(.18,lado)),Math.max(-.2,Math.min(.2,giro)));
     }
     public static Vec3 centroAtomic(UUID id){for(var f:EFEITOS)if(f.tipo==14&&f.jogador.equals(id))return f.origem;return null;}
     public record AtomicVisual(UUID dono,Vec3 centro,double tick,boolean local){}
@@ -48,7 +55,7 @@ public final class EfeitosCid {
         var camera=mc.gameRenderer.getMainCamera();AtomicVisual melhor=null;double distanciaMelhor=Double.MAX_VALUE;
         for(var f:EFEITOS)if(f.tipo==14&&f.mundo==mc.level&&Double.isFinite(f.origem.lengthSqr())){
             var dono=mc.level.getPlayerByUUID(f.jogador);if(dono==null||!dono.isAlive())continue;
-            double t=mc.level.getGameTime()+parcial-f.inicio;if(t<0||t>=240)continue;
+            double raw=mc.level.getGameTime()+parcial-f.inicio;if(raw<0||raw>=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM)continue;double t=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(raw);
             var centro=f.origem.add(0,1.2,0);var delta=centro.subtract(camera.getPosition());double d=delta.lengthSqr();
             boolean local=f.jogador.equals(mc.player.getUUID());if(d>80*80&&!local)continue;
             if(!local&&d>4&&delta.normalize().dot(new Vec3(camera.getLookVector()))<.15)continue;
@@ -61,7 +68,7 @@ public final class EfeitosCid {
         if (e.phase != TickEvent.Phase.END) return;
         PhotonAtomic.tick();
         var mc=Minecraft.getInstance();
-        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?240:f.tipo==13?48:25)
+        EFEITOS.removeIf(f -> mc.level == null || f.mundo != mc.level || mc.level.getGameTime()-f.inicio > (f.tipo==14?com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM:f.tipo==13?48:f.tipo==17?32:25)
                 || mc.level.getPlayerByUUID(f.jogador)==null || !mc.level.getPlayerByUUID(f.jogador).isAlive());
         if(mc.level == null) return;
         DESTINOS.entrySet().removeIf(a->a.getValue().mundo!=mc.level||mc.level.getGameTime()-a.getValue().tick>25);
@@ -72,7 +79,7 @@ public final class EfeitosCid {
             if(f.tipo==11&&idade==6)com.cauansilva.arcanecontrol.core.client.render.EmissoresAnime.pulso(f.jogador,f.origem.add(f.direcao.scale(3)).add(0,1,0),0xB76BFF,16,3,.12,12);
             if(f.tipo==12&&idade==1){var d=DESTINOS.get(f.jogador);if(d!=null)com.cauansilva.arcanecontrol.core.client.render.EmissoresAnime.pulso(f.jogador,d.pos.add(0,1,0),0xB76BFF,16,2,.14,14);}
             if(f.tipo!=14 || mc.player==null || mc.player.distanceToSqr(f.origem)>96*96) continue;
-            long t=mc.level.getGameTime()-f.inicio;
+            long raw=mc.level.getGameTime()-f.inicio;double t=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(raw);
             if(t<90) {
                 for(int i=0;i<6;i++) {
                     double ang=mc.level.random.nextDouble()*Math.PI*2, r=2+mc.level.random.nextDouble()*4;
@@ -80,7 +87,7 @@ public final class EfeitosCid {
                     Vec3 v=f.origem.add(0,1.5,0).subtract(p).scale(.12);
                     mc.level.addParticle(net.minecraft.core.particles.ParticleTypes.PORTAL,p.x,p.y,p.z,v.x,v.y,v.z);
                 }
-            } else if(t==90) {
+            } else if(raw==com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO) {
                 for(int i=0;i<160;i++) {
                     double ang=mc.level.random.nextDouble()*Math.PI*2, r=mc.level.random.nextDouble()*12;
                     Vec3 p=f.origem.add(Math.cos(ang)*r,.2,Math.sin(ang)*r);
@@ -106,17 +113,19 @@ public final class EfeitosCid {
         if(mc.level==null || mc.player==null) return;
         Vec3 camera=event.getCamera().getPosition();
         PoseStack pose=event.getPoseStack();
-        int atomics=0;
+        int atomics=0,secundarios=0;
         for(Efeito f:EFEITOS) {
             if(f.mundo!=mc.level || f.origem.distanceToSqr(camera)>128*128) continue;
             if(f.tipo==14 && atomics++>=4) continue;
-            double t=mc.level.getGameTime()-f.inicio+event.getPartialTick();
+            if(f.tipo!=14&&secundarios++>=(com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?4:8))continue;
+            double raw=mc.level.getGameTime()-f.inicio+event.getPartialTick();double t=f.tipo==14?com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(raw):raw;
             pose.pushPose();
             Vec3 pos=f.origem.subtract(camera);pose.translate(pos.x,pos.y,pos.z);
             Vec3 plano=f.direcao.multiply(1,0,1).normalize();
             Vec3 ancora=plano.scale(.5).add(plano.cross(new Vec3(0,1,0)).scale(.4)).add(0,1.2,0);
             var destinoDash=DESTINOS.get(f.jogador);
-            if(f.tipo>=11&&f.tipo<=13&&RenderMovesetCid.desenhar(pose,f.tipo,f.jogador,f.origem,f.direcao,
+            if(f.tipo==17){RenderMovesetCid.transformacao(pose,t,camera.subtract(f.origem));
+            } else if(f.tipo>=11&&f.tipo<=13&&RenderMovesetCid.desenhar(pose,f.tipo,f.jogador,f.origem,f.direcao,
                     destinoDash==null?null:destinoDash.pos,t,camera.subtract(f.origem),ALVOS.getOrDefault(f.jogador,List.of()))) {
             } else if(f.tipo==14 && RenderEnergiaAtomic.desenhar(pose,t,camera.subtract(f.origem),ancora)) {
                 RenderMovesetCid.selosAtomic(pose,t,camera.subtract(f.origem),ancora);

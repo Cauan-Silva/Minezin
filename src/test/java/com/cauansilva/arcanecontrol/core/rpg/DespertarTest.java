@@ -6,8 +6,8 @@ class DespertarTest {
         for(var kit:new PersonagemRpg[]{PersonagemRpg.GOJO,PersonagemRpg.SHADOW,PersonagemRpg.FRIEREN}){
             var f=new EstadoDespertar(kit,100);assertEquals(kit.duracaoSegundos*20,f.restante(100));assertTrue(f.ativa(100));
             assertTrue(f.consumirExclusivo(101));assertFalse(f.consumirExclusivo(102));assertTrue(f.exclusivoUsado());
-            assertTrue(f.ativa(99+kit.duracaoSegundos*20));assertFalse(f.ativa(100+kit.duracaoSegundos*20));
-            assertFalse(new EstadoDespertar(kit,0).consumirExclusivo(kit.duracaoSegundos*20));
+            assertTrue(f.ativa(99+EstadoDespertar.preparacao(kit)+kit.duracaoSegundos*20));assertFalse(f.ativa(100+EstadoDespertar.preparacao(kit)+kit.duracaoSegundos*20));
+            assertFalse(new EstadoDespertar(kit,0).consumirExclusivo(EstadoDespertar.preparacao(kit)+kit.duracaoSegundos*20));
         }
     }
     @Test void baseEFormaTemRecargasSeparadasMasCompartilhamG(){
@@ -33,5 +33,24 @@ class DespertarTest {
         assertEquals(ConjuracaoRpg.Resultado.OK,ConjuracaoRpg.tentar(m,mana,cds,PersonagemRpg.GOJO,4,100,7200,50,false,false,false,false));
         assertEquals(50,mana.atual());
         assertEquals(ConjuracaoRpg.Resultado.RECARGA,ConjuracaoRpg.tentar(m,mana,cds,PersonagemRpg.GOJO,4,101,7200,50,false,false,false,true));assertEquals(50,mana.atual());
+    }
+    @Test void shadowSoConsomeDuracaoAposAtomicCompleta(){
+        var f=new EstadoDespertar(PersonagemRpg.SHADOW,100);int intro=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM;
+        assertEquals(1580,f.prazoRestante(100));
+        for(int t=100;t<=100+intro;t++)assertEquals(800,f.restante(t));
+        assertEquals(799,f.restante(101+intro));assertTrue(f.ativa(100+intro+799));assertFalse(f.ativa(100+intro+800));
+        assertFalse(f.anteciparContagem(100+intro));
+    }
+    @Test void cancelarAtomicIniciaContagemUmaVezSemRecarregarForma(){
+        var f=new EstadoDespertar(PersonagemRpg.SHADOW,100);
+        assertTrue(f.anteciparContagem(300));assertEquals(800,f.restante(300));assertEquals(780,f.restante(320));
+        assertFalse(f.anteciparContagem(320));assertEquals(780,f.restante(320));assertFalse(f.ativa(1100));
+        var gojo=new EstadoDespertar(PersonagemRpg.GOJO,100);assertFalse(gojo.anteciparContagem(110));assertEquals(390,gojo.restante(110));
+    }
+    @Test void hudFicaEmQuarentaSegundosDuranteAtomicSemResetVisual(){
+        var f=new EstadoDespertar(PersonagemRpg.SHADOW,100);int snapshot=f.prazoRestante(100);
+        for(int t=0;t<=1580;t++)assertEquals(f.restante(100+t),EstadoDespertar.interpolarPrazo(2,snapshot,t));
+        assertEquals(390,EstadoDespertar.interpolarPrazo(1,400,10));
+        f.anteciparContagem(300);assertEquals(800,EstadoDespertar.interpolarPrazo(2,f.prazoRestante(300),0));assertEquals(799,EstadoDespertar.interpolarPrazo(2,f.prazoRestante(300),1));
     }
 }

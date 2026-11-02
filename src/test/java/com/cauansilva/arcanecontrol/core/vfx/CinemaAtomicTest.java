@@ -7,18 +7,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 class CinemaAtomicTest {
-    @Test void sequenciaTemQuadrosDistintosNoImpactoSemAlterarRelogioDoServidor(){
+    @Test void referenciaTemTituloSilencioEClaraoNoRelogioVisual(){
         assertEquals(50,PerfilAtomic.FEIXO_INICIO);assertEquals(90,PerfilAtomic.IMPACTO);assertEquals(170,PerfilAtomic.FEIXO_FIM);assertEquals(240,PerfilAtomic.FIM);
-        assertEquals(RoteiroCinemaAtomic.Fase.NEGATIVO,RoteiroCinemaAtomic.fase(88.5,true));
-        assertEquals(RoteiroCinemaAtomic.Fase.PAPEL,RoteiroCinemaAtomic.fase(90.5,true));
-        assertEquals(RoteiroCinemaAtomic.Fase.INVERSAO,RoteiroCinemaAtomic.fase(91.5,true));
-        assertEquals(RoteiroCinemaAtomic.Fase.DUOTOM,RoteiroCinemaAtomic.fase(93,true));
-        assertEquals(RoteiroCinemaAtomic.Fase.TRACO,RoteiroCinemaAtomic.fase(95,true));
+        assertEquals(RoteiroCinemaAtomic.Fase.TITULO,RoteiroCinemaAtomic.fase(86,true));
+        assertEquals(RoteiroCinemaAtomic.Fase.SILENCIO,RoteiroCinemaAtomic.fase(89,true));
+        assertEquals(RoteiroCinemaAtomic.Fase.CLARAO,RoteiroCinemaAtomic.fase(90.5,true));
+        assertEquals(RoteiroCinemaAtomic.Fase.DESCARGA,RoteiroCinemaAtomic.fase(91.5,true));
         assertEquals(RoteiroCinemaAtomic.Fase.DESCARGA,RoteiroCinemaAtomic.fase(100,true));
         assertEquals(RoteiroCinemaAtomic.Fase.INATIVA,RoteiroCinemaAtomic.fase(240,true));
     }
     @Test void desligarFramesRemoveTodosOsEstadosDeInversao(){
-        var permitidas=Set.of(RoteiroCinemaAtomic.Fase.CARGA,RoteiroCinemaAtomic.Fase.COMPRESSAO,RoteiroCinemaAtomic.Fase.DESCARGA,RoteiroCinemaAtomic.Fase.RESCALDO);
+        var permitidas=Set.of(RoteiroCinemaAtomic.Fase.CARGA,RoteiroCinemaAtomic.Fase.CAMPO,RoteiroCinemaAtomic.Fase.TITULO,RoteiroCinemaAtomic.Fase.SILENCIO,RoteiroCinemaAtomic.Fase.DESCARGA,RoteiroCinemaAtomic.Fase.RESCALDO);
         for(double t=0;t<240;t+=.25)assertTrue(permitidas.contains(RoteiroCinemaAtomic.fase(t,false)),"tick "+t);
         assertEquals(RoteiroCinemaAtomic.Fase.INATIVA,RoteiroCinemaAtomic.fase(Double.NaN,true));
     }

@@ -49,7 +49,7 @@ public final class NemesisEntity extends Monster implements GeoEntity {
         if(!valido(p)){if(p!=null&&RpgServidor.dados(p).hasUUID("desafio")&&getUUID().equals(RpgServidor.dados(p).getUUID("desafio")))RpgServidor.dados(p).remove("desafio");discard();return;}
         barra.setName(getDisplayName());barra.setProgress(getHealth()/getMaxHealth());setTarget(p);
         if(distanceToSqr(arena)>48*48){setPos(arena.x,arena.y,arena.z);getNavigation().stop();}
-        if(hasEffect(com.cauansilva.arcanecontrol.core.asta.RegistroAsta.SILENCIO.get())){carga=0;recuperacao=0;entityData.set(CONJURANDO,false);entityData.set(LIBERANDO,false);proximo=Math.max(proximo,20);return;}
+        if(com.cauansilva.arcanecontrol.core.cid.AtordoamentoAtomic.ativo(this)||hasEffect(com.cauansilva.arcanecontrol.core.asta.RegistroAsta.SILENCIO.get())){carga=0;recuperacao=0;entityData.set(CONJURANDO,false);entityData.set(LIBERANDO,false);proximo=Math.max(proximo,20);return;}
         if(recuperacao>0){getNavigation().stop();if(--recuperacao==0)entityData.set(LIBERANDO,false);return;}
         if(carga>0){
             getNavigation().stop();setDeltaMovement(getDeltaMovement().multiply(0,1,0));getLookControl().setLookAt(p);

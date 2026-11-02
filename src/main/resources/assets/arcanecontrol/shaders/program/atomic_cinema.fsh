@@ -30,14 +30,16 @@ void main(){
     float front=max(0.,t-90.)*.025;
     float ring=exp(-pow((r-front)/.025,2.))*blast;
     vec2 uv=texCoord+dir*(compression*.014*exp(-r*3.)+ring*.018)*Strength;
-    float tear=step(90.,t)*(1.-step(98.,t))*Frames;
+    float tear=0.;
     uv.x+=(hash(floor(texCoord.y*56.)+floor(t*3.)*71.)-.5)*.014*tear*Strength;
     float split=(.0007+blast*.006)*Strength;
     vec3 c=vec3(scene(uv+dir*split).r,scene(uv).g,scene(uv-dir*split).b);
     float charge=smoothstep(0.,75.,t)*(1.-smoothstep(90.,105.,t));
     float lum=luma(c);c=mix(c,vec3(lum),charge*.4);
-    c*=1.-charge*(.55+.2*smoothstep(.1,.75,r));
+    c*=1.-charge*(.12+.08*smoothstep(.1,.75,r));
+    float hush=smoothstep(80.,88.,t)*(1.-step(90.,t));c*=1.-hush*.96;
     c+=VIOLET*compression*.07*exp(-r*5.);
+    c+=VIOLET*edgeAt(uv)*compression*.025;
     // Bounded radial taps bloom around the actual photographed energy, not a GUI flash.
     vec3 bloom=vec3(0.);
     for(int i=1;i<=8;i++){
@@ -49,27 +51,9 @@ void main(){
     float radial=streaks*smoothstep(.12,.5,r)*(1.-smoothstep(.65,1.2,r));
     c+=mix(VIOLET,vec3(.96,.88,1.),blast)*radial*blast*.65;
     c+=VIOLET*ring*.32;
-    if(Frames>.5&&t>=88.&&t<96.){
-        float edge=edgeAt(uv);
-        if(t>=88.&&t<90.){
-            // Negative anticipation: the scene, its contours and the radial field all change.
-            c=vec3(1.-smoothstep(.08,.42,luma(scene(uv))))*.68+VIOLET*radial*.7;
-        }else if(t>=90.&&t<91.25){
-            float ink=1.-smoothstep(.12,.28,luma(scene(uv)));ink=max(ink,edge*.8);
-            c=mix(vec3(.99,.98,1.),vec3(.015,.005,.028),ink);
-            c=mix(c,vec3(1.),exp(-r*20.)*.7);
-        }else if(t>=91.25&&t<92.5){
-            float ink=1.-smoothstep(.13,.32,luma(scene(uv)));
-            c=mix(vec3(.008,.002,.02),vec3(.95,.84,1.),max(ink,edge));
-            c+=radial*VIOLET*.8;
-        }else if(t>=92.5&&t<94.){
-            float ink=smoothstep(.08,.35,luma(scene(uv)));c=mix(vec3(.05,.005,.11),vec3(.76,.32,1.),ink);
-            c+=vec3(.95,.86,1.)*(edge*.6+radial*.8);
-        }else if(t>=94.&&t<96.){
-            c=mix(vec3(.97,.95,1.),vec3(.025,.005,.065),edge);
-            float cut=abs(p.x*.8+p.y*.6);c=mix(c,vec3(.3,.01,.65),1.-smoothstep(.006,.018,cut));
-            c-=radial*.65;
-        }
+    if(Frames>.5&&t>=90.&&t<91.25){
+        float exposure=1.-smoothstep(90.,91.25,t);
+        c=mix(c,vec3(1.,.94,1.),exposure*.96);
     }
     // Residual tint fades to identity before tick 240; no persistent color transform.
     float ash=smoothstep(125.,175.,t)*(1.-smoothstep(190.,240.,t));
