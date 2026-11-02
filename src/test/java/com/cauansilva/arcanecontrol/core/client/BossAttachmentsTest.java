@@ -31,8 +31,11 @@ class BossAttachmentsTest {
     }
     @Test void chifresPermanecemConectadosDepoisDoConversorRealDoGeckoLib()throws Exception{
         for(int kit:new int[]{3,4}){
-            var groups=new HashMap<Integer,List<JsonObject>>();
-            for(var v:bones(kit).get("head").getAsJsonArray("cubes")){
+            var groups=new HashMap<Integer,List<JsonObject>>();var cubes=new JsonArray();
+            // Qual's horns live in their own head-parented bones; Liebe keeps them on the head.
+            if(kit==3)for(String n:new String[]{"chifre_esq","chifre_dir"}){var b=bones(kit).get(n);assertEquals("head",b.get("parent").getAsString());cubes.addAll(b.getAsJsonArray("cubes"));}
+            else cubes=bones(kit).get("head").getAsJsonArray("cubes");
+            for(var v:cubes){
                 var c=v.getAsJsonObject();if(!c.has("pivot"))continue;var size=vec(c,"size");var pivot=vec(c,"pivot");
                 if(pivot[1]<30||size[0]>1.71||Math.abs(size[0]-size[2])>1e-6)continue;
                 groups.computeIfAbsent(pivot[0]<0?-1:1,k->new ArrayList<>()).add(c);
@@ -57,10 +60,12 @@ class BossAttachmentsTest {
             assertEquals("tail_"+i,b.get("tail_"+(i+1)).get("parent").getAsString());
         }
     }
-    @Test void dedosDoQualCompartilhamARotacaoDoBraco()throws Exception{
-        for(String n:new String[]{"lower_arm_-1","lower_arm_1"}){
-            var b=bones(3).get(n);assertNotNull(b);assertTrue(b.has("rotation"));assertEquals(4,b.getAsJsonArray("cubes").size());
-            for(var c:b.getAsJsonArray("cubes"))assertFalse(c.getAsJsonObject().has("rotation"),"A mao nao pode ficar fora da rotacao do braco");
+    @Test void garrasDoQualCompartilhamARotacaoDoBraco()throws Exception{
+        var b=bones(3);
+        assertFalse(b.containsKey("lower_arm_-1")||b.containsKey("lower_arm_1"),"Qual do anime tem dois bracos, sem antebraco extra");
+        for(String[] par:new String[][]{{"garras_esq","rightArm"},{"garras_dir","leftArm"}}){
+            var g=b.get(par[0]);assertNotNull(g);assertEquals(par[1],g.get("parent").getAsString());assertEquals(4,g.getAsJsonArray("cubes").size());
+            for(var c:g.getAsJsonArray("cubes"))assertFalse(c.getAsJsonObject().has("rotation"),"A mao nao pode ficar fora da rotacao do braco");
         }
     }
     @Test void armaExclusivaDoTojiTemEmpunhaduraNaMaoELaminaAbaixoDoPunho()throws Exception{

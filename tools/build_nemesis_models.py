@@ -52,7 +52,9 @@ def animations_for(kit,bones):
  duration=[0,.9,1.3,1.5,1.1][kit]
  def track(values):return {'rotation':{str(t):v for t,v in values}}
  idle={'head':track([(0,[0,0,0]),(2,[0,3,0]),(4,[0,0,0])])}
- walk={n:track([(0,[0,0,0]),(.25,[v,0,0]),(.5,[0,0,0]),(.75,[-v,0,0]),(1,[0,0,0])]) for n,v in [('leftArm',-22),('rightArm',22),('leftLeg',25),('rightLeg',-25)]}
+ # Qual's legs walk inside a floor-length loincloth: short stride keeps the feet covered.
+ passo=10 if kit==3 else 25
+ walk={n:track([(0,[0,0,0]),(.25,[v,0,0]),(.5,[0,0,0]),(.75,[-v,0,0]),(1,[0,0,0])]) for n,v in [('leftArm',-22),('rightArm',22),('leftLeg',passo),('rightLeg',-passo)]}
  cast={};release={}
  poses={1:([-35,0,-22.5],[-110,-22.5,-22.5],[18,-22.5,0]),2:([-70,0,-45],[-70,0,45],[-8,0,0]),3:([-95,0,-45],[-95,0,45],[-12,0,0]),4:([-110,-22.5,-45],[-110,22.5,45],[22.5,0,0])}
  for n,pose in zip(['rightArm','leftArm','body'],poses[kit]):

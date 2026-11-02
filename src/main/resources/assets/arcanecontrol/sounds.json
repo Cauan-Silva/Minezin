@@ -91,10 +91,128 @@
   },
   "purple_maximum_release": {
     "subtitle": "subtitles.arcanecontrol.purple_release",
-    "sounds": [{"name": "arcanecontrol:anime/purple_maximum_release", "attenuation_distance": 64}]
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/purple_maximum_release",
+        "attenuation_distance": 64
+      }
+    ]
   },
   "purple_maximum_charge": {
     "subtitle": "subtitles.arcanecontrol.purple_charge",
-    "sounds": [{"name": "arcanecontrol:anime/purple_maximum_charge", "attenuation_distance": 64}]
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/purple_maximum_charge",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "frieren_barrier_break": {
+    "subtitle": "subtitles.arcanecontrol.frieren_barrier_break",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_barrier_break",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "frieren_impulso": {
+    "subtitle": "subtitles.arcanecontrol.frieren_impulso",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_impulso",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "frieren_buraco_carga": {
+    "subtitle": "subtitles.arcanecontrol.frieren_buraco_carga",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_buraco_carga",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "frieren_buraco_atracao": {
+    "subtitle": "subtitles.arcanecontrol.frieren_buraco_atracao",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_buraco_atracao",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "frieren_buraco_colapso": {
+    "subtitle": "subtitles.arcanecontrol.frieren_buraco_colapso",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_buraco_colapso",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "frieren_mana": {
+    "subtitle": "subtitles.arcanecontrol.frieren_mana",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_mana",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "frieren_julgamento_carga": {
+    "subtitle": "subtitles.arcanecontrol.frieren_julgamento_carga",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_julgamento_carga",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "frieren_julgamento_trovao": {
+    "subtitle": "subtitles.arcanecontrol.frieren_julgamento_trovao",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_julgamento_trovao",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "frieren_escudo": {
+    "subtitle": "subtitles.arcanecontrol.frieren_escudo",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_escudo",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "frieren_gaiola": {
+    "subtitle": "subtitles.arcanecontrol.frieren_gaiola",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/frieren_gaiola",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "qual_zoltraak_carga": {
+    "subtitle": "subtitles.arcanecontrol.qual_zoltraak_carga",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/qual_zoltraak_carga",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "qual_zoltraak": {
+    "subtitle": "subtitles.arcanecontrol.qual_zoltraak",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/qual_zoltraak",
+        "attenuation_distance": 64
+      }
+    ]
   }
 }

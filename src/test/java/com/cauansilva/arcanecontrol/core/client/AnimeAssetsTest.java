@@ -49,7 +49,14 @@ class AnimeAssetsTest {
             var g=json("/assets/arcanecontrol/geo/armaduras/"+style+".geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();var bones=new HashMap<String,JsonObject>();
             for(var v:g.getAsJsonArray("bones")){var b=v.getAsJsonObject();bones.put(b.get("name").getAsString(),b);}
             if(style.equals("asta")){assertEquals("armorRightArm",bones.get("manto_ombro_esq").get("parent").getAsString());assertEquals("armorLeftArm",bones.get("manto_ombro_dir").get("parent").getAsString());}
-            else if(style.equals("frieren")){assertEquals("armorRightLeg",bones.get("saia_esq").get("parent").getAsString());assertEquals("armorLeftLeg",bones.get("saia_dir").get("parent").getAsString());}
+            else if(style.equals("frieren")){
+                // A-line skirt is cloth on the body, wider than both legs (8 units) so walking legs stay inside.
+                assertEquals("armorBody",bones.get("frieren_saia_front_0_0").get("parent").getAsString());
+                assertEquals("frieren_saia_front_0_0",bones.get("frieren_saia_front_0_1").get("parent").getAsString());
+                double esquerda=bones.get("frieren_saia_front_0_0").getAsJsonArray("cubes").get(0).getAsJsonObject().getAsJsonArray("origin").get(0).getAsDouble();
+                assertTrue(esquerda<=-4.5,"saia evase mais larga que as pernas");
+                assertFalse(bones.containsKey("saia_esq")||bones.containsKey("saia_dir"));
+            }
             else {
                 assertEquals(20,bones.keySet().stream().filter(n->n.startsWith("cid_cape_")).count());
                 for(int panel=0;panel<5;panel++)for(int segment=0;segment<4;segment++){

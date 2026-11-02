@@ -12,7 +12,8 @@ class SfxAnimeTest {
         try(var in=getClass().getResourceAsStream(path)){assertNotNull(in);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}
     }
     @Test void sonsVorbisMonoExistemEUsamLegendasDosDoisIdiomas()throws Exception{
-        var defs=json("/assets/arcanecontrol/sounds.json");assertEquals(12,defs.size());
+        var defs=json("/assets/arcanecontrol/sounds.json");var registrados=com.cauansilva.arcanecontrol.core.audio.CatalogoSons.NOMES;
+        assertEquals(registrados.length,defs.size());for(String n:registrados)assertTrue(defs.has(n),n);
         var pt=json("/assets/arcanecontrol/lang/pt_br.json");var en=json("/assets/arcanecontrol/lang/en_us.json");
         for(var entry:defs.entrySet()){
             var d=entry.getValue().getAsJsonObject();String subtitle=d.get("subtitle").getAsString();assertTrue(pt.has(subtitle)&&en.has(subtitle));
@@ -28,8 +29,11 @@ class SfxAnimeTest {
     }
     @Test void cuesSaoSincronizadosComImpactosERegistrados()throws Exception{
         var names=json("/assets/arcanecontrol/sounds.json").keySet();
-        assertEquals(420,RoteiroAudio.atomic().get(1).atraso());assertEquals(18,RoteiroAudio.divider().get(1).atraso());assertEquals(220,RoteiroAudio.singularidade().get(1).atraso());
-        for(var list:List.of(RoteiroAudio.atomic(),RoteiroAudio.divider(),RoteiroAudio.singularidade(),RoteiroAudio.roxoMaximo()))for(var cue:list){assertTrue(names.contains(cue.nome()));assertTrue(cue.atraso()>=0&&cue.vida()>0&&cue.volume()>0&&cue.volume()<=1);}
+        assertEquals(420,RoteiroAudio.atomic().get(1).atraso());assertEquals(18,RoteiroAudio.divider().get(1).atraso());assertEquals(0,RoteiroAudio.singularidade().get(0).atraso());
+        // Black hole: formation until ABERTURA (70), pull until COLAPSO (220); Judradjim thunder on the damage tick (25).
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.PerfilFrieren.ABERTURA,RoteiroAudio.singularidade().get(1).atraso());assertEquals(com.cauansilva.arcanecontrol.core.vfx.PerfilFrieren.COLAPSO,RoteiroAudio.singularidade().get(2).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.FormaFrieren.QUEDA,RoteiroAudio.julgamento().get(1).atraso());
+        for(var list:List.of(RoteiroAudio.atomic(),RoteiroAudio.divider(),RoteiroAudio.singularidade(),RoteiroAudio.julgamento(),RoteiroAudio.roxoMaximo()))for(var cue:list){assertTrue(names.contains(cue.nome()));assertTrue(cue.atraso()>=0&&cue.vida()>0&&cue.volume()>0&&cue.volume()<=1);}
     }
     @Test void laminaTemOssoIndependenteDaGuarda(){
         assertDoesNotThrow(()->{

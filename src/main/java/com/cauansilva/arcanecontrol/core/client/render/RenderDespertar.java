@@ -95,6 +95,7 @@ public final class RenderDespertar {
         }}finally{DesenhoMagia.terminar();}
     }
     private static void desenhar(PoseStack s,Vec3 cam,PacoteEfeitoDespertar p,double t,float fade){
+        if(p.kit()==3&&com.cauansilva.arcanecontrol.core.frieren.RenderDespertarFrieren.desenhar(s,cam,p,t,fade))return;
         int cor=p.kit()==1?0x91DFFF:p.kit()==2?0xA159FF:0xFFE5A0;
         Vec3 fim=p.b().subtract(p.a());
         if(p.tipo()==200){

@@ -62,25 +62,22 @@ public final class PoderesFrieren {
                 origemVisual=limite.getType()==HitResult.Type.MISS?foco:limite.getLocation().subtract(dir.scale(.03));
             }
             enviar(p,21,origemVisual,alvo);
-            level.playSound(null,p.blockPosition(),SoundEvents.AMETHYST_BLOCK_RESONATE,SoundSource.PLAYERS,1.5f,1.6f);
         } else if(slot==1){
             tag.putLong("fri_barreira_ate",agora+80);tag.putFloat("fri_barreira_reserva",30);
             enviar(p,22,p.position(),dir);
-            level.playSound(null,p.blockPosition(),SoundEvents.BEACON_ACTIVATE,SoundSource.PLAYERS,1.3f,1.4f);
         } else if(slot==2){
             p.setDeltaMovement(dir.x*.9,Math.max(.7,dir.y*.9+.4),dir.z*.9);p.hurtMarked=true;
             p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,100,0,false,false));
             enviar(p,23,p.position(),dir);
-            level.playSound(null,p.blockPosition(),SoundEvents.ELYTRA_FLYING,SoundSource.PLAYERS,1,.8f);
         } else {
             ATIVOS.add(new Singularidade(p,level,alvo,agora,despertado));
             if(!com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get())p.displayClientMessage(net.minecraft.network.chat.Component.literal("Destruição de terreno desativada neste mundo."),true);
             p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,PerfilFrieren.ABERTURA,2,false,false));
             enviar(p,24,alvo,dir);
-            level.playSound(null,BlockPos.containing(alvo),SoundEvents.BEACON_POWER_SELECT,SoundSource.PLAYERS,2,.5f);
         }
         ProgressaoPoderes.registrarUso(p,PoderAnime.FRIEREN,slot,new int[]{30,80,100,PerfilFrieren.FIM}[slot]);
     }
+    // Technique sounds are client cues (EfeitosFrieren/RoteiroAudio) that follow the VFX phases and the sfxAnime option.
     @SubscribeEvent public static void proteger(LivingHurtEvent e){
         if(!(e.getEntity() instanceof ServerPlayer p)||e.getSource().getEntity()==null)return;
         var t=ProgressaoPoderes.tag(p);
@@ -100,7 +97,6 @@ public final class PoderesFrieren {
                 if(!p.hasDisconnected())enviar(p,25,a.centro,Vec3.ZERO);it.remove();continue;
             }
             long t=ProgressaoPoderes.agora(p)-a.inicio;
-            if(t==PerfilFrieren.ABERTURA)a.nivel.playSound(null,BlockPos.containing(a.centro),SoundEvents.WARDEN_SONIC_BOOM,SoundSource.PLAYERS,2,.55f);
             if(t>=PerfilFrieren.ABERTURA&&t<PerfilFrieren.COLAPSO){
                 if(t%2==0&&com.cauansilva.arcanecontrol.ConfigServidor.BURACO_DESTRUIR.get())com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.atrairBlocos(p,a.centro,t);
                 for(var alvo:a.nivel.getEntities(p,new AABB(a.centro,a.centro).inflate(16),
@@ -122,7 +118,6 @@ public final class PoderesFrieren {
                     alvo.hurt(a.nivel.damageSources().indirectMagic(p,p),25);
                     alvo.setDeltaMovement(alvo.position().subtract(a.centro).normalize().scale(1.5).add(0,.6,0));alvo.hurtMarked=true;
                 }
-                if(!a.silencioso)a.nivel.playSound(null,BlockPos.containing(a.centro),SoundEvents.GENERIC_EXPLODE,SoundSource.PLAYERS,3,.6f);
             }
             if(t>=PerfilFrieren.FIM)it.remove();
         }

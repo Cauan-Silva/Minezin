@@ -255,7 +255,8 @@ public class GerenciadorCutscene3D {
         }
         if(cutsceneTipo==24){
             Vec3 centro=com.cauansilva.arcanecontrol.core.frieren.EfeitosFrieren.centroUltimate(mc.player.getUUID());
-            if(centro!=null)alvo=olho.lerp(centro,RoteiroGojo.suave((tempo-10)/40));
+            // Olha para a mao enquanto o buraco se forma e acompanha o voo ate o centro.
+            if(centro!=null)alvo=olho.lerp(centro,RoteiroGojo.suave((tempo-com.cauansilva.arcanecontrol.core.vfx.BuracoNegroFrieren.LANCAMENTO)/20.0));
         }
         Vec3 direita = frente.cross(new Vec3(0, 1, 0));
         Vec3 desejada = olho.add(direita.scale(quadro.x())).add(0, quadro.y(), 0)

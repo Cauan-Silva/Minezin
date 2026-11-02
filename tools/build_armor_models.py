@@ -64,21 +64,29 @@ def shadow():
 
 def staff():
     b = {'root': bone('root', [0,0,0])}
-    cube(b['root'], [-.65,-17,-.65], [1.3,31,1.3], RUBY)
-    cube(b['root'], [-.8,-17.2,-.8], [1.6,2.2,1.6], GOLD)
-    cube(b['root'], [-.8,9,-.8], [1.6,2.2,1.6], GOLD)
-    cube(b['root'], [-.77,-3,-.77], [1.54,4.7,1.54], LEATHER)
-    # Octagonal open crest around the ruby. Intentionally no noisy surface texture.
-    for i in range(7):
-        a=math.radians(-135+i*45);x,y=math.cos(a)*3.8,16.7+math.sin(a)*3.8
-        cube(b['root'], [x-1.55,y-.55,-.55], [3.1,1.1,1.1], GOLD, [x,y,0], [0,0,math.degrees(a)+90])
-    cube(b['root'], [-2.4,13.8,-.75], [4.8,5.6,1.5], BRONZE)
-    b['gema'] = bone('gema', [0,16.6,-.9], 'root')
-    cube(b['gema'], [-1.75,14.55,-1.2], [3.5,4.1,2.6], RUBY)
-    cube(b['gema'], [-1.1,15,-1.26], [.55,2.7,.1], WHITE)
+    # Anime reference: dark red shaft, golden crescent hugging a round ruby, red cord with hanging ribbons.
+    cube(b['root'], [-.6,-17,-.6], [1.2,30.5,1.2], RUBY)
+    cube(b['root'], [-.8,-17.4,-.8], [1.6,1.8,1.6], GOLD)
+    cube(b['root'], [-.85,12.2,-.85], [1.7,1.2,1.7], GOLD)
+    cube(b['root'], [-.75,10.2,-.75], [1.5,1.8,1.5], RUBY)
+    cx,cy,r=0,17.6,3.6
+    # Crescent: open towards the upper left, thicker at the bottom and tapering to the tips.
+    for i in range(10):
+        a0=math.radians(150+i*29);a1=math.radians(150+(i+1)*29);a=(a0+a1)/2
+        x,y=cx+math.cos(a)*r,cy+math.sin(a)*r;comprimento=2*r*math.sin((a1-a0)/2)+.25
+        espessura=.75+.85*max(0,-math.sin(a))
+        # GeckoLib rotates Z clockwise for positive angles: negate to keep each segment tangent.
+        cube(b['root'], [x-comprimento/2,y-espessura/2,-.6], [comprimento,espessura,1.2], GOLD, [x,y,0], [0,0,-(math.degrees(a)+90)])
+    cube(b['root'], [-.6,12.8,-.6], [1.2,1.6,1.2], GOLD)
+    b['gema'] = bone('gema', [cx,cy,0], 'root')
+    cube(b['gema'], [cx-2.2,cy-2.2,.35], [4.4,4.4,.6], BRONZE)
+    cube(b['gema'], [cx-1.6,cy-1.6,-1.0], [3.2,3.2,2.0], RUBY)
+    cube(b['gema'], [cx-1.1,cy-2.0,-.9], [2.2,4.0,1.8], RUBY)
+    cube(b['gema'], [cx-2.0,cy-1.1,-.9], [4.0,2.2,1.8], RUBY)
+    cube(b['gema'], [cx-1.0,cy+.3,-1.06], [.6,.9,.1], WHITE)
     for side,name in [(-1,'fita_esq'),(1,'fita_dir')]:
-        b[name] = bone(name, [side*2.8,12.5,0], 'root')
-        cube(b[name], [side*2.8-.45,6.5,-.45], [.9,6,.5], RUBY, [side*2.8,12.5,0], [0,0,-side*12])
+        b[name] = bone(name, [side*.7,11.2,0], 'root')
+        cube(b[name], [side*.7-.3,4.6,-.25], [.6,6.6,.5], RUBY, [side*.7,11.2,0], [0,0,-side*14])
     return b
 
 def document(style, bones):
@@ -87,10 +95,13 @@ def document(style, bones):
         'identifier':'geometry.'+style,'texture_width':128 if clothing else W,'texture_height':128 if clothing else H,
         'visible_bounds_width':4,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(bones.values())}]}
 
-def build():
+def build(only=None):
+    """only: optional set of styles; Gojo and Shadow have later cloth steps that a partial run must not overwrite."""
     subsets={'helmet':{'armorHead'},'chestplate':{'armorBody','armorLeftArm','armorRightArm'},
              'leggings':{'armorLeftLeg','armorRightLeg'},'boots':{'armorLeftBoot','armorRightBoot'}}
-    for style,bones in [('gojo',gojo()),('frieren',frieren()),('shadow',shadow())]:
+    for style,factory in [('gojo',gojo),('frieren',frieren),('shadow',shadow)]:
+        if only is not None and style not in only:continue
+        bones=factory()
         from clothing_uv import apply
         from polish_clothing_shapes import polish
         bones=apply(style,polish(style,bones))
@@ -138,7 +149,8 @@ def build():
         'ground':{'rotation':[0,0,85],'translation':[0,2,0],'scale':[.5]*3},
         'fixed':{'rotation':[0,0,-25],'translation':[0,0,0],'scale':[.45]*3}}})
 
-    from build_shadow_trial import build as build_shadow_trial
-    build_shadow_trial()
+    if only is None or 'shadow' in only:
+        from build_shadow_trial import build as build_shadow_trial
+        build_shadow_trial()
 
 if __name__=='__main__': build()

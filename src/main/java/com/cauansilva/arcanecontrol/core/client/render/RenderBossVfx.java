@@ -22,6 +22,9 @@ public final class RenderBossVfx {
         if(mc.level==null||!PerfilBoss.efeito(p.tipo())||p.kit()<1||(p.kit()>4&&p.kit()!=6)||p.ticks()<1||p.ticks()>60||!finito(p.a())||!finito(p.b()))return;
         if(EFEITOS.size()>=64)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime()));
+        // Qual's sounds are immediate cues: the owner is the boss, not a player, so delayed cues would be dropped.
+        if(p.kit()==3&&p.tipo()==403)com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(p.dono(),"qual_zoltraak",p.a().add(0,4.4,0),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.imediato("qual_zoltraak_carga",p.ticks()));
+        if(p.kit()==3&&p.tipo()==413)com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(p.dono(),"qual_zoltraak",p.a(),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.imediato("qual_zoltraak",24));
     }
     private static boolean finito(Vec3 v){return Double.isFinite(v.x)&&Double.isFinite(v.y)&&Double.isFinite(v.z);}
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e){if(e.phase==TickEvent.Phase.END){var l=Minecraft.getInstance().level;EFEITOS.removeIf(f->f.mundo!=l||l==null||l.getGameTime()-f.inicio>=f.pacote.ticks());}}
@@ -70,6 +73,7 @@ public final class RenderBossVfx {
         int cor=p.kit()==1?0xD9C7F2:p.kit()==2?0xC31E50:p.kit()==3?0xBA8BE0:0xB51535;
         float fade=(float)Math.min(1,Math.min((t+1)/2,(p.ticks()-t)/5));Vec3 end=p.b().subtract(p.a());
         int segments=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?16:32;
+        if(p.kit()==3&&(p.tipo()==403||p.tipo()==413)){zoltraakQual(s,cam,p,t,fade,end,segments);return;}
         if(p.tipo()<411){
             double raio=p.kit()==1?1.2:p.kit()==2?4:p.kit()==3?1.8:5;
             DesenhoMagia.lote(s,6,true,()->{
@@ -99,4 +103,40 @@ public final class RenderBossVfx {
         else{DesenhoMagia.lote(s,7,true,()->{for(int i=0;i<8;i++){double a=i*Math.PI/4;Vec3 v=new Vec3(Math.cos(a)*5,0,Math.sin(a)*5);DesenhoMagia.fita(s,cam,Vec3.ZERO,v.add(0,2.5,0),.24,0,3,cor,fade);}});}
         DesenhoMagia.lote(s,6,true,()->{double r=Math.min(5,t*.55);DesenhoMagia.anel(s,new Vec3(0,.08,0),UP,Math.max(0,r-.13),r,cor,fade,segments);});
     }
+
+    private static final int VIOLETA_QUAL=0x7A3FB8,PONTO_QUAL=0xE6DAFF;
+    /** Qual's original Zoltraak (anime ep. 3): rings of light dots at the casting point, then a black-violet beam. */
+    private static void zoltraakQual(com.mojang.blaze3d.vertex.PoseStack s,Vec3 cam,PacoteEfeitoDespertar p,double t,float fade,Vec3 end,int segments){
+        if(p.tipo()==403){
+            // a = Qual's feet, b = aim point; the ground ring still closes on the server's release tick.
+            Vec3 alvo=end,plano=new Vec3(alvo.x,0,alvo.z),dir=plano.lengthSqr()<1e-6?new Vec3(0,0,1):plano.normalize();
+            // Same point the server fires from (eye height 0.88 of the 5-block body), so charge and beam line up.
+            Vec3 foco=new Vec3(0,4.4,0);double carga=Math.min(1,t/p.ticks());
+            DesenhoMagia.lote(s,15,true,()->{
+                for(int anel=0;anel<2;anel++){
+                    double r=(anel==0?1.0:1.6)*(.5+.5*carga);int pontos=anel==0?12:18;Vec3[] b=base(dir);
+                    for(int i=0;i<pontos;i++){
+                        double a=i*Math.PI*2/pontos+(anel==0?t*.05:-t*.035);
+                        Vec3 q=foco.add(b[0].scale(Math.cos(a)*r)).add(b[1].scale(Math.sin(a)*r));
+                        DesenhoMagia.anel(s,q,cam.subtract(q).normalize(),0,.09,PONTO_QUAL,fade*(float)(.4+.6*carga),8);
+                    }
+                }
+                double r=1.8*(1-t/p.ticks());DesenhoMagia.anel(s,alvo.add(0,.08,0),UP,r,r+.06,0xFFFFFF,fade,segments);
+                DesenhoMagia.anel(s,alvo.add(0,.06,0),UP,1.74,1.8,VIOLETA_QUAL,fade,segments);
+            });
+            return;
+        }
+        Vec3 dir=end.lengthSqr()<1e-8?new Vec3(0,0,1):end.normalize();float largura=(float)Math.max(0,1-t/p.ticks());
+        DesenhoMagia.lote(s,1,true,()->DesenhoMagia.fita(s,cam,Vec3.ZERO,end,1.1*largura,0,8,VIOLETA_QUAL,.45f*fade));
+        DesenhoMagia.lote(s,21,false,()->DesenhoMagia.fita(s,cam,Vec3.ZERO,end,.6*largura,0,8,0x2A1640,fade));
+        DesenhoMagia.lote(s,15,true,()->{
+            Vec3[] b=base(dir);
+            for(int anel=0;anel<2;anel++){
+                double r=anel==0?.9:1.4;int pontos=anel==0?12:18;
+                for(int i=0;i<pontos;i++){double a=i*Math.PI*2/pontos+t*.08;Vec3 q=b[0].scale(Math.cos(a)*r).add(b[1].scale(Math.sin(a)*r));DesenhoMagia.anel(s,q,cam.subtract(q).normalize(),0,.08,PONTO_QUAL,fade*largura,8);}
+            }
+            if(t<9){double r=.3+t*.25;DesenhoMagia.anel(s,end,cam.subtract(end).normalize(),r*.7,r,VIOLETA_QUAL,fade*(float)(1-t/9),24);}
+        });
+    }
+    private static Vec3[] base(Vec3 n){Vec3 u=n.cross(UP);if(u.lengthSqr()<1e-8)u=new Vec3(1,0,0);u=u.normalize();return new Vec3[]{u,n.cross(u).normalize()};}
 }

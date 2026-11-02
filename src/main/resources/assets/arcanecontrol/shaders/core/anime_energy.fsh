@@ -111,5 +111,55 @@ void main(){
         color=mix(vertexColor.rgb*1.4,vec3(1.,.92,1.),core);
         alpha*=clamp(core+halo*.25,0.,1.);
     }
+    if(m>=15.5&&m<16.5){
+        // Singularity glow: uv.x runs 0..8 around the core, uv.y from the core edge (0) outwards (1).
+        float r=clamp(uv.y,0.,1.),ang=uv.x*PI*.25;
+        float flick=fbm(vec2(cos(ang),sin(ang))*2.5+vec2(r*4.-t*2.,t*.7));
+        float rim=exp(-r*r*120.),bloom=pow(1.-r,2.6);
+        color=mix(vec3(1.,.3,.08),vec3(1.,.8,.28),bloom);
+        color=mix(color,vec3(1.,.97,.82),rim);
+        alpha=clamp(alpha*(rim+bloom*(.5+.5*flick)),0.,1.);
+    }else if(m>=16.5&&m<17.5){
+        // Flare streak through the singularity: white-hot middle, ragged red brush edges, tapered tips.
+        float x=clamp(uv.x,0.,1.),d=abs(uv.y-.5)*2.;
+        float rag=fbm(vec2(x*30.-t*7.,uv.y*3.+t));
+        float taper=pow(sin(x*PI),.8),w=taper*(.5+.5*rag);
+        float core=exp(-pow(d/(w*.3+.02),2.)),mid=exp(-pow((x-.5)*5.,2.));
+        float body=1.-smoothstep(w*.65,w+.001,d);
+        color=mix(vec3(.95,.13,.05),vec3(1.,.78,.28),clamp(core*.8+mid*.5,0.,1.));
+        color=mix(color,vec3(1.,.98,.86),core*mid);
+        alpha=clamp(alpha*(body*.85+core)*taper,0.,1.);
+    }else if(m>=17.5&&m<18.5){
+        // Burst spike: broad base narrowing to a needle, near-white along the spine.
+        float x=clamp(uv.x,0.,1.),d=abs(uv.y-.5)*2.,w=pow(1.-x,1.3)+.04;
+        float spine=exp(-pow(d/(w*.3),2.));
+        color=mix(vertexColor.rgb,vec3(1.,.96,1.),spine*.85);
+        alpha*=(1.-smoothstep(w*.75,w,d))*(.6+.4*spine);
+    }
+    if(m>=18.5&&m<19.5){
+        // Revealed mana column: soft translucent body with brighter rims, flowing upwards, fading at the top.
+        float x=clamp(uv.x,0.,1.),d=abs(uv.y-.5)*2.;
+        float flow=fbm(vec2(uv.y*3.,x*6.-t*1.5));
+        float rim=exp(-pow((d-.85)*6.,2.));
+        float body=exp(-d*d*2.2)*.55+rim*.45;
+        color=mix(vertexColor.rgb,vec3(.95,.98,1.),flow*.35+rim*.4);
+        alpha*=body*(.7+.5*flow)*(1.-smoothstep(.55,1.,x))*smoothstep(0.,.04,x)*(1.-smoothstep(.98,1.,d));
+    }
+    if(m>=19.5&&m<20.5){
+        // Cel-shaded wind band: hard light/shadow split and torn edges, like the anime's dust tornado.
+        float d=abs(uv.y-.5)*2.,n=fbm(vec2(uv.x*3.-t*2.,uv.y*4.));
+        color=mix(vertexColor.rgb*.68,vertexColor.rgb,step(.5,n+(uv.y-.5)*.6));
+        float torn=smoothstep(.25,.55,fbm(vec2(uv.x*9.-t*3.,uv.y*6.)));
+        alpha*=(1.-smoothstep(.6,1.,d+(n-.5)*.5))*(.5+.5*torn);
+    }
+    if(m>=20.5&&m<21.5){
+        // Qual's original killing magic: near-black core, violet halo and a grainy sparkling edge.
+        float d=abs(uv.y-.5)*2.,g=noise(vec2(uv.x*40.-t*20.,uv.y*30.));
+        float core=1.-smoothstep(.35,.55,d+(g-.5)*.15);
+        float edge=smoothstep(.3,.6,d)*(1.-smoothstep(.85,1.,d));
+        float spark=step(.82,noise(vec2(uv.x*90.-t*35.,uv.y*60.+t*9.)))*edge;
+        color=mix(vertexColor.rgb,vec3(.04,.02,.07),core)+vec3(.9,.85,1.)*spark;
+        alpha*=clamp(max(core,edge*.55+spark),0.,1.);
+    }
     if(alpha<.004)discard;fragColor=vec4(color,alpha);
 }
