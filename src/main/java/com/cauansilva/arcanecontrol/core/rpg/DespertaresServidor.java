@@ -32,7 +32,7 @@ public final class DespertaresServidor {
         var f=new Forma(p,p.serverLevel(),p.position(),new EstadoDespertar(personagem,RpgServidor.agora(p)),p.isNoGravity());FORMAS.put(p.getUUID(),f);
         if(kit==PoderAnime.ASTA)p.stopUsingItem();
         if(kit==PoderAnime.ICHIGO)p.serverLevel().sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE,p.getX(),p.getY()+1,p.getZ(),32,.65,.8,.65,.03);
-        if(kit==PoderAnime.FRIEREN){var t=RpgServidor.dados(p);t.putBoolean("restaurarGravidade",true);t.putBoolean("gravidadeOriginal",f.gravidadeOriginal);p.setNoGravity(true);}
+        if(kit==PoderAnime.FRIEREN){var t=RpgServidor.dados(p);t.putBoolean("restaurarVoo",true);t.putBoolean("vooOriginal",p.getAbilities().mayfly);liberarVoo(p);}
         if(kit==PoderAnime.GOJO)com.cauansilva.arcanecontrol.core.magia.GerenciadorMagiasGojo.executarEfeito(p,5);
         if(kit==PoderAnime.CID)com.cauansilva.arcanecontrol.core.cid.PoderesCid.iniciarDespertar(p);
         com.cauansilva.arcanecontrol.core.rede.RegistoRede.ENVIAR.send(net.minecraftforge.network.PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),new com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar(p.getUUID(),200,f.centro,Vec3.ZERO,personagem==PersonagemRpg.ICHIGO?1200:EstadoDespertar.apresentacaoInicial(personagem),kit.id));
@@ -42,7 +42,7 @@ public final class DespertaresServidor {
         com.cauansilva.arcanecontrol.core.cid.AtordoamentoAtomic.liberar(p.getUUID());
         var f=FORMAS.remove(p.getUUID());if(f==null)return;
         if(f.estado.kit==PersonagemRpg.ICHIGO)com.cauansilva.arcanecontrol.core.ichigo.PoderesIchigo.limpar(p);
-        if(f.estado.kit==PersonagemRpg.FRIEREN){p.setNoGravity(f.gravidadeOriginal);RpgServidor.dados(p).remove("restaurarGravidade");}
+        if(f.estado.kit==PersonagemRpg.FRIEREN)restaurarVoo(p);
         if(f.estado.kit==PersonagemRpg.SHADOW){
             com.cauansilva.arcanecontrol.core.cid.PoderesCid.dados(p).putLong("cid_ocupado",0);
             var lento=p.getEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN);
@@ -61,15 +61,28 @@ public final class DespertaresServidor {
                 if(p.tickCount%20==0&&!RpgServidor.consumirMana(p,PoderAnime.ICHIGO,com.cauansilva.arcanecontrol.core.ichigo.PerfilIchigo.MANA_BANKAI_POR_SEGUNDO)){cancelar(p);continue;}
                 if(p.tickCount%100==0)EfeitosDespertar.enviar(f.nivel,p.getUUID(),201,p.position(),Vec3.ZERO,1200,6);
             }
-            if(f.estado.kit==PersonagemRpg.FRIEREN){p.setNoGravity(true);var alvo=f.centro.add(0,1.6,0);p.setDeltaMovement(alvo.subtract(p.position()).scale(.18));p.fallDistance=0;p.hurtMarked=true;}
+            // Frieren flies freely during the form (vanilla flight: space up, shift down); no anchor to the cast point.
+            if(f.estado.kit==PersonagemRpg.FRIEREN){if(!p.getAbilities().mayfly)liberarVoo(p);p.fallDistance=0;}
             if(f.estado.kit==PersonagemRpg.GOJO&&p.tickCount%10==0)MovesetsServidor.morteCerebral(f);
         }
+    }
+    private static void liberarVoo(ServerPlayer p){
+        var h=p.getAbilities();h.mayfly=true;if(!h.flying){h.flying=true;}p.onUpdateAbilities();
+        p.setDeltaMovement(p.getDeltaMovement().add(0,.35,0));p.hurtMarked=true;
+    }
+    /** Back to the flight permission the player had before the form; creative and spectator keep theirs. */
+    private static void restaurarVoo(ServerPlayer p){
+        var t=RpgServidor.dados(p);boolean original=t.getBoolean("vooOriginal");t.remove("restaurarVoo");t.remove("vooOriginal");
+        var h=p.getAbilities();if(p.isCreative()||p.isSpectator())return;
+        h.mayfly=original;if(!original)h.flying=false;p.onUpdateAbilities();p.fallDistance=0;
+        // Form ending high up should not be a death sentence: a short slow fall lands her safely.
+        if(!p.onGround())p.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOW_FALLING,100,0,false,false));
     }
     private static void limparDesafio(ServerPlayer p){var t=RpgServidor.dados(p);if(t.hasUUID("desafio")){var id=t.getUUID("desafio");for(var l:p.server.getAllLevels()){var chefe=l.getEntity(id);if(chefe instanceof NemesisEntity)chefe.discard();}t.remove("desafio");}}
     @SubscribeEvent public static void sair(PlayerEvent.PlayerLoggedOutEvent e){if(e.getEntity() instanceof ServerPlayer p){cancelar(p);limparDesafio(p);}}
     @SubscribeEvent public static void morrer(LivingDeathEvent e){if(e.getEntity() instanceof ServerPlayer p){cancelar(p);limparDesafio(p);}}
     @SubscribeEvent public static void dimensao(PlayerEvent.PlayerChangedDimensionEvent e){if(e.getEntity() instanceof ServerPlayer p){cancelar(p);limparDesafio(p);}}
-    @SubscribeEvent public static void entrar(PlayerEvent.PlayerLoggedInEvent e){if(e.getEntity() instanceof ServerPlayer p){var t=RpgServidor.dados(p);if(t.getBoolean("restaurarGravidade")){p.setNoGravity(t.getBoolean("gravidadeOriginal"));t.remove("restaurarGravidade");}limparDesafio(p);}}
+    @SubscribeEvent public static void entrar(PlayerEvent.PlayerLoggedInEvent e){if(e.getEntity() instanceof ServerPlayer p){var t=RpgServidor.dados(p);if(t.getBoolean("restaurarGravidade")){p.setNoGravity(t.getBoolean("gravidadeOriginal"));t.remove("restaurarGravidade");}if(t.getBoolean("restaurarVoo"))restaurarVoo(p);limparDesafio(p);}}
     @SubscribeEvent public static void observar(PlayerEvent.StartTracking e){if(e.getEntity() instanceof ServerPlayer observador&&e.getTarget() instanceof ServerPlayer p){var f=forma(p);if(f!=null&&f.estado.kit!=PersonagemRpg.ICHIGO)com.cauansilva.arcanecontrol.core.rede.RegistoRede.ENVIAR.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(()->observador),new com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar(p.getUUID(),200,f.centro,Vec3.ZERO,prazoRestante(p),f.estado.kit.id));}}
     @SubscribeEvent public static void parar(ServerStoppedEvent e){for(var f:List.copyOf(FORMAS.values()))cancelar(f.p);FORMAS.clear();}
 }

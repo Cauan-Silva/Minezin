@@ -136,6 +136,9 @@ SHA-256: f38a09c169126df9c1ba4288225f34ebe49dcee3282fe53f3712c3414f9ad109
 
 Build limpo, 186 testes, zip íntegro, versão e reobfuscação conferidas. Substitui a preview.1.
 
+### 3.8.0-frieren-preview.3 — voo livre na forma desperta
+
+Pedido do usuário: a Frieren não fica mais presa no ponto onde ativou o G. Durante Liberar Mana ela recebe o voo do jogo (espaço sobe, shift desce, WASD move; duplo espaço liga/desliga), sem dano de queda. Ao terminar (fim da forma, cancelar, morrer, sair, trocar de dimensão), volta a permissão de voo original; criativo e espectador mantêm a sua. Se terminar no ar, recebe queda lenta por 5 s. Saves antigos com a gravidade travada continuam sendo restaurados no login. A coluna de mana já acompanha o corpo.
 ### Roteiro no Minecraft
 
 Usar mundo de testes ou cópia; substituir o JAR anterior do Minezin sem deixar duplicatas e conferir a versão carregada. Preparação (cheats, permissão 2): `/minezin rpg maestria maxima frieren`, selecionar o kit em P, `/give @s arcanecontrol:cajado_frieren` e as quatro peças `arcanecontrol:frieren_cabeca/peito/pernas/botas`; `/minezin rpg restaurar_recursos` entre os testes.
@@ -147,7 +150,7 @@ Usar mundo de testes ou cópia; substituir o JAR anterior do Minezin sem deixar 
 | X Barreira | Favo de 7 hexágonos à frente, seguindo o olhar; ao absorver golpes até esgotar, estilhaça com som de vidro |
 | C Impulso | Salto com rajada discreta e partículas; queda lenta |
 | V Gaiola de Vento | Tornado de poeira no ponto mirado, puxa inimigos; uivo de vento por 6 s |
-| G Liberar Mana | Coluna azul-pálida, levitação, tremor de câmera; som de liberação |
+| G Liberar Mana | Coluna azul-pálida seguindo o corpo, voo livre (espaço/shift), tremor de câmera; som de liberação; ao acabar no ar, queda lenta |
 | Forma: Z Vinte Zoltraak | Raios brancos com círculo menor saindo ao redor da Frieren até o alvo; rajada sonora |
 | Forma: X Julgamento | Círculo no chão com anel que fecha, círculo violeta no céu; relâmpagos e trovão no impacto |
 | Forma: C Buraco Negro | Forma na mão, voa até o alvo, câmera acompanha; atração, casca rachada, explosão violeta e faíscas; três sons sincronizados; testar com destruição de terreno ligada e desligada e cancelando antes do colapso |

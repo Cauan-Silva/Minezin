@@ -76,22 +76,12 @@ public final class EfeitosAsta {
                     double idade=1200-p.ticks()+t;
                     if(idade<55){
                         float aura=(float)(Math.min(1,idade/8)*Math.min(1,(55-idade)/8));
-                        int n=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?3:6;
-                        DesenhoMagia.lote(s,7,false,()->{
-                            for(int j=0;j<n;j++)for(int i=0;i<14;i++){
-                                double u=i/14d,v=(i+1)/14d,a=j*Math.PI*2/n+idade*.065+u*2.5,b=a+(v-u)*2.5;
-                                double r=.7+Math.sin(u*Math.PI)*.6;
-                                DesenhoMagia.fita(s,cam,new Vec3(Math.cos(a)*r,u*3,Math.sin(a)*r),new Vec3(Math.cos(b)*r,v*3,Math.sin(b)*r),.18*Math.sin(u*Math.PI),u*4,v*4,0x140B19,aura*.7f);
-                            }
-                        });
-                        DesenhoMagia.lote(s,10,true,()->{
-                            for(int j=0;j<n;j++)for(int i=0;i<14;i++){
-                                double u=i/14d,v=(i+1)/14d,a=j*Math.PI*2/n+idade*.065+u*2.5,b=a+(v-u)*2.5;
-                                double r=.72+Math.sin(u*Math.PI)*.6;
-                                DesenhoMagia.fita(s,cam,new Vec3(Math.cos(a)*r,u*3,Math.sin(a)*r),new Vec3(Math.cos(b)*r,v*3,Math.sin(b)*r),.03,u*4,v*4,0xE82951,aura*.7f);
-                            }
-                        });
-                    }
+                        int n=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?3:5;
+                        // Entry: black anti-magic lightning spiralling up the body (same style as the approved base strikes).
+                        raios(s,cam,new Vec3(0,0,1),new Vec3(-1,0,0),(u,v)->{double ang=v*Math.PI*2+idade*.065+u*2.5,r=.7+Math.sin(u*Math.PI)*.6;return new com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.P(Math.cos(ang)*r,u*3,Math.sin(ang)*r);},idade,.35,.2,aura,n);
+                    }                    // Floating black orbs with a red rim around the body, as in the Devil Union references.
+                    int orbes=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?3:6;float presenca=(float)com.cauansilva.arcanecontrol.core.vfx.PerfilVfxGojo.suave((idade-20)/20);
+                    if(presenca>.01)for(int k=0;k<orbes;k++){double ang=k*Math.PI*2/orbes+idade*.02,r=2.3+.4*Math.sin(k*1.7);Vec3 c=new Vec3(Math.cos(ang)*r,1.0+k%3*.8+Math.sin(idade*.05+k)*.25,Math.sin(ang)*r);DesenhoMagia.esfera(s,cam,c,.18+.08*(k%2),3,0xFF2A3D,presenca,false,10);}
                     continue; // Attached wing/horn/arm geometry is drawn by CamadaFormaAsta.
                 }
                 if(p.tipo()==104){DesenhoMagia.lote(s,6,true,()->{var c=p.b().subtract(origem);DesenhoMagia.selo(s,cam,c,CIMA,5,t,0xDD294A,fade);DesenhoMagia.anel(s,c,CIMA,5*(1-t/p.ticks()),5*(1-t/p.ticks())+.07,0xF1BAC3,fade,64);});continue;}
@@ -101,6 +91,8 @@ public final class EfeitosAsta {
                     DesenhoMagia.lote(s,7,false,()->DesenhoMagia.selo(s,cam,c,dir,2.3,t,0xAD1536,fade));
                     DesenhoMagia.lote(s,6,true,()->DesenhoMagia.anel(s,c,dir,2.2,2.35,0xEC4A68,fade,64));continue;
                 }
+                if(p.tipo()==306){blackDivider(s,cam,p.b(),t);continue;}
+                if(p.tipo()>=300&&p.tipo()<=303){golpeBase(s,cam,p.tipo()-300,p.tipo()==303&&dono!=null?dono.getLookAngle():p.b(),t);continue;}
                 if(p.tipo()==308){DesenhoMagia.lote(s,7,true,()->{DesenhoMagia.anel(s,Vec3.ZERO,p.b(),.15+t*.06,.25+t*.06,0xFF5A70,fade,40);for(int i=0;i<6;i++){double a=i*Math.PI/3;var v=new Vec3(Math.cos(a),Math.sin(a),0);DesenhoMagia.fita(s,cam,v.scale(.3),v.scale(1.2),.04,0,2,0xF5B2BB,fade);}});continue;}
                 Vec3 dir=p.b().normalize();if(dir.lengthSqr()<1e-8)dir=new Vec3(0,0,1);
                 Vec3 lado=dir.cross(CIMA).normalize();if(lado.lengthSqr()<.1)lado=new Vec3(1,0,0);
@@ -156,6 +148,111 @@ public final class EfeitosAsta {
                     }
                 });
             }finally{s.popPose();DesenhoMagia.terminar();}
+        }
+    }
+    private static final int TINTA=0x140A12,VERMELHO=0xE01E3A;
+    /** Black Divider (306): ink gathers on the blade, then the black crescent and the red-rimmed rift on the server's hit tick. */
+    private static void blackDivider(PoseStack s,Vec3 cam,Vec3 olhar,double t){
+        Vec3 f0=new Vec3(olhar.x,0,olhar.z);final Vec3 frente=f0.lengthSqr()<1e-8?new Vec3(0,0,1):f0.normalize();
+        final Vec3 lado=frente.cross(CIMA).normalize();
+        java.util.function.Function<com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.P,Vec3> w=q->lado.scale(q.x()).add(0,q.y(),0).add(frente.scale(q.z()));
+        Vec3 mao=lado.scale(.55).add(0,1.1,0).add(frente.scale(.6));
+        double carga=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.carga(t),condensa=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.condensa(t);
+        if(carga>.01){
+            DesenhoMagia.lote(s,22,false,()->{
+                for(int j=0;j<com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.FIOS;j++){
+                    Vec3 ant=null;
+                    for(int i=0;i<=16;i++){double u=i/16d;Vec3 q=mao.add(w.apply(com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.fio(j,u,t)));float a=(float)Math.min(1,com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.alphaFio(j,u,t)*1.8);if(ant!=null&&a>.02)DesenhoMagia.fita(s,cam,ant,q,.09,u*3,u*3+.2,TINTA,a);ant=q;}
+                }
+                if(condensa>.01)for(int k=0;k<4;k++){double off=(k-1.5)*.12;Vec3 a0=mao.add(lado.scale(off)),b0=mao.add(frente.scale(3.6)).add(lado.scale(off*1.6)).add(0,Math.sin(t*1.7+k)*.15,0);DesenhoMagia.fita(s,cam,a0,b0,.3*condensa,0,4,TINTA,(float)condensa);}
+            });
+            DesenhoMagia.lote(s,15,true,()->{
+                for(int k=0;k<com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.FAISCAS;k++){Vec3 ant=mao;for(int i=0;i<5;i++){Vec3 q=mao.add(w.apply(com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.faisca(k,i,t)));DesenhoMagia.fita(s,cam,ant,q,.035,0,1,VERMELHO,(float)carga*.8f);ant=q;}}
+            });
+        }
+        double varre=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.varredura(t);float meia=(float)com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.alphaMeiaLua(t);
+        if(meia>.01&&varre>.01)DesenhoMagia.lote(s,22,false,()->{
+            int n=18;double fim=1.95*varre,ini=Math.max(0,fim-1.2);
+            for(int i=0;i<n;i++){
+                double a0=ini+(fim-ini)*i/n,a1=ini+(fim-ini)*(i+1)/n;
+                Vec3 p0=w.apply(com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.lamina(.55,a0)),p1=w.apply(com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.lamina(.55,a1));
+                Vec3 q0=w.apply(com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.lamina(1,a0)),q1=w.apply(com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.lamina(1,a1));
+                float a=meia; // Solid ink: translucent black reads grey.
+                DesenhoMagia.ponto(s,p0,i*.4,0,TINTA,a);DesenhoMagia.ponto(s,p1,(i+1)*.4,0,TINTA,a);DesenhoMagia.ponto(s,q1,(i+1)*.4,1,TINTA,a);DesenhoMagia.ponto(s,q0,i*.4,1,TINTA,a);
+            }
+        });
+        double aberta=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.fenda(t);float fenda=(float)com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.alphaFenda(t);
+        if(fenda>.01&&aberta>.05)DesenhoMagia.lote(s,22,false,()->{
+            int n=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.PONTOS_FENDA;
+            for(int i=0;i<n-1;i++){
+                var b0=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.borda(i);var b1=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.borda(i+1);
+                if(b0.z()>aberta)break;double z1=Math.min(b1.z(),aberta),k=(z1-b0.z())/Math.max(1e-6,b1.z()-b0.z());
+                double x1=b0.x()+(b1.x()-b0.x())*k,w0=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.larguraFenda(i),w1=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.larguraFenda(i+1);
+                Vec3 c0=w.apply(new com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.P(b0.x(),.04,b0.z())),c1=w.apply(new com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.P(x1,.04,z1));
+                DesenhoMagia.ponto(s,c0.subtract(lado.scale(w0)),b0.z()*.5,0,TINTA,fenda);DesenhoMagia.ponto(s,c1.subtract(lado.scale(w1)),z1*.5,0,TINTA,fenda);
+                DesenhoMagia.ponto(s,c1.add(lado.scale(w1)),z1*.5,1,TINTA,fenda);DesenhoMagia.ponto(s,c0.add(lado.scale(w0)),b0.z()*.5,1,TINTA,fenda);
+            }
+        });
+        if(t>=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.CORTE)DesenhoMagia.lote(s,22,false,()->{
+            for(int i=0;i<com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.GOTAS;i++){
+                float a=fenda*(float)Math.min(1,com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.alphaGota(i,t)*1.6);if(a<.05)continue;
+                var g=com.cauansilva.arcanecontrol.core.vfx.BlackDividerAsta.gota(i,t);if(g.z()>aberta)continue;Vec3 q=w.apply(g);
+                DesenhoMagia.fita(s,cam,q,q.add(0,.28,0),.13,0,1,TINTA,a);
+            }
+        });
+    }
+    private interface Faixa{com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.P em(double u,double v);}
+    /** Ink band sampled along u (n segments) between v=0 and v=1, in the strike frame. */
+    private static void faixa(PoseStack s,Vec3 frente,Vec3 lado,Faixa fx,double u0,double u1,int n,float alpha){
+        for(int i=0;i<n;i++){
+            double a=u0+(u1-u0)*i/n,b=u0+(u1-u0)*(i+1)/n;
+            Vec3[] q={w(frente,lado,fx.em(a,0)),w(frente,lado,fx.em(b,0)),w(frente,lado,fx.em(b,1)),w(frente,lado,fx.em(a,1))};
+            DesenhoMagia.ponto(s,q[0],i*.4,0,TINTA,alpha);DesenhoMagia.ponto(s,q[1],(i+1)*.4,0,TINTA,alpha);DesenhoMagia.ponto(s,q[2],(i+1)*.4,1,TINTA,alpha);DesenhoMagia.ponto(s,q[3],i*.4,1,TINTA,alpha);
+        }
+    }
+    private static Vec3 w(Vec3 frente,Vec3 lado,com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.P q){return lado.scale(q.x()).add(0,q.y(),0).add(frente.scale(q.z()));}
+    /** Black lightning: jagged ink strokes with a red rim, plus a thin red crackle, along one stroke path per bolt. */
+    private static void raios(PoseStack s,Vec3 cam,Vec3 frente,Vec3 lado,java.util.function.BiFunction<Double,Double,com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.P> caminho,double t,double amp,double largura,float alpha,int bolts){
+        int n=com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.PONTOS;
+        for(int camada=0;camada<2;camada++){
+            final boolean brilho=camada==1;
+            DesenhoMagia.lote(s,brilho?15:22,brilho,()->{
+                for(int j=0;j<bolts;j++){
+                    Vec3 ant=null;
+                    for(int i=0;i<=n;i++){
+                        var q=com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.relampago(caminho,j,i,t,amp);Vec3 p=w(frente,lado,q);
+                        double af=Math.sin(Math.PI*i/(double)n)*.6+.4;
+                        if(ant!=null)DesenhoMagia.fita(s,cam,ant,p,brilho?largura*.4:largura*.5*af,0,1,brilho?VERMELHO:TINTA,brilho?alpha*.8f:alpha);
+                        if(i%3==1){Vec3 r=w(frente,lado,com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.ramo(q,j,i,t,amp*2.2));DesenhoMagia.fita(s,cam,p,r,brilho?largura*.25:largura*.28,0,1,brilho?VERMELHO:TINTA,brilho?alpha*.6f:alpha);}
+                        ant=p;
+                    }
+                }
+            });
+        }
+    }
+    /** Base Z/X/C/V as black anti-magic lightning following each gesture; each strike completes on the server's damage tick. */
+    private static void golpeBase(PoseStack s,Vec3 cam,int slot,Vec3 olhar,double t){
+        Vec3 f0=new Vec3(olhar.x,0,olhar.z);final Vec3 frente=f0.lengthSqr()<1e-8?new Vec3(0,0,1):f0.normalize();final Vec3 lado=frente.cross(CIMA).normalize();
+        double varre=com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.varredura(slot,t);float a=(float)com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.alpha(slot,t);
+        if(slot==0&&a>.01&&varre>.01)raios(s,cam,frente,lado,(u,v)->com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.leque(-1+2*varre*u,v),t,.45,.2,a,5);
+        if(slot==1){
+            double lo=Math.max(0,varre-.8);
+            if(a>.01&&varre>.01)raios(s,cam,frente,lado,(u,v)->com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.corteVertical(lo+(varre-lo)*u,v),t,.5,.22,a,4);
+            double r=com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.rasgo(t);
+            if(r>.01)raios(s,cam,frente,lado,(u,v)->{var b=com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.bordaRasgo((int)Math.round(u*11*r));return new com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.P(b.x()+(v-.5)*.6,.06,b.z());},t,.3,.16,a,2);
+        }
+        if(slot==2){
+            double len=com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.rastro(t);
+            if(len>.05)raios(s,cam,frente,lado,(u,v)->new com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.P((v-.5)*.9,.5+v*.9,-len*(1-u)),t,.3,.16,1,3);
+            float e=(float)com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.alphaEspinho(t);
+            if(e>.01)for(int k=0;k<com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.ESPINHOS;k+=2){
+                var tip=com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.espinho(k,t);
+                raios(s,cam,frente,lado,(u,v)->new com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.P(tip.x()*u,.1+(tip.y()-.1)*u,tip.z()*u),t+k,.35,.18,e,1);
+            }
+        }
+        if(slot==3){
+            float g=(float)com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.alphaGuarda(t);
+            if(g>.01)raios(s,cam,frente,lado,(u,v)->com.cauansilva.arcanecontrol.core.vfx.GolpesBaseAsta.guarda(-1+2*u,v,t),t,.28,.14,g,3);
         }
     }
 }

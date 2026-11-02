@@ -16,6 +16,26 @@ class PerfilCinematicoTest {
             assertEquals(1,PerfilCinematico.varredura(impacto+1,impacto));
         }
     }
+    @Test void trajeSoSomeQuandoAFormaCobreAParteInteira(){
+        // Entrance: arms are black before the body, so the chest piece (body + arms) waits for the body.
+        assertFalse(PerfilCinematico.trajeCoberto(0,1,"head"));
+        assertTrue(PerfilCinematico.trajeCoberto(18,1,"right_arm","left_arm"));
+        assertFalse(PerfilCinematico.trajeCoberto(18,1,"body","right_arm","left_arm"));
+        assertTrue(PerfilCinematico.trajeCoberto(60,1,"body","right_arm","left_arm"));
+        assertTrue(PerfilCinematico.trajeCoberto(60,1,"head"));
+        // Exit fade and bad input keep the outfit visible instead of leaving a see-through gap.
+        assertFalse(PerfilCinematico.trajeCoberto(60,.5,"head"));
+        assertFalse(PerfilCinematico.trajeCoberto(60,Double.NaN,"head"));
+        assertFalse(PerfilCinematico.trajeCoberto(60,1));
+        assertFalse(PerfilCinematico.trajeCoberto(60,1,"unknown"));
+    }
+    @Test void espadaMudaJuntoComOBracoDaForma(){
+        assertFalse(PerfilCinematico.espadaDesperta(2,1),"antes do braco escurecer");
+        assertTrue(PerfilCinematico.espadaDesperta(20,1),"braco ja coberto");
+        assertTrue(PerfilCinematico.espadaDesperta(600,1),"durante a forma");
+        assertFalse(PerfilCinematico.espadaDesperta(600,.3),"volta no fade de saida");
+        assertFalse(PerfilCinematico.espadaDesperta(600,Double.NaN));
+    }
     @Test void impactoNaoExisteAntesDoDisparoENaoPersiste(){
         assertEquals(0,PerfilCinematico.impacto(-.01));
         assertEquals(1,PerfilCinematico.impacto(0));

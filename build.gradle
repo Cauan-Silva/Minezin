@@ -5,7 +5,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '3.8.0-frieren-preview.2'
+version = '3.9.0-asta-preview.2'
 group = 'com.cauansilva.arcanecontrol'
 base {
     archivesName = 'minezin'
@@ -86,6 +86,9 @@ tasks.named('test').configure {
     outputs.file(layout.buildDirectory.file('frieren-base-samples.json'))
     outputs.file(layout.buildDirectory.file('frieren-forma-samples.json'))
     outputs.file(layout.buildDirectory.file('frieren-cloth-samples.json'))
+    outputs.file(layout.buildDirectory.file('asta-divider-samples.json'))
+    outputs.file(layout.buildDirectory.file('asta-base-samples.json'))
+    outputs.file(layout.buildDirectory.file('asta-devil-union-samples.json'))
     useJUnitPlatform()
 }
 

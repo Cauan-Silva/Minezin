@@ -20,6 +20,8 @@ def apply(style,bones):
     if style=='gojo':palette[a.NAVY]='202b45';palette[a.BLACK]='13151d'
     if style=='shadow':palette[a.BLACK]='191622';palette[a.PLUM]='3b2949'
     if style=='asta':palette[a.BLACK]='1b2029';palette[a.NAVY]='26364a'
+    # Devil Union: matte near-black body, a slightly lighter black for alternating wing blades, glowing red.
+    if style in ('asta_forma','matadora_desperta'):palette[a.BLACK]='120e16';palette[a.PLUM]='120e16';palette[a.SHADOW]='19141e';palette[a.RUBY]='ff2a3d';palette[a.INK]='3a333f'
     islands={};rects=[];cursor_x=cursor_y=row_height=0
     def rect(x,y,w,h,color):
         rects.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#{color}"/>')
