@@ -34,6 +34,13 @@ public final class MestriaRpg {
     public double multiplicadorRecarga(){return 1-(nivel()-1)*.005;}
     public double multiplicadorRegeneracao(){return tem(NoRpg.REGENERACAO_MANA)?1.25:1;}
     public double velocidadeAdicional(){return tem(NoRpg.MOVIMENTO)?.10:0;}
+    /** Perfil administrativo completo, sem alterar os requisitos da progressão survival. */
+    public static MestriaRpg maximaParaTeste(){
+        var m=new MestriaRpg();m.ganharXp(XP_MAXIMO);
+        for(var no:NoRpg.values())if(!m.comprar(no))throw new IllegalStateException("Árvore incompatível com maestria máxima: "+no);
+        m.consumirAlma(PersonagemRpg.GOJO,PersonagemRpg.GOJO);
+        return m;
+    }
     /** Migra nivel/pontos anteriores sem conceder um despertar que ainda exige boss. */
     public static MestriaRpg migrar(int xpAntigo,boolean x,boolean c,boolean v){
         var m=new MestriaRpg(xpAntigo,0,false);

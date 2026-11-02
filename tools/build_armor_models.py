@@ -138,4 +138,7 @@ def build():
         'ground':{'rotation':[0,0,85],'translation':[0,2,0],'scale':[.5]*3},
         'fixed':{'rotation':[0,0,-25],'translation':[0,0,0],'scale':[.45]*3}}})
 
+    from build_shadow_trial import build as build_shadow_trial
+    build_shadow_trial()
+
 if __name__=='__main__': build()

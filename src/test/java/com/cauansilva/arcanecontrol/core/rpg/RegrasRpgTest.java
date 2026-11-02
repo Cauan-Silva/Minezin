@@ -5,6 +5,15 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 class RegrasRpgTest {
+    @Test void perfilAdministrativoCompletoSobreviveReleituraSemMudarPerfilNormal(){
+        var max=MestriaRpg.maximaParaTeste();
+        var relido=new MestriaRpg(max.xp(),max.nos(),max.despertarLiberado());
+        assertEquals(100,relido.nivel());
+        for(var no:NoRpg.values())assertTrue(relido.tem(no));
+        for(int slot=0;slot<5;slot++)assertTrue(relido.podeUsarSlot(slot));
+        assertTrue(relido.despertarLiberado());assertTrue(relido.pontos()>=0);
+        var normal=new MestriaRpg();assertEquals(1,normal.nivel());assertFalse(normal.podeUsarSlot(4));
+    }
     @Test void mestriaTemCemNiveisEscalaLimitadaENaoEstouraInteiros(){
         var m=new MestriaRpg();assertEquals(1,m.nivel());assertEquals(0,m.vidaAdicional());
         assertEquals(99,m.ganharXp(Integer.MAX_VALUE));assertEquals(100,m.nivel());assertEquals(9900,m.xp());

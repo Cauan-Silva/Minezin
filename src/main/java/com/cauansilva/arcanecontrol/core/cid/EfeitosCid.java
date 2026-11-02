@@ -27,7 +27,7 @@ public final class EfeitosCid {
         if (mc.level == null) return;
         if(tipo==16){if(DESTINOS.size()>=64)DESTINOS.clear();DESTINOS.put(jogador,new Destino(origem,mc.level.getGameTime(),mc.level));return;}
         if(tipo==15){
-            PhotonAtomic.cancelar(jogador);
+            PhotonAtomic.cancelar(jogador);com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(jogador,"atomic");
             ImpactosAnime.cancelar(jogador);
             AnimacoesGojo.cancelar(jogador);
             EFEITOS.removeIf(f->f.jogador.equals(jogador)&&f.tipo==14);
@@ -36,12 +36,27 @@ public final class EfeitosCid {
         }
         if (EFEITOS.size() >= 24) EFEITOS.remove(0);
         EFEITOS.add(new Efeito(tipo,jogador,origem,direcao,mc.level.getGameTime(),mc.level));
-        if(tipo==14){PhotonAtomic.iniciar(jogador,origem);ImpactosAnime.programar(jogador,origem.add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.IMPACTO,0xB76BFF,1,44,2);}
+        if(tipo==14){com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(jogador,"atomic",origem,com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.atomic());PhotonAtomic.iniciar(jogador,origem);ImpactosAnime.programar(jogador,origem.add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilAtomic.IMPACTO,0xB76BFF,1,44,2);}
         AnimacoesGojo.tocarCid(jogador,tipo);
         if (tipo == 14 && mc.player != null && mc.player.getUUID().equals(jogador))
-            GerenciadorCutscene3D.iniciarCutsceneLocal(14,100);
+            GerenciadorCutscene3D.iniciarCutsceneLocal(14,180);
     }
     public static Vec3 centroAtomic(UUID id){for(var f:EFEITOS)if(f.tipo==14&&f.jogador.equals(id))return f.origem;return null;}
+    public record AtomicVisual(UUID dono,Vec3 centro,double tick,boolean local){}
+    public static AtomicVisual atomicVisual(float parcial){
+        var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null)return null;
+        var camera=mc.gameRenderer.getMainCamera();AtomicVisual melhor=null;double distanciaMelhor=Double.MAX_VALUE;
+        for(var f:EFEITOS)if(f.tipo==14&&f.mundo==mc.level&&Double.isFinite(f.origem.lengthSqr())){
+            var dono=mc.level.getPlayerByUUID(f.jogador);if(dono==null||!dono.isAlive())continue;
+            double t=mc.level.getGameTime()+parcial-f.inicio;if(t<0||t>=240)continue;
+            var centro=f.origem.add(0,1.2,0);var delta=centro.subtract(camera.getPosition());double d=delta.lengthSqr();
+            boolean local=f.jogador.equals(mc.player.getUUID());if(d>80*80&&!local)continue;
+            if(!local&&d>4&&delta.normalize().dot(new Vec3(camera.getLookVector()))<.15)continue;
+            if(d>4){var hit=mc.level.clip(new net.minecraft.world.level.ClipContext(camera.getPosition(),centro,net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,mc.player));if(hit.getType()!=net.minecraft.world.phys.HitResult.Type.MISS&&hit.getLocation().distanceToSqr(centro)>2)continue;}
+            if(melhor==null||local&&!melhor.local()||local==melhor.local()&&d<distanciaMelhor){melhor=new AtomicVisual(f.jogador,centro,t,local);distanciaMelhor=d;}
+        }
+        return melhor;
+    }
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e) {
         if (e.phase != TickEvent.Phase.END) return;
         PhotonAtomic.tick();
@@ -104,7 +119,8 @@ public final class EfeitosCid {
             if(f.tipo>=11&&f.tipo<=13&&RenderMovesetCid.desenhar(pose,f.tipo,f.jogador,f.origem,f.direcao,
                     destinoDash==null?null:destinoDash.pos,t,camera.subtract(f.origem),ALVOS.getOrDefault(f.jogador,List.of()))) {
             } else if(f.tipo==14 && RenderEnergiaAtomic.desenhar(pose,t,camera.subtract(f.origem),ancora)) {
-                RenderMovesetCid.selosAtomic(pose,t,camera.subtract(f.origem));
+                RenderMovesetCid.selosAtomic(pose,t,camera.subtract(f.origem),ancora);
+                ResiduoAtomic.desenhar(pose,camera.subtract(f.origem),t);
                 // O material procedural substitui as esferas/aneis lisos da Atomic.
             } else if(f.tipo==14) {
                 double carga=Math.min(1,t/90), depois=Math.max(0,t-90), fade=1-Math.min(1,depois/150);

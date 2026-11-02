@@ -22,11 +22,13 @@ public final class RenderDespertar {
     public static void receber(PacoteEfeitoDespertar p){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
         if(com.cauansilva.arcanecontrol.core.rpg.PerfilBoss.efeito(p.tipo())){RenderBossVfx.receber(p);return;}
+        if(p.kit()==6){com.cauansilva.arcanecontrol.core.ichigo.EfeitosIchigo.receber(p);return;}
         if(p.kit()==4){com.cauansilva.arcanecontrol.core.asta.EfeitosAsta.receber(p);return;}
-        if(p.tipo()==0){ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));GerenciadorCutscene3D.cancelarDominioCliente(p.dono());if(p.kit()==2)com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(15,p.dono(),Vec3.ZERO,Vec3.ZERO);AnimacoesGojo.cancelar(p.dono());return;}
+        if(p.tipo()==0){com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(p.dono(),null);ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));GerenciadorCutscene3D.cancelarDominioCliente(p.dono());if(p.kit()==2)com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(15,p.dono(),Vec3.ZERO,Vec3.ZERO);AnimacoesGojo.cancelar(p.dono());return;}
         if(p.ticks()<1||p.ticks()>1200||p.kit()<1||p.kit()>3||!finito(p.a())||!finito(p.b()))return;
         if(p.tipo()==200){EFEITOS.removeIf(e->e.p.tipo()==200&&e.p.dono().equals(p.dono()));if(p.kit()==1)GerenciadorCutscene3D.garantirDominio(p.dono(),p.a(),p.ticks());}
         if((p.tipo()>=30&&p.tipo()<=41&&p.tipo()!=31&&(p.tipo()!=34||p.ticks()>10))||p.tipo()==200&&p.kit()==3&&p.ticks()==900)AnimacoesGojo.tocarDesperto(p.dono(),p.kit(),p.tipo());
+        UltimatesTransformadas.receber(p);
         if(EFEITOS.size()>=128)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime()));
     }

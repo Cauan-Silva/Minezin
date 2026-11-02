@@ -4,11 +4,16 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public final class ConfigCliente {
     public static final ForgeConfigSpec SPEC;
+    public static final ForgeConfigSpec.BooleanValue SFX_ANIME;
+    public static final ForgeConfigSpec.BooleanValue TECIDO_CID,EMISSAO_CID;
+    public static final ForgeConfigSpec.DoubleValue VOLUME_SFX;
     public static final ForgeConfigSpec.BooleanValue CINEMATICAS;
     public static final ForgeConfigSpec.BooleanValue PHOTON;
     public static final ForgeConfigSpec.BooleanValue VFX_REDUZIDOS;
     public static final ForgeConfigSpec.BooleanValue CLARAO;
     public static final ForgeConfigSpec.BooleanValue SHADER_ATOMIC;
+    public static final ForgeConfigSpec.BooleanValue CINEMA_ATOMIC;
+    public static final ForgeConfigSpec.DoubleValue INTENSIDADE_ATOMIC;
     public static final ForgeConfigSpec.BooleanValue GOJO_VFX;
     public static final ForgeConfigSpec.BooleanValue AMBIENTE_DOMINIO;
     public static final ForgeConfigSpec.BooleanValue CLARAO_GOJO;
@@ -16,6 +21,8 @@ public final class ConfigCliente {
     public static final ForgeConfigSpec.BooleanValue IMPACT_FRAMES;
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        TECIDO_CID=builder.comment("Movimento secundário do manto segmentado do Cid, calculado no cliente.").define("tecidoCid",true);
+        EMISSAO_CID=builder.comment("Detalhes emissivos do traje do Cid; não ilumina o ambiente.").define("emissaoCid",true);
         GOJO_BLOOM = builder.comment("Bloom de acento Photon nas tecnicas do Gojo.").define("bloomGojo", true);
         CLARAO_GOJO = builder.comment("Clarao breve na fusao do Roxo e abertura do Dominio.")
                 .define("claraoGojo", true);
@@ -23,6 +30,8 @@ public final class ConfigCliente {
                 .define("gojoVfx", true);
         AMBIENTE_DOMINIO = builder.comment("Ceu e neblina cosmicos somente dentro do Vazio Infinito.")
                 .define("ambienteDominio", true);
+        CINEMA_ATOMIC=builder.comment("Pós-processamento intenso da Atomic: contraste, distorção e sequência gráfica. Efeitos reduzidos desativam este passe.").define("cinemaAtomic",true);
+        INTENSIDADE_ATOMIC=builder.comment("Intensidade do pós-processamento Atomic (0–1). Flashes também respeitam impactFrames e claraoAtomic.").defineInRange("intensidadeCinemaAtomic",1d,0d,1d);
         SHADER_ATOMIC = builder.comment("Material procedural e filamentos da Atomic. Desligar restaura a geometria anterior.")
                 .define("shaderAtomic", true);
         PHOTON = builder.comment("Ativar emissores e bloom Photon da Atomic.").define("photonAtomic", true);
@@ -31,6 +40,8 @@ public final class ConfigCliente {
         CINEMATICAS = builder.comment("Ativar câmera, zoom e tremor nas Ultimates locais.")
                 .define("cinematicas", true);
         IMPACT_FRAMES=builder.comment("Impact frames breves de ultimates e bosses; desligado tambem por vfxReduzidos.").define("impactFrames",true);
+        SFX_ANIME=builder.comment("SFX originais sincronizados com os efeitos de anime; respeitam o volume de Jogadores.").define("sfxAnime",true);
+        VOLUME_SFX=builder.comment("Ganho adicional dos SFX de anime.").defineInRange("volumeSfxAnime",.7,0d,1d);
         SPEC = builder.build();
     }
 }

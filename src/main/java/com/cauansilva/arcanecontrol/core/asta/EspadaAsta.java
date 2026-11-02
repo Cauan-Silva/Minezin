@@ -31,11 +31,7 @@ public final class EspadaAsta extends SwordItem implements GeoItem {
         c.accept(new net.minecraftforge.client.extensions.common.IClientItemExtensions(){
             private software.bernie.geckolib.renderer.GeoItemRenderer<EspadaAsta> renderer;
             @Override public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer(){
-                if(renderer==null)renderer=new software.bernie.geckolib.renderer.GeoItemRenderer<>(new software.bernie.geckolib.model.GeoModel<>(){
-                    @Override public ResourceLocation getModelResource(EspadaAsta a){return new ResourceLocation("arcanecontrol","geo/asta/matadora.geo.json");}
-                    @Override public ResourceLocation getTextureResource(EspadaAsta a){return new ResourceLocation("arcanecontrol","textures/armor/anime_reference_atlas.png");}
-                    @Override public ResourceLocation getAnimationResource(EspadaAsta a){return new ResourceLocation("arcanecontrol","animations/asta/matadora.animation.json");}
-                });return renderer;
+                if(renderer==null)renderer=new RenderEspadaAsta();return renderer;
             }
         });
     }

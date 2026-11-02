@@ -1,0 +1,14 @@
+{
+  "vertex": "arcanecontrol:atomic_copy",
+  "fragment": "arcanecontrol:atomic_copy",
+  "attributes": [
+    "Position",
+    "UV0"
+  ],
+  "samplers": [
+    {
+      "name": "Sampler0"
+    }
+  ],
+  "uniforms": []
+}

@@ -4,7 +4,8 @@ public enum PoderAnime {
     GOJO(1,"Gojo",0,0x49CFFF,new String[]{"Azul","Vermelho","Teleporte Curto","Vazio Roxo","Vazio Infinito"}),
     CID(2,"Cid / Shadow",120,0xBC79FF,new String[]{"Corte de Slime","Passo das Sombras","Fios de Slime","Lâmina Oculta","I Am Atomic"}),
     FRIEREN(3,"Frieren",240,0xE8CF86,new String[]{"Zoltraak","Barreira Arcana","Impulso Arcano","Gaiola de Vento","Liberar Mana"}),
-    ASTA(4,"Asta",180,0xD84559,new String[]{"Espada Matadora de Demônios","Corte Divisor","Avanço Touro Negro","Barreira Antimagia","Assimilação Demoníaca"});
+    ASTA(4,"Asta",180,0xD84559,new String[]{"Espada Matadora de Demônios","Corte Divisor","Avanço Touro Negro","Barreira Antimagia","Assimilação Demoníaca"}),
+    ICHIGO(6,"Ichigo",220,0x69CFFF,new String[]{"Getsuga Tenshou","Passo Flash","Pressão Espiritual","Corte Ascendente","Bankai: Tensa Zangetsu"});
     public final int id,custo,cor;
     public final String nome;
     public final String[] tecnicas;

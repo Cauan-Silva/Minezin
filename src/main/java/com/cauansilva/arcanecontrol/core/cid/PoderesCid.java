@@ -130,11 +130,12 @@ public final class PoderesCid {
             if (t == 90) {
                 a.jogador.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,180,0,false,false));
                 if (com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get()) {
-                    com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.cratera(a.jogador,a.centro,com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get(),8);
-                    a.nivel.explode(a.jogador, a.centro.x, a.centro.y, a.centro.z,
-                            com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get() / 2f, false,
-                            net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+                    com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.crateraAtomic(a.jogador,a.centro,com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get(),8);
                 }
+                // The terrain switch affects blocks, not the explosion's entity damage.
+                a.nivel.explode(a.jogador,a.centro.x,a.centro.y,a.centro.z,
+                        com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get()/2f,false,
+                        com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get()?net.minecraft.world.level.Level.ExplosionInteraction.TNT:net.minecraft.world.level.Level.ExplosionInteraction.NONE);
                 for (LivingEntity alvo : a.nivel.getEntitiesOfClass(LivingEntity.class, new AABB(a.centro,a.centro).inflate(14),
                         e -> e != a.jogador && e.isAlive())) {
                     if (alvo.distanceToSqr(a.centro) <= 196) {

@@ -5,7 +5,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '3.5.0-preview.1'
+version = '3.6.0-preview.5'
 group = 'com.cauansilva.arcanecontrol'
 base {
     archivesName = 'minezin'
@@ -69,6 +69,7 @@ dependencies {
 }
 
 tasks.named('test').configure {
+    outputs.file(layout.buildDirectory.file('cid-cape-samples.json'))
     useJUnitPlatform()
 }
 

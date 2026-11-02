@@ -11,7 +11,7 @@ class AnimeAssetsTest {
         try(var in=getClass().getResourceAsStream(path)){assertNotNull(in,path);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}
     }
     @Test void mangasCobremOTopoDosBracosIncluindoSegundaCamadaDaSkin()throws Exception{
-        for(String style:new String[]{"gojo","frieren","shadow","asta"}){
+        for(String style:new String[]{"gojo","frieren","shadow","asta","ichigo"}){
             var g=json("/assets/arcanecontrol/geo/armaduras/"+style+".geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
             for(String lado:new String[]{"armorLeftArm","armorRightArm"}){
                 JsonObject manga=null;
@@ -50,7 +50,14 @@ class AnimeAssetsTest {
             for(var v:g.getAsJsonArray("bones")){var b=v.getAsJsonObject();bones.put(b.get("name").getAsString(),b);}
             if(style.equals("asta")){assertEquals("armorRightArm",bones.get("manto_ombro_esq").get("parent").getAsString());assertEquals("armorLeftArm",bones.get("manto_ombro_dir").get("parent").getAsString());}
             else if(style.equals("frieren")){assertEquals("armorRightLeg",bones.get("saia_esq").get("parent").getAsString());assertEquals("armorLeftLeg",bones.get("saia_dir").get("parent").getAsString());}
-            else assertEquals(5,bones.keySet().stream().filter(n->n.startsWith("capa_")).count());
+            else {
+                assertEquals(20,bones.keySet().stream().filter(n->n.startsWith("cid_cape_")).count());
+                for(int panel=0;panel<5;panel++)for(int segment=0;segment<4;segment++){
+                    var n="cid_cape_"+panel+"_"+segment;
+                    assertEquals(segment==0?"armorBody":"cid_cape_"+panel+"_"+(segment-1),bones.get(n).get("parent").getAsString());
+                    assertTrue(bones.get(n).getAsJsonArray("cubes").get(0).getAsJsonObject().getAsJsonArray("size").get(0).getAsDouble()>=2.7);
+                }
+            }
         }
     }
     @Test void frierenTemQuatroAnimacoesFinitasValidas()throws Exception{

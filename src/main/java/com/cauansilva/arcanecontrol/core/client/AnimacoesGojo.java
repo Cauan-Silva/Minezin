@@ -68,7 +68,9 @@ public final class AnimacoesGojo {
     public static void tocarDesperto(UUID id,int kit,int tipo){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
         if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
-        var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,"desperto_"+kit+"_"+tipo);
+        var c=camada(jogador);if(c==null)return;
+        if(c.isActive()&&PRIORIDADES.getOrDefault(id,0)>=4&&prioridade(tipo)<4)return;
+        reproduzir(jogador,c,id,tipo,"desperto_"+kit+"_"+tipo);
     }
     public static void tocarCid(UUID id, int tipo) {
         var mc = Minecraft.getInstance();
@@ -89,8 +91,10 @@ public final class AnimacoesGojo {
         camada.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(tipo==33?1:3, Ease.OUTQUAD),
                 new KeyframeAnimationPlayer(animacao));
         TIPOS.put(id,tipo);
-        PRIORIDADES.put(id,(tipo==4||tipo==5||tipo==14||tipo==24)?4:1);
+        PRIORIDADES.put(id,prioridade(tipo));
     }
+
+    private static int prioridade(int tipo){return switch(tipo){case 4,5,14,24,32,35,38,306,512,513->4;default->1;};}
 
     @SubscribeEvent
     public static void tick(TickEvent.ClientTickEvent event) {

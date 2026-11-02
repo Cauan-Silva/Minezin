@@ -8,7 +8,7 @@ public final class ConfigServidor {
     public static final ForgeConfigSpec.IntValue RAIO;
     public static final ForgeConfigSpec.BooleanValue BURACO_DESTRUIR;
     public static final ForgeConfigSpec.DoubleValue TOJI_ESCALA,AURORA_ESCALA,QUAL_ESCALA,LIEBE_ESCALA;
-    public static double escalaChefe(int kit){return (kit==1?TOJI_ESCALA:kit==2?AURORA_ESCALA:kit==3?QUAL_ESCALA:LIEBE_ESCALA).get();}
+    public static double escalaChefe(int kit){if(kit==6)return 1;return (kit==1?TOJI_ESCALA:kit==2?AURORA_ESCALA:kit==3?QUAL_ESCALA:LIEBE_ESCALA).get();}
     static {
         var b = new ForgeConfigSpec.Builder();
         b.push("atomic");

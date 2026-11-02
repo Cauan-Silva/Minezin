@@ -32,6 +32,7 @@ public final class MovesetsServidor {
         if(ACOES.size()>=256){mensagem(p,"Aguarde as técnicas ativas terminarem.");return;}
         if(PoderesCid.dados(p).getLong("cid_ocupado")>RpgServidor.agora(p))return;
         if(kit==PoderAnime.CID&&!p.getMainHandItem().is(EspadaCid.ESPADA.get())){p.displayClientMessage(Component.literal("Segure a Lâmina Shadow."),true);return;}
+        if(kit==PoderAnime.ICHIGO){com.cauansilva.arcanecontrol.core.ichigo.PoderesIchigo.executar(p,slot);return;}
         if(kit==PoderAnime.ASTA){com.cauansilva.arcanecontrol.core.asta.PoderesAsta.executar(p,slot);return;}
         if(DespertaresServidor.ativo(p)){transformada(p,kit,slot);return;}
         if(kit==PoderAnime.GOJO){

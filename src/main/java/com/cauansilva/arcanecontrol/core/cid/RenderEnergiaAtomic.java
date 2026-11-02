@@ -50,12 +50,30 @@ public final class RenderEnergiaAtomic {
                     Vec3 c=ponto(FormaEnergiaAtomic.filamento(j,u,tick)).add(ancora);
                     fita(b,m,a,c,camera,.07+tick*.001,s*4,u*4,alpha);
                 }
+                int linhas=reduzido?14:42;
+                for(int j=0;j<linhas;j++)for(int i=0;i<8;i++){
+                    Vec3 a=ponto(FormaEnergiaAtomic.campo(j,i/8d,tick)),c=ponto(FormaEnergiaAtomic.campo(j,(i+1)/8d,tick));
+                    fita(b,m,a,c,camera,.025,0,1,alpha*.55f);
+                }
+                if(tick>50)for(int anel=0;anel<2;anel++)for(int i=0;i<64;i++){
+                    double a=i*Math.PI/32,c=(i+1)*Math.PI/32,r=1.8+anel*.55;
+                    fita(b,m,new Vec3(Math.cos(a)*r,3.6+anel*.35,Math.sin(a)*r),new Vec3(Math.cos(c)*r,3.6+anel*.35,Math.sin(c)*r),camera,.045,0,1,alpha*.8f);
+                }
                 Tesselator.getInstance().end();
                 casca(b,m,ancora,tick,.15+tick*.003,alpha*.65f,reduzido?12:20);
             } else {
                 double idade=tick-90, fade=Math.max(0,1-idade/150);
-                double raio=(.6+16*(1-Math.exp(-idade/13)))*Math.max(.05,1-idade/150);
-                casca(b,m,new Vec3(0,1,0),tick,raio,(float)(fade*.7),reduzido?16:28);
+                shader.safeGetUniform("EffectMode").set(3f);
+                b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
+                int lados=reduzido?20:40;
+                for(int y=0;y<12;y++)for(int i=0;i<lados;i++){
+                    double a=i*Math.PI*2/lados,c=(i+1)*Math.PI*2/lados,u=y/12d,v=(y+1)/12d;
+                    vertice(b,m,ponto(FormaEnergiaAtomic.coluna(a,u,tick)),i/(double)lados,u,(float)(fade*.65));
+                    vertice(b,m,ponto(FormaEnergiaAtomic.coluna(c,u,tick)),(i+1)/(double)lados,u,(float)(fade*.65));
+                    vertice(b,m,ponto(FormaEnergiaAtomic.coluna(c,v,tick)),(i+1)/(double)lados,v,(float)(fade*.65));
+                    vertice(b,m,ponto(FormaEnergiaAtomic.coluna(a,v,tick)),i/(double)lados,v,(float)(fade*.65));
+                }
+                Tesselator.getInstance().end();
                 shader.safeGetUniform("EffectMode").set(0f);
                 b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
                 // Frentes de choque fragmentadas: largura, altura e velocidade variam por arco.
@@ -69,6 +87,15 @@ public final class RenderEnergiaAtomic {
                         Vec3 p=new Vec3(Math.cos(a)*r0,.4+Math.sin(a*5+idade*.06)*.3,Math.sin(a)*r0);
                         Vec3 q=new Vec3(Math.cos(c)*r1,.4+Math.sin(c*5+idade*.06)*.3,Math.sin(c)*r1);
                         fita(b,m,p,q,camera,.18+j*.06,i*.2,(i+1)*.2,(float)(fade*.7));
+                    }
+                }
+                if(ConfigCliente.CINEMA_ATOMIC.get()&&idade<34){
+                    int n=reduzido?8:24;double abrir=1-Math.exp(-idade/5);
+                    for(int i=0;i<n;i++){
+                        double a=i*Math.PI*2/n,r=2+abrir*(8+i%4);
+                        var inicio=new Vec3(Math.cos(a)*r,.15,Math.sin(a)*r);
+                        var topo=new Vec3(Math.cos(a+.08)*r*(1.08+i%3*.05),2+(i%5)*.9+abrir*2,Math.sin(a+.08)*r*(1.08+i%3*.05));
+                        fita(b,m,inicio,topo,camera,.08+i%3*.025,0,2,(float)((1-idade/34)*.9));
                     }
                 }
                 // Relampagos ascendentes quebram a silhueta cilindrica do impacto.

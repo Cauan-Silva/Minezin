@@ -127,6 +127,7 @@ public final class RpgServidor {
         Item[] itens=switch(kit){
             case GOJO->new Item[]{RegistroTrajes.GOJO_CABECA.get(),RegistroTrajes.GOJO_PEITO.get(),RegistroTrajes.GOJO_PERNAS.get(),RegistroTrajes.GOJO_BOTAS.get()};
             case CID->new Item[]{EspadaCid.CAPUZ.get(),EspadaCid.MANTO.get(),EspadaCid.CALCAS.get(),EspadaCid.BOTAS.get()};
+            case ICHIGO->com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.conjunto();
             case ASTA->com.cauansilva.arcanecontrol.core.asta.RegistroAsta.conjunto();
             case FRIEREN->new Item[]{RegistroTrajes.FRI_CABECA.get(),RegistroTrajes.FRI_PEITO.get(),RegistroTrajes.FRI_PERNAS.get(),RegistroTrajes.FRI_BOTAS.get()};
         };
