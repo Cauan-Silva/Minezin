@@ -128,7 +128,7 @@ public final class MovesetsServidor {
                     var fim=alvo.getEyePosition();var bloco=a.nivel.clip(new ClipContext(origem,fim,ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p));
                     if(bloco.getType()==HitResult.Type.MISS){alvo.invulnerableTime=0;alvo.hurt(a.nivel.damageSources().indirectMagic(p,p),1.5f);}else fim=bloco.getLocation();fx(p,113,origem,fim,12);
                 }}
-                case 38->{if(t==25){var alto=c.add(0,30,0);var fim=a.nivel.clip(new ClipContext(alto,c.add(0,-4,0),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p)).getLocation();fx(p,113,alto,fim,30);for(var v:inimigos(p,fim,4))v.hurt(a.nivel.damageSources().indirectMagic(p,p),28);}}
+                case 38->{if(t==25){var alto=c.add(0,30,0);var fim=a.nivel.clip(new ClipContext(alto,c.add(0,-4,0),ClipContext.Block.COLLIDER,ClipContext.Fluid.NONE,p)).getLocation();fx(p,115,alto,fim,30);for(var v:inimigos(p,fim,4))v.hurt(a.nivel.damageSources().indirectMagic(p,p),28);}}
                 default->{}
             }
         }

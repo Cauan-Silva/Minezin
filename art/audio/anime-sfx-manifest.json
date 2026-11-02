@@ -48,20 +48,20 @@
     "sha256": "bf33b3e959a19a0d21d2d784141a3eb456bcbeb25771a14eb41bf933d5985522"
   },
   "frieren_cast": {
-    "duration": 0.55,
+    "duration": 0.9,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.69541,
-    "rms": 0.08922,
-    "sha256": "7e764649244291749b9eeb49e63228924d98e7bf1eee4b08e1fbf69d13a837f5"
+    "peak": 0.80557,
+    "rms": 0.07629,
+    "sha256": "a6cda6d77d8860ef288fad47f891ea0ec5f8651ddbc13f012356a9e8bdb42ad9"
   },
   "frieren_barrier": {
-    "duration": 0.6,
+    "duration": 0.8,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.55955,
-    "rms": 0.07153,
-    "sha256": "443cafc361c889bc30c99985d01f9a8a21d5bb8e477a0657293cf51d8335ad09"
+    "peak": 0.34317,
+    "rms": 0.07128,
+    "sha256": "18f70e040d608d7fe4729545687a47d8dd40e8b0c361a09443ef06f148513533"
   },
   "singularity_charge": {
     "duration": 3.5,
@@ -78,5 +78,101 @@
     "peak": 0.78422,
     "rms": 0.09017,
     "sha256": "06d011cd5b2d219fea804e997cb0fb28cf5788fb72b3a69956fd301596f52c67"
+  },
+  "frieren_barrier_break": {
+    "duration": 0.9,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.79404,
+    "rms": 0.08136,
+    "sha256": "e95c22563c3edfbde92a98af86a37efbbfb0230e403ad13db5b2198d98c54814"
+  },
+  "frieren_impulso": {
+    "duration": 0.7,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.78375,
+    "rms": 0.1226,
+    "sha256": "8dd7680717b13e40c0ff94aa1297f38d55ffe3916f92bc55e8cf19c889541d00"
+  },
+  "frieren_buraco_carga": {
+    "duration": 3.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.75611,
+    "rms": 0.15027,
+    "sha256": "0894f59dffb0376d4959959e1f6aa3e665e97aab273ea7965bb51fc9ed5bc72a"
+  },
+  "frieren_buraco_atracao": {
+    "duration": 7.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.72646,
+    "rms": 0.17031,
+    "sha256": "8df2a50c1fd78d3356e99d4ffacab8aded6b6909e00086e73c9569f594c59ee5"
+  },
+  "frieren_buraco_colapso": {
+    "duration": 3.0,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.89312,
+    "rms": 0.11452,
+    "sha256": "e7de64e28395f28913b515b835928442e43e1a8d7086af366bae64f50ef829ef"
+  },
+  "frieren_mana": {
+    "duration": 3.0,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.70843,
+    "rms": 0.17638,
+    "sha256": "37784c4d120083c76301a5a0a50285481b721eb6c47d9ef27cf6f724257d1131"
+  },
+  "frieren_julgamento_carga": {
+    "duration": 1.25,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.66886,
+    "rms": 0.10839,
+    "sha256": "ab7c72d7c7b042d72f93831494d71786137c53384fbb30de8323830111218caf"
+  },
+  "frieren_julgamento_trovao": {
+    "duration": 2.0,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.90423,
+    "rms": 0.10257,
+    "sha256": "0be670f83baae9b462107c392cee5577f65f21444cd6397ee7303265cd2d8ff4"
+  },
+  "frieren_escudo": {
+    "duration": 1.2,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.50011,
+    "rms": 0.07385,
+    "sha256": "5fd3ae42bb061e2015f08216f847c436a9726638d80e4a56de79041ff488ca80"
+  },
+  "frieren_gaiola": {
+    "duration": 6.0,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.8137,
+    "rms": 0.22282,
+    "sha256": "3cc522c26964cb230672ea27bc2589215b11b75eda556b240a2e012122873243"
+  },
+  "qual_zoltraak_carga": {
+    "duration": 1.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.68977,
+    "rms": 0.15224,
+    "sha256": "6a441409c66734fcf2b26a060877e16713e5033391a432e03ae1c9e19e7345eb"
+  },
+  "qual_zoltraak": {
+    "duration": 1.2,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.68385,
+    "rms": 0.14439,
+    "sha256": "6cd50f0f4016d1a8234b94344f580ad1c58e07a68a5ad2ccd135729c7feb5580"
   }
 }

@@ -92,32 +92,49 @@ def aurora():
     return b
 
 def qual():
-    b=m.base();face(b,m.PLUM,m.SILVER,m.RED)
-    add(b,'body',[-5,12,-2.7],[10,12,5.4],m.SILVER)
+    """Anime reference (wiki profile, ep. 3): cream fur shoulder cape, long blonde hair and beard,
+    ashy-brown tattooed skin (on the skin texture), mask face, ragged yellow horns, fur wrist cuffs,
+    dark red claws and a floor-length dark grey loincloth with chain and a string of tusks.
+    Accessory palette: WHITE fur, IVORY fur shade/tusks, SKIN blonde, GOLD horn, NAVY cloth,
+    BLACK cloth folds, SILVER chain, RED claws."""
+    b=m.base()
+    pele=group(b,'pele_ombros',[0,24,0])
+    add(b,pele,[-6.6,19.6,-3.4],[13.2,4.6,6.8],m.WHITE)
     for side in [-1,1]:
-        add(b,'body',[side*2.5-1.8,18,-3],[3.6,3.5,.6],m.PLUM,side*22.5,[side*2.5,20,-2.8])
-        for y in [13,15,17]:add(b,'body',[side*2.2-1.3,y,-3.1],[2.6,1,.6],m.SILVER,side*22.5,[side*2.2,y,-2.9])
-        for layer in range(2):
-            n=('leftArm' if side>0 else 'rightArm') if layer==0 else group(b,'lower_arm_'+str(side),[side*5,16,0])
-            x=4.8 if side>0 else -8.8;y=12 if layer==0 else 6
-            add(b,n,[x,y,-2],[4,10,4],m.SILVER)
-            if layer==1:b[n]['rotation']=[0,0,-side*35]
-
-            for k in range(3):add(b,n,[x+k*1.1,y-.8,-2.5],[.65,2,1],m.BLACK,0)
-        horn(b,side,[(4,30),(6,31),(7.2,33.5),(7,36),(5.5,38)],m.PLUM)
-        add(b,'head',[side*4.1-.6,26,-3],[1.2,4,2],m.SILVER,side*22.5,[side*4,28,-2])
-    add(b,'head',[-2.3,24,-4.5],[4.6,2,.6],m.BLACK)
-    for i in range(5):add(b,'head',[-1.9+i*.8,25.2,-4.8],[.5,.65,.4],m.IVORY)
-    for n,x in [('leftLeg',0),('rightLeg',-4)]:
-        add(b,n,[x-.3,1,-2.1],[4.6,11,4.2],m.SILVER)
-        add(b,n,[x-.4,0,-3],[4.8,2,5.2],m.SILVER)
-        for i in range(3):add(b,n,[x+i*1.45-.15,-.05,-3.8],[.9,1,1.8],m.BLACK)
-    for i in range(7):
-        x=(i-3)*1.9;n=group(b,'mantle_'+str(i),[x,23,3])
-        bottom=[3,1.5,4,0,3,2,4][i]
-        add(b,n,[x-1,bottom+2,3.2],[2,21-bottom,.7],m.NAVY,(i-3)*4.5,[x,23,3])
-        add(b,n,[x-1,bottom,3.2],[1,3,.7],m.NAVY,(i-3)*4.5,[x,23,3])
-    for side in [-1,1]:add(b,'body',[side*4-2.4,22,-.5],[4.8,2.3,6],m.NAVY,side*22.5,[side*4,23,1])
+        add(b,pele,[side*5.7-1.5,18.6,-3.1],[3,2.4,6.2],m.WHITE)
+        add(b,pele,[side*6.9-.6,19.2,-2.4],[1.2,3.4,4.8],m.IVORY)
+    add(b,pele,[-4.6,23.4,-3.9],[9.2,2.0,1.6],m.WHITE)
+    add(b,pele,[-5.6,22.4,2.5],[11.2,3.4,1.6],m.WHITE)
+    for x in [-3.8,-.6,2.6]:add(b,pele,[x,18.9,-3.65],[1.4,1.2,.4],m.IVORY)
+    cabelo=group(b,'hair_cabelo',[0,24,0],'head')
+    add(b,cabelo,[-4.4,13.2,3.7],[8.8,17.6,1.4],m.SKIN)
+    add(b,cabelo,[-1.5,32,-1.5],[3,1.6,3],m.SKIN)
+    for side in [-1,1]:add(b,cabelo,[side*4.4-(.9 if side>0 else .1),17.5,-1.5],[1,12.5,5.2],m.SKIN)
+    barba=group(b,'hair_barba',[0,24,0],'head')
+    add(b,barba,[-2.8,12.6,-4.9],[5.6,11.6,1.3],m.SKIN)
+    add(b,barba,[-2.0,10.8,-4.8],[4,1.9,1.1],m.SKIN)
+    for side in [-1,1]:
+        n=group(b,'chifre_'+('dir' if side>0 else 'esq'),[side*3.6,31,.6],'head')
+        pts=[(4.0,30.6),(5.4,32.4),(6.5,34.7),(6.7,37.1),(5.9,39.3)]
+        for i in range(len(pts)-1):
+            segment(b,n,[side*pts[i][0],pts[i][1],.6],[side*pts[i+1][0],pts[i+1][1],.6],1.6-i*.28,m.GOLD)
+        # Ragged notches along the outer edge.
+        for y in [33.4,36.0]:add(b,n,[side*(6.4 if y<35 else 6.9)-.35,y,.25],[.7,.7,.7],m.GOLD)
+        arm='leftArm' if side>0 else 'rightArm';x=3.6 if side>0 else -8.4
+        cuff=group(b,'punho_'+('dir' if side>0 else 'esq'),[side*5,22,0],arm)
+        add(b,cuff,[x,12.4,-2.4],[4.8,2.4,4.8],m.WHITE)
+        claws=group(b,'garras_'+('dir' if side>0 else 'esq'),[side*5,22,0],arm)
+        for i in range(4):add(b,claws,[x+.65+i*.95,9.0,-1.6],[.55,3.1,.7],m.RED)
+    saia=group(b,'skirt_qual',[0,12,0])
+    add(b,saia,[-5.2,.4,-3.4],[10.4,12.0,1.0],m.NAVY)
+    add(b,saia,[-5.2,.4,2.4],[10.4,12.0,1.0],m.NAVY)
+    for x in [-5.6,4.6]:add(b,saia,[x,.4,-3.4],[1.0,12.0,6.8],m.NAVY)
+    add(b,saia,[-6.0,0,-3.9],[12.0,1.4,7.8],m.NAVY)
+    for x in [-2.6,1.4]:add(b,saia,[x,.6,-3.6],[.6,11.2,.25],m.BLACK)
+    cinto=group(b,'cinto_qual',[0,12,0])
+    add(b,cinto,[-4.9,11.6,-3.65],[9.8,.8,7.3],m.SILVER)
+    for i in range(7):add(b,cinto,[-3.7+i*1.2,9.9,-3.8],[.5,1.7,.5],m.IVORY)
+    add(b,cinto,[2.7,5.8,-3.75],[.5,5.8,.3],m.SILVER)
     return b
 
 def liebe():

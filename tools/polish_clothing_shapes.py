@@ -27,9 +27,7 @@ def polish(style,b):
             delta=-.6 if name.endswith('esq') else .6
             b[name]['pivot'][0]+=delta
             for c in b[name]['cubes']:c['origin'][0]+=delta
-        # A slightly longer front hem with separate leg parents, preserving walking.
-        for name in ['saia_esq','saia_dir']:
-            for c in b[name]['cubes']:c['origin'][1]-=.6;c['size'][1]+=.6
+        # The A-line skirt is now cloth on the body (frieren_saia_*), wide enough for walking legs.
     elif style=='shadow':
         for name in list(b):
             if name.startswith('capa_'):del b[name]

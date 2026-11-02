@@ -44,29 +44,59 @@ def frieren():
         b[name]=a.bone(name,[side*4.22,27,0],'armorHead')
         c(b,name,[side*4.22-.12,25.4,-.5],[.24,1.7,.28],a.GOLD)
         c(b,name,[side*4.22-.22,24.8,-.63],[.44,.8,.4],a.RUBY)
+    # Anime reference: white dress, striped shirt only at the neckline, short gold-trimmed capelet,
+    # dark belt, A-line skirt with gold hem, wide sleeves with gold cuffs, dark tights and brown boots.
     c(b,'armorBody',[-4.15,12,-2.13],[8.3,11.8,4.26],a.WHITE)
-    c(b,'armorBody',[-1.85,14,-2.37],[3.7,8.6,.3],a.INK)
-    for y in [14.6,16.7,18.8,20.9]:c(b,'armorBody',[-1.7,y,-2.58],[3.4,.7,.18],a.IVORY)
-    for x in [-2.4,1.85]:c(b,'armorBody',[x,13.8,-2.66],[.55,9.15,.24],a.GOLD)
-    c(b,'armorBody',[-4.36,11.8,-2.86],[8.72,1.25,5.72],a.NAVY)
-    c(b,'armorBody',[-.55,11.95,-3.08],[1.1,.95,.25],a.GOLD)
-    c(b,'armorBody',[-4.25,22.2,-2.4],[8.5,1.8,4.8],a.WHITE)
-    c(b,'armorBody',[-3.6,23,-2.55],[7.2,.45,4.8],a.GOLD)
-    # Short shoulder mantle forms the distinct bell-shaped upper silhouette.
-    for side,name,x in [(-1,'manto_esq',-5.9),(1,'manto_dir',.3)]:
-        b[name]=a.bone(name,[side*3.8,23,0],'armorBody')
-        c(b,name,[x,20.2,-2.62],[5.6,3.4,5.24],a.WHITE,[side*3.8,23,0],[0,0,side*9])
-        c(b,name,[x,20.05,-2.68],[5.6,.6,5.36],a.GOLD,[side*3.8,23,0],[0,0,side*9])
-    # The two front skirts follow their legs rather than cutting through them.
-    for side,name,leg,x in [(-1,'saia_esq','armorRightLeg',-4.75),(1,'saia_dir','armorLeftLeg',0)]:
-        b[name]=a.bone(name,[side*2.2,12,0],leg)
-        c(b,name,[x,8.4,-2.62],[4.75,4.6,5.24],a.WHITE,[side*2.2,12,0],[0,0,side*5])
-        c(b,name,[x-.03,8.3,-2.7],[4.81,.58,5.4],a.GOLD,[side*2.2,12,0],[0,0,side*5])
+    c(b,'armorBody',[-1.5,19.4,-2.37],[3.0,3.4,.3],a.INK)
+    for y in [19.9,21.3]:c(b,'armorBody',[-1.4,y,-2.56],[2.8,.65,.16],a.IVORY)
+    c(b,'armorBody',[-4.36,11.6,-2.36],[8.72,1.2,4.72],a.NAVY)
+    c(b,'armorBody',[-2.7,23.0,-2.7],[5.4,1.6,5.4],a.WHITE)
+    c(b,'armorBody',[-2.75,24.3,-2.75],[5.5,.35,5.5],a.GOLD)
+    # Capelet yoke over the shoulders; its lower edge is cloth (frieren_capa_*), simulated in Java.
+    c(b,'armorBody',[-6.4,21.6,-2.75],[12.8,2.4,5.5],a.WHITE)
+    capelet_and_skirt(b)
     for name,x in [('armorLeftArm',3.95),('armorRightArm',-8.25)]:
-        c(b,name,[x,13,-2.2],[4.3,9.6,4.4],a.WHITE)
-        for y in [13.05,15.9]:c(b,name,[x-.07,y,-2.27],[4.44,.65,4.54],a.GOLD)
-    limb_legs(b,a.NAVY,a.BROWN,4.8,a.LEATHER)
+        c(b,name,[x,15.6,-2.2],[4.3,8.0,4.4],a.WHITE)
+        # Wide bell cuff with the gold band at the opening.
+        c(b,name,[x-.35,13.0,-2.55],[5.0,2.8,5.1],a.WHITE)
+        c(b,name,[x-.42,12.75,-2.62],[5.14,.65,5.24],a.GOLD)
+    limb_legs(b,a.NAVY,a.BROWN,5.2,a.LEATHER)
     return b
+
+# Cloth panels for Frieren. Names, rows and columns must match TecidoFrieren.
+CAPA={'front':4,'back':4,'left':2,'right':2};SAIA={'front':3,'back':3,'left':2,'right':2}
+CAPA_LINHAS,SAIA_LINHAS=2,3
+def capelet_and_skirt(b):
+    def panel(prefix,face,col,row,top,height,half_w,half_d,cols,flare,gold):
+        name=f'frieren_{prefix}_{face}_{col}_{row}'
+        parent='armorBody' if row==0 else f'frieren_{prefix}_{face}_{col}_{row-1}'
+        w=(half_w+flare*row)*2;d=(half_d+flare*row)*2;bottom=top-height
+        if face in ['front','back']:
+            span=w/cols;x=-w/2+col*span
+            if prefix=='capa':
+                # Front of the capelet stays open over the striped shirt.
+                if face=='front':
+                    side=-1 if col<2 else 1;span=(w/2-1.25)/2;x=-w/2+col*span if col<2 else 1.25+(col-2)*span
+            z=-(half_d+flare*row)-.32 if face=='front' else half_d+flare*row
+            origin=[x,bottom,z];size=[span,height,.32];pivot=[x+span/2,top,z+.16]
+        else:
+            span=d/cols;z=-d/2+col*span
+            x=-(half_w+flare*row)-.32 if face=='left' else half_w+flare*row
+            origin=[x,bottom,z];size=[.32,height,span];pivot=[x+.16,top,z+span/2]
+        b[name]=a.bone(name,pivot,parent)
+        garment(b,name,origin,size,a.WHITE)
+        if gold:
+            g=list(origin);gs=list(size);gs[1]=.55;g[1]=bottom-.05
+            if face in ['front','back']:g[2]-=.04 if face=='front' else -.04;gs[2]+=.04
+            else:g[0]-=.04 if face=='left' else -.04;gs[0]+=.04
+            garment(b,name,g,gs,a.GOLD)
+    for face,cols in CAPA.items():
+        for col in range(cols):
+            for row in range(CAPA_LINHAS):panel('capa',face,col,row,21.6-row*1.6,1.65,6.4,2.75,cols,.15,row==CAPA_LINHAS-1)
+    # Skirt ends above the knee so the dark tights show between hem and boots, as in the anime.
+    for face,cols in SAIA.items():
+        for col in range(cols):
+            for row in range(SAIA_LINHAS):panel('saia',face,col,row,12.0-row*1.5,1.55,4.6,2.5,cols,.4,row==SAIA_LINHAS-1)
 
 def shadow():
     b=a.skeleton();c=garment

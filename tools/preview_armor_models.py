@@ -25,6 +25,9 @@ def mesh(style,pose_name="idle",pose_rotations=None):
  if style=='gojo' and pose_name.startswith('gojo_cloth_'):
   sample=json.loads((ROOT/'build/gojo-cloth-samples.json').read_text(encoding='utf-8'))[int(pose_name[len('gojo_cloth_'):])]
   for name,(x,y,z) in sample['ossos'].items():bones[name]['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
+ if style=='frieren' and pose_name.startswith('frieren_cloth_'):
+  sample=json.loads((ROOT/'build/frieren-cloth-samples.json').read_text(encoding='utf-8'))[int(pose_name[len('frieren_cloth_'):])]
+  for name,(x,y,z) in sample['ossos'].items():bones[name]['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
  if style=='shadow' and pose_name.startswith('cid_'):
   samples=json.loads((ROOT/'build/cid-cape-samples.json').read_text());sample=samples[pose_name[4:]]
   for name,bone in bones.items():
@@ -59,7 +62,7 @@ def mesh(style,pose_name="idle",pose_rotations=None):
  if style not in ['cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora']:
   for n,parent,o,size in [('skin_head','armorHead',[-4,24,-4],[8,8,8]),('skin_left','armorLeftArm',[4,12,-2],[4,12,4]),('skin_right','armorRightArm',[-8,12,-2],[4,12,4])]:
    bones[n]={'name':n,'parent':parent,'cubes':[{'origin':o,'size':size,'uv':{f:skin for f in faces}}]}
-  if pose_name!='idle' and not pose_name.startswith(('cid_','gojo_cloth_')):
+  if pose_name!='idle' and not pose_name.startswith(('cid_','gojo_cloth_','frieren_cloth_')):
    for n,angle in [('armorLeftArm',-35 if pose_name=='walk' else -75),('armorRightArm',35 if pose_name=='walk' else -115),('armorLeftLeg',30 if pose_name=='walk' else 0),('armorRightLeg',-30 if pose_name=='walk' else 0),('armorLeftBoot',30 if pose_name=='walk' else 0),('armorRightBoot',-30 if pose_name=='walk' else 0)]:bones[n]['rotation']=[angle,0,0]
  if pose_rotations:
   for source,target in [('right_arm','armorRightArm'),('left_arm','armorLeftArm'),('head','armorHead'),('torso','armorBody')]:
