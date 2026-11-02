@@ -2,6 +2,12 @@ package com.cauansilva.arcanecontrol.core.client.render;
 
 import com.cauansilva.arcanecontrol.ConfigCliente;
 import com.cauansilva.arcanecontrol.core.vfx.PerfilVfxGojo;
+import com.cauansilva.arcanecontrol.core.vfx.AuraDespertarGojo;
+import com.cauansilva.arcanecontrol.core.vfx.ChuvaInformacoesGojo;
+import com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo;
+import com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo;
+import com.cauansilva.arcanecontrol.core.vfx.TeleporteGojo;
+import com.cauansilva.arcanecontrol.core.vfx.MorteCerebralGojo;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -61,48 +67,84 @@ public final class RenderGojo {
         return true;
     }
     private static void azul(PoseStack pose,Vec3 cam,Vec3 centro,double t,float alpha) {
-        double r=.72*(.94+.06*Math.sin(t*.3));
-        esfera(pose,cam,centro,r,0,AZUL,alpha,false);
-        esfera(pose,cam,centro,r*1.65,6,AZUL,alpha*.4f,true);
-        fitas(()->{
-            int n=reduzido()?5:10;
+        double r=com.cauansilva.arcanecontrol.core.vfx.FluxoAzulGojo.raio(t);
+        esfera(pose,cam,centro,r,10,AZUL,alpha,false);
+        esfera(pose,cam,centro,r*1.65,6,AZUL,alpha*.3f,true);
+        fitas(11,()->{
+            int n=reduzido()?6:12,passos=reduzido()?16:32;
             for(int j=0;j<n;j++) {
                 Vec3 anterior=null;
-                for(int i=0;i<=24;i++) {
-                    double s=i/24.0,ang=j*2.399963+s*5-t*.09,raio=(1-s)*4.5+.75;
-                    Vec3 q=centro.add(Math.cos(ang)*raio,Math.sin(s*Math.PI+j)*.6*(1-s),Math.sin(ang)*raio);
-                    if(anterior!=null) fita(pose,cam,anterior,q,.055,s*4,(s+1.0/24)*4,AZUL,alpha*.75f);
+                for(int i=0;i<=passos;i++) {
+                    double u=i/(double)passos;
+                    var p=com.cauansilva.arcanecontrol.core.vfx.FluxoAzulGojo.fluxo(j,u,t);
+                    Vec3 q=centro.add(p.x(),p.y(),p.z());
+                    float luz=alpha*(float)com.cauansilva.arcanecontrol.core.vfx.FluxoAzulGojo.pulso(j,u,t);
+                    if(anterior!=null){
+                        fita(pose,cam,anterior,q,.19+.16*u,(i-1d)/passos,u,AZUL,luz*.22f);
+                        fita(pose,cam,anterior,q,.08+.1*u,(i-1d)/passos,u,AZUL,luz);
+                    }
+                    anterior=q;
+                }
+            }
+            for(int j=0;j<(reduzido()?2:3);j++){
+                Vec3 anterior=null;int passosArco=reduzido()?24:48;
+                for(int i=0;i<=passosArco;i++){
+                    double u=i/(double)passosArco;
+                    var p=com.cauansilva.arcanecontrol.core.vfx.FluxoAzulGojo.arco(j,u,t);
+                    Vec3 q=centro.add(p.x(),p.y(),p.z());
+                    if(anterior!=null)fita(pose,cam,anterior,q,.1,(i-1d)/passosArco,u,0x75DFFF,alpha*.85f*(float)Math.sin(u*Math.PI));
                     anterior=q;
                 }
             }
         });
     }
     private static void vermelho(PoseStack pose,Vec3 cam,Vec3 origem,Vec3 dir,double t,float alpha) {
-        Vec3 foco=origem.add(dir.scale(1.8));
-        if(t<PerfilVfxGojo.VERMELHO_DISPARO) {
-            double r=.1+.32*PerfilVfxGojo.suave(t/13);
-            esfera(pose,cam,foco,r,1,VERMELHO,alpha,false);
-            esfera(pose,cam,foco,r*2,6,VERMELHO,alpha*.5f,true);
-        } else {
-            double idade=t-13,escala=1+idade*.17;
-            esfera(pose,cam,foco,.5,1,VERMELHO,alpha,false);
-            Vec3 lado=direita(dir),alto=lado.cross(dir).normalize();
-            fitas(()->{
-                // Onda inteira aparece no impacto: nao sugere um projetil que o servidor nao simula.
-                for(int j=0;j<(reduzido()?6:12);j++) {
-                    double a=j*Math.PI*2/(reduzido()?6:12);
-                    Vec3 radial=lado.scale(Math.cos(a)).add(alto.scale(Math.sin(a)));
-                    Vec3 anterior=foco;
-                    for(int i=1;i<=12;i++) {
-                        double d=i*22.0/12;
-                        Vec3 q=origem.add(dir.scale(d)).add(radial.scale((.2+d*.12)*escala));
-                        fita(pose,cam,anterior,q,.12,0,d*.2,VERMELHO,alpha*.65f);
+        Vec3 foco=origem.add(dir.scale(1.8)),lado=direita(dir),alto=lado.cross(dir).normalize();
+        double r=com.cauansilva.arcanecontrol.core.vfx.DescargaVermelhoGojo.raio(t);
+        esfera(pose,cam,foco,r,12,VERMELHO,alpha,false);
+        esfera(pose,cam,foco,r*2,6,VERMELHO,alpha*.5f,true);
+        fitas(13,()->{
+            if(t<PerfilVfxGojo.VERMELHO_DISPARO){
+                int passos=reduzido()?16:32;
+                for(int j=0;j<(reduzido()?3:6);j++){
+                    Vec3 anterior=null;
+                    for(int i=0;i<=passos;i++){
+                        double u=i/(double)passos;var p=com.cauansilva.arcanecontrol.core.vfx.DescargaVermelhoGojo.carga(j,u,t);
+                        Vec3 q=foco.add(lado.scale(p.lateral())).add(alto.scale(p.vertical())).add(dir.scale(p.frente()));
+                        if(anterior!=null)fita(pose,cam,anterior,q,.035,(i-1d)/passos,u,VERMELHO,alpha*.8f*(float)Math.sin(u*Math.PI));
                         anterior=q;
                     }
                 }
-                for(int j=0;j<3;j++) anel(pose,cam,foco.add(dir.scale(1+j*6)),dir,(1+j*1.3)*escala,.16,VERMELHO,alpha*.8f,t+j);
-            });
-        }
+            }else{
+                // Full cone is visible at impact: the server has no travelling Red projectile.
+                int total=reduzido()?6:12,passos=reduzido()?12:24;
+                float impacto=(float)com.cauansilva.arcanecontrol.core.vfx.DescargaVermelhoGojo.impacto(t);
+                for(int j=0;j<total;j++){
+                    Vec3 anterior=foco;
+                    for(int i=1;i<=passos;i++){
+                        double u=i/(double)passos;var p=com.cauansilva.arcanecontrol.core.vfx.DescargaVermelhoGojo.descarga(j,total,u,t);
+                        Vec3 q=foco.add(lado.scale(p.lateral())).add(alto.scale(p.vertical())).add(dir.scale(p.frente()));
+                        float luz=alpha*(.3f+.7f*impacto)*(float)(1-u*.5);
+                        fita(pose,cam,anterior,q,.28,0,u,VERMELHO,luz*.22f);
+                        fita(pose,cam,anterior,q,.085+impacto*.065,0,u,0xFF5161,luz);
+                        anterior=q;
+                    }
+                }
+                int passosOnda=reduzido()?32:64;
+                for(int j=0;j<3;j++){
+                    Vec3 anterior=null;
+                    for(int i=0;i<=passosOnda;i++){
+                        double u=i/(double)passosOnda;var p=com.cauansilva.arcanecontrol.core.vfx.DescargaVermelhoGojo.onda(j,u,t);
+                        Vec3 q=foco.add(lado.scale(p.lateral())).add(alto.scale(p.vertical())).add(dir.scale(p.frente()));
+                        if(anterior!=null){
+                            fita(pose,cam,anterior,q,1.+impacto*.35,(i-1d)/passosOnda,u,VERMELHO,alpha*.18f);
+                            fita(pose,cam,anterior,q,.16+impacto*.2,(i-1d)/passosOnda,u,0xFF7981,alpha*(.4f+.6f*impacto));
+                        }
+                        anterior=q;
+                    }
+                }
+            }
+        });
     }
     private static void roxo(PoseStack pose,Vec3 cam,Vec3 origem,Vec3 dir,double t,float alpha) {
         Vec3 centro=origem.add(dir.scale(PerfilVfxGojo.ROXO_ORIGEM)),lado=direita(dir);
@@ -118,25 +160,30 @@ public final class RenderGojo {
                     Vec3 anterior=blue;
                     for(int i=1;i<=20;i++) {
                         double s=i/20.0;
-                        Vec3 q=blue.lerp(red,s).add(0,Math.sin(s*Math.PI)*Math.sin(t*.12+j)*.6,0);
+                        var ponto=com.cauansilva.arcanecontrol.core.vfx.CoroaRoxoGojo.ponte(j,s,t);
+                        Vec3 q=centro.add(lado.scale(ponto.lateral())).add(0,ponto.vertical(),0);
                         fita(pose,cam,anterior,q,.06,s*3,(s+.05)*3,j%2==0?AZUL:VERMELHO,alpha*.7f);anterior=q;
                     }
                 }
             });
-            if(t>21) esfera(pose,cam,centro,(t-21)/9*1.6,2,ROXO,alpha*(float)PerfilVfxGojo.suave((t-21)/9),false);
+            if(t>21){
+                double formar=com.cauansilva.arcanecontrol.core.vfx.CoroaRoxoGojo.formacao(t);
+                esfera(pose,cam,centro,formar*1.6,2,ROXO,alpha*(float)formar,false);
+                coroaRoxo(pose,cam,centro,dir,t,alpha*(float)formar,formar*1.6);
+            }
         } else {
             Vec3 pos=origem.add(dir.scale(PerfilVfxGojo.distanciaRoxo(t)));
             esfera(pose,cam,pos,3.6,2,ROXO,alpha,false);
             esfera(pose,cam,pos,4.5,6,ROXO,alpha*.5f,true);
+            coroaRoxo(pose,cam,pos,dir,t,alpha,3.6);
             fitas(()->{
                 int n=reduzido()?4:8;
                 Vec3 alto=lado.cross(dir).normalize();
                 for(int j=0;j<n;j++) {
                     Vec3 anterior=null;
                     for(int i=0;i<=24;i++) {
-                        double s=i/24.0,a=j*Math.PI*2/n+s*9-t*.12;
-                        Vec3 q=pos.subtract(dir.scale(s*Math.min(12,(t-30)*1.6)))
-                                .add(lado.scale(Math.cos(a)*(3.7+s))).add(alto.scale(Math.sin(a)*(3.7+s)));
+                        double s=i/24.0;var ponto=com.cauansilva.arcanecontrol.core.vfx.CoroaRoxoGojo.rastro(j,n,s,t);
+                        Vec3 q=pos.add(dir.scale(ponto.frente())).add(lado.scale(ponto.lateral())).add(alto.scale(ponto.vertical()));
                         if(anterior!=null) fita(pose,cam,anterior,q,.14*(1-s*.7),s*5,(s+1.0/24)*5,ROXO,alpha*(float)(1-s));
                         anterior=q;
                     }
@@ -145,12 +192,42 @@ public final class RenderGojo {
         }
         if(t>12) raiosRoxo(pose,cam,t<=30?centro:origem.add(dir.scale(PerfilVfxGojo.distanciaRoxo(t))),dir,t,alpha);
     }
+    private static void coroaRoxo(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha,double raio){
+        if(raio<.05)return;Vec3 lado=direita(dir),alto=lado.cross(dir).normalize();
+        fitas(9,()->{
+            int faixas=reduzido()?2:3,passos=reduzido()?24:48;
+            for(int j=0;j<faixas;j++){
+                Vec3 anterior=null;
+                for(int i=0;i<=passos;i++){
+                    double u=i/(double)passos;var p=com.cauansilva.arcanecontrol.core.vfx.CoroaRoxoGojo.ponto(j,u,t,raio);
+                    Vec3 q=centro.add(lado.scale(p.lateral())).add(alto.scale(p.vertical())).add(dir.scale(p.frente()));
+                    if(anterior!=null)fita(pose,cam,anterior,q,raio*.055,(i-1d)/passos,u,j==1?0xF1CCFF:ROXO,alpha*.75f);anterior=q;
+                }
+            }
+        });
+    }
     public static void roxoMaximo(PoseStack pose,Vec3 cam,Vec3 centro,double raio,double t,float alpha){
         preparar(t);
         try{
-            esfera(pose,cam,centro,raio,2,ROXO,alpha,false);
+            esfera(pose,cam,centro,raio,t>=90?23:2,ROXO,alpha,false);
             esfera(pose,cam,centro,raio*1.18,6,ROXO,alpha*.4f,true);
+            coroaRoxo(pose,cam,centro,new Vec3(0,0,1),t,alpha,raio);
             fitas(8,()->geometriaRaios(pose,cam,centro,new Vec3(0,0,1),t,alpha,raio/3.6));
+            if(t>=RoxoMaximoGojo.COLAPSO){
+                esfera(pose,cam,centro,RoxoMaximoGojo.raioExplosao(t),22,ROXO,alpha*(float)RoxoMaximoGojo.alphaExplosao(t),true);
+                fitas(9,()->{
+                    int passos=reduzido()?32:64;
+                    float intensidade=alpha*(float)RoxoMaximoGojo.alphaChoque(t);
+                    for(int plano=0;plano<3;plano++){
+                        Vec3[] pontos=new Vec3[passos+1];float[] luz=new float[passos+1];
+                        for(int i=0;i<=passos;i++){
+                            var p=RoxoMaximoGojo.anel(plano,i/(double)passos,t);pontos[i]=centro.add(p.x(),p.y(),p.z());luz[i]=intensidade;
+                        }
+                        faixaSuave(pose,cam,pontos,.7,0xA52AFF,luz,.55f);
+                        faixaSuave(pose,cam,pontos,.24,0xF4D4FF,luz,1);
+                    }
+                });
+            }
         }finally{restaurar();}
     }
     private static void raiosRoxo(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 dir,double t,float alpha){
@@ -174,31 +251,163 @@ public final class RenderGojo {
                         fita(pose,cam,anterior,q,.24,0,1,ROXO,pulso*.55f);
                         fita(pose,cam,anterior,q,.075,0,1,0xF2DEFF,pulso);
                     }
-                    if(i==3||i==5){Vec3 ramo=q.add(lado.scale(Math.sin(j*2)*1.7)).add(alto.scale(1.3));fita(pose,cam,q,ramo,.065,0,1,0xEAD2FF,pulso);}
+                    if(i==3||i==5){var r=com.cauansilva.arcanecontrol.core.vfx.RaiosRoxo.ramo(j,i,t);Vec3 ramo=centro.add(lado.scale(r.lateral()*escala)).add(alto.scale(r.vertical()*escala)).add(dir.scale(r.frente()*escala));fita(pose,cam,q,ramo,.065,0,1,0xEAD2FF,pulso);}
                     anterior=q;
                 }
             }
     }
     private static void dominio(PoseStack pose,Vec3 cam,Vec3 origem,double t,float alpha) {
         double raio=PerfilVfxGojo.raioDominio(t);
-        if(raio>.1) esfera(pose,cam,origem,raio,cam.distanceTo(origem)<raio-.5?4:7,BRANCO,alpha,false);
+        boolean interior=com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.interior(cam.distanceTo(origem),raio);
+        if(raio>.1)esfera(pose,cam,origem,raio,interior?14:15,BRANCO,alpha,false);
+        // Exterior spectators must not see internal objects drawn over the opaque shell.
+        if(!interior)return;
         double presenca=PerfilVfxGojo.presencaDominio(t,cam.distanceTo(origem));
-        if(ConfigCliente.AMBIENTE_DOMINIO.get() && presenca>.01)
-            pisoAstral(pose,cam,origem,raio,(float)(presenca*.95));
-        if(t<20) return;
-        Vec3 horizonte=origem.add(0,8,0);
-        esfera(pose,cam,horizonte,3.3,7,BRANCO,alpha,false);
-        esfera(pose,cam,horizonte,3.7,6,0x647AB0,alpha*.12f,true);
-        fitas(()->{
-            for(int j=0;j<4;j++) anel(pose,cam,horizonte,new Vec3(.15,1,.2),4+j*1.1,.09+j*.03,0x91A9D9,alpha*(.18f-j*.025f),t*.2+j);
-            int n=reduzido()?18:40;
-            for(int j=0;j<n;j++) {
-                double a=j*2.399963+t*.002,r=6+(j%7)*2.1;
-                Vec3 ponto=origem.add(Math.cos(a)*r,.1,Math.sin(a)*r);
-                Vec3 q=ponto.add(Math.sin(j*1.9)*.8,2+(j%5)*1.8,Math.cos(j)*.8);
-                fita(pose,cam,ponto,q,.018,0,4,BRANCO,alpha*.22f);
+        if(ConfigCliente.AMBIENTE_DOMINIO.get()&&presenca>.01)pisoAstral(pose,cam,origem,raio,(float)(presenca*.95));
+        if(t<20||presenca<=.01)return;
+        float intensidade=alpha*(float)presenca;
+        fitas(17,()->{
+            int passos=reduzido()?com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.PASSOS_REDUZIDOS:com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.PASSOS;
+            for(int j=0;j<(reduzido()?com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.FAIXAS_REDUZIDAS:com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.FAIXAS);j++){
+                Vec3 anterior=null;
+                for(int i=0;i<=passos;i++){
+                    double u=i/(double)passos;var p=com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.informacao(j,u,t);
+                    Vec3 q=origem.add(p.x(),p.y(),p.z());
+                    float luz=intensidade*(float)com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.pulso(j,u,t);
+                    if(anterior!=null){
+                        int cor=com.cauansilva.arcanecontrol.core.vfx.VazioInfinitoGojo.cor(j,u,t);
+                        fita(pose,cam,anterior,q,.28,(i-1d)/passos,u,cor,luz*.38f);
+                        fita(pose,cam,anterior,q,.1,(i-1d)/passos,u,cor,luz);
+                    }
+                    anterior=q;
+                }
             }
         });
+    }
+    public static void morteCerebral(PoseStack pose,Vec3 cam,Vec3 alvo,double tick){
+        if(!ativo())return;
+        float alpha=(float)MorteCerebralGojo.alpha(tick);if(alpha<.004f)return;
+        preparar(tick);
+        try{fitas(25,()->{
+            int passos=reduzido()?6:12;
+            for(int j=0;j<(reduzido()?MorteCerebralGojo.FAIXAS_REDUZIDAS:MorteCerebralGojo.FAIXAS);j++){
+                Vec3[] pontos=new Vec3[passos+1];float[] luz=new float[passos+1];
+                for(int i=0;i<=passos;i++){
+                    double u=i/(double)passos;var p=MorteCerebralGojo.linha(j,u,tick);
+                    pontos[i]=alvo.add(p.x(),p.y(),p.z());luz[i]=alpha*(float)(1-u*.7);
+                }
+                int cor=VazioInfinitoGojo.cor(j,.5,tick);
+                faixaSuave(pose,cam,pontos,.13,cor,luz,.4f);faixaSuave(pose,cam,pontos,.045,cor,luz,1);
+            }
+        });}finally{restaurar();}
+    }
+    public static void teleporte(PoseStack pose,Vec3 cam,Vec3 origem,Vec3 destino,double tick){
+        if(!ativo())return;
+        Vec3 delta=destino.subtract(origem),frente=new Vec3(delta.x,0,delta.z).normalize();
+        if(frente.lengthSqr()<1e-8)frente=new Vec3(0,0,1);
+        final Vec3 eixo=frente,lado=direita(eixo);preparar(tick);
+        try{fitas(24,()->{
+            int passos=reduzido()?16:32;
+            for(int ponta=0;ponta<2;ponta++){
+                boolean chegada=ponta==1;Vec3 centro=chegada?destino:origem;
+                float alpha=(float)(chegada?TeleporteGojo.chegada(tick):TeleporteGojo.saida(tick));
+                if(alpha<.004f)continue;
+                for(int j=0;j<(reduzido()?2:3);j++){
+                    Vec3[] pontos=new Vec3[passos+1];float[] luz=new float[passos+1];
+                    for(int i=0;i<=passos;i++){
+                        double u=i/(double)passos;var p=TeleporteGojo.arco(j,u,tick,chegada);
+                        pontos[i]=centro.add(lado.scale(p.x())).add(0,p.y(),0).add(eixo.scale(p.z()));luz[i]=alpha*(float)Math.sin(u*Math.PI);
+                    }
+                    faixaSuave(pose,cam,pontos,.19,0x279DFF,luz,.45f);faixaSuave(pose,cam,pontos,.055,0xA5EDFF,luz,1);
+                }
+                for(int i=0;i<(reduzido()?8:16);i++){
+                    var p=TeleporteGojo.fragmento(i,tick,chegada);Vec3 q=centro.add(lado.scale(p.x())).add(0,p.y(),0).add(eixo.scale(p.z()));
+                    fita(pose,cam,q,q.add(0,.12,0),.04,0,1,0xB7F1FF,alpha*.8f);
+                }
+            }
+            float rastro=(float)TeleporteGojo.rastro(tick);
+            if(rastro>.004f)for(int j=0;j<(reduzido()?2:4);j++){
+                Vec3[] pontos=new Vec3[passos+1];float[] luz=new float[passos+1];
+                for(int i=0;i<=passos;i++){
+                    double u=i/(double)passos;var p=TeleporteGojo.trilha(j,u,tick,delta.x,delta.y,delta.z);pontos[i]=origem.add(p.x(),p.y(),p.z());luz[i]=rastro;
+                }
+                faixaSuave(pose,cam,pontos,.14,0x299BFF,luz,.35f);faixaSuave(pose,cam,pontos,.035,0xB9F5FF,luz,1);
+            }
+        });}finally{restaurar();}
+    }
+    public static void chuvaInformacoes(PoseStack pose,Vec3 cam,Vec3 centro,double tick){
+        if(!ativo())return;
+        float alpha=(float)ChuvaInformacoesGojo.alpha(tick);if(alpha<.004f)return;
+        preparar(tick);
+        try{fitas(21,()->{
+            int passos=reduzido()?ChuvaInformacoesGojo.PASSOS_REDUZIDOS:ChuvaInformacoesGojo.PASSOS;
+            int total=reduzido()?ChuvaInformacoesGojo.FAIXAS_REDUZIDAS:ChuvaInformacoesGojo.FAIXAS;
+            for(int j=0;j<total;j++){
+                float presenca=(float)ChuvaInformacoesGojo.presenca(j,tick);
+                Vec3[] pontos=new Vec3[passos+1];float[] luz=new float[passos+1];
+                for(int i=0;i<=passos;i++){
+                    double u=i/(double)passos;var p=ChuvaInformacoesGojo.coluna(j,u,tick);
+                    pontos[i]=centro.add(p.x(),p.y(),p.z());luz[i]=alpha*presenca*(float)ChuvaInformacoesGojo.luz(u);
+                }
+                int cor=VazioInfinitoGojo.cor(j,.5,tick);
+                faixaSuave(pose,cam,pontos,.22,cor,luz,.3f);
+                faixaSuave(pose,cam,pontos,.065,cor,luz,1);
+                int marcas=reduzido()?2:4;
+                for(int m=0;m<marcas;m++){
+                    double u=(m+.5)/marcas;var p=ChuvaInformacoesGojo.coluna(j,u,tick);
+                    Vec3 q=centro.add(p.x(),p.y(),p.z()),lado=direita(cam.subtract(q));
+                    float brilho=alpha*presenca*(float)ChuvaInformacoesGojo.luz(u)*.85f;
+                    fita(pose,cam,q.subtract(lado.scale(.16)),q.add(lado.scale(.16)),.025,0,1,cor,brilho);
+                    fita(pose,cam,q.add(0,-.1,0),q.add(0,.1,0),.025,0,1,cor,brilho);
+                }
+            }
+        });}finally{restaurar();}
+    }
+    public static void despertar(PoseStack pose,Vec3 cam,Vec3 corpo,Vec3 direcao,double idade,float fade){
+        if(!ativo())return;
+        Vec3 frente=new Vec3(direcao.x,0,direcao.z).normalize();
+        if(frente.lengthSqr()<1e-8)frente=new Vec3(0,0,1);
+        final Vec3 eixo=frente,lado=direita(eixo);
+        float intensidade=(float)AuraDespertarGojo.intensidade(idade)*fade;
+        if(intensidade<.004f)return;
+        preparar(idade);
+        try{
+            fitas(20,()->{
+                int passos=reduzido()?12:24;
+                for(int j=0;j<(reduzido()?3:6);j++){
+                    Vec3[] pontos=new Vec3[passos+1];float[] luz=new float[passos+1];
+                    for(int i=0;i<=passos;i++){
+                        double u=i/(double)passos;var p=AuraDespertarGojo.fio(j*2,u,idade);
+                        pontos[i]=corpo.add(lado.scale(p.lateral())).add(0,p.altura(),0).add(eixo.scale(p.frente()));
+                        luz[i]=intensidade*.33f*(float)Math.sin(u*Math.PI);
+                    }
+                    faixaSuave(pose,cam,pontos,.36,0x178BFF,luz,1);
+                }
+            });
+            fitas(19,()->{
+            int passos=reduzido()?12:24;
+            for(int j=0;j<(reduzido()?6:12);j++){
+                Vec3[] pontos=new Vec3[passos+1];float[] luz=new float[passos+1];
+                for(int i=0;i<=passos;i++){
+                    double u=i/(double)passos;var p=AuraDespertarGojo.fio(j,u,idade);
+                    pontos[i]=corpo.add(lado.scale(p.lateral())).add(0,p.altura(),0).add(eixo.scale(p.frente()));
+                    luz[i]=intensidade*(float)AuraDespertarGojo.pulso(j,u,idade);
+                }
+                faixaSuave(pose,cam,pontos,.23,0x249BFF,luz,.4f);
+                faixaSuave(pose,cam,pontos,.065,j%3==0?0xE1F7FF:0x55DFFF,luz,1);
+            }
+            for(int j=0;j<(reduzido()?12:24);j++){
+                var p=AuraDespertarGojo.particula(j,idade);
+                Vec3 q=corpo.add(lado.scale(p.lateral())).add(0,p.altura(),0).add(eixo.scale(p.frente()));
+                fita(pose,cam,q,q.add(0,.11,0),.045,0,1,0xC4EFFF,intensidade*(float)AuraDespertarGojo.brilhoParticula(j,idade));
+            }
+            double r=AuraDespertarGojo.raioOnda(idade);
+            if(r>0){
+                float luz=fade*(float)AuraDespertarGojo.alphaOnda(idade);
+                anel(pose,cam,corpo.add(0,.07,0),CIMA,r,.2,0x279DFF,luz*.4f,0);
+                anel(pose,cam,corpo.add(0,.07,0),CIMA,r,.055,0xC2F6FF,luz,0);
+            }
+        });}finally{restaurar();}
     }
     public static boolean infinito(PoseStack pose,Player p,Vec3 cam,float parcial) {
         if(!ativo()) return false;
@@ -225,10 +434,10 @@ public final class RenderGojo {
     public static void ceu(PoseStack pose,Vec3 camera,double tick,float alpha) {
         if(!ativo()) return;
         preparar(tick);
-        try {esfera(pose,camera,camera,100,4,BRANCO,alpha,false);} finally {restaurar();}
+        try {esfera(pose,camera,camera,100,14,BRANCO,alpha,false);} finally {restaurar();}
     }
     private static void pisoAstral(PoseStack pose,Vec3 cam,Vec3 centro,double raio,float alpha) {
-        selecionar(false);shader.safeGetUniform("EffectMode").set(4f);
+        selecionar(false);shader.safeGetUniform("EffectMode").set(18f);
         var b=Tesselator.getInstance().getBuilder();var m=pose.last().pose();
         b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
         int lados=reduzido()?32:64;
@@ -268,7 +477,9 @@ public final class RenderGojo {
         Vec3 view=cam.subtract(centro).normalize();if(view.lengthSqr()<1e-8) view=new Vec3(0,0,1);
         shader.safeGetUniform("Viewer").set((float)view.x,(float)view.y,(float)view.z);
         var b=Tesselator.getInstance().getBuilder();var m=pose.last().pose();
-        int n=reduzido()?12:22;
+        int n=reduzido()?12:(modo>=14&&modo<=16?32:22);
+        boolean nucleoOpaco=(modo==2||modo==10||modo==12||modo==15||modo==23)&&!aditivo&&alpha>.95f;
+        if(nucleoOpaco){RenderSystem.depthMask(true);if(cam.distanceTo(centro)>raio+.01)RenderSystem.enableCull();}
         b.begin(VertexFormat.Mode.QUADS,DefaultVertexFormat.POSITION_COLOR_TEX);
         Vec3 base=centro.subtract(cam);
         for(int i=0;i<n;i++) for(int j=0;j<n*2;j++) {
@@ -276,6 +487,7 @@ public final class RenderGojo {
             pontoEsfera(b,m,base,raio,i+1,j+1,n,cor,alpha);pontoEsfera(b,m,base,raio,i,j+1,n,cor,alpha);
         }
         Tesselator.getInstance().end();
+        if(nucleoOpaco){RenderSystem.depthMask(false);RenderSystem.disableCull();}
     }
     private static void pontoEsfera(BufferBuilder b,Matrix4f m,Vec3 base,double r,int i,int j,int n,int cor,float alpha) {
         double a=Math.PI*j/n,lat=-Math.PI/2+Math.PI*i/n;
@@ -296,6 +508,24 @@ public final class RenderGojo {
         var b=Tesselator.getInstance().getBuilder();var m=pose.last().pose();
         v(b,m,a.subtract(lado).subtract(cam),u,0,cor,alpha);v(b,m,c.subtract(lado).subtract(cam),w,0,cor,alpha);
         v(b,m,c.add(lado).subtract(cam),w,1,cor,alpha);v(b,m,a.add(lado).subtract(cam),u,1,cor,alpha);
+    }
+    /** Shared endpoint tangents keep adjacent aura quads connected. */
+    private static void faixaSuave(PoseStack pose,Vec3 cam,Vec3[] pontos,double largura,int cor,float[] luz,float ganho){
+        var b=Tesselator.getInstance().getBuilder();var m=pose.last().pose();
+        Vec3[] lados=new Vec3[pontos.length];
+        for(int i=0;i<pontos.length;i++){
+            Vec3 tangente=pontos[Math.min(pontos.length-1,i+1)].subtract(pontos[Math.max(0,i-1)]);
+            Vec3 lado=tangente.cross(cam.subtract(pontos[i])).normalize();
+            if(lado.lengthSqr()<1e-10)lado=i>0?lados[i-1].normalize():new Vec3(1,0,0);
+            lados[i]=lado.scale(largura);
+        }
+        for(int i=1;i<pontos.length;i++){
+            double u=(i-1d)/(pontos.length-1),w=i/(double)(pontos.length-1);
+            v(b,m,pontos[i-1].subtract(lados[i-1]).subtract(cam),u,0,cor,luz[i-1]*ganho);
+            v(b,m,pontos[i].subtract(lados[i]).subtract(cam),w,0,cor,luz[i]*ganho);
+            v(b,m,pontos[i].add(lados[i]).subtract(cam),w,1,cor,luz[i]*ganho);
+            v(b,m,pontos[i-1].add(lados[i-1]).subtract(cam),u,1,cor,luz[i-1]*ganho);
+        }
     }
     private static void anel(PoseStack pose,Vec3 cam,Vec3 centro,Vec3 normal,double raio,double largura,int cor,float alpha,double fase) {
         Vec3 lado=direita(normal),alto=normal.cross(lado).normalize();

@@ -2,6 +2,7 @@ package com.cauansilva.arcanecontrol.core.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.cauansilva.arcanecontrol.core.vfx.PerfilVfxGojo;
+import com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo;
 import com.mojang.math.Axis;
 import com.cauansilva.arcanecontrol.ConfigCliente;
 import com.cauansilva.arcanecontrol.core.client.GojoHudOverlay;
@@ -58,7 +59,7 @@ public class GerenciadorCutscene3D {
     }
     public static void cancelarDominioCliente(UUID id){
         EFEITOS_3D.removeIf(e->e.tipo==5&&e.playerId.equals(id));
-        var mc=Minecraft.getInstance();if(mc.player!=null&&mc.player.getUUID().equals(id)&&cutsceneTipo==5)finalizarCutscene();
+        var mc=Minecraft.getInstance();if(mc.player!=null&&mc.player.getUUID().equals(id)&&(cutsceneTipo==5||cutsceneTipo==32))finalizarCutscene();
     }
     public static void garantirDominio(UUID id,Vec3 centro,int restante){
         if(EFEITOS_3D.stream().anyMatch(e->e.tipo==5&&e.playerId.equals(id)))return;
@@ -73,6 +74,7 @@ public class GerenciadorCutscene3D {
     private static CameraType cameraAnterior = null;
     private static Vec3 frenteCamera = new Vec3(0, 0, 1);
     private static Vec3 posicaoCameraInicial = Vec3.ZERO;
+    private static Vec3 centroRoxoMaximo,olhoRoxoMaximo;
 
     public static void iniciarEfeitoCliente(int tipo, UUID playerId, double x, double y, double z, double dx, double dy, double dz) {
         Minecraft mc = Minecraft.getInstance();
@@ -139,6 +141,15 @@ public class GerenciadorCutscene3D {
         }
     }
 
+    public static void iniciarRoxoMaximo(UUID dono,Vec3 centro,int duracao){
+        var mc=Minecraft.getInstance();
+        if(mc.level==null||mc.player==null||!mc.player.getUUID().equals(dono)||!ConfigCliente.CINEMATICAS.get())return;
+        iniciarCutsceneLocal(32,Math.min(duracao,RoxoMaximoGojo.DURACAO));
+        centroRoxoMaximo=centro;olhoRoxoMaximo=mc.player.getEyePosition();
+        Vec3 plano=centro.subtract(olhoRoxoMaximo).multiply(1,0,1).normalize();
+        if(plano.lengthSqr()>1e-6)frenteCamera=plano;
+    }
+
     public static void iniciarCutsceneLocal(int tipo, int duracao) {
         if (!ConfigCliente.CINEMATICAS.get()) return;
         Minecraft mc = Minecraft.getInstance();
@@ -160,6 +171,7 @@ public class GerenciadorCutscene3D {
         Minecraft mc = Minecraft.getInstance();
         if (cameraAnterior != null) mc.options.setCameraType(cameraAnterior);
         cameraAnterior = null;
+        centroRoxoMaximo=null;olhoRoxoMaximo=null;
         mundoCutscene = null;
         cutsceneTipo = 0;
         cutsceneTick = 0;
@@ -248,6 +260,15 @@ public class GerenciadorCutscene3D {
         Vec3 direita = frente.cross(new Vec3(0, 1, 0));
         Vec3 desejada = olho.add(direita.scale(quadro.x())).add(0, quadro.y(), 0)
                 .add(frente.scale(quadro.z()));
+        if(cutsceneTipo==32&&centroRoxoMaximo!=null&&olhoRoxoMaximo!=null){
+            Vec3 dominio=mc.player.position();
+            for(var ef:EFEITOS_3D)if(ef.tipo==5&&ef.playerId.equals(mc.player.getUUID())){dominio=ef.origem;break;}
+            Vec3 relOlho=olhoRoxoMaximo.subtract(centroRoxoMaximo),relDominio=dominio.subtract(centroRoxoMaximo);
+            var q=RoxoMaximoGojo.quadro(tempo,new RoxoMaximoGojo.V(relOlho.dot(direita),relOlho.y,relOlho.dot(frente)),
+                    new RoxoMaximoGojo.V(relDominio.dot(direita),relDominio.y,relDominio.dot(frente)));
+            desejada=centroRoxoMaximo.add(direita.scale(q.camera().x())).add(0,q.camera().y(),0).add(frente.scale(q.camera().z()));
+            alvo=centroRoxoMaximo.add(direita.scale(q.alvo().x())).add(0,q.alvo().y(),0).add(frente.scale(q.alvo().z()));
+        }
         desejada = posicaoCameraInicial.lerp(desejada, RoteiroGojo.suave(tempo / 8));
         var colisao = mc.level.clip(new net.minecraft.world.level.ClipContext(olho, desejada,
                 net.minecraft.world.level.ClipContext.Block.VISUAL,
@@ -273,6 +294,7 @@ public class GerenciadorCutscene3D {
         if (cutsceneTipo == 0) return;
         double tempo = cutsceneTick + Minecraft.getInstance().getFrameTime();
         if(cutsceneTipo==14)tempo=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(tempo);
+        if(cutsceneTipo==32){event.setNewFovModifier((float)(event.getNewFovModifier()*RoxoMaximoGojo.fov(tempo)));return;}
         if(cutsceneTipo==35){
             double fase=RoteiroGojo.suave((tempo-20)/8)*RoteiroGojo.suave((55-tempo)/10);
             double alvo=120.0/Math.max(30,Minecraft.getInstance().options.fov().get());

@@ -53,6 +53,10 @@ jobs:
           glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/atomic_energy.fsh
           glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/gojo_energy.vsh
           glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/gojo_energy.fsh
+          glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/program/roxo_maximo_cinema.vsh
+          glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/program/roxo_maximo_cinema.fsh
+          glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/roxo_maximo_copy.vsh
+          glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/roxo_maximo_copy.fsh
           glslangValidator -S vert src/main/resources/assets/arcanecontrol/shaders/core/anime_energy.vsh
           glslangValidator -S frag src/main/resources/assets/arcanecontrol/shaders/core/anime_energy.fsh
       - name: Render anime materials and armor in OpenGL

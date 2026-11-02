@@ -88,5 +88,13 @@
         "attenuation_distance": 64
       }
     ]
+  },
+  "purple_maximum_release": {
+    "subtitle": "subtitles.arcanecontrol.purple_release",
+    "sounds": [{"name": "arcanecontrol:anime/purple_maximum_release", "attenuation_distance": 64}]
+  },
+  "purple_maximum_charge": {
+    "subtitle": "subtitles.arcanecontrol.purple_charge",
+    "sounds": [{"name": "arcanecontrol:anime/purple_maximum_charge", "attenuation_distance": 64}]
   }
 }

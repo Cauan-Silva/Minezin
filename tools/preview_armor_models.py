@@ -17,11 +17,14 @@ def rotation(degrees):
  return rz@ry@rx
 def transform(obj,gecko=True):
  pivot=np.array(obj.get('pivot',[0,0,0]));r=obj.get('rotation',[0,0,0]);return translation(pivot)@rotation([-r[0],r[1],-r[2]] if gecko else r)@np.diag([*obj.get('scale',[1,1,1]),1])@translation(-pivot)
-def mesh(style,pose_name="idle"):
+def mesh(style,pose_name="idle",pose_rotations=None):
  bosses={'toji':1,'aurora':2,'qual':3,'liebe':4,'zangetsu_boss':6}
  path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else f'geo/ichigo/{style}.geo.json' if style in ['zangetsu','tensa_zangetsu'] else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/forma.geo.json' if style=='asta_forma' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
+ if style=='gojo' and pose_name.startswith('gojo_cloth_'):
+  sample=json.loads((ROOT/'build/gojo-cloth-samples.json').read_text(encoding='utf-8'))[int(pose_name[len('gojo_cloth_'):])]
+  for name,(x,y,z) in sample['ossos'].items():bones[name]['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
  if style=='shadow' and pose_name.startswith('cid_'):
   samples=json.loads((ROOT/'build/cid-cape-samples.json').read_text());sample=samples[pose_name[4:]]
   for name,bone in bones.items():
@@ -56,8 +59,11 @@ def mesh(style,pose_name="idle"):
  if style not in ['cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora']:
   for n,parent,o,size in [('skin_head','armorHead',[-4,24,-4],[8,8,8]),('skin_left','armorLeftArm',[4,12,-2],[4,12,4]),('skin_right','armorRightArm',[-8,12,-2],[4,12,4])]:
    bones[n]={'name':n,'parent':parent,'cubes':[{'origin':o,'size':size,'uv':{f:skin for f in faces}}]}
-  if pose_name!='idle' and not pose_name.startswith('cid_'):
+  if pose_name!='idle' and not pose_name.startswith(('cid_','gojo_cloth_')):
    for n,angle in [('armorLeftArm',-35 if pose_name=='walk' else -75),('armorRightArm',35 if pose_name=='walk' else -115),('armorLeftLeg',30 if pose_name=='walk' else 0),('armorRightLeg',-30 if pose_name=='walk' else 0),('armorLeftBoot',30 if pose_name=='walk' else 0),('armorRightBoot',-30 if pose_name=='walk' else 0)]:bones[n]['rotation']=[angle,0,0]
+ if pose_rotations:
+  for source,target in [('right_arm','armorRightArm'),('left_arm','armorLeftArm'),('head','armorHead'),('torso','armorBody')]:
+   if source in pose_rotations and target in bones:bones[target]['rotation']=pose_rotations[source]
  out=[];tw,th=d['description']['texture_width'],d['description']['texture_height']
  for name,b in bones.items():
   tw,th,material=materials.get(name,(1,1,0))

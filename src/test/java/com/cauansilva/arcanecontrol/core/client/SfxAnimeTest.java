@@ -11,8 +11,8 @@ class SfxAnimeTest {
     private JsonObject json(String path)throws Exception{
         try(var in=getClass().getResourceAsStream(path)){assertNotNull(in);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}
     }
-    @Test void dezSonsVorbisMonoExistemEUsamLegendasDosDoisIdiomas()throws Exception{
-        var defs=json("/assets/arcanecontrol/sounds.json");assertEquals(10,defs.size());
+    @Test void sonsVorbisMonoExistemEUsamLegendasDosDoisIdiomas()throws Exception{
+        var defs=json("/assets/arcanecontrol/sounds.json");assertEquals(12,defs.size());
         var pt=json("/assets/arcanecontrol/lang/pt_br.json");var en=json("/assets/arcanecontrol/lang/en_us.json");
         for(var entry:defs.entrySet()){
             var d=entry.getValue().getAsJsonObject();String subtitle=d.get("subtitle").getAsString();assertTrue(pt.has(subtitle)&&en.has(subtitle));
@@ -29,7 +29,7 @@ class SfxAnimeTest {
     @Test void cuesSaoSincronizadosComImpactosERegistrados()throws Exception{
         var names=json("/assets/arcanecontrol/sounds.json").keySet();
         assertEquals(420,RoteiroAudio.atomic().get(1).atraso());assertEquals(18,RoteiroAudio.divider().get(1).atraso());assertEquals(220,RoteiroAudio.singularidade().get(1).atraso());
-        for(var list:List.of(RoteiroAudio.atomic(),RoteiroAudio.divider(),RoteiroAudio.singularidade()))for(var cue:list){assertTrue(names.contains(cue.nome()));assertTrue(cue.atraso()>=0&&cue.vida()>0&&cue.volume()>0&&cue.volume()<=1);}
+        for(var list:List.of(RoteiroAudio.atomic(),RoteiroAudio.divider(),RoteiroAudio.singularidade(),RoteiroAudio.roxoMaximo()))for(var cue:list){assertTrue(names.contains(cue.nome()));assertTrue(cue.atraso()>=0&&cue.vida()>0&&cue.volume()>0&&cue.volume()<=1);}
     }
     @Test void laminaTemOssoIndependenteDaGuarda(){
         assertDoesNotThrow(()->{

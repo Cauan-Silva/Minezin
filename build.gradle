@@ -5,7 +5,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '3.6.0-preview.10'
+version = '3.7.0-gojo-preview.1'
 group = 'com.cauansilva.arcanecontrol'
 base {
     archivesName = 'minezin'
@@ -72,6 +72,16 @@ tasks.named('test').configure {
     outputs.file(layout.buildDirectory.file('cid-cape-samples.json'))
     outputs.file(layout.buildDirectory.file('cid-composition-samples.json'))
     outputs.file(layout.buildDirectory.file('cid-reference-camera.json'))
+    outputs.file(layout.buildDirectory.file('gojo-roxo-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-azul-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-vermelho-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-dominio-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-despertar-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-chuva-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-roxo-maximo-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-teleporte-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-olhar-samples.json'))
+    outputs.file(layout.buildDirectory.file('gojo-cloth-samples.json'))
     useJUnitPlatform()
 }
 

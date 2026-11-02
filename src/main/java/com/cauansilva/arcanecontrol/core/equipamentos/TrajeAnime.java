@@ -21,7 +21,7 @@ public class TrajeAnime extends ArmorItem implements GeoItem {
             private software.bernie.geckolib.renderer.GeoArmorRenderer<TrajeAnime> armadura;
             private software.bernie.geckolib.renderer.GeoItemRenderer<TrajeAnime> icone;
             @Override public net.minecraft.client.model.HumanoidModel<?> getHumanoidArmorModel(net.minecraft.world.entity.LivingEntity e,ItemStack s,net.minecraft.world.entity.EquipmentSlot slot,net.minecraft.client.model.HumanoidModel<?> original){
-                if(armadura==null)armadura=estilo.equals("shadow")?new com.cauansilva.arcanecontrol.core.cid.RenderTrajeCid():new RenderTrajeAnime();
+                if(armadura==null)armadura=estilo.equals("shadow")?new com.cauansilva.arcanecontrol.core.cid.RenderTrajeCid():estilo.equals("gojo")?new com.cauansilva.arcanecontrol.core.gojo.RenderTrajeGojo():new RenderTrajeAnime();
                 armadura.prepForRender(e,s,slot,original);return armadura;
             }
             @Override public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer(){
