@@ -63,6 +63,9 @@ jobs:
           python -m pip install moderngl==5.13.0 numpy==2.5.4 pillow==13.0.0
           python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
+          python tools/preview_cid_cloth.py --backend egl --output build/cid-cloth.png
+          python tools/preview_cid_cloth.py --directions --backend egl --output build/cid-directions.png
+          python tools/preview_cid_cloth.py --collar --backend egl --output build/cid-collar.png
           python tools/preview_atomic_cinema.py --backend egl --output build/atomic-cinema.png
           python tools/preview_cinematic_vfx.py --backend egl --output build/cinematic-vfx.png
           python tools/preview_armor_models.py --ichigo --backend egl --output build/ichigo-models.png
@@ -80,6 +83,9 @@ jobs:
             build/anime-materials.png
             build/cinematic-vfx.png
             build/atomic-cinema.png
+            build/cid-cloth.png
+            build/cid-collar.png
+            build/cid-directions.png
             build/atomic-cinema.json
             build/divider-model.png
             build/ichigo-models.png

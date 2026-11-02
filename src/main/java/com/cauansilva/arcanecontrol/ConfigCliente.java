@@ -5,6 +5,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 public final class ConfigCliente {
     public static final ForgeConfigSpec SPEC;
     public static final ForgeConfigSpec.BooleanValue SFX_ANIME;
+    public static final ForgeConfigSpec.BooleanValue TECIDO_CID,EMISSAO_CID;
     public static final ForgeConfigSpec.DoubleValue VOLUME_SFX;
     public static final ForgeConfigSpec.BooleanValue CINEMATICAS;
     public static final ForgeConfigSpec.BooleanValue PHOTON;
@@ -20,6 +21,8 @@ public final class ConfigCliente {
     public static final ForgeConfigSpec.BooleanValue IMPACT_FRAMES;
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        TECIDO_CID=builder.comment("Movimento secundário do manto segmentado do Cid, calculado no cliente.").define("tecidoCid",true);
+        EMISSAO_CID=builder.comment("Detalhes emissivos do traje do Cid; não ilumina o ambiente.").define("emissaoCid",true);
         GOJO_BLOOM = builder.comment("Bloom de acento Photon nas tecnicas do Gojo.").define("bloomGojo", true);
         CLARAO_GOJO = builder.comment("Clarao breve na fusao do Roxo e abertura do Dominio.")
                 .define("claraoGojo", true);

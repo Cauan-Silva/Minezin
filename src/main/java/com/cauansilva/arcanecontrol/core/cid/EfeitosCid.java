@@ -119,7 +119,7 @@ public final class EfeitosCid {
             if(f.tipo>=11&&f.tipo<=13&&RenderMovesetCid.desenhar(pose,f.tipo,f.jogador,f.origem,f.direcao,
                     destinoDash==null?null:destinoDash.pos,t,camera.subtract(f.origem),ALVOS.getOrDefault(f.jogador,List.of()))) {
             } else if(f.tipo==14 && RenderEnergiaAtomic.desenhar(pose,t,camera.subtract(f.origem),ancora)) {
-                RenderMovesetCid.selosAtomic(pose,t,camera.subtract(f.origem));
+                RenderMovesetCid.selosAtomic(pose,t,camera.subtract(f.origem),ancora);
                 ResiduoAtomic.desenhar(pose,camera.subtract(f.origem),t);
                 // O material procedural substitui as esferas/aneis lisos da Atomic.
             } else if(f.tipo==14) {
