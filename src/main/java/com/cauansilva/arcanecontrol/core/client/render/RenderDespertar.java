@@ -33,6 +33,26 @@ public final class RenderDespertar {
         if(EFEITOS.size()>=128)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime()));
     }
+    public record RoxoMaximoVisual(Vec3 centro,double tick){}
+    public static RoxoMaximoVisual roxoMaximoVisual(float parcial){
+        var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null)return null;
+        double agora=mc.level.getGameTime()+(mc.isPaused()?0:parcial);
+        for(var f:EFEITOS)if(f.mundo==mc.level&&f.p.tipo()==32&&f.p.kit()==1&&f.p.dono().equals(mc.player.getUUID())&&mc.player.isAlive()){
+            double t=agora-f.inicio;if(t>=0&&t<com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo.DURACAO)return new RoxoMaximoVisual(f.p.a(),t);
+        }
+        return null;
+    }
+    public record ImpulsoGojo(double frente,double lado,double giro){}
+    public static ImpulsoGojo impulsoTecidoGojo(UUID dono){
+        var mc=Minecraft.getInstance();if(mc.level==null)return new ImpulsoGojo(0,0,0);
+        double frente=0,lado=0,giro=0;
+        for(var f:EFEITOS)if(f.mundo==mc.level&&f.p.kit()==1&&f.p.dono().equals(dono)){
+            double t=mc.level.getGameTime()-f.inicio;if(t<0||t>=f.p.ticks())continue;
+            double pulso=f.p.tipo()==200?com.cauansilva.arcanecontrol.core.vfx.AuraDespertarGojo.surto(com.cauansilva.arcanecontrol.core.vfx.AuraDespertarGojo.idade(f.p.ticks(),t))*.035:f.p.tipo()==32?com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo.impacto(t)*.06:f.p.tipo()==41?com.cauansilva.arcanecontrol.core.vfx.TeleporteGojo.rastro(t)*.025:0;
+            frente+=pulso;lado+=Math.sin(t*.7)*pulso*.15;giro+=Math.cos(t*.5)*pulso*.08;
+        }
+        return new ImpulsoGojo(Math.min(.1,frente),Math.max(-.02,Math.min(.02,lado)),Math.max(-.01,Math.min(.01,giro)));
+    }
     private static boolean finito(Vec3 v){return Double.isFinite(v.x)&&Double.isFinite(v.y)&&Double.isFinite(v.z);}
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent e){
         if(e.phase!=TickEvent.Phase.END)return;var mc=Minecraft.getInstance();
@@ -53,10 +73,22 @@ public final class RenderDespertar {
         var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null)return;
         double agora=mc.level.getGameTime()+e.getPartialTick();if(!DesenhoMagia.iniciar(agora))return;
         try{for(var f:EFEITOS){
-            var p=f.p;if(f.mundo!=mc.level||mc.player.distanceToSqr(p.a())>128*128)continue;
+            var p=f.p;if(f.mundo!=mc.level)continue;
             double t=agora-f.inicio;if(t<0||t>=p.ticks())continue;
             var pose=e.getPoseStack();var cam=e.getCamera().getPosition();
-            if(p.tipo()==32&&RenderGojo.ativo()){RenderGojo.roxoMaximo(pose,cam,p.a(),1+t*.1,t,(float)Math.min(1,Math.min(t/3,(p.ticks()-t)/6)));continue;}
+            if(p.tipo()==200&&p.kit()==1&&RenderGojo.ativo()){
+                var jogador=mc.level.getPlayerByUUID(p.dono());
+                if(jogador!=null&&jogador.isAlive()&&mc.player.distanceToSqr(jogador)<128*128){
+                    double idade=com.cauansilva.arcanecontrol.core.vfx.AuraDespertarGojo.idade(p.ticks(),t);
+                    RenderGojo.despertar(pose,cam,jogador.getPosition(e.getPartialTick()),jogador.getViewVector(e.getPartialTick()),idade,(float)Math.min(1,(p.ticks()-t)/6));
+                }
+                continue;
+            }
+            if(mc.player.distanceToSqr(p.a())>128*128)continue;
+            if(p.tipo()==com.cauansilva.arcanecontrol.core.vfx.MorteCerebralGojo.EFEITO&&p.kit()==1){if(RenderGojo.ativo())RenderGojo.morteCerebral(pose,cam,p.b(),t);continue;}
+            if(p.tipo()==41&&p.kit()==1&&RenderGojo.ativo()){RenderGojo.teleporte(pose,cam,p.a(),p.b(),t);continue;}
+            if(p.tipo()==40&&p.kit()==1&&RenderGojo.ativo()){RenderGojo.chuvaInformacoes(pose,cam,p.a(),t);continue;}
+            if(p.tipo()==32&&RenderGojo.ativo()){RenderGojo.roxoMaximo(pose,cam,p.a(),com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo.raio(t),t,(float)com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo.alpha(t));continue;}
             pose.pushPose();pose.translate(p.a().x-cam.x,p.a().y-cam.y,p.a().z-cam.z);
             DesenhoMagia.iniciar(agora);
             try{desenhar(pose,cam.subtract(p.a()),p,t,(float)Math.min(1,Math.min(t/3,(p.ticks()-t)/6)));}finally{pose.popPose();}

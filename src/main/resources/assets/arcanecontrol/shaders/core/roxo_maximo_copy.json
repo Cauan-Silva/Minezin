@@ -1,0 +1,14 @@
+{
+  "vertex": "arcanecontrol:roxo_maximo_copy",
+  "fragment": "arcanecontrol:roxo_maximo_copy",
+  "attributes": [
+    "Position",
+    "UV0"
+  ],
+  "samplers": [
+    {
+      "name": "Sampler0"
+    }
+  ],
+  "uniforms": []
+}

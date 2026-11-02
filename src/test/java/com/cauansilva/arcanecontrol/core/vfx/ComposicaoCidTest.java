@@ -25,7 +25,7 @@ class ComposicaoCidTest {
             var frames=new ArrayList<Object>();int duracao=tipo==14?242:tipo==17?34:26;
             for(int t=0;t<duracao;t++)frames.add(ComposicaoCid.gerar(tipo,t,6,CAMERA,false));cenas.put(Integer.toString(tipo),frames);
         }
-        Files.writeString(Path.of("build/cid-composition-samples.json"),new Gson().toJson(cenas));
+        try(var writer=Files.newBufferedWriter(Path.of("build/cid-composition-samples.json"))){new Gson().toJson(cenas,writer);}
         assertEquals(ComposicaoCid.gerar(11,8,6,CAMERA,false),ComposicaoCid.gerar(11,8,6,CAMERA,false));
     }
 }

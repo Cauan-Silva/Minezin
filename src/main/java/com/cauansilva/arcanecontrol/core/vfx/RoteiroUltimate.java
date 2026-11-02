@@ -4,7 +4,7 @@ public final class RoteiroUltimate {
     public record Cue(int tick,int cor,double forca,double raio,String som){}
     public static Cue para(int kit,int tipo,int duracao){
         return switch(tipo){
-            case 32->kit==1?new Cue(90,0xAD71FF,1,30,"purple_release"):null;
+            case 32->kit==1?new Cue(90,0xAD71FF,1,30,"purple_maximum_release"):null;
             case 33->kit==2?new Cue(9,0xBE72FF,.85,20,"divider_release"):null;
             case 34->kit==2&&duracao>10?new Cue(24,0xB66BFF,.9,20,"divider_release"):null;
             case 35->kit==2?new Cue(0,0x8C38DA,.86,24,"singularity_charge"):null;

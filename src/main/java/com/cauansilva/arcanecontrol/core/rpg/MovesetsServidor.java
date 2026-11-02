@@ -95,7 +95,11 @@ public final class MovesetsServidor {
         return hit!=null&&hit.getEntity() instanceof LivingEntity v?v:null;
     }
     private static List<LivingEntity> inimigos(ServerPlayer p,Vec3 centro,double r){return p.serverLevel().getEntitiesOfClass(LivingEntity.class,new AABB(centro,centro).inflate(r),v->v!=p&&v.isAlive()&&!v.isAlliedTo(p)&&v.distanceToSqr(centro)<=r*r).stream().limit(64).toList();}
-    public static void morteCerebral(DespertaresServidor.Forma f){var alvo=mirar(f.p(),26);if(alvo!=null&&alvo.distanceToSqr(f.centro())<=26*26)alvo.hurt(f.nivel().damageSources().indirectMagic(f.p(),f.p()),4);}
+    public static void morteCerebral(DespertaresServidor.Forma f){
+        var alvo=mirar(f.p(),26);
+        if(alvo!=null&&alvo.distanceToSqr(f.centro())<=26*26&&alvo.hurt(f.nivel().damageSources().indirectMagic(f.p(),f.p()),4))
+            fx(f.p(),com.cauansilva.arcanecontrol.core.vfx.MorteCerebralGojo.EFEITO,f.p().getEyePosition(),alvo.getEyePosition(),com.cauansilva.arcanecontrol.core.vfx.MorteCerebralGojo.DURACAO);
+    }
     private static void teleporte(ServerPlayer p,PoderAnime kit,int slot,int cd,Vec3 limite){
         Vec3 inicio=p.position(),dir=p.getLookAngle();Vec3 fim=inicio;
         for(int i=1;i<=(limite==null?64:208);i++){
