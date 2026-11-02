@@ -17,13 +17,13 @@ vec3 sphereNormal(vec2 uv){
     return vec3(cos(a)*cos(lat),sin(lat),sin(a)*cos(lat));
 }
 float hash3(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}
-float noise3(vec3 p){
+float gojoNoise3(vec3 p){
     vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
     float a=mix(mix(hash3(i),hash3(i+vec3(1,0,0)),f.x),mix(hash3(i+vec3(0,1,0)),hash3(i+vec3(1,1,0)),f.x),f.y);
     float b=mix(mix(hash3(i+vec3(0,0,1)),hash3(i+vec3(1,0,1)),f.x),mix(hash3(i+vec3(0,1,1)),hash3(i+vec3(1,1,1)),f.x),f.y);
     return mix(a,b,f.z);
 }
-float cloud3(vec3 p){return noise3(p)*.57+noise3(p*2.03+7.1)*.28+noise3(p*4.07+13.7)*.15;}
+float cloud3(vec3 p){return gojoNoise3(p)*.57+gojoNoise3(p*2.03+7.1)*.28+gojoNoise3(p*4.07+13.7)*.15;}
 vec3 stars(vec2 uv,vec2 cells,float threshold,float time){
     vec2 p=uv*cells,id=floor(p),local=fract(p)-.5;
     id.x=mod(id.x,cells.x);

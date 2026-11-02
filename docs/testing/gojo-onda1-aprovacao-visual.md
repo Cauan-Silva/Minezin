@@ -140,3 +140,9 @@ Tecido aprovado pelo usuário. JAR 3.7.0-gojo-preview.1 entregue para teste; pub
 A exportação de prévias de `ComposicaoCidTest` excedeu o heap na primeira validação desta etapa. A serialização foi alterada para gravar diretamente em Writer, evitando a cópia integral do JSON em memória; a geometria e os efeitos do Cid não foram alterados.
 
 Revisão de áudio após aprovação do impacto visual: removida a segunda chamada de carga no tick 45. Novos arquivos de carga/liberação são one-shots com evolução contínua e cauda difusa, sem LFO de volume ou grave tonal sustentado. As imagens e os tempos da cutscene permanecem inalterados.
+
+## Publicação — PR #26
+
+Commit inicial da onda: `2a85f00e27f8f13c305872f5a4bdc68b8ab6b261`, PR https://github.com/Cauan-Silva/Minezin/pull/26. A tentativa de aprovação formal foi recusada pelo GitHub porque a conta conectada é autora do PR; isso não equivale a uma revisão aprovada ou a merge.
+
+O primeiro CI passou build/testes, mas encontrou conflito entre a função local `noise3(vec3)` e a função reservada do GLSL. Renomeada para `gojoNoise3`, sem alterar cálculos, parâmetros ou aparência; compilação/link/render local novamente aprovados. O JAR entregue antes dessa correção permanece identificado pelo hash original no workflow/roadmap. O artefato do CI atualizado contém a correção de compatibilidade.
