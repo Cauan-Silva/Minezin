@@ -223,6 +223,7 @@ public class GerenciadorCutscene3D {
         if (cutsceneTipo == 0 || mc.player == null || mc.level == null) return;
         float parcial = (float) event.getPartialTick();
         double tempo = cutsceneTick + parcial;
+        if(cutsceneTipo==14)tempo=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(tempo);
         RoteiroGojo.Quadro quadro = RoteiroGojo.amostrar(cutsceneTipo, tempo);
         Vec3 olho = mc.player.getEyePosition(parcial);
         if(cutsceneTipo==14&&tempo>=90){
@@ -271,6 +272,7 @@ public class GerenciadorCutscene3D {
     public static void onFovUpdate(ComputeFovModifierEvent event) {
         if (cutsceneTipo == 0) return;
         double tempo = cutsceneTick + Minecraft.getInstance().getFrameTime();
+        if(cutsceneTipo==14)tempo=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(tempo);
         if(cutsceneTipo==35){
             double fase=RoteiroGojo.suave((tempo-20)/8)*RoteiroGojo.suave((55-tempo)/10);
             double alvo=120.0/Math.max(30,Minecraft.getInstance().options.fov().get());

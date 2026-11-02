@@ -59,8 +59,8 @@ def render(output,backend=None,video=None):
   post['AtomicTick'].value=t;post['Strength'].value=strength;post['Frames'].value=frames;processed.clear(0,0,0,1);vao.render(moderngl.TRIANGLES)
   return np.frombuffer(processed.read(components=4),dtype=np.uint8).reshape(h,w,4).copy()
  assert np.abs(frame(91,0).astype('i2')-original.astype('i2')).max()<=1,'Zero strength must be identity'
- ticks=[0,60,86,88.6,90.6,91.8,93,94.8,99,110,150,220]
- labels=['BASE','COMPRESSAO','CONCENTRACAO','NEGATIVO','PAPEL / SILHUETA','INVERSAO','DUOTOM VIOLETA','TRACO / CORTE','DESCARGA','ONDA','RESCALDO','DISSIPACAO']
+ ticks=[0,30,60,78,86,88,89.8,90.05,90.6,91.5,150,220]
+ labels=['BASE','CAMPO','MURALHA','I AM','ATOMIC','ESCURIDAO','PAUSA','EXPOSICAO','LIBERACAO','COLUNA','RESCALDO','DISSIPACAO']
  sheet=Image.new('RGB',(w*3,h*4+70),(10,13,21));draw=ImageDraw.Draw(sheet);signatures=[]
  for i,(t,label)in enumerate(zip(ticks,labels)):
   data=frame(t,0 if t==0 else 1);assert data[:,:,:3].std()>3,(t,'blank')
@@ -68,7 +68,7 @@ def render(output,backend=None,video=None):
   tile=Image.fromarray(data).transpose(Image.Transpose.FLIP_TOP_BOTTOM).convert('RGB');x=i%3*w;y=i//3*h;sheet.paste(tile,(x,y));draw.text((x+10,y+10),f'{label} | tick {t}',fill=(255,180,90),stroke_width=1,stroke_fill=(0,0,0))
  no_frames=frame(90.6,1,0);paper=frame(90.6)
  assert abs(paper[:,:,:3].mean()-no_frames[:,:,:3].mean())>12,'Frames-off must suppress paper exposure'
- assert np.abs(frame(90.6,1).astype('i2')-frame(91.8,1).astype('i2')).mean()>35,'Adjacent authored frames must be distinct'
+ assert np.abs(frame(90.05,1).astype('i2')-frame(91.8,1).astype('i2')).mean()>35,'Exposure and settled discharge must be distinct'
  assert np.abs(frame(239.9,.00001).astype('i2')-original.astype('i2')).max()<=1
  assert before_depth==depth.read(),'Post pass must not alter source depth'
  draw.text((12,h*4+14),'GLSL REAL + MODELO SHADOW + PROFUNDIDADE REAL EM CENA DE TESTE OFFLINE',fill=(235,239,248))

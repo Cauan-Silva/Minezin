@@ -28,7 +28,7 @@ class SfxAnimeTest {
     }
     @Test void cuesSaoSincronizadosComImpactosERegistrados()throws Exception{
         var names=json("/assets/arcanecontrol/sounds.json").keySet();
-        assertEquals(90,RoteiroAudio.atomic().get(1).atraso());assertEquals(18,RoteiroAudio.divider().get(1).atraso());assertEquals(220,RoteiroAudio.singularidade().get(1).atraso());
+        assertEquals(420,RoteiroAudio.atomic().get(1).atraso());assertEquals(18,RoteiroAudio.divider().get(1).atraso());assertEquals(220,RoteiroAudio.singularidade().get(1).atraso());
         for(var list:List.of(RoteiroAudio.atomic(),RoteiroAudio.divider(),RoteiroAudio.singularidade()))for(var cue:list){assertTrue(names.contains(cue.nome()));assertTrue(cue.atraso()>=0&&cue.vida()>0&&cue.volume()>0&&cue.volume()<=1);}
     }
     @Test void laminaTemOssoIndependenteDaGuarda(){

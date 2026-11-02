@@ -1,7 +1,6 @@
 package com.cauansilva.arcanecontrol.core.cid;
 import com.cauansilva.arcanecontrol.core.client.render.DesenhoMagia;
 import com.cauansilva.arcanecontrol.core.client.render.GeometriaCinematica;
-import com.cauansilva.arcanecontrol.core.vfx.PerfilCid;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
@@ -9,103 +8,68 @@ import java.util.*;
 
 public final class RenderMovesetCid {
     private static final int VIOLETA=0xB76BFF,CLARO=0xE2CFFF;
+    private static void composicao(PoseStack pose,int tipo,double t,double distancia,Vec3 direcao,Vec3 cam){
+        double yaw=Math.atan2(direcao.x,direcao.z),co=Math.cos(yaw),si=Math.sin(yaw);
+        var camera=new com.cauansilva.arcanecontrol.core.vfx.ComposicaoCid.V(cam.x*co-cam.z*si,cam.y,cam.x*si+cam.z*co);
+        var lotes=com.cauansilva.arcanecontrol.core.vfx.ComposicaoCid.gerar(tipo,t,distancia,camera,com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get());
+        pose.pushPose();pose.mulPose(com.mojang.math.Axis.YP.rotation((float)yaw));
+        try{for(var lote:lotes)DesenhoMagia.lote(pose,lote.material(),lote.aditivo(),()->{for(var q:lote.faces()){
+            var pontos=new com.cauansilva.arcanecontrol.core.vfx.ComposicaoCid.V[]{q.a(),q.b(),q.c(),q.d()};
+            for(int i=0;i<4;i++){var p=pontos[i];DesenhoMagia.ponto(pose,new Vec3(p.x(),p.y(),p.z()),i==0||i==3?q.u0():q.u1(),i<2?q.v0():q.v1(),q.cor(),q.alpha());}
+        }});}finally{pose.popPose();}
+    }
+    public static void transformacao(PoseStack pose,double t,Vec3 cam){
+        if(t<0||t>=32||!DesenhoMagia.iniciar(t))return;
+        try{composicao(pose,17,t,0,new Vec3(0,0,1),cam);}finally{DesenhoMagia.terminar();}
+    }
     public static void selosAtomic(PoseStack pose,double t,Vec3 cam,Vec3 ancora){
-        if(t<0||t>=130||!DesenhoMagia.iniciar(t))return;
+        if(t<0||t>=240||!DesenhoMagia.iniciar(t))return;
         try{
-            if(t<90){
-                float alpha=(float)(Math.min(1,t/20)*Math.min(1,(100-t)/10));
-                DesenhoMagia.lote(pose,6,true,()->{
-                    for(int j=0;j<3;j++){
-                        double r=com.cauansilva.arcanecontrol.core.vfx.PerfilSelosCid.raio(t,j);
-                        var centro=ancora.scale(com.cauansilva.arcanecontrol.core.vfx.PerfilSelosCid.elevar(t));
-                        DesenhoMagia.anel(pose,centro.add(0,.04+j*.01,0),new Vec3(0,1,0),r,r+.045,j==1?CLARO:VIOLETA,alpha*.6f,64);
-                        DesenhoMagia.selo(pose,cam,centro.add(0,.06+j*.01,0),new Vec3(0,1,0),r,t*(j%2==0?1:-1),VIOLETA,alpha*.35f);
-                    }
-                    // Negative pressure: disconnected streaks collapse toward the blade before detonation.
-                    for(int i=0;i<16;i++){
-                        double a=i*2.399963+t*.012,r=2.4+((i*7+t*.15)%5);
-                        Vec3 v=new Vec3(Math.cos(a),0,Math.sin(a));
-                        DesenhoMagia.fita(pose,cam,v.scale(r).add(0,.12,0),v.scale(r-.7).add(0,.15,0),.025,0,1,CLARO,alpha*.45f);
-                    }
-                });
-                if(t>60)DesenhoMagia.lote(pose,1,true,()->GeometriaCinematica.raios(pose,cam,new Vec3(0,1.2,0),.7+(t-60)*.045,t,VIOLETA,alpha*.5f));
-            }else{
-                double idade=t-90;float alpha=(float)Math.pow(Math.max(0,1-idade/40),1.5);
-                DesenhoMagia.lote(pose,1,true,()->{
-                    for(int j=0;j<3;j++){
-                        double r=Math.max(0,idade-j*4)*.7;
-                        if(r>0)DesenhoMagia.anel(pose,new Vec3(0,.15+j*.45,0),new Vec3(0,1,0),Math.max(0,r-.18),r,j==1?CLARO:VIOLETA,alpha*.6f,72);
-                    }
-                    // A crowned blast column, not a single uniformly bright cylinder.
-                    for(int j=0;j<8;j++){
-                        double a=j*Math.PI/4;Vec3 base=new Vec3(Math.cos(a)*2,.3,Math.sin(a)*2);
-                        Vec3 topo=new Vec3(Math.cos(a)*5,14+Math.sin(j*2)*3,Math.sin(a)*5);
-                        DesenhoMagia.fita(pose,cam,base,topo,.10,0,5,CLARO,alpha*.5f);
-                    }
-                });
-            }
+            composicao(pose,14,t,0,new Vec3(0,0,1),cam);
+
         }finally{DesenhoMagia.terminar();}
     }
 
     public static boolean desenhar(PoseStack pose,int tipo,UUID dono,Vec3 origem,Vec3 dir,Vec3 destino,double t,Vec3 cam,List<UUID> alvos){
         if(tipo<11||tipo>13||!DesenhoMagia.iniciar(t))return false;
         Vec3 frente=dir.multiply(1,0,1).normalize();if(frente.lengthSqr()<1e-8)frente=new Vec3(0,0,1);
-        final Vec3 f=frente,lado=frente.cross(new Vec3(0,1,0));
         try{
-            if(tipo==11){
-                float alpha=(float)PerfilCid.opacidadeCorte(t);double r=PerfilCid.raioCorte(t);
-                for(int camada=0;camada<3;camada++){
-                    final int layer=camada;
-                    DesenhoMagia.lote(pose,camada==0?0:1,camada!=0,()->{
-                        Vec3 anterior=null;
-                        for(int i=0;i<=36;i++){
-                            double a=-PerfilCid.CORTE_ANGULO+i*(PerfilCid.CORTE_ANGULO*2/36);
-                            Vec3 q=f.scale(Math.cos(a)*r).add(lado.scale(Math.sin(a)*r)).add(0,1.15+Math.sin(a)*.35,0);
-                            if(anterior!=null)DesenhoMagia.fita(pose,cam,anterior,q,layer==0?.34:layer==1?.075:.022,i*.15,(i+1)*.15,layer==0?VIOLETA:layer==1?CLARO:0xFFFFFF,alpha*(layer==0?.95f:.7f));
-                            anterior=q;
-                        }
-                    });
-                }
-            } else if(tipo==12){
-                Vec3 fim=destino==null?f.scale(6):destino.subtract(origem);float fade=(float)Math.max(0,1-t/22);
-                DesenhoMagia.lote(pose,5,false,()->{
-                    int n=Math.min(4,(int)(fim.length()/1.4));
-                    for(int i=1;i<=n;i++){
-                        Vec3 centro=fim.scale(i/(double)(n+1));
-                        DesenhoMagia.caixa(pose,centro.add(0,1.65,0),.26,.25,.26,VIOLETA,fade*.6f);
-                        DesenhoMagia.caixa(pose,centro.add(0,1.05,0),.32,.42,.2,VIOLETA,fade*.6f);
-                        DesenhoMagia.caixa(pose,centro.add(0,.55,.16),.4,.4,.09,VIOLETA,fade*.5f);
-                        DesenhoMagia.caixa(pose,centro.add(-.18,.35,0),.13,.35,.15,VIOLETA,fade*.5f);
-                        DesenhoMagia.caixa(pose,centro.add(.18,.35,0),.13,.35,.15,VIOLETA,fade*.5f);
-                    }
-                });
-                DesenhoMagia.lote(pose,1,true,()->{
-                    for(int j=0;j<5;j++)DesenhoMagia.fita(pose,cam,new Vec3(0,.3+j*.3,0),fim.add(0,.3+j*.3,0),.045,0,4,CLARO,fade*.5f);
-                });
-            } else {
-                var mc=Minecraft.getInstance();var p=mc.level.getPlayerByUUID(dono);if(p==null)return true;
-                Vec3 mao=p.getEyePosition().subtract(origem).add(f.scale(.4));
-                float fade=(float)Math.min(1,Math.max(0,(48-t)/8));
-                DesenhoMagia.lote(pose,1,true,()->{
-                    int j=0;
-                    for(UUID id:alvos){
-                        var encontrado=mc.level.entitiesForRendering();net.minecraft.world.entity.Entity entidade=null;
-                        for(var e:encontrado)if(e.getUUID().equals(id)){entidade=e;break;}
-                        if(entidade==null||!entidade.isAlive())continue;
-                        Vec3 fim=entidade.position().add(0,entidade.getBbHeight()*.5,0).subtract(origem);
-                        Vec3 anterior=mao;
-                        for(int i=1;i<=18;i++){
-                            double s=i/18.0;
-                            Vec3 q=mao.lerp(fim,s).add(0,-Math.sin(s*Math.PI)*.35+Math.sin(s*18-t*.2+j)*.05,0);
-                            DesenhoMagia.fita(pose,cam,anterior,q,.035,s*4,(s+1.0/18)*4,VIOLETA,fade*.85f);anterior=q;
-                        }j++;
-                    }
-                    if(alvos.isEmpty()&&t<8)for(int i=0;i<5;i++){
-                        double a=i*Math.PI*2/5+t*.07;
-                        DesenhoMagia.fita(pose,cam,mao,mao.add(Math.cos(a)*1.2,-.3,Math.sin(a)*1.2),.035,0,2,VIOLETA,fade*.6f);
-                    }
-                });
+            if(tipo==11||tipo==12){
+                Vec3 delta=destino==null?frente.scale(6):destino.subtract(origem);
+                composicao(pose,tipo,t,delta.length(),tipo==12?delta:frente,cam);return true;
             }
+            var mc=Minecraft.getInstance();if(mc.level==null)return true;
+            var p=mc.level.getPlayerByUUID(dono);if(p==null)return true;
+            Vec3 mao=p.getEyePosition().subtract(origem).add(frente.scale(.4));
+            float fade=(float)(Math.min(1,t/5)*Math.max(0,Math.min(1,(48-t)/8)));
+            DesenhoMagia.lote(pose,6,true,()->{
+                DesenhoMagia.selo(pose,cam,new Vec3(0,.04,0),new Vec3(0,1,0),.65,t*.9,VIOLETA,fade*.4f);
+                DesenhoMagia.anel(pose,new Vec3(0,.06,0),new Vec3(0,1,0),.76,.79,CLARO,fade*.5f,40);
+            });
+            DesenhoMagia.lote(pose,12,true,()->{
+                int j=0;
+                for(UUID id:alvos){
+                    net.minecraft.world.entity.Entity entidade=null;
+                    for(var e:mc.level.entitiesForRendering())if(e.getUUID().equals(id)){entidade=e;break;}
+                    if(entidade==null||!entidade.isAlive())continue;
+                    Vec3 fim=entidade.position().add(0,entidade.getBbHeight()*.5,0).subtract(origem);
+                    double pulso=.28+.05*Math.sin(t*.5+j);
+                    DesenhoMagia.anel(pose,fim,new Vec3(0,1,0),pulso,pulso+.025,CLARO,fade*.6f,24);
+                    int fios=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get()?1:3;
+                    for(int fio=0;fio<fios;fio++){
+                        Vec3 anterior=mao;
+                        for(int i=1;i<=24;i++){
+                            double u=i/24d,a=u*15-t*.3+fio*Math.PI*2/3;
+                            Vec3 q=mao.lerp(fim,u).add(Math.cos(a)*.065*Math.sin(u*Math.PI),-Math.sin(u*Math.PI)*.25+Math.sin(a)*.065,0);
+                            DesenhoMagia.fita(pose,cam,anterior,q,fio==0?.026:.012,(i-1d)/24,u,fio==0?CLARO:VIOLETA,fade*.8f);anterior=q;
+                        }
+                    }j++;
+                }
+                if(alvos.isEmpty()&&t<8)for(int i=0;i<5;i++){
+                    double a=i*Math.PI*2/5+t*.07;
+                    DesenhoMagia.fita(pose,cam,mao,mao.add(Math.cos(a)*1.2,-.3,Math.sin(a)*1.2),.025,0,1,VIOLETA,fade*.6f);
+                }
+            });
         }finally{DesenhoMagia.terminar();}
         return true;
     }

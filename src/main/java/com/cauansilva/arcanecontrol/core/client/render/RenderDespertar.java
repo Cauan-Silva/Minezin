@@ -25,9 +25,10 @@ public final class RenderDespertar {
         if(p.kit()==6){com.cauansilva.arcanecontrol.core.ichigo.EfeitosIchigo.receber(p);return;}
         if(p.kit()==4){com.cauansilva.arcanecontrol.core.asta.EfeitosAsta.receber(p);return;}
         if(p.tipo()==0){com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(p.dono(),null);ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));GerenciadorCutscene3D.cancelarDominioCliente(p.dono());if(p.kit()==2)com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(15,p.dono(),Vec3.ZERO,Vec3.ZERO);AnimacoesGojo.cancelar(p.dono());return;}
-        if(p.ticks()<1||p.ticks()>1200||p.kit()<1||p.kit()>3||!finito(p.a())||!finito(p.b()))return;
+        if(p.ticks()<1||p.ticks()>(p.kit()==2?com.cauansilva.arcanecontrol.core.rpg.EstadoDespertar.apresentacaoInicial(com.cauansilva.arcanecontrol.core.rpg.PersonagemRpg.SHADOW):1200)||p.kit()<1||p.kit()>3||!finito(p.a())||!finito(p.b()))return;
         if(p.tipo()==200){EFEITOS.removeIf(e->e.p.tipo()==200&&e.p.dono().equals(p.dono()));if(p.kit()==1)GerenciadorCutscene3D.garantirDominio(p.dono(),p.a(),p.ticks());}
         if((p.tipo()>=30&&p.tipo()<=41&&p.tipo()!=31&&(p.tipo()!=34||p.ticks()>10))||p.tipo()==200&&p.kit()==3&&p.ticks()==900)AnimacoesGojo.tocarDesperto(p.dono(),p.kit(),p.tipo());
+        if(p.kit()==2&&p.tipo()==200&&p.ticks()==com.cauansilva.arcanecontrol.core.rpg.EstadoDespertar.apresentacaoInicial(com.cauansilva.arcanecontrol.core.rpg.PersonagemRpg.SHADOW))com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(17,p.dono(),p.a(),p.b().subtract(p.a()));
         UltimatesTransformadas.receber(p);
         if(EFEITOS.size()>=128)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime()));
@@ -37,7 +38,7 @@ public final class RenderDespertar {
         if(e.phase!=TickEvent.Phase.END)return;var mc=Minecraft.getInstance();
         EFEITOS.removeIf(f->mc.level==null||f.mundo!=mc.level||mc.level.getGameTime()-f.inicio>=f.p.ticks());
         if(mc.level==null)return;
-        for(var f:EFEITOS)if(f.p.tipo()==200){long t=mc.level.getGameTime()-f.inicio;int idade=(f.p.kit()==1?400:f.p.kit()==2?800:900)-f.p.ticks()+(int)t;if(idade==(f.p.kit()==2?100:60))AnimacoesGojo.cancelarSeTipo(f.p.dono(),f.p.kit()==2?14:f.p.kit()==1?5:200);}
+        for(var f:EFEITOS)if(f.p.tipo()==200){long t=mc.level.getGameTime()-f.inicio;int idade=(f.p.kit()==1?400:f.p.kit()==2?com.cauansilva.arcanecontrol.core.rpg.EstadoDespertar.apresentacaoInicial(com.cauansilva.arcanecontrol.core.rpg.PersonagemRpg.SHADOW):900)-f.p.ticks()+(int)t;if(idade==(f.p.kit()==2?com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO:60))AnimacoesGojo.cancelarSeTipo(f.p.dono(),f.p.kit()==2?14:f.p.kit()==1?5:200);}
     }
     @SubscribeEvent public static void sair(ClientPlayerNetworkEvent.LoggingOut e){EFEITOS.clear();}
     @SubscribeEvent public static void tremor(net.minecraftforge.client.event.ViewportEvent.ComputeCameraAngles e){

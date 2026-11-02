@@ -64,6 +64,10 @@ jobs:
           python tools/preview_gojo_vfx.py --backend egl --output build/gojo-materials.png
           python tools/preview_power_vfx.py --backend egl --output build/anime-materials.png
           python tools/preview_cid_cloth.py --backend egl --output build/cid-cloth.png
+          python tools/preview_atomic_reference.py --backend egl --output build/atomic-reference.png
+          python tools/preview_cid_composition.py --explosion --backend egl --output build/cid-explosion.png
+          python tools/preview_cid_composition.py --backend egl --output build/cid-composition.png
+          python tools/preview_cid_cloth.py --combat --backend egl --output build/cid-combat.png
           python tools/preview_cid_cloth.py --directions --backend egl --output build/cid-directions.png
           python tools/preview_cid_cloth.py --collar --backend egl --output build/cid-collar.png
           python tools/preview_atomic_cinema.py --backend egl --output build/atomic-cinema.png
@@ -83,6 +87,10 @@ jobs:
             build/anime-materials.png
             build/cinematic-vfx.png
             build/atomic-cinema.png
+            build/atomic-reference.png
+            build/cid-explosion.png
+            build/cid-composition.png
+            build/cid-combat.png
             build/cid-cloth.png
             build/cid-collar.png
             build/cid-directions.png

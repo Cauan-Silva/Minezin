@@ -5,7 +5,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '3.6.0-preview.5'
+version = '3.6.0-preview.10'
 group = 'com.cauansilva.arcanecontrol'
 base {
     archivesName = 'minezin'
@@ -70,6 +70,8 @@ dependencies {
 
 tasks.named('test').configure {
     outputs.file(layout.buildDirectory.file('cid-cape-samples.json'))
+    outputs.file(layout.buildDirectory.file('cid-composition-samples.json'))
+    outputs.file(layout.buildDirectory.file('cid-reference-camera.json'))
     useJUnitPlatform()
 }
 

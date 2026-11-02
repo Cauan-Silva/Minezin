@@ -18,6 +18,8 @@ public final class DespertaresServidor {
     public static Forma forma(ServerPlayer p){return FORMAS.get(p.getUUID());}
     public static boolean ativo(ServerPlayer p){var f=forma(p);return f!=null&&f.estado.ativa(RpgServidor.agora(p));}
     public static int restante(ServerPlayer p){var f=forma(p);return f==null?0:f.estado.restante(RpgServidor.agora(p));}
+    public static int prazoRestante(ServerPlayer p){var f=forma(p);return f==null?0:f.estado.prazoRestante(RpgServidor.agora(p));}
+    public static void finalizarAtomic(ServerPlayer p){var f=forma(p);if(f!=null&&f.estado.anteciparContagem(RpgServidor.agora(p)))RpgServidor.sincronizar(p);}
     public static boolean exclusivoUsado(ServerPlayer p){var f=forma(p);return f!=null&&f.estado.exclusivoUsado();}
     public static void ativar(ServerPlayer p,PoderAnime kit){
         if(ativo(p)){cancelar(p);return;}
@@ -33,17 +35,18 @@ public final class DespertaresServidor {
         if(kit==PoderAnime.FRIEREN){var t=RpgServidor.dados(p);t.putBoolean("restaurarGravidade",true);t.putBoolean("gravidadeOriginal",f.gravidadeOriginal);p.setNoGravity(true);}
         if(kit==PoderAnime.GOJO)com.cauansilva.arcanecontrol.core.magia.GerenciadorMagiasGojo.executarEfeito(p,5);
         if(kit==PoderAnime.CID)com.cauansilva.arcanecontrol.core.cid.PoderesCid.iniciarDespertar(p);
-        com.cauansilva.arcanecontrol.core.rede.RegistoRede.ENVIAR.send(net.minecraftforge.network.PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),new com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar(p.getUUID(),200,f.centro,Vec3.ZERO,personagem==PersonagemRpg.ICHIGO?1200:personagem.duracaoSegundos*20,kit.id));
+        com.cauansilva.arcanecontrol.core.rede.RegistoRede.ENVIAR.send(net.minecraftforge.network.PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),new com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar(p.getUUID(),200,f.centro,Vec3.ZERO,personagem==PersonagemRpg.ICHIGO?1200:EstadoDespertar.apresentacaoInicial(personagem),kit.id));
         RpgServidor.uso(p,kit);RpgServidor.sincronizar(p);
     }
     public static void cancelar(ServerPlayer p){
+        com.cauansilva.arcanecontrol.core.cid.AtordoamentoAtomic.liberar(p.getUUID());
         var f=FORMAS.remove(p.getUUID());if(f==null)return;
         if(f.estado.kit==PersonagemRpg.ICHIGO)com.cauansilva.arcanecontrol.core.ichigo.PoderesIchigo.limpar(p);
         if(f.estado.kit==PersonagemRpg.FRIEREN){p.setNoGravity(f.gravidadeOriginal);RpgServidor.dados(p).remove("restaurarGravidade");}
         if(f.estado.kit==PersonagemRpg.SHADOW){
             com.cauansilva.arcanecontrol.core.cid.PoderesCid.dados(p).putLong("cid_ocupado",0);
             var lento=p.getEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN);
-            if(lento!=null&&lento.getAmplifier()==5&&lento.getDuration()<=100)p.removeEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN);
+            if(lento!=null&&lento.getAmplifier()==5&&lento.getDuration()<=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO)p.removeEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN);
         }
         EfeitosDespertar.enviar(f.nivel,p.getUUID(),0,f.centro,Vec3.ZERO,0,f.estado.kit.id);
         com.cauansilva.arcanecontrol.core.rede.RegistoRede.ENVIAR.send(net.minecraftforge.network.PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),new com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar(p.getUUID(),0,f.centro,Vec3.ZERO,0,f.estado.kit.id));
@@ -67,6 +70,6 @@ public final class DespertaresServidor {
     @SubscribeEvent public static void morrer(LivingDeathEvent e){if(e.getEntity() instanceof ServerPlayer p){cancelar(p);limparDesafio(p);}}
     @SubscribeEvent public static void dimensao(PlayerEvent.PlayerChangedDimensionEvent e){if(e.getEntity() instanceof ServerPlayer p){cancelar(p);limparDesafio(p);}}
     @SubscribeEvent public static void entrar(PlayerEvent.PlayerLoggedInEvent e){if(e.getEntity() instanceof ServerPlayer p){var t=RpgServidor.dados(p);if(t.getBoolean("restaurarGravidade")){p.setNoGravity(t.getBoolean("gravidadeOriginal"));t.remove("restaurarGravidade");}limparDesafio(p);}}
-    @SubscribeEvent public static void observar(PlayerEvent.StartTracking e){if(e.getEntity() instanceof ServerPlayer observador&&e.getTarget() instanceof ServerPlayer p){var f=forma(p);if(f!=null&&f.estado.kit!=PersonagemRpg.ICHIGO)com.cauansilva.arcanecontrol.core.rede.RegistoRede.ENVIAR.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(()->observador),new com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar(p.getUUID(),200,f.centro,Vec3.ZERO,restante(p),f.estado.kit.id));}}
+    @SubscribeEvent public static void observar(PlayerEvent.StartTracking e){if(e.getEntity() instanceof ServerPlayer observador&&e.getTarget() instanceof ServerPlayer p){var f=forma(p);if(f!=null&&f.estado.kit!=PersonagemRpg.ICHIGO)com.cauansilva.arcanecontrol.core.rede.RegistoRede.ENVIAR.send(net.minecraftforge.network.PacketDistributor.PLAYER.with(()->observador),new com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar(p.getUUID(),200,f.centro,Vec3.ZERO,prazoRestante(p),f.estado.kit.id));}}
     @SubscribeEvent public static void parar(ServerStoppedEvent e){for(var f:List.copyOf(FORMAS.values()))cancelar(f.p);FORMAS.clear();}
 }

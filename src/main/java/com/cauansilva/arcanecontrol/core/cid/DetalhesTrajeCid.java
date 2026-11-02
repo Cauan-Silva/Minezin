@@ -8,7 +8,7 @@ public final class DetalhesTrajeCid {
         if(osso.equals("cid_collar_back")){x=base.x()*.07;y=base.y()*.1;z=base.z()*.12;}
         else if(osso.equals("cid_collar_left")||osso.equals("cid_collar_right")){
             int lado=osso.endsWith("left")?-1:1;x=base.x()*.18;y=base.y()*.25;z=base.z()*.3-base.x()*lado*.07;
-        }else if(osso.equals("aba_esq")||osso.equals("aba_dir")){x=-base.x()*.3;y=base.y()*.45;z=base.z()*.55;}
+        }else if(osso.equals("aba_esq")||osso.equals("aba_dir")){int lado=osso.equals("aba_esq")?-1:1;x=-base.x()*.55;y=base.y()*.55;z=base.z()*.65+base.x()*lado*.15;}
         double limite=osso.startsWith("cid_collar_")?.045:.10;
         return new MolaMantoCid.Pose(clamp(x,limite),clamp(y,limite),clamp(z,limite));
     }
