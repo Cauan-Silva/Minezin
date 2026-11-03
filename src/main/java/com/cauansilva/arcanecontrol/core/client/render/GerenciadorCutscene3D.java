@@ -74,7 +74,7 @@ public class GerenciadorCutscene3D {
     private static CameraType cameraAnterior = null;
     private static Vec3 frenteCamera = new Vec3(0, 0, 1);
     private static Vec3 posicaoCameraInicial = Vec3.ZERO;
-    private static Vec3 centroRoxoMaximo,olhoRoxoMaximo;
+    private static Vec3 centroRoxoMaximo,olhoRoxoMaximo,origemUltAsta;
 
     public static void iniciarEfeitoCliente(int tipo, UUID playerId, double x, double y, double z, double dx, double dy, double dz) {
         Minecraft mc = Minecraft.getInstance();
@@ -150,6 +150,15 @@ public class GerenciadorCutscene3D {
         if(plano.lengthSqr()>1e-6)frenteCamera=plano;
     }
 
+    /** Asta's ultimate (type 36): local camera only, keyframed around his body (UltAsta.quadro) and facing the locked
+     *  target (the effect's direction), so the cuts landing on it stay in frame while he closes in. */
+    public static void iniciarUltAsta(UUID dono,Vec3 origem,Vec3 direcao,int duracao){
+        var mc=Minecraft.getInstance();
+        if(mc.level==null||mc.player==null||!mc.player.getUUID().equals(dono)||!ConfigCliente.CINEMATICAS.get())return;
+        iniciarCutsceneLocal(36,Math.min(duracao,com.cauansilva.arcanecontrol.core.vfx.UltAsta.DURACAO));origemUltAsta=origem;
+        Vec3 plano=direcao.multiply(1,0,1);if(plano.lengthSqr()>1e-6)frenteCamera=plano.normalize();
+    }
+
     public static void iniciarCutsceneLocal(int tipo, int duracao) {
         if (!ConfigCliente.CINEMATICAS.get()) return;
         Minecraft mc = Minecraft.getInstance();
@@ -171,7 +180,7 @@ public class GerenciadorCutscene3D {
         Minecraft mc = Minecraft.getInstance();
         if (cameraAnterior != null) mc.options.setCameraType(cameraAnterior);
         cameraAnterior = null;
-        centroRoxoMaximo=null;olhoRoxoMaximo=null;
+        centroRoxoMaximo=null;olhoRoxoMaximo=null;origemUltAsta=null;
         mundoCutscene = null;
         cutsceneTipo = 0;
         cutsceneTick = 0;
@@ -270,6 +279,13 @@ public class GerenciadorCutscene3D {
             desejada=centroRoxoMaximo.add(direita.scale(q.camera().x())).add(0,q.camera().y(),0).add(frente.scale(q.camera().z()));
             alvo=centroRoxoMaximo.add(direita.scale(q.alvo().x())).add(0,q.alvo().y(),0).add(frente.scale(q.alvo().z()));
         }
+        if(cutsceneTipo==36&&origemUltAsta!=null){
+            // Keyframes include the scripted dash; follow his real feet instead (he stops short of the target).
+            var q=com.cauansilva.arcanecontrol.core.vfx.UltAsta.quadro(tempo);
+            Vec3 corpo=mc.player.getPosition(parcial).subtract(frente.scale(com.cauansilva.arcanecontrol.core.vfx.UltAsta.avanco(tempo)));
+            desejada=corpo.add(direita.scale(q.camera().x())).add(0,q.camera().y(),0).add(frente.scale(q.camera().z()));
+            alvo=corpo.add(direita.scale(q.alvo().x())).add(0,q.alvo().y(),0).add(frente.scale(q.alvo().z()));
+        }
         desejada = posicaoCameraInicial.lerp(desejada, RoteiroGojo.suave(tempo / 8));
         var colisao = mc.level.clip(new net.minecraft.world.level.ClipContext(olho, desejada,
                 net.minecraft.world.level.ClipContext.Block.VISUAL,
@@ -296,6 +312,7 @@ public class GerenciadorCutscene3D {
         double tempo = cutsceneTick + Minecraft.getInstance().getFrameTime();
         if(cutsceneTipo==14)tempo=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(tempo);
         if(cutsceneTipo==32){event.setNewFovModifier((float)(event.getNewFovModifier()*RoxoMaximoGojo.fov(tempo)));return;}
+        if(cutsceneTipo==36){event.setNewFovModifier((float)(event.getNewFovModifier()*com.cauansilva.arcanecontrol.core.vfx.UltAsta.quadro(tempo).fov()));return;}
         if(cutsceneTipo==35){
             double fase=RoteiroGojo.suave((tempo-20)/8)*RoteiroGojo.suave((55-tempo)/10);
             double alvo=120.0/Math.max(30,Minecraft.getInstance().options.fov().get());

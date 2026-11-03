@@ -44,17 +44,9 @@ def polish(style,b):
     elif style=='asta':
         # Thin draped surfaces replace the thick, tilted shoulder boxes.
         for n in list(b):
-            if n.startswith(('manto_','capa_touro')):del b[n]
-        for side,name in [(-1,'manto_frente_esq'),(1,'manto_frente_dir')]:
-            x=-4.5 if side<0 else -.1;bottom=19.1 if side<0 else 19.6
-            b[name]=a.bone(name,[side*2.2,23.8,-2.6],'armorBody')
-            a.cube(b[name],[x,bottom,-2.8],[4.6,24-bottom,.35],a.BLACK,[side*2.2,23.8,-2.6],[0,0,side*7])
-            a.cube(b[name],[x,bottom-.05,-2.86],[4.6,.28,.42],a.GOLD,[side*2.2,23.8,-2.6],[0,0,side*7])
-        for side,name in [(-1,'capa_touro_esq'),(1,'capa_touro_dir')]:
-            x=-4.5 if side<0 else -.1
-            b[name]=a.bone(name,[side*2.2,23.8,2.6],'armorBody')
-            a.cube(b[name],[x,19.2,2.5],[4.6,4.8,.35],a.BLACK)
-            a.cube(b[name],[x,19.15,2.49],[4.6,.28,.42],a.GOLD)
+            if n.startswith('manto_'):del b[n]
+        # Front and back of the robe are cloth chains now (asta_capa_*, armor_reference_shapes.asta); only the
+        # shoulder mantles stay rigid, riding the arms.
         for side,name,parent in [(-1,'manto_ombro_esq','armorRightArm'),(1,'manto_ombro_dir','armorLeftArm')]:
             x=-8.5 if side<0 else 3.6
             b[name]=a.bone(name,[side*5,22,0],parent)
@@ -65,8 +57,6 @@ def polish(style,b):
                 a.cube(b[name],[x,22.5,z-.03],[4.9,.25,.34],a.GOLD)
             outer=x if side<0 else x+4.6
             a.cube(b[name],[outer,22.85,-2.5],[.3,1.8,5],a.BLACK)
-        for c in b['emblema_touro']['cubes']:
-            c['origin'][2]-=.05
 
         for c in b['armorHead']['cubes']:
             o,s=c['origin'],c['size']

@@ -140,12 +140,19 @@ def shadow():
         c(b,leg,[x-.59,6.45,-2.65],[1.18,1.18,.18],a.BLACK,[x,6.95,-2.65],[0,0,45])
     return b
 
+# Black Bulls robe as cloth, shared with TecidoAsta (Java): panel, x of column 0, z of the hanging plane, columns, width.
+# Front panel columns run toward -x (their local x is mirrored, like Gojo's front hem).
+CAPA_TOPO,CAPA_ALTURA,CAPA_SEGMENTOS=23.6,2.8,2
+CAPA_PAINEIS=[('costas',-3.2,2.65,3,3.2),('frente_esq',4.8,-2.65,2,2.4),('frente_dir',-2.4,-2.65,2,2.4)]
 def asta():
     b=a.skeleton();c=garment
     c(b,'armorHead',[-4.2,30,-4.25],[8.4,1.7,.3],a.BLACK)
     for x in [-4.25,3.95]:c(b,'armorHead',[x,30,-4],[.3,1.7,8.2],a.BLACK)
     c(b,'armorHead',[-4.2,30,3.96],[8.4,1.7,.3],a.BLACK)
-    c(b,'armorHead',[-3.8,30.25,-4.48],[1.3,1.1,.18],a.GOLD)
+    # Bull emblem on the headband, off to the right as in the user's reference: skull plate with two horns.
+    ex=-1.8
+    c(b,'armorHead',[ex-.7,30.2,-4.48],[1.4,1.2,.18],a.GOLD)
+    for side in [-1,1]:c(b,'armorHead',[ex+side*.95-.2,31.05,-4.48],[.4,.75,.18],a.GOLD,[ex+side*.95,31.05,-4.4],[0,0,side*35])
     c(b,'armorBody',[-4.12,11.4,-2.13],[8.24,12.4,4.26],a.IVORY)
     c(b,'armorBody',[-4.3,11.2,-2.32],[8.6,1,4.64],a.IVORY)
     c(b,'armorBody',[-4.4,12.5,-2.5],[8.8,1.2,5],a.BROWN)
@@ -155,22 +162,30 @@ def asta():
     for name,x in [('armorLeftArm',3.95),('armorRightArm',-8.2)]:
         c(b,name,[x,18.1,-2.15],[4.25,5.6,4.3],a.NAVY)
         c(b,name,[x-.12,17.5,-2.29],[4.49,1.15,4.58],a.IVORY)
-    for side,name in [(-1,'manto_frente_esq'),(1,'manto_frente_dir')]:
-        b[name]=a.bone(name,[side*2,23,0],'armorBody')
-        c(b,name,[side*2.35-2.4,18,-2.65],[4.8,5.5,.5],a.BLACK,[side*2,23,0],[0,0,-side*7])
-        c(b,name,[side*2.35-2.4,17.85,-2.73],[4.8,.52,.6],a.GOLD,[side*2,23,0],[0,0,-side*7])
     for side,name,x in [(-1,'manto_ombro_esq',-6.35),(1,'manto_ombro_dir',3.05)]:
         b[name]=a.bone(name,[side*4,23,0],'armorBody')
         c(b,name,[x,19.1,-2.75],[3.3,4.4,5.5],a.BLACK,[side*4,23,0],[0,0,side*11])
         c(b,name,[x,19,-2.81],[3.3,.45,5.62],a.GOLD,[side*4,23,0],[0,0,side*11])
-    for side,name in [(-1,'capa_touro_esq'),(1,'capa_touro_dir')]:
-        b[name]=a.bone(name,[side*2,23,2.65],'armorBody')
-        c(b,name,[side*2.2-2.35,18,2.65],[4.7,5.4,.5],a.BLACK,[side*2,23,2.65],[0,0,side*5])
-        c(b,name,[side*2.2-2.35,17.85,2.65],[4.7,.5,.58],a.GOLD,[side*2,23,2.65],[0,0,side*5])
-    # Front bull crest, readable at Minecraft scale without a noisy decal.
-    b['emblema_touro']=a.bone('emblema_touro',[-2.4,21.2,-3],'armorBody')
-    c(b,'emblema_touro',[-3.1,20.3,-3.05],[1.4,1.25,.2],a.GOLD)
-    for side in [-1,1]:c(b,'emblema_touro',[-2.4+side*.9-.2,21.05,-3.05],[.4,1,.2],a.GOLD,[-2.4+side*.9,21.05,-3],[0,0,side*30])
+    # Black Bulls robe as cloth (AstaCapa / TecidoAsta): each column is a chain of CAPA_SEGMENTOS bones hanging
+    # from the shoulder line, back panel across the shoulders and two front panels open over the chest.
+    for nome,x0,z,cols,w in CAPA_PAINEIS:
+        for col in range(cols):
+            xc=x0+col*w*(1 if nome=='costas' else -1)
+            for seg in range(CAPA_SEGMENTOS):
+                top=CAPA_TOPO-seg*CAPA_ALTURA;bone=f'asta_capa_{nome}_{col}_{seg}'
+                b[bone]=a.bone(bone,[xc,top,z],'armorBody' if seg==0 else f'asta_capa_{nome}_{col}_{seg-1}')
+                c(b,bone,[xc-w/2,top-CAPA_ALTURA,z-(0 if z>0 else .5)],[w,CAPA_ALTURA,.5],a.BLACK)
+                if seg==CAPA_SEGMENTOS-1:c(b,bone,[xc-w/2,top-CAPA_ALTURA-.05,z-(.05 if z>0 else .55)],[w,.5,.6],a.GOLD)
+    # Bull crest on the robe on the right (user's reference), riding the top segment of that front panel.
+    crest='asta_capa_frente_dir_0_0';xc=b[crest]['pivot'][0]
+    c(b,crest,[xc-.7,21.2,-3.3],[1.4,1.25,.2],a.GOLD)
+    for side in [-1,1]:c(b,crest,[xc+side*.9-.2,21.95,-3.3],[.4,1,.2],a.GOLD,[xc+side*.9,21.95,-3.2],[0,0,side*30])
+    # Stand-up collar with gold edge and the gold button at the throat.
+    for side in [-1,1]:
+        c(b,'armorBody',[side*2.6-1.3,23.6,-2.9],[2.6,1.8,.4],a.BLACK,[side*1.3,23.6,-2.7],[-12,0,side*-18])
+        c(b,'armorBody',[side*2.6-1.3,25.3,-2.95],[2.6,.25,.5],a.GOLD,[side*1.3,23.6,-2.7],[-12,0,side*-18])
+    c(b,'armorBody',[-4.3,23.6,2.3],[8.6,1.6,.45],a.BLACK,[0,23.6,2.5],[14,0,0])
+    c(b,'armorBody',[-.4,22.6,-3.05],[.8,.8,.3],a.GOLD)
     limb_legs(b,a.NAVY,a.BROWN,4.5,a.LEATHER)
     for leg,x in [('armorLeftLeg',0),('armorRightLeg',-4)]:c(b,leg,[x-.22,5.1,-2.25],[4.44,.8,4.5],a.NAVY)
     b['grimoire']=a.bone('grimoire',[-4.5,12,1],'armorBody')

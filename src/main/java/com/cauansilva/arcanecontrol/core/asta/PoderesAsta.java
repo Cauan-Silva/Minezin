@@ -17,6 +17,7 @@ import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.*;
 import net.minecraftforge.fml.common.Mod;
+import com.cauansilva.arcanecontrol.core.vfx.UltAsta;
 import java.util.*;
 
 @Mod.EventBusSubscriber(modid="arcanecontrol")
@@ -31,14 +32,16 @@ public final class PoderesAsta {
         if(slot<0||slot>3||!armado(p)||!RpgServidor.podeUsar(p,PoderAnime.ASTA,slot)||GOLPES.size()>=128)return;
         if(GOLPES.stream().anyMatch(g->g.p==p))return;
         boolean forma=DespertaresServidor.ativo(p);if(forma&&DespertaresServidor.restante(p)>PerfilAsta.DURACAO_FORMA-PerfilAsta.ABERTURA)return;Vec3 dir=p.getLookAngle();
-        LivingEntity alvo=forma&&slot==0?alvo(p,20):null;
+        LivingEntity alvo=forma&&slot==0?alvo(p,20):forma&&slot==3?alvo(p,UltAsta.ALCANCE_ALVO):null;
+        // The ultimate locks on: its frame (and the client's) faces the target, so every cut lands on it.
+        if(forma&&slot==3&&alvo!=null){Vec3 a=alvo.position().subtract(p.position()).multiply(1,0,1);if(a.lengthSqr()>1e-4)dir=a.normalize();}
         if(forma&&slot==0&&alvo==null){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Mire em um inimigo a até vinte blocos para o Black Meteorite."),true);return;}
         if(!RpgServidor.conjurar(p,PoderAnime.ASTA,slot,PerfilAsta.recarga(slot,forma)))return;
         if(!forma&&slot==3)RpgServidor.dados(p).putLong("asta_barreira",RpgServidor.agora(p)+PerfilAsta.BARREIRA);
         else GOLPES.add(new Golpe(p,p.serverLevel(),p.position(),dir,RpgServidor.agora(p),slot,forma,alvo,new HashSet<>()));
-        EfeitosDespertar.enviar(p.serverLevel(),p.getUUID(),300+(forma?4:0)+slot,p.position(),dir,!forma&&slot==3?100:forma&&slot==3?30:32,4);
+        EfeitosDespertar.enviar(p.serverLevel(),p.getUUID(),300+(forma?4:0)+slot,p.position(),dir,!forma&&slot==3?100:forma&&slot==3?UltAsta.DURACAO:32,4);
         p.serverLevel().playSound(null,p.blockPosition(),SoundEvents.PLAYER_ATTACK_SWEEP,SoundSource.PLAYERS,1.3f,.55f);
-        if(forma||slot!=3)ProgressaoPoderes.bloquear(p,32);
+        if(forma||slot!=3)ProgressaoPoderes.bloquear(p,forma&&slot==3?UltAsta.DURACAO:32);
         RpgServidor.uso(p,PoderAnime.ASTA);
     }
     private static LivingEntity alvo(ServerPlayer p,double r){
@@ -51,22 +54,41 @@ public final class PoderesAsta {
         if(!p.serverLevel().hasChunkAt(pos)||!p.serverLevel().getWorldBorder().isWithinBounds(pos)||!p.serverLevel().noCollision(p,p.getBoundingBox().move(deslocamento)))return;
         p.connection.teleport(q.x,q.y,q.z,p.getYRot(),p.getXRot());p.fallDistance=0;
     }
+    private static Vec3 mundo(Vec3 origem,Vec3 frente,Vec3 lado,UltAsta.P q){return origem.add(lado.scale(q.x())).add(0,q.y(),0).add(frente.scale(q.z()));}
+    /** Ultimate (V in the form), the same frame and ticks UltAsta draws: protected throughout, dash 30..58, a small hit per
+     *  slash on its tick (i-frames cleared so every slash lands), then the final X: strong damage and Silence. */
+    private static void ult(Golpe g,int t){
+        var p=g.p;Vec3 f0=g.dir.multiply(1,0,1);final Vec3 frente=f0.lengthSqr()<1e-6?new Vec3(0,0,1):f0.normalize(),lado=frente.cross(new Vec3(0,1,0));
+        RpgServidor.dados(p).putLong("asta_protegido",RpgServidor.agora(p)+2);
+        LivingEntity alvo=g.alvo!=null&&g.alvo.isAlive()&&g.alvo.level()==g.mundo?g.alvo:null;
+        if(t>30&&t<=58){
+            // Locked: close in until PARADA blocks from the target; otherwise the fixed forward dash.
+            if(alvo!=null){Vec3 d=alvo.position().subtract(p.position()).multiply(1,0,1);double dist=d.length();if(dist>UltAsta.PARADA+.05)mover(p,d.normalize().scale(Math.min(UltAsta.PASSO_AVANCO,dist-UltAsta.PARADA)));}
+            else mover(p,frente.scale(UltAsta.avanco(t)-UltAsta.avanco(t-1)));
+        }
+        // Announce each cut (and the X) where it will land, 3 ticks early so every viewer draws the full sweep there.
+        for(int j=0;j<=UltAsta.CORTES;j++)if(t==UltAsta.anuncio(j))EfeitosDespertar.enviar(g.mundo,p.getUUID(),311,centroUlt(g,alvo,frente,lado,j),new Vec3(j,0,0),12,4);
+        for(int j=0;j<UltAsta.CORTES;j++)if(t==UltAsta.tempoCorte(j))for(var v:inimigos(p,centroUlt(g,alvo,frente,lado,j),3))if(p.hasLineOfSight(v)){v.invulnerableTime=0;v.hurt(p.damageSources().playerAttack(p),UltAsta.DANO_CORTE);}
+        if(t==UltAsta.FINAL)for(var v:inimigos(p,centroUlt(g,alvo,frente,lado,UltAsta.CORTES),UltAsta.ALCANCE_X))if(p.hasLineOfSight(v)){
+            v.invulnerableTime=0;v.hurt(p.damageSources().playerAttack(p),UltAsta.DANO_X);v.addEffect(new MobEffectInstance(RegistroAsta.SILENCIO.get(),PerfilAsta.SILENCIO,0));
+        }
+    }
+    /** Center of cut j (j = CORTES: the X): on the locked target as it moves, or the fixed spot ahead without one. */
+    private static Vec3 centroUlt(Golpe g,LivingEntity alvo,Vec3 frente,Vec3 lado,int j){
+        if(alvo!=null)return alvo.position().add(0,j<UltAsta.CORTES?UltAsta.ALTURA_CORTE:UltAsta.ALTURA_X,0);
+        return mundo(g.origem,frente,lado,j<UltAsta.CORTES?UltAsta.centroCorte(j):UltAsta.centroX());
+    }
     private static void dano(Golpe g,LivingEntity v,float dano){if(g.atingidos.add(v.getUUID()))v.hurt(g.p.damageSources().playerAttack(g.p),dano);}
     @SubscribeEvent public static void tick(TickEvent.ServerTickEvent e){
         if(e.phase!=TickEvent.Phase.END)return;
         var it=GOLPES.iterator();while(it.hasNext()){
             var g=it.next();int t=(int)(RpgServidor.agora(g.p)-g.inicio);
-            if(!valido(g)||t>32){it.remove();continue;}
+            if(!valido(g)||t>(g.forma&&g.slot==3?UltAsta.DURACAO:32)){it.remove();continue;}
             var p=g.p;int impacto=PerfilAsta.impacto(g.slot,g.forma);
             if(!g.forma&&g.slot==0&&t>=3&&t<=10)refletirProximos(p,4,false);
             if(!g.forma&&g.slot==2&&t<=10){mover(p,g.dir.multiply(1,0,1).normalize().scale(.65));RpgServidor.dados(p).putLong("asta_protegido",RpgServidor.agora(p)+2);}
             if(g.forma&&g.slot==0&&t<12&&g.alvo!=null&&g.alvo.isAlive()&&g.alvo.level()==g.mundo){var d=g.alvo.position().subtract(p.position());mover(p,d.normalize().scale(Math.min(.9,d.length())));RpgServidor.dados(p).putLong("asta_protegido",RpgServidor.agora(p)+2);}
-            if(g.forma&&g.slot==3&&t>=8&&t<=28){
-                double distancia=PerfilAsta.alcanceOnda(t);Vec3 anterior=g.origem.add(0,1,0).add(g.dir.scale(Math.max(0,distancia-1.2))),c=g.origem.add(0,1,0).add(g.dir.scale(distancia));
-                var colisao=g.mundo.clip(new net.minecraft.world.level.ClipContext(anterior,c,net.minecraft.world.level.ClipContext.Block.COLLIDER,net.minecraft.world.level.ClipContext.Fluid.NONE,p));
-                if(colisao.getType()!=HitResult.Type.MISS){EfeitosDespertar.enviar(g.mundo,p.getUUID(),310,colisao.getLocation(),Vec3.ZERO,15,4);it.remove();continue;}
-                for(var v:inimigos(p,c,3))if(p.hasLineOfSight(v)){dano(g,v,18);v.addEffect(new MobEffectInstance(RegistroAsta.SILENCIO.get(),PerfilAsta.SILENCIO,0));}
-            }
+            if(g.forma&&g.slot==3){ult(g,t);continue;}
             if(t!=impacto)continue;
             if(!g.forma){
                 for(var v:inimigos(p,p.position(),g.slot==0?5:g.slot==1?7:3)){

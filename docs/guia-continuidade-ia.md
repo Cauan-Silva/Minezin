@@ -2,7 +2,7 @@
 
 Atualizado em **02/11/2026**. Documento de passagem de bastão para qualquer IA que continue o projeto. A parte 1 é um **modelo de roadmap** para copiar a cada onda; a parte 2 traz o **estado atual**; a parte 3 reúne **dicas práticas** aprendidas nas ondas Gojo e Frieren. Não autoriza commit, push, merge ou publicação: isso continua dependendo de pedido explícito do usuário.
 
-Leia junto: [workflow-roadmap-minezin.md](workflow-roadmap-minezin.md) (decisões e workflow completos) e o documento da última onda, [testing/frieren-onda-aprovacao-visual.md](testing/frieren-onda-aprovacao-visual.md).
+Leia junto: [workflow-roadmap-minezin.md](workflow-roadmap-minezin.md) (decisões e workflow completos), o documento da onda em andamento, [testing/asta-onda-aprovacao-visual.md](testing/asta-onda-aprovacao-visual.md), e a ficha dos ataques da forma desperta do Asta, [asta-ataques-forma-ia.md](asta-ataques-forma-ia.md).
 
 ---
 
@@ -71,7 +71,7 @@ nome, tamanho, SHA-256, o que foi conferido, roteiro no Minecraft (tabela cenár
 | Clone local | `C:\Users\Usuário\Documents\Projetos\Minezin` |
 | `main` | `a698e32` (merge do PR #29, guia) sobre `fad7cb6` (PR #28) e `7b5f88e` (PR #27, onda Frieren) |
 | Versão | `3.9.0-asta-preview.2` (onda Asta, parte 1); JAR em `C:\Users\Usuário\Documents\Projetos\minezin-outputs` |
-| Testes | 203 testes Java + 3 testes Python de projetos Blockbench, zero falhas |
+| Testes | 227 testes Java + 3 testes Python de projetos Blockbench, zero falhas |
 | Protocolo de rede | 15 (efeito novo 115 exige cliente e servidor na mesma versão) |
 
 | Personagem | Situação |

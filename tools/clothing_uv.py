@@ -21,7 +21,11 @@ def apply(style,bones):
     if style=='shadow':palette[a.BLACK]='191622';palette[a.PLUM]='3b2949'
     if style=='asta':palette[a.BLACK]='1b2029';palette[a.NAVY]='26364a'
     # Devil Union: matte near-black body, a slightly lighter black for alternating wing blades, glowing red.
+    # Asta's swords: grey Demon-Slayer blade under black blotches; dark Demon-Dweller with a lighter fuller.
+    if style=='matadora':palette[a.STEEL]='8e8c94';palette[a.INK]='151318';palette[a.SHADOW]='1d1b21';palette[a.RUBY]='ff2a3d'
+    if style=='demon_dweller':palette[a.BLACK]='1a181e';palette[a.STEEL]='55535b';palette[a.SHADOW]='121015';palette[a.INK]='0e0d11'
     if style in ('asta_forma','matadora_desperta'):palette[a.BLACK]='120e16';palette[a.PLUM]='120e16';palette[a.SHADOW]='19141e';palette[a.RUBY]='ff2a3d';palette[a.INK]='3a333f'
+    if style=='matadora_desperta':palette[a.STEEL]='3e0e19';palette[a.INK]='120e16';palette[a.SHADOW]='1a1519'
     islands={};rects=[];cursor_x=cursor_y=row_height=0
     def rect(x,y,w,h,color):
         rects.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#{color}"/>')
