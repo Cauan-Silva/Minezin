@@ -20,6 +20,10 @@ def apply(style,bones):
     if style=='gojo':palette[a.NAVY]='202b45';palette[a.BLACK]='13151d'
     if style=='shadow':palette[a.BLACK]='191622';palette[a.PLUM]='3b2949'
     if style=='asta':palette[a.BLACK]='1b2029';palette[a.NAVY]='26364a'
+    # Ichigo: shihakusho black with a cool tint; Bankai coat a deeper black, crimson lining, off-white trim.
+    if style=='ichigo':palette[a.BLACK]='1b1a1f';palette[a.SHADOW]='0e0d11';palette[a.IVORY]='ebe7de';palette[a.LEATHER]='8a3a2e';palette[a.STEEL]='9a948c'
+    if style=='ichigo_mugetsu':palette[a.BLACK]='0d0c11';palette[a.STEEL]='8f9ba5';palette[a.INK]='2a2e36';palette[a.SHADOW]='4b525c';palette[a.WHITE]='b7c0c8';palette[a.LEATHER]='c28470'
+    if style=='ichigo_bankai':palette[a.BLACK]='131217';palette[a.SHADOW]='08080b';palette[a.WHITE]='dedad3';palette[a.IVORY]='ebe7de'
     # Devil Union: matte near-black body, a slightly lighter black for alternating wing blades, glowing red.
     # Asta's swords: grey Demon-Slayer blade under black blotches; dark Demon-Dweller with a lighter fuller.
     if style=='matadora':palette[a.STEEL]='8e8c94';palette[a.INK]='151318';palette[a.SHADOW]='1d1b21';palette[a.RUBY]='ff2a3d'

@@ -5,7 +5,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '3.9.0-asta-preview.4'
+version = '3.10.0-ichigo-preview.7'
 group = 'com.cauansilva.arcanecontrol'
 base {
     archivesName = 'minezin'
@@ -87,6 +87,11 @@ tasks.named('test').configure {
     outputs.file(layout.buildDirectory.file('frieren-forma-samples.json'))
     outputs.file(layout.buildDirectory.file('frieren-cloth-samples.json'))
     outputs.file(layout.buildDirectory.file('asta-divider-samples.json'))
+    outputs.file(layout.buildDirectory.file('ichigo-getsuga-samples.json'))
+    outputs.file(layout.buildDirectory.file('ichigo-kit-base-samples.json'))
+    outputs.file(layout.buildDirectory.file('ichigo-bankai-entrada-samples.json'))
+    outputs.file(layout.buildDirectory.file('ichigo-mugetsu-samples.json'))
+    outputs.file(layout.buildDirectory.file('ichigo-bankai-cloth-samples.json'))
     outputs.file(layout.buildDirectory.file('asta-meteorite-samples.json'))
     outputs.file(layout.buildDirectory.file('asta-hurricane-samples.json'))
     outputs.file(layout.buildDirectory.file('asta-aura-matadora-samples.json'))

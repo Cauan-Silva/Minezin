@@ -26,12 +26,12 @@ public final class DespertaresServidor {
         if(ProgressaoPoderes.ocupado(p))return;
         if(kit==PoderAnime.CID&&!p.getMainHandItem().is(com.cauansilva.arcanecontrol.core.cid.EspadaCid.ESPADA.get())){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Segure a Lâmina Shadow."),true);return;}
         if(kit==PoderAnime.ASTA&&!com.cauansilva.arcanecontrol.core.asta.PoderesAsta.armado(p))return;
-        if(kit==PoderAnime.ICHIGO&&!com.cauansilva.arcanecontrol.core.ichigo.PoderesIchigo.armado(p))return;
+        if(kit==PoderAnime.ICHIGO&&(!com.cauansilva.arcanecontrol.core.ichigo.PoderesIchigo.armado(p)||com.cauansilva.arcanecontrol.core.ichigo.PoderesIchigo.bloqueado(p)))return;
         var personagem=PersonagemRpg.porId(kit.id);
         if(!RpgServidor.conjurar(p,kit,4,personagem.recargaSegundos*20))return;
         var f=new Forma(p,p.serverLevel(),p.position(),new EstadoDespertar(personagem,RpgServidor.agora(p)),p.isNoGravity());FORMAS.put(p.getUUID(),f);
         if(kit==PoderAnime.ASTA)p.stopUsingItem();
-        if(kit==PoderAnime.ICHIGO)p.serverLevel().sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE,p.getX(),p.getY()+1,p.getZ(),32,.65,.8,.65,.03);
+        if(kit==PoderAnime.ICHIGO)RpgServidor.dados(p).putLong("ichigo_bankai_inicio",RpgServidor.agora(p));
         if(kit==PoderAnime.FRIEREN){var t=RpgServidor.dados(p);t.putBoolean("restaurarVoo",true);t.putBoolean("vooOriginal",p.getAbilities().mayfly);liberarVoo(p);}
         if(kit==PoderAnime.GOJO)com.cauansilva.arcanecontrol.core.magia.GerenciadorMagiasGojo.executarEfeito(p,5);
         if(kit==PoderAnime.CID)com.cauansilva.arcanecontrol.core.cid.PoderesCid.iniciarDespertar(p);
