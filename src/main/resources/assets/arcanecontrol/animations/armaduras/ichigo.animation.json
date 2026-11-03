@@ -3,8 +3,47 @@
   "animations": {
     "animation.traje.idle": {
       "loop": true,
-      "animation_length": 2,
-      "bones": {}
+      "animation_length": 4,
+      "bones": {
+        "manto_manga_esq": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "2": [
+              3,
+              0,
+              1.5
+            ],
+            "4": [
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        "manto_manga_dir": {
+          "rotation": {
+            "0": [
+              0,
+              0,
+              0
+            ],
+            "2": [
+              3,
+              0,
+              1.5
+            ],
+            "4": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
     }
   }
 }

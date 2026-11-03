@@ -90,7 +90,7 @@ def staff():
     return b
 
 def document(style, bones):
-    clothing=style in ['gojo','frieren','shadow','asta'] or any(style==n+'_'+slot for n in ['gojo','frieren','shadow','asta'] for slot in ['helmet','chestplate','leggings','boots'])
+    clothing=style in ['gojo','frieren','shadow','asta','ichigo','ichigo_bankai','ichigo_mugetsu'] or any(style==n+'_'+slot for n in ['gojo','frieren','shadow','asta','ichigo'] for slot in ['helmet','chestplate','leggings','boots'])
     return {'format_version':'1.12.0','minecraft:geometry':[{'description':{
         'identifier':'geometry.'+style,'texture_width':128 if clothing else W,'texture_height':128 if clothing else H,
         'visible_bounds_width':4,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(bones.values())}]}

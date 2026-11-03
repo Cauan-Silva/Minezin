@@ -42,7 +42,7 @@ class IchigoTest {
         var pouca=new RecursoMana(.1);assertFalse(pouca.consumir(PerfilIchigo.MANA_BANKAI_POR_SEGUNDO,false));assertEquals(.1,pouca.atual());
     }
     @Test void gestosNovosCarregamPeloPlayerAnimator()throws Exception{
-        try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/ichigo.json")){assertNotNull(in);assertEquals(9,AnimationSerializing.deserializeAnimation(in).size());}
+        try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/ichigo.json")){assertNotNull(in);assertEquals(10,AnimationSerializing.deserializeAnimation(in).size());}
         var moves=CatalogoMovesetsRpg.padrao().get(PersonagemRpg.ICHIGO);assertEquals("Getsuga Tenshou",moves.base().get(0).nome());assertEquals("Máscara Hollow",moves.transformada().get(3).nome());
     }
     @Test void modelosPossuemHierarquiaValidaEAtlasCompativel()throws Exception{

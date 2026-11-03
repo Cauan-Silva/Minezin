@@ -9,3 +9,4 @@ run/
 bin/
 
 __pycache__/
+logs/

@@ -9,6 +9,8 @@ public class RenderTrajeAnime extends GeoArmorRenderer<TrajeAnime>{
     }
     @Override public void renderToBuffer(PoseStack pose,VertexConsumer buffer,int luz,int overlay,float red,float green,float blue,float alpha){
         if(cobertoPelaDevilUnion())return;
+        // Ichigo's Mugetsu form replaces the whole outfit (CamadaHollow draws it).
+        if(getCurrentEntity()!=null&&com.cauansilva.arcanecontrol.core.ichigo.EfeitosIchigo.mugetsu(getCurrentEntity().getUUID()))return;
         super.renderToBuffer(pose,buffer,luz,overlay,red,green,blue,alpha);
     }
     /** Asta's Devil Union coats the bare body: each outfit slot disappears once its body parts are fully black. */

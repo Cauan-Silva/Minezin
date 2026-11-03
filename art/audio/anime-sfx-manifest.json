@@ -174,5 +174,69 @@
     "peak": 0.68385,
     "rms": 0.14439,
     "sha256": "6cd50f0f4016d1a8234b94344f580ad1c58e07a68a5ad2ccd135729c7feb5580"
+  },
+  "ichigo_getsuga": {
+    "duration": 1.1,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63997,
+    "rms": 0.10147,
+    "sha256": "1badc6dabac4bfacee4fb897ac999e1b1816d82217a8e6fa9d52dcc6785afd76"
+  },
+  "ichigo_getsuga_bankai": {
+    "duration": 1.2,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.65025,
+    "rms": 0.10953,
+    "sha256": "a519c5dc182ab411b8db36d1d1690adc0fc5dace49495c40d1732bfca90e47a1"
+  },
+  "ichigo_shunpo": {
+    "duration": 0.35,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.67182,
+    "rms": 0.07636,
+    "sha256": "b7581b0320d772d2fde89bc1b2a52268a6c18927a4d6087b4612146bae381ee6"
+  },
+  "ichigo_golpe_pesado": {
+    "duration": 1.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.65755,
+    "rms": 0.1387,
+    "sha256": "600e264197b7bf08ad55a69cecb589ae6b2e42136d8f8003e38df9d62b4be4c2"
+  },
+  "ichigo_corte_ascendente": {
+    "duration": 0.8,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.72811,
+    "rms": 0.09532,
+    "sha256": "2639d80b4cfcb04643b7ba6c56883b44aa9de118539eb205cef53e44650178ed"
+  },
+  "ichigo_bankai": {
+    "duration": 2.4,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.68447,
+    "rms": 0.15845,
+    "sha256": "1358477d6b93b4aa8203a2e0de25294714448a85a5fdb85a6e37594061c6ce78"
+  },
+  "ichigo_mascara": {
+    "duration": 0.9,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6802,
+    "rms": 0.09777,
+    "sha256": "209a4107942c630548224339446ecb42d4ac5e6e7d18bc426ee35a6eed99f99b"
+  },
+  "ichigo_mugetsu": {
+    "duration": 4.2,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.71543,
+    "rms": 0.15577,
+    "sha256": "728a6e4afb08ba5f8316b7b4d2349b88780274785483bc66a3f29f194312a7cc"
   }
 }

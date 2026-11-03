@@ -8,21 +8,56 @@ ROOT=Path(__file__).resolve().parents[1];A=ROOT/'src/main/resources/assets/arcan
 
 def sword(bankai=False):
  b={'root':a.bone('root',[0,0,0]),'cloth':a.bone('cloth',[0,-4.6,0],'root'),'chain':a.bone('chain',[0,-4.6,0],'root')};r=b['root'];c=a.cube
- c(r,[-.55,-4.6,-.55],[1.1,9.2,1.1],a.INK if bankai else a.IVORY)
- for y in [-4,-2,0,2,4]:c(r,[-.59,y,-.59],[1.18,.35,1.18],a.RUBY if bankai else a.LEATHER)
+ c(r,[-.55,-4.6,-.55],[1.1,9.2,1.1],a.INK)
  if bankai:
-  c(r,[-2.4,4.6,-.5],[4.8,.7,1],a.INK)
-  for x in [-2.4,1.7]:c(r,[x,3.5,-.5],[.7,2.8,1],a.INK)
-  c(r,[-.7,5.3,-.35],[1.4,33,.7],a.INK);c(r,[.55,5.4,-.4],[.18,32,.8],a.STEEL)
-  c(r,[-.5,38.3,-.3],[1,2,.6],a.INK)
-  b['chain']=a.bone('chain',[0,-4.6,0],'root')
-  for i in range(5):c(b['chain'],[-.35,-5.3-i*.9,-.15],[.7,.8,.3],a.STEEL)
+  for y in [-4,-2,0,2,4]:c(r,[-.59,y,-.59],[1.18,.35,1.18],a.INK)
  else:
-  c(r,[-3.4,4.6,-.6],[6.8,23,1.2],a.INK)
-  c(r,[2.6,4.7,-.66],[.8,23,1.32],a.STEEL)
-  for i in range(5):c(r,[-3.4+i*.6,27.6+i*1.1,-.55],[6.2-i*.9,1.1,1.1],a.INK)
-  b['cloth']=a.bone('cloth',[0,-4.6,0],'root')
-  c(b['cloth'],[-.6,-12,-.12],[1.2,7.4,.24],a.IVORY)
+  # Shikai grip (user's reference): dark wrap laced with white diamonds.
+  for y in [-3.9,-2.3,-.7,.9,2.5]:
+   for side in [-1,1]:c(r,[side*.6-.07,y,-.32],[.14,1.1,.64],a.IVORY,[side*.6,y+.55,0],[0,45,0])
+ if bankai:
+  # Tensa Zangetsu (user's reference): square black guard with notched corners, black wrap with red diamonds, a
+  # gently curved all-black blade (segments rotated progressively toward the edge side) and a short chain at the pommel.
+  c(r,[-2.3,4.6,-2.3],[4.6,.6,4.6],a.INK)
+  for x,z in [(-2.3,-2.3),(1.7,-2.3),(-2.3,1.7),(1.7,1.7)]:c(r,[x,4.55,z],[.6,.7,.6],a.SHADOW)
+  c(r,[-.75,5.2,-.75],[1.5,.9,1.5],a.INK)
+  for y in [-3.6,-1.9,-.2,1.5,3.2]:
+   for side in [-1,1]:c(r,[side*.62-.08,y,-.28],[.16,.9,.56],a.RUBY,[side*.62,y+.45,0],[0,45,0])
+  segs=8;ang=0;y0=6.1;x0=0
+  for k in range(segs):
+   L=4.1;b[f'lamina_{k}']=a.bone(f'lamina_{k}',[x0,y0,0],'root' if k==0 else f'lamina_{k-1}',[0,0,-2.2 if k else 0])
+   w=1.35-.06*k;c(b[f'lamina_{k}'],[x0-w/2,y0,-.32],[w,L+.05,.64],a.INK)
+   c(b[f'lamina_{k}'],[x0+w/2-.16,y0,-.36],[.16,L+.05,.72],a.SHADOW)
+   y0+=L
+  c(b[f'lamina_{segs-1}'],[-.45,y0,-.3],[.9,1.2,.6],a.INK,[0,y0,0],[0,0,-28])
+  # Chain as a chain of 4 bones (2 links each) so TecidoEspadaIchigo can swing it like cloth.
+  pai='root'
+  for k in range(4):
+   y=-4.6-k*1.7;nome='chain' if k==0 else f'chain_{k}';b[nome]=a.bone(nome,[0,y,0],pai)
+   for j in range(2):yy=y-.8-j*.85;c(b[nome],[-.3+(.25 if j else 0),yy,-.15],[.6,.75,.3],a.STEEL,[0,yy,0],[0,90 if j else 0,0])
+   pai=nome
+ else:
+  # Shikai Zangetsu (user's reference): long, slender cleaver. Straight dark spine on -x, the edge bellies out and runs
+  # into a long sharp point; the blade fades from black at the spine to white at the edge (ink, steel, white bands
+  # laid along the curve as thin rotated cubes, so the edge reads smooth). Long white cloth ribbon from the pommel.
+  import math
+  larg=[3.6,4.4,4.9,5.1,5.1,4.9,4.6,4.1,3.5,2.8,2.0,1.2,.5,0.0]
+  pts=[(-2.6+w,4.6+2.6*i) for i,w in enumerate(larg)]
+  for i,(w,(x,y)) in enumerate(zip(larg[:-1],pts[:-1])):
+   esp=.9-.045*i;ww=max(.3,min(w,larg[i+1])-.2)
+   c(r,[-2.6,y,-esp/2],[ww,2.6,esp],a.INK)
+  for i in range(len(pts)-1):
+   (x0,y0),(x1,y1)=pts[i],pts[i+1];L=math.hypot(x1-x0,y1-y0);ang=math.degrees(math.atan2(x1-x0,y1-y0));esp=.86-.045*i
+   fundo=max(.05,min(2.8,min(x0,x1)+2.6))      # never past the spine (x=-2.6)
+   for k,(f,tile) in enumerate([(1.0,a.INK),(.8,a.STEEL),(.55,a.WHITE)]):
+    d=fundo*f;o=.04*k;c(r,[x0-d,y0,-esp/2-o],[d,L+.15,esp+2*o],tile,[x0,y0,0],[0,0,ang])
+  # Small notch at the base of the spine.
+  c(r,[-2.6,5.6,-.45],[.9,1.0,.9],a.INK)
+  # Ribbon: a chain of bones, each bent a little more, so the cloth reads as one flowing strip.
+  pai='root'
+  for k in range(4):
+   y=-4.6-k*3.4;nome='cloth' if k==0 else f'cloth_{k}'
+   b[nome]=a.bone(nome,[0,y,0],pai,[0,0,10 if k else 6]);c(b[nome],[-.5,y-3.5,-.1],[1.0-k*.1,3.5,.2],a.IVORY);pai=nome
  return b
 
 def uniform():
@@ -89,32 +124,55 @@ def animations():
    if prep:frames.append((prep,wind,'easeInQuad'))
    frames.extend([(hit,release,'linear'),(hit+.1,release,'linear'),(length,z,'easeOutQuad')]);poses[n]=frames
   out[f'desperto_6_{tipo}']=gesture(length,poses)
+ # Getsuga Tensho: overhead wind-up with tension hold, diagonal release on the server's damage tick
+ # (Shikai 0.40 s = tick 8 two-handed; Bankai 0.25 s = tick 5 one-handed), overshoot and follow-through.
+ for tipo,length,keys in [
+  (500,1.0,{'right_arm':[(0,z,'linear'),(.12,[-60,-25,-20],'easeOutQuad'),(.32,[-165,-35,-25],'easeOutQuad'),(.37,[-172,-36,-28],'linear'),(.40,[-40,30,10],'easeInQuad'),(.48,[-18,40,14],'easeOutQuad'),(.62,[-24,36,12],'linear'),(1.0,z,'easeInOutSine')],
+             'left_arm':[(0,z,'linear'),(.12,[-45,20,-10],'easeOutQuad'),(.32,[-150,22,-10],'easeOutQuad'),(.37,[-156,22,-12],'linear'),(.40,[-55,-8,-6],'easeInQuad'),(.48,[-32,-18,-10],'easeOutQuad'),(.62,[-34,-16,-10],'linear'),(1.0,z,'easeInOutSine')],
+             'torso':[(0,z,'linear'),(.32,[-8,-28,0],'easeOutQuad'),(.37,[-10,-30,0],'linear'),(.40,[10,22,0],'easeInQuad'),(.48,[14,28,0],'easeOutQuad'),(.62,[12,25,0],'linear'),(1.0,z,'easeInOutSine')],
+             'head':[(0,z,'linear'),(.32,[4,14,0],'easeOutQuad'),(.40,[-2,-10,0],'easeInQuad'),(.62,[-2,-12,0],'linear'),(1.0,z,'easeInOutSine')]}),
+  (510,.75,{'right_arm':[(0,z,'linear'),(.08,[-90,-30,-20],'easeOutQuad'),(.20,[-162,-40,-25],'easeOutQuad'),(.23,[-168,-41,-27],'linear'),(.25,[-35,35,12],'easeInQuad'),(.31,[-14,46,16],'easeOutQuad'),(.42,[-18,42,14],'linear'),(.75,z,'easeInOutSine')],
+            'left_arm':[(0,z,'linear'),(.20,[25,-12,-28],'easeOutQuad'),(.25,[-30,12,-14],'easeInQuad'),(.31,[-40,18,-18],'easeOutQuad'),(.42,[-36,16,-16],'linear'),(.75,z,'easeInOutSine')],
+            'torso':[(0,z,'linear'),(.20,[-10,-32,0],'easeOutQuad'),(.25,[12,26,0],'easeInQuad'),(.31,[16,32,0],'easeOutQuad'),(.42,[14,29,0],'linear'),(.75,z,'easeInOutSine')],
+            'head':[(0,z,'linear'),(.20,[4,16,0],'easeOutQuad'),(.25,[-3,-12,0],'easeInQuad'),(.42,[-3,-14,0],'linear'),(.75,z,'easeInOutSine')]}),
+  # G Bankai release (EntradaBankai): Zangetsu thrust forward with the left hand gripping the right wrist, the shout on
+  # tick 14 (0.7 s), then a horizontal cut on tick 30 (1.5 s) that parts the dust; follow-through and rest by 2.2 s.
+  (200,2.2,{'right_arm':[(0,z,'linear'),(.4,[-90,0,0],'easeOutQuad'),(.7,[-94,0,0],'linear'),(1.3,[-92,0,0],'linear'),(1.4,[-90,50,0],'easeOutQuad'),(1.5,[-90,-70,0],'easeInQuad'),(1.62,[-84,-82,0],'easeOutQuad'),(1.85,[-80,-78,0],'linear'),(2.2,z,'easeInOutSine')],
+            'left_arm':[(0,z,'linear'),(.4,[-90,55,0],'easeOutQuad'),(1.3,[-92,55,0],'linear'),(1.5,[-30,-20,-25],'easeInQuad'),(1.85,[-25,-15,-22],'linear'),(2.2,z,'easeInOutSine')],
+            'torso':[(0,z,'linear'),(.4,[0,-10,0],'easeOutQuad'),(.7,[-8,-10,0],'easeOutQuad'),(1.3,[-4,-8,0],'linear'),(1.4,[0,30,0],'easeOutQuad'),(1.5,[4,-30,0],'easeInQuad'),(1.62,[6,-36,0],'easeOutQuad'),(1.85,[5,-32,0],'linear'),(2.2,z,'easeInOutSine')],
+            'head':[(0,z,'linear'),(.4,[0,10,0],'easeOutQuad'),(.7,[-15,10,0],'easeOutQuad'),(1.3,[-6,8,0],'linear'),(1.5,[0,25,0],'easeInQuad'),(1.85,[0,28,0],'linear'),(2.2,z,'easeInOutSine')]}),
+  # C Mugetsu (MugetsuIchigo): hunched implosion until the cocoon bursts (tick 20), upright, right arm straight up while
+  # the darkness blade grows (ticks 30-50), downward cut on tick 50 (2.5 s), held follow-through, rest by 4 s.
+  (530,4.0,{'right_arm':[(0,z,'linear'),(.25,[-20,0,30],'easeOutQuad'),(.95,[-22,0,32],'linear'),(1.1,[-5,0,5],'easeOutQuad'),(1.5,[-178,0,4],'easeOutQuad'),(2.45,[-182,0,4],'linear'),(2.5,[-110,0,4],'easeInQuad'),(2.65,[-55,0,4],'easeOutQuad'),(3.5,[-58,0,4],'linear'),(4.0,z,'easeInOutSine')],
+            'left_arm':[(0,z,'linear'),(.25,[-20,0,-30],'easeOutQuad'),(.95,[-22,0,-32],'linear'),(1.1,[-5,0,-5],'easeOutQuad'),(1.5,[-10,0,-12],'easeOutQuad'),(2.65,[15,0,-20],'easeOutQuad'),(3.5,[12,0,-18],'linear'),(4.0,z,'easeInOutSine')],
+            'torso':[(0,z,'linear'),(.25,[14,0,0],'easeOutQuad'),(.95,[16,0,0],'linear'),(1.1,[-4,0,0],'easeOutQuad'),(1.5,[-6,0,0],'easeOutQuad'),(2.45,[-8,0,0],'linear'),(2.65,[18,0,0],'easeOutQuad'),(3.5,[15,0,0],'linear'),(4.0,z,'easeInOutSine')],
+            'head':[(0,z,'linear'),(.25,[25,0,0],'easeOutQuad'),(.95,[25,0,0],'linear'),(1.1,[0,0,0],'easeOutQuad'),(1.5,[-12,0,0],'easeOutQuad'),(2.45,[-14,0,0],'linear'),(2.65,[8,0,0],'easeOutQuad'),(3.5,[6,0,0],'linear'),(4.0,z,'easeInOutSine')]}),
+  # X Shunpo: crouched lean with the cleaver trailing behind, snapping upright on arrival.
+  (501,.8,{'right_arm':[(0,z,'linear'),(.05,[35,-15,25],'easeOutQuad'),(.4,[38,-15,25],'linear'),(.55,[-20,-10,10],'easeOutQuad'),(.8,z,'easeInOutSine')],
+           'left_arm':[(0,z,'linear'),(.05,[40,10,-25],'easeOutQuad'),(.4,[40,10,-25],'linear'),(.55,[-10,5,-10],'easeOutQuad'),(.8,z,'easeInOutSine')],
+           'torso':[(0,z,'linear'),(.05,[22,0,0],'easeOutQuad'),(.4,[22,0,0],'linear'),(.55,[-4,0,0],'easeOutQuad'),(.8,z,'easeInOutSine')],
+           'head':[(0,z,'linear'),(.05,[-18,0,0],'easeOutQuad'),(.4,[-18,0,0],'linear'),(.8,z,'easeInOutSine')]}),
+  # C heavy slam (both hands together on the grip; angles solved so the fists meet): both hands lift the cleaver far overhead, hang, then smash straight down on tick 12 (0.6 s).
+  (502,1.2,{'right_arm':[(0,z,'linear'),(.3,[-165,40,40],'easeOutQuad'),(.52,[-178,40,40],'easeOutQuad'),(.6,[-40,0,-38],'easeInQuad'),(.66,[-26,0,-38],'easeOutQuad'),(.85,[-28,0,-38],'linear'),(1.2,z,'easeInOutSine')],
+            'left_arm':[(0,z,'linear'),(.3,[-165,-40,-40],'easeOutQuad'),(.52,[-178,-40,-40],'easeOutQuad'),(.6,[-40,0,38],'easeInQuad'),(.66,[-26,0,38],'easeOutQuad'),(.85,[-28,0,38],'linear'),(1.2,z,'easeInOutSine')],
+            'torso':[(0,z,'linear'),(.52,[-14,0,0],'easeOutQuad'),(.6,[24,0,0],'easeInQuad'),(.66,[30,0,0],'easeOutQuad'),(.85,[26,0,0],'linear'),(1.2,z,'easeInOutSine')],
+            'head':[(0,z,'linear'),(.52,[10,0,0],'easeOutQuad'),(.6,[-14,0,0],'easeInQuad'),(.85,[-14,0,0],'linear'),(1.2,z,'easeInOutSine')]}),
+  # V rising slash: low guard with the blade down-back, lunge, then sweep up through the target on tick 10 (0.5 s).
+  (503,1.1,{'right_arm':[(0,z,'linear'),(.3,[30,-25,30],'easeOutQuad'),(.45,[35,-25,32],'linear'),(.5,[-120,15,-10],'easeInQuad'),(.58,[-165,20,-15],'easeOutQuad'),(.75,[-160,18,-14],'linear'),(1.1,z,'easeInOutSine')],
+            'left_arm':[(0,z,'linear'),(.3,[-35,25,-20],'easeOutQuad'),(.5,[20,-10,-30],'easeInQuad'),(.75,[15,-10,-28],'linear'),(1.1,z,'easeInOutSine')],
+            'torso':[(0,z,'linear'),(.3,[18,-20,0],'easeOutQuad'),(.45,[20,-22,0],'linear'),(.5,[-14,18,0],'easeInQuad'),(.58,[-18,22,0],'easeOutQuad'),(.75,[-16,20,0],'linear'),(1.1,z,'easeInOutSine')],
+            'head':[(0,z,'linear'),(.3,[-10,15,0],'easeOutQuad'),(.5,[-6,-10,0],'easeInQuad'),(.75,[-8,-12,0],'linear'),(1.1,z,'easeInOutSine')]})]:
+  out[f'desperto_6_{tipo}']=gesture(length,keys)
  a.save(A/'player_animation/ichigo.json',{'format_version':'1.8.0','geckolib_format_version':2,'animations':out})
 
 def main():
  for name,bankai in [('zangetsu',False),('tensa_zangetsu',True)]:a.save(A/f'geo/ichigo/{name}.geo.json',a.document(name,sword(bankai)))
- a.save(A/'animations/ichigo/zangetsu.animation.json',{'format_version':'1.8.0','animations':{'idle':{'loop':True,'animation_length':2,'bones':{'cloth':{'rotation':{'0':[0,0,-5],'1':[0,0,5],'2':[0,0,-5]}}}}}})
+ a.save(A/'animations/ichigo/zangetsu.animation.json',{'format_version':'1.8.0','animations':{'idle':{'loop':True,'animation_length':2,'bones':{}}}})
  a.save(A/'models/item/zangetsu.json',{'parent':'builtin/entity','display':{'gui':{'rotation':[0,0,-35],'scale':[.35]*3},'thirdperson_righthand':{'rotation':[0,-90,10],'scale':[.8]*3},'thirdperson_lefthand':{'rotation':[0,90,-10],'scale':[.8]*3},'firstperson_righthand':{'rotation':[0,-45,25],'scale':[.65]*3},'firstperson_lefthand':{'rotation':[0,45,-25],'scale':[.65]*3},'ground':{'scale':[.4]*3}}})
- b=uniform();a.save(A/'geo/armaduras/ichigo.geo.json',a.document('ichigo',b))
- (A/'textures/armor/trajes/ichigo.png').write_bytes((A/'textures/armor/anime_reference_atlas.png').read_bytes())
- for part,roots in {'helmet':{'armorHead'},'chestplate':{'armorBody','armorLeftArm','armorRightArm'},'leggings':{'armorLeftLeg','armorRightLeg'},'boots':{'armorLeftBoot','armorRightBoot'}}.items():
-  icon=copy.deepcopy(b)
-  for n,v in icon.items():
-   if n not in roots:v['cubes']=[]
-  cubes=[c for v in icon.values() for c in v['cubes']];mid=(min(c['origin'][1] for c in cubes)+max(c['origin'][1]+c['size'][1] for c in cubes))/2
-  for v in icon.values():
-   v['pivot'][1]-=mid
-   for c in v['cubes']:
-    c['origin'][1]-=mid
-    if 'pivot'in c:c['pivot'][1]-=mid
-  a.save(A/f'geo/armaduras/ichigo_{part}.geo.json',a.document('ichigo_'+part,icon))
-  suffix={'helmet':'cabeca','chestplate':'peito','leggings':'pernas','boots':'botas'}[part]
-  a.save(A/f'models/item/ichigo_{suffix}.json',{'parent':'builtin/entity','display':{'gui':{'rotation':[8,-28,0],'scale':[.8]*3},'ground':{'scale':[.5]*3}}})
-  a.save(D/f'recipes/ichigo_{suffix}.json',{'type':'minecraft:smithing_transform','template':{'item':'minecraft:paper'},'base':{'item':'minecraft:netherite_'+part},'addition':{'item':'minecraft:lapis_lazuli'},'result':{'item':'arcanecontrol:ichigo_'+suffix}})
- a.save(A/'animations/armaduras/ichigo.animation.json',{'format_version':'1.8.0','animations':{'animation.traje.idle':{'loop':True,'animation_length':2,'bones':{}}}})
+ # Outfits (shihakusho armor set and Bankai coat) live in build_ichigo_traje.py.
+ import build_ichigo_traje;build_ichigo_traje.main()
  a.save(D/'recipes/zangetsu.json',{'type':'minecraft:crafting_shaped','pattern':[' II',' SI','S  '],'key':{'I':{'item':'minecraft:iron_block'},'S':{'item':'minecraft:stick'}},'result':{'item':'arcanecontrol:zangetsu'}})
- folder=A/'textures/ichigo';folder.mkdir(parents=True,exist_ok=True);im=Image.new('RGBA',(64,64),'#EEE9DF');d=ImageDraw.Draw(im);d.rectangle((0,16,11,31),fill='#161019');d.rectangle((12,16,31,31),fill='#BC2943');im.save(folder/'mascara.png')
- im=Image.new('RGBA',(64,64),'#15121C');d=ImageDraw.Draw(im);d.rectangle((0,40,63,63),fill='#E5DED6');d.rectangle((5,5,6,16),fill='#302A3A');im.save(folder/'bankai_coat.png')
+ folder=A/'textures/ichigo';folder.mkdir(parents=True,exist_ok=True);im=Image.new('RGBA',(64,64),'#EEE9DF');d=ImageDraw.Draw(im);d.rectangle((0,16,17,31),fill='#161019');d.rectangle((18,16,40,31),fill='#BC2943');im.save(folder/'mascara.png')
  for lang,names in [('pt_br',['Zangetsu','Faixa Shihakusho','Shihakusho','Hakama','Sandálias espirituais']),('en_us',['Zangetsu','Shihakusho Headband','Shihakusho','Hakama','Spiritual Sandals'])]:
   p=A/f'lang/{lang}.json';data=json.loads(p.read_text(encoding='utf-8'))
   for id,name in zip(['zangetsu','ichigo_cabeca','ichigo_peito','ichigo_pernas','ichigo_botas'],names):data['item.arcanecontrol.'+id]=name
