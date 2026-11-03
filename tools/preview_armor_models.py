@@ -28,7 +28,8 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
  if style=='frieren' and pose_name.startswith('frieren_cloth_'):
   sample=json.loads((ROOT/'build/frieren-cloth-samples.json').read_text(encoding='utf-8'))[int(pose_name[len('frieren_cloth_'):])]
   for name,(x,y,z) in sample['ossos'].items():bones[name]['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
- if style=='shadow' and pose_name.startswith('cid_'):
+ # Old Cid cape samples: the current outfit has no cid_cape_ bones and its test no longer exports them.
+ if style=='shadow' and pose_name.startswith('cid_') and (ROOT/'build/cid-cape-samples.json').exists():
   samples=json.loads((ROOT/'build/cid-cape-samples.json').read_text());sample=samples[pose_name[4:]]
   for name,bone in bones.items():
    if name.startswith('cid_cape_'):
