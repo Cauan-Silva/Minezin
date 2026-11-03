@@ -15,10 +15,10 @@ class SuperficieTecidoTest {
             for(int i=0;i<8;i++)v[i]=new double[]{o.get(0).getAsDouble()+s.get(0).getAsDouble()*(i&1),o.get(1).getAsDouble()+s.get(1).getAsDouble()*((i>>1)&1),o.get(2).getAsDouble()+s.get(2).getAsDouble()*((i>>2)&1)};
             cantos.put(n,v);}
         var t=SuperficieTecido.casaco(cantos,cantos);int n=SuperficieTecido.ORDEM.size();
-        assertEquals(n*6*2+n*4,t.size(),"grade 6 linhas x "+n+" pecas + dentes");
+        int cols=n*SuperficieTecido.SUB_COLUNAS,linhas=6*SuperficieTecido.SUB_LINHAS;assertEquals(cols*linhas*2+cols*4,t.size(),"grade subdividida + dentes");
         // Every vertex is shared by its neighbours: the number of distinct points equals the stitched grid.
         var pts=new HashSet<String>();for(var x:t)for(var p:new double[][]{x.a(),x.b(),x.c()})pts.add(Math.round(p[0]*1e4)+","+Math.round(p[1]*1e4)+","+Math.round(p[2]*1e4));
-        assertEquals(7*(n+1)+n*4,pts.size(),"sem costuras abertas");
+        assertEquals((linhas+1)*(cols+1)+cols*4,pts.size(),"sem costuras abertas");
         double minY=1e9;for(var x:t)minY=Math.min(minY,Math.min(x.a()[1],Math.min(x.b()[1],x.c()[1])));assertTrue(minY<1,"barra chega perto dos pes");
     }
     /** Corners are labelled from the rest pose: a hem flung 80 degrees out (running) must not twist any quad. */
@@ -37,7 +37,7 @@ class SuperficieTecidoTest {
             rep.put(n,v);pos.put(n,w);}
         var t=SuperficieTecido.casaco(pos,rep);int n=SuperficieTecido.ORDEM.size();
         // Each grid quad's two triangles face the same way (a twisted quad would make them oppose).
-        for(int k=0;k<n*6*2;k+=2){var a=SuperficieTecido.normal(t.get(k));var b=SuperficieTecido.normal(t.get(k+1));assertTrue(a[0]*b[0]+a[1]*b[1]+a[2]*b[2]>0,"quad "+k/2+" torcido");}
+        for(int k=0;k<n*SuperficieTecido.SUB_COLUNAS*6*SuperficieTecido.SUB_LINHAS*2;k+=2){var a=SuperficieTecido.normal(t.get(k));var b=SuperficieTecido.normal(t.get(k+1));assertTrue(a[0]*b[0]+a[1]*b[1]+a[2]*b[2]>0,"quad "+k/2+" torcido");}
     }
     /** User: the front cloth collides with the legs. A sheet hanging through a leg comes out of it sideways. */
     @Test void tecidoNaoAtravessaAsPernas(){

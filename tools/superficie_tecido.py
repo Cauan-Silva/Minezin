@@ -47,26 +47,30 @@ def fora(p,c):
         t.append(float(d@e[k])/l2)
     m=.06
     if t[1]<0 or t[1]>1:return p
+    # Never out through the inner face (between the legs), as SuperficieTecido.fora.
+    cx=float(o[0]+(e[0][0]+e[1][0]+e[2][0])/2)
     eixo,melhor,alvo=-1,1e18,0
     for k in (0,2):
         if t[k]<-m or t[k]>1+m:return p
-        a,b=t[k]+m,1+m-t[k]
-        if a<melhor:melhor,eixo,alvo=a,k,-m
-        if b<melhor:melhor,eixo,alvo=b,k,1+m
+        a,b=t[k]+m,1+m-t[k];ia=k==0 and e[0][0]*cx>0;ib=k==0 and e[0][0]*cx<0
+        if a<melhor and not ia:melhor,eixo,alvo=a,k,-m
+        if b<melhor and not ib:melhor,eixo,alvo=b,k,1+m
     return np.asarray(p)+e[eixo]*(alvo-t[eixo])
 def colidir(p,obst):
     for c in obst:p=fora(p,c)
     return p
-def casaco(posados,repouso,pernas=()):
-    S=SEGMENTOS;pecas=[p for p in ORDEM if all(osso(p,s) in posados and osso(p,s) in repouso for s in range(S))];out=[];n=len(pecas)
-    if n<2:return out
-    d=direcao(repouso);meio=[]
-    for p in pecas:
-        linha=[]
-        for s in range(S):
-            o=osso(p,s);idx=rotular(repouso[o],d);v=np.asarray(posados[o],float)
-            linha.append([v[ix].mean(0) if len(ix) else v[0] for ix in idx])
-        meio.append(linha)
+PASSES_SUAVE,SUAVE=3,.45
+def suavizar(g,gr):
+    # Same as SuperficieTecido.suavizar: only the bend not in the rest shape is smoothed, so the ring never shrinks.
+    S=len(g)-1;n=len(g[0])-1
+    if n<2:return
+    for r in range(1,S+1):
+        k=SUAVE*r/S;lr=gr[r]
+        for _ in range(PASSES_SUAVE):
+            l=[np.asarray(q,float) for q in g[r]];novo=list(l)
+            for c in range(1,n):novo[c]=l[c]+(((l[c-1]+l[c+1])/2-l[c])-((lr[c-1]+lr[c+1])/2-lr[c]))*k
+            g[r]=novo
+def grade(meio,S,n):
     g=[[None]*(n+1) for _ in range(S+1)]
     for r in range(S+1):
         for c in range(n+1):
@@ -76,12 +80,41 @@ def casaco(posados,repouso,pernas=()):
                     lado=0 if i==c else 1
                     if r<S:acc.append(meio[i][r][lado])
                     if r>0:acc.append(meio[i][r-1][2+lado])
-            g[r][c]=colidir(np.mean(acc,axis=0),pernas)
+            g[r][c]=np.mean(acc,axis=0)
+    return g
+SUB_COLUNAS,SUB_LINHAS=3,2
+def curva(l,c,u):
+    # Catmull-Rom between l[c] and l[c+1], as SuperficieTecido.curva.
+    n=len(l)-1;p0,p1,p2,p3=(np.asarray(l[i],float) for i in (max(0,c-1),c,c+1,min(n,c+2)))
+    return .5*(2*p1+(-p0+p2)*u+(2*p0-5*p1+4*p2-p3)*u*u+(-p0+3*p1-3*p2+p3)*u**3)
+def subdividir(g):
+    # Finer sheet between the bones, as SuperficieTecido.subdividir.
+    S=len(g)-1;n=len(g[0])-1;f=[]
+    for r in range(S*SUB_LINHAS+1):
+        r0=min(S-1,r//SUB_LINHAS);v=r/SUB_LINHAS-r0;linha=[]
+        for c in range(n*SUB_COLUNAS+1):
+            c0=min(n-1,c//SUB_COLUNAS);u=c/SUB_COLUNAS-c0
+            linha.append(_lerp(curva(g[r0],c0,u),curva(g[r0+1],c0,u),v))
+        f.append(linha)
+    return f
+def casaco(posados,repouso,pernas=()):
+    S=SEGMENTOS;pecas=[p for p in ORDEM if all(osso(p,s) in posados and osso(p,s) in repouso for s in range(S))];out=[];n=len(pecas)
+    if n<2:return out
+    d=direcao(repouso);meio=[];meioR=[]
+    for p in pecas:
+        linha=[];linhaR=[]
+        for s in range(S):
+            o=osso(p,s);idx=rotular(repouso[o],d);v=np.asarray(posados[o],float);vr=np.asarray(repouso[o],float)
+            linha.append([v[ix].mean(0) if len(ix) else v[0] for ix in idx]);linhaR.append([vr[ix].mean(0) if len(ix) else vr[0] for ix in idx])
+        meio.append(linha);meioR.append(linhaR)
+    g=grade(meio,S,n);suavizar(g,grade(meioR,S,n))
+    g=subdividir(g);S=len(g)-1;n=len(g[0])-1
+    g=[[colidir(q,pernas) for q in linha] for linha in g]
     for r in range(S):
         for c in range(n):out+=[(g[r][c],g[r][c+1],g[r+1][c+1],PRETO),(g[r][c],g[r+1][c+1],g[r+1][c],PRETO)]
     for c in range(n):
         a,b=g[S][c],g[S][c+1];da,db=a-g[S-1][c],b-g[S-1][c+1]
-        l1,l2,l3=dente(c,0),dente(c,1),dente(c,2)*.35
+        l1,l2,l3=dente(c,0)*SUB_LINHAS,dente(c,1)*SUB_LINHAS,dente(c,2)*.35*SUB_LINHAS
         m,dm=_lerp(a,b,.5),_lerp(da,db,.5)
         t1=colidir(_lerp(a,m,.45)+_lerp(da,dm,.45)*l1,pernas);t2=colidir(_lerp(m,b,.55)+_lerp(dm,db,.55)*l2,pernas);nt=colidir(m+dm*l3,pernas)
         out+=[(a,m,nt,PRETO),(a,nt,t1,PRETO),(m,b,nt,PRETO),(nt,b,t2,PRETO)]

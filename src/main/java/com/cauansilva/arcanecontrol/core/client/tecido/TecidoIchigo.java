@@ -84,15 +84,10 @@ public final class TecidoIchigo {
         // Side panels are one piece with the back (user): each follows the outer column of the back cloth, segment by
         // segment (left side = last column, x>0), so the corner moves as a single fabric.
         // Front strips, front corners, sides and back corners all follow the back cloth (user: everything joined).
-        if(osso.startsWith("bk_capa_frente_")||osso.startsWith("bk_capa_quinaf_")){
-            // One piece with the sides (user): the front takes the side's own pose, only its backward swing is
-            // limited (the hem would go into the legs); the front corner sits halfway, so the seam never opens.
-            // Running/stopping (user: the front came loose): it follows the side backward too, and the part of the
-            // swing that would enter the legs turns into an outward sweep around them (z), like an open coat.
-            var l=lateral(lado,s,parcial,tt,ag);double atras=Math.min(0,l.x()+.06),x=l.x()-atras*.55,abre=-atras*.9*lado;
-            return osso.startsWith("bk_capa_quinaf_")?new MolaMantoCid.Pose((l.x()+x)/2,l.y(),l.z()+abre*.5):new MolaMantoCid.Pose(x,l.y(),l.z()+abre);
-        }
-        if(osso.startsWith("bk_capa_lado_")||osso.startsWith("bk_capa_quina"))return lateral(lado,s,parcial,tt,ag);
+        // Front strips and front corners take exactly the side's pose (user: the front must follow the side; every
+        // limit or outward sweep of its own broke the sheet into flaps). The legs are kept out by the surface
+        // collision (SuperficieTecido), which slides the cloth around their outer face.
+        if(osso.startsWith("bk_capa_frente_")||osso.startsWith("bk_capa_quinaf_")||osso.startsWith("bk_capa_lado_")||osso.startsWith("bk_capa_quina"))return lateral(lado,s,parcial,tt,ag);
         return ZERO;
     }
     /** Side panel pose: follows the outer back column segment by segment (left side = last column). */

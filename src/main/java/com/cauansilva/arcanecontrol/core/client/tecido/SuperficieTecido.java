@@ -64,9 +64,12 @@ public final class SuperficieTecido {
         double[] d=desce(c.o(),p);double[][] e={c.ax(),c.ay(),c.az()};double[] t=new double[3];
         for(int k=0;k<3;k++){double l2=e[k][0]*e[k][0]+e[k][1]*e[k][1]+e[k][2]*e[k][2];if(l2<1e-12)return p;t[k]=(d[0]*e[k][0]+d[1]*e[k][1]+d[2]*e[k][2])/l2;}
         double m=.06;if(t[1]<0||t[1]>1)return p;
+        // Never out through the inner face (between the legs, user: the cloth went into the leg): only outer, front, back.
+        double cx=c.o()[0]+(e[0][0]+e[1][0]+e[2][0])/2;
         int eixo=-1;double melhor=1e18,alvo=0;
         for(int k:new int[]{0,2}){if(t[k]<-m||t[k]>1+m)return p;
-            double a=t[k]+m,b=1+m-t[k];if(a<melhor){melhor=a;eixo=k;alvo=-m;}if(b<melhor){melhor=b;eixo=k;alvo=1+m;}}
+            boolean internoA=k==0&&e[0][0]*cx>0,internoB=k==0&&e[0][0]*cx<0;
+            double a=t[k]+m,b=1+m-t[k];if(a<melhor&&!internoA){melhor=a;eixo=k;alvo=-m;}if(b<melhor&&!internoB){melhor=b;eixo=k;alvo=1+m;}}
         return soma(p,escala(e[eixo],alvo-t[eixo]));
     }
     public static double[] colidir(double[] p,List<Caixa> obst){for(var c:obst)p=fora(p,c);return p;}
@@ -77,25 +80,65 @@ public final class SuperficieTecido {
         int S=TecidoIchigo.SEGMENTOS;var pecas=new ArrayList<String>();
         for(var p:ORDEM){boolean ok=true;for(int s=0;s<S;s++)ok&=posados.containsKey(osso(p,s))&&repouso.containsKey(osso(p,s));if(ok)pecas.add(p);}
         var out=new ArrayList<Tri>();int n=pecas.size();if(n<2)return out;int dir=direcao(repouso);
-        var meio=new double[n][S][][];
+        var meio=new double[n][S][][];var meioR=new double[n][S][][];
         for(int i=0;i<n;i++)for(int s=0;s<S;s++){String o=osso(pecas.get(i),s);var idx=rotular(repouso.get(o),dir);var v=posados.get(o);
-            meio[i][s]=new double[4][];for(int q=0;q<4;q++){var acc=new ArrayList<double[]>();for(int k:idx[q])if(k<v.length)acc.add(v[k]);meio[i][s][q]=acc.isEmpty()?v[0]:media(acc);}}
-        var g=new double[S+1][n+1][];
-        for(int r=0;r<=S;r++)for(int c=0;c<=n;c++){
-            var acc=new ArrayList<double[]>();
-            for(int i:new int[]{c-1,c})if(i>=0&&i<n){int lado=i==c?0:1;
-                if(r<S)acc.add(meio[i][r][lado]);if(r>0)acc.add(meio[i][r-1][2+lado]);}
-            g[r][c]=colidir(media(acc),pernas);
-        }
-        for(int r=0;r<S;r++)for(int c=0;c<n;c++)quad(out,g[r][c],g[r][c+1],g[r+1][c+1],g[r+1][c],PRETO);
+            var vr=repouso.get(o);meio[i][s]=new double[4][];meioR[i][s]=new double[4][];
+            for(int q=0;q<4;q++){var acc=new ArrayList<double[]>();var accR=new ArrayList<double[]>();for(int k:idx[q])if(k<v.length){acc.add(v[k]);accR.add(vr[k]);}
+                meio[i][s][q]=acc.isEmpty()?v[0]:media(acc);meioR[i][s][q]=accR.isEmpty()?vr[0]:media(accR);}}
+        var g=grade(meio,S,n);var gr=grade(meioR,S,n);
+        suavizar(g,gr);
+        g=subdividir(g);int R=g.length-1,N=g[0].length-1;
+        for(var linha:g)for(int c=0;c<=N;c++)linha[c]=colidir(linha[c],pernas);
+        for(int r=0;r<R;r++)for(int c=0;c<N;c++)quad(out,g[r][c],g[r][c+1],g[r+1][c+1],g[r+1][c],PRETO);
+        S=R;n=N;
         for(int c=0;c<n;c++){
             double[] a=g[S][c],b=g[S][c+1],da=desce(g[S-1][c],a),db=desce(g[S-1][c+1],b);
-            double l1=dente(c,0),l2=dente(c,1),l3=dente(c,2)*.35;
+            double l1=dente(c,0)*SUB_LINHAS,l2=dente(c,1)*SUB_LINHAS,l3=dente(c,2)*.35*SUB_LINHAS;
             double[] m=lerp(a,b,.5),dm=lerp(da,db,.5);
             double[] t1=colidir(soma(lerp(a,m,.45),escala(lerp(da,dm,.45),l1)),pernas),t2=colidir(soma(lerp(m,b,.55),escala(lerp(dm,db,.55),l2)),pernas),nt=colidir(soma(m,escala(dm,l3)),pernas);
             tri(out,a,m,nt,PRETO);tri(out,a,nt,t1,PRETO);tri(out,m,b,nt,PRETO);tri(out,nt,b,t2,PRETO);
         }
         return out;
+    }
+    /** Grid of seam points: each shared edge is the average of both neighbouring panels. */
+    static double[][][] grade(double[][][][] meio,int S,int n){
+        var g=new double[S+1][n+1][];
+        for(int r=0;r<=S;r++)for(int c=0;c<=n;c++){
+            var acc=new ArrayList<double[]>();
+            for(int i:new int[]{c-1,c})if(i>=0&&i<n){int lado=i==c?0:1;
+                if(r<S)acc.add(meio[i][r][lado]);if(r>0)acc.add(meio[i][r-1][2+lado]);}
+            g[r][c]=media(acc);
+        }
+        return g;
+    }
+    public static final int SUB_COLUNAS=3,SUB_LINHAS=2;
+    /** Finer sheet between the bones (user: more bones so the side folds around the leg): every panel is split into
+     *  SUB_COLUNAS x SUB_LINHAS cells, Catmull-Rom across the body (round, passes through every seam) and linear down,
+     *  so the leg collision can wrap the cloth around a leg instead of cutting a whole panel at once. */
+    static double[][][] subdividir(double[][][] g){
+        int S=g.length-1,n=g[0].length-1,R=S*SUB_LINHAS,N=n*SUB_COLUNAS;var f=new double[R+1][N+1][];
+        for(int r=0;r<=R;r++){int r0=Math.min(S-1,r/SUB_LINHAS);double v=r/(double)SUB_LINHAS-r0;
+            for(int c=0;c<=N;c++){int c0=Math.min(n-1,c/SUB_COLUNAS);double u=c/(double)SUB_COLUNAS-c0;
+                f[r][c]=lerp(curva(g[r0],c0,u),curva(g[r0+1],c0,u),v);}}
+        return f;
+    }
+    /** Catmull-Rom point between l[c] and l[c+1]; the open ends repeat their edge point. */
+    static double[] curva(double[][] l,int c,double u){
+        int n=l.length-1;double[] p0=l[Math.max(0,c-1)],p1=l[c],p2=l[c+1],p3=l[Math.min(n,c+2)];double u2=u*u,u3=u2*u;
+        double[] o=new double[3];for(int k=0;k<3;k++)o[k]=.5*(2*p1[k]+(-p0[k]+p2[k])*u+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*u2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*u3);return o;
+    }
+    public static final int PASSES_SUAVE=3;public static final double SUAVE=.45;
+    /** Smooths each row around the body (user: front joined to the side, without the sharp fold where the front
+     *  swings open). Only the bend that is not in the rest shape is smoothed (rest: gr), so the ring never shrinks
+     *  into the legs: each point moves by k times (neighbour mean - point) minus the same at rest; more toward the hem,
+     *  the waist row stays pinned, the open front edges are left as they are. */
+    static void suavizar(double[][][] g,double[][][] gr){
+        int S=g.length-1,n=g[0].length-1;if(n<2)return;
+        for(int r=1;r<=S;r++){double k=SUAVE*r/S;var lr=gr[r];
+            for(int it=0;it<PASSES_SUAVE;it++){var l=g[r];var novo=l.clone();
+                for(int c=1;c<n;c++){double[] lap=desce(l[c],lerp(l[c-1],l[c+1],.5)),lapR=desce(lr[c],lerp(lr[c-1],lr[c+1],.5));
+                    novo[c]=soma(l[c],escala(desce(lapR,lap),k));}
+                g[r]=novo;}}
     }
     /** Tooth length (in the posed units of the hanging direction, i.e. segment lengths) per column, deterministic. */
     static double dente(int c,int k){return .35+.75*(((c*37+k*53+11)%10)/9.0);}
