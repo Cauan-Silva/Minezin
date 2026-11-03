@@ -84,9 +84,21 @@ public final class TecidoIchigo {
         // Side panels are one piece with the back (user): each follows the outer column of the back cloth, segment by
         // segment (left side = last column, x>0), so the corner moves as a single fabric.
         // Front strips, front corners, sides and back corners all follow the back cloth (user: everything joined).
-        if(osso.startsWith("bk_capa_lado_")||osso.startsWith("bk_capa_quina")||osso.startsWith("bk_capa_frente_")){int col=lado>0?COLUNAS_COSTAS-1:0;var r=costas.rotacao(col,s,parcial);double on=onda(s,col,tt,ag,SEGMENTOS,0);
-            return new MolaMantoCid.Pose(r.x()+on-subida*(s==0?.5:.12),-r.y()*.5,-r.z()*.6+lado*(Math.abs(r.x())*.2+subida*.15+on*.3));}
+        if(osso.startsWith("bk_capa_frente_")||osso.startsWith("bk_capa_quinaf_")){
+            // One piece with the sides (user): the front takes the side's own pose, only its backward swing is
+            // limited (the hem would go into the legs); the front corner sits halfway, so the seam never opens.
+            // Running/stopping (user: the front came loose): it follows the side backward too, and the part of the
+            // swing that would enter the legs turns into an outward sweep around them (z), like an open coat.
+            var l=lateral(lado,s,parcial,tt,ag);double atras=Math.min(0,l.x()+.06),x=l.x()-atras*.55,abre=-atras*.9*lado;
+            return osso.startsWith("bk_capa_quinaf_")?new MolaMantoCid.Pose((l.x()+x)/2,l.y(),l.z()+abre*.5):new MolaMantoCid.Pose(x,l.y(),l.z()+abre);
+        }
+        if(osso.startsWith("bk_capa_lado_")||osso.startsWith("bk_capa_quina"))return lateral(lado,s,parcial,tt,ag);
         return ZERO;
+    }
+    /** Side panel pose: follows the outer back column segment by segment (left side = last column). */
+    private MolaMantoCid.Pose lateral(int lado,int s,double parcial,double tt,double ag){
+        int col=lado>0?COLUNAS_COSTAS-1:0;var r=costas.rotacao(col,s,parcial);double on=onda(s,col,tt,ag,SEGMENTOS,0);
+        return new MolaMantoCid.Pose(r.x()+on-subida*(s==0?.5:.12),-r.y()*.5,-r.z()*.6+lado*(Math.abs(r.x())*.2+subida*.15+on*.3));
     }
     /** Travelling ripple: runs from the waist to the hem (phase grows with the segment), each column offset, stronger
      *  on lower segments and with agitation; a slower swell plus a fast flutter so it never looks like one sine. */

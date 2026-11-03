@@ -4,7 +4,7 @@ import com.cauansilva.arcanecontrol.core.cid.MolaMantoCid;
 import java.util.*;
 
 /**
- * Asta's Black Bulls robe, built like Cid's cape (MantoDirecionalCid): the back panel is one connected particle cloth
+ * Asta's Black Bulls robe, built like Cid's former cape: the back panel is one connected particle cloth
  * pinned along the shoulders, and each open front panel rides a damped angular spring like Cid's front flaps.
  * Bones: asta_capa_{costas|frente_esq|frente_dir}_{coluna}_{segmento} (armor_reference_shapes.CAPA_PAINEIS).
  */
