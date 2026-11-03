@@ -21,7 +21,7 @@ def retime(animation,impact):
         channels['rotation']=frames
 
 def refine_asta(animations):
-    for tipo,tick in [(300,6),(301,8),(302,10),(304,12),(305,10),(306,18),(307,8)]:retime(animations[f'asta_{tipo}'],tick/20)
+    for tipo,tick in [(300,6),(301,8),(302,10),(304,12),(305,10),(306,18)]:retime(animations[f'asta_{tipo}'],tick/20)
 
 def main():
     p=ROOT/'asta.json';d=json.loads(p.read_text(encoding='utf-8'));refine_asta(d['animations']);p.write_bytes((json.dumps(d,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))

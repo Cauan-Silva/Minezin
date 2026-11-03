@@ -13,6 +13,7 @@ public final class RoteiroUltimate {
             case 304->kit==4?new Cue(12,0xD42B4C,.88,20,"divider_release"):null;
             case 305->kit==4?new Cue(10,0xD42B4C,.88,20,"divider_release"):null;
             case 306->kit==4?new Cue(18,0xD42B4C,1,24,null):null;
+            case 307->kit==4?new Cue(UltAsta.FINAL,0xD42B4C,1,24,null):null;
             default->null;
         };
     }

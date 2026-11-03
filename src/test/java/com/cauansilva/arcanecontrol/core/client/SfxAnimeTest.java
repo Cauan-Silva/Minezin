@@ -40,7 +40,10 @@ class SfxAnimeTest {
             var geo=json("/assets/arcanecontrol/geo/asta/matadora.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
             var b=new HashMap<String,JsonObject>();for(var v:geo.getAsJsonArray("bones")){var o=v.getAsJsonObject();b.put(o.get("name").getAsString(),o);}
             assertEquals("root",b.get("blade").get("parent").getAsString());assertEquals("blade",b.get("energia_divider").get("parent").getAsString());
-            assertEquals(7,b.get("root").getAsJsonArray("cubes").size());assertEquals(6.2,b.get("blade").getAsJsonArray("pivot").get(1).getAsDouble(),1e-9);
+            // Grip and guard stay in root (the reference guard has more pieces now); the blade, which the Divider
+            // stretches, holds nothing below its pivot.
+            assertTrue(b.get("root").getAsJsonArray("cubes").size()>=7);assertEquals(6.2,b.get("blade").getAsJsonArray("pivot").get(1).getAsDouble(),1e-9);
+            for(var c:b.get("blade").getAsJsonArray("cubes"))assertTrue(c.getAsJsonObject().getAsJsonArray("origin").get(1).getAsDouble()>=6.2-1e-9);
         });
     }
 }

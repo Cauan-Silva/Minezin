@@ -14,7 +14,8 @@ class AstaTest {
         try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/asta.json")){
             var a=JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject().getAsJsonObject("animations");
             for(int tipo:new int[]{300,301,302,304,305,306,307}){
-                int slot=(tipo-300)%4;double t=PerfilAsta.impacto(slot,tipo>=304)/20.0;
+                // The ultimate (307) lands its strongest hit on the final X.
+                int slot=(tipo-300)%4;double t=(tipo==307?com.cauansilva.arcanecontrol.core.vfx.UltAsta.FINAL:PerfilAsta.impacto(slot,tipo>=304))/20.0;
                 var frames=a.getAsJsonObject("asta_"+tipo).getAsJsonObject("bones").getAsJsonObject("right_arm").getAsJsonObject("rotation");
                 assertEquals(frames.getAsJsonObject(Double.toString(t)).get("vector"),frames.getAsJsonObject(Double.toString(Math.round((t+.1)*100)/100.0)).get("vector"));
             }
@@ -37,7 +38,8 @@ class AstaTest {
         assertArrayEquals(new int[]{80,160,240,500},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,false)).toArray());
         assertArrayEquals(new int[]{60,200,300,400},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,true)).toArray());
         assertEquals(1200,new EstadoDespertar(PersonagemRpg.ASTA,0).restante(0));
-        assertEquals(0,PerfilAsta.alcanceOnda(8));assertEquals(24,PerfilAsta.alcanceOnda(28));assertEquals(0,RoteiroGojo.impacto(35,28));assertEquals(0,RoteiroGojo.impacto(35,46));assertTrue(RoteiroGojo.impacto(35,47)>0);assertEquals(1,RoteiroGojo.amostrar(35,55).fov());
+        // The ultimate's strongest hit (the final X) is its damage tick.
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.UltAsta.FINAL,PerfilAsta.impacto(3,true));assertEquals(0,RoteiroGojo.impacto(35,28));assertEquals(0,RoteiroGojo.impacto(35,46));assertTrue(RoteiroGojo.impacto(35,47)>0);assertEquals(1,RoteiroGojo.amostrar(35,55).fov());
         for(double t=0;t<55;t+=.1){var q=RoteiroGojo.amostrar(35,t);assertTrue(Double.isFinite(q.x())&&Double.isFinite(q.y())&&q.fov()>=.7&&q.fov()<=1.4);}
     }
     @Test void devilUnionColaNoCorpoDoJogador()throws Exception{
@@ -71,7 +73,9 @@ class AstaTest {
     }
     private JsonObject json(String path)throws Exception{try(var in=getClass().getResourceAsStream(path)){assertNotNull(in,path);return JsonParser.parseReader(new InputStreamReader(in,StandardCharsets.UTF_8)).getAsJsonObject();}}
     @Test void noveGestosCarregamNoPlayerAnimatorSemLoopPersistente()throws Exception{
-        try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/asta.json")){assertNotNull(in);var gestos=AnimationSerializing.deserializeAnimation(in);assertEquals(9,gestos.size());for(var g:gestos){assertFalse(g.isInfinite);assertTrue(g.endTick>0&&g.endTick<=55);}}
+        try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/asta.json")){assertNotNull(in);var gestos=AnimationSerializing.deserializeAnimation(in);assertEquals(9,gestos.size());int longos=0;for(var g:gestos){assertFalse(g.isInfinite);assertTrue(g.endTick>0&&g.endTick<=com.cauansilva.arcanecontrol.core.vfx.UltAsta.DURACAO);if(g.endTick>55)longos++;}
+            // Only the ultimate (V in the form) outlasts the 55-tick gesture budget.
+            assertTrue(longos<=1);}
     }
     @Test void armaduraNaoImpõeCabeloEFormaTemAsaEChifreSeparados()throws Exception{
         var g=json("/assets/arcanecontrol/geo/armaduras/asta.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();

@@ -15,8 +15,8 @@ Vídeos enviados pelo usuário (quadros em `minezin-outputs/refs-asta/`): Devil 
 | 1 | Black Divider (C desperto, efeito 306) | ✅ aprovado em prévia |
 | 2 | Golpes base Z/X/C/V | ✅ aprovado em prévia (relâmpagos negros) |
 | 3 | Assimilação / Devil Union + Matadora desperta | ✅ v5 aprovada (100%, depois do JAR de teste) |
-| 4 | Black Meteorite, Furacão Negro, meia-lua | ⏳ |
-| 5 | Roupa com tecido e empunhadura | ⏳ |
+| 4 | Black Meteorite, Black Hurricane, ult (V) | Black Meteorite, Black Hurricane e espadas ✅ aprovados em prévia; ult (V) ✅ aprovada em prévia e no código (meia-lua v1 recusada e removida) |
+| 5 | Roupa com tecido | ✅ capa do Touro Negro em tecido (padrão do Cid) + detalhes, aprovada em prévia |
 | 6 | SFX próprios | ⏳ |
 | 7 | Liebe e JAR | ⏳ |
 
@@ -160,6 +160,118 @@ Levantado antes de o usuário pedir o JAR. Os efeitos da forma são `300+4+slot`
 | V | 307 | Onda que avança nos ticks 8–28 (`alcanceOnda`), dano 18 e silêncio, colide com bloco (310), candidato a "meia-lua" | Arco que avança |
 
 Referências: `minezin-outputs/refs-asta/black-meteorite/` (vídeo do usuário). Ainda falta confirmar com ele os nomes canônicos de X e V.
+
+## Black Meteorite — aprovado em prévia (02/11/2026)
+
+Referência: quadros-chave 107–127 s de `minezin-outputs/refs-asta/black-meteorite/key/` (risco preto de borda vermelha cortando o céu, mergulho com asas e espada, estrela branca no quadro preto do impacto). A v1 tinha o corpo envolto em chamas; o usuário pediu: "o player vire um feixe de luz da anti-magia e apareça somente para realizar o corte". A v2 foi aprovada ("Aprovar").
+
+| Ticks | Fase | Apresentação |
+| --- | --- | --- |
+| 0–3 | Arranque | Respingo de tinta no ponto de partida; o corpo some |
+| 0–9 | Feixe | Fuso preto de borda vermelha (3,4 blocos) com fio vermelho no centro e três fios vermelhos enrolados; rastro preto ondulado até a partida, que recolhe depois da chegada; gotas pretas caindo |
+| 7,5–9 | Reaparição | Estilhaços de tinta convergem; o corpo volta no tick 9 e eles estouram |
+| 9–12 | Golpe | Meia-lua preta de cima para baixo, afilada nas pontas, completa no tick 12 |
+| 12 | Impacto (tick do dano) | Estrela de quatro pontas (vermelha, núcleo branco); cratera de tinta abre o raio 4 em 3 ticks |
+| 12–32 | Cratera | Rachaduras vermelhas, coroa de espinhos de tinta que sobe e afunda, gotas atiradas dentro do raio 4; some até 32 |
+
+- Geometria pura: `core/vfx/BlackMeteoriteAsta`; teste `BlackMeteoriteAstaTest` (impacto só no tick 12, corpo escondido no feixe e de volta antes do golpe, cratera e gotas dentro do raio 4, tudo some em 32) exporta `build/asta-meteorite-samples.json`.
+- Jogo: `EfeitosAsta.blackMeteorite` (tinta modo 22, vermelho sólido modo 8; sem aditivo, que fica amarelo sobre a grama). O rastro fica preso à partida (`p.a()`), o feixe e o golpe ao dono, e a cratera ao ponto onde o dono estava no tick 12 (guardado no efeito). `EfeitosAsta.oculto` + `RenderPlayerEvent.Pre` cancelado escondem o jogador (forma, asas, espada) do tick 0 ao 9 para todos; a mão em primeira pessoa continua. O 309 genérico (anel, raios, impact frame) continua no impacto. Mecânica do servidor sem mudança.
+- Prévia: `python -B tools/preview_asta_black_meteorite.py --output <pasta>` → `minezin-outputs/refs-asta/asta-black-meteorite-fases.png` e `asta-black-meteorite.mp4` (modelo real da Devil Union; sem espada na mão, alvo, 309 nem luz do Minecraft). **Não foi testado no jogo.**
+
+Verificação: 207 testes Java, 3 testes Blockbench, build ok, `git diff --check` limpo.
+
+## Black Hurricane (X) — aprovado em prévia (02/11/2026)
+
+Nome canônico do anime (Asta gira a espada e solta um redemoinho de antimagia) no lugar de "Furacão Negro". Sem vídeo de referência; coreografia proposta e aprovada na v1 ("Aprovar").
+
+| Ticks | Fase | Apresentação |
+| --- | --- | --- |
+| 0–6 | Sucção | 8 fios de tinta em espiral do raio 5 até o corpo |
+| 3–10 | Funil | 14 riscos de vento pretos de borda vermelha subindo e girando (até ~4,2 blocos), acelerando |
+| 6–10 | Varredura | 5 lâminas em meia-lua girando rente ao chão, abrindo até o raio 8 |
+| 10 | Estouro (tick do dano) | Lâminas exatamente no raio 8, nunca além; anel preto no chão marca a área |
+| 10–22 | Magia arrancada | 24 fragmentos vermelhos e brancos sugados em espiral para o funil (remoção dos buffs) |
+| até 32 | Dissipa | Funil gira enquanto some; anel some |
+
+- Geometria pura: `core/vfx/BlackHurricaneAsta`; teste `BlackHurricaneAstaTest` (raio 8 no tick 10, nada além do raio, giro sempre crescente, tudo some em 32) exporta `build/asta-hurricane-samples.json`.
+- Jogo: `EfeitosAsta.blackHurricane` (tinta modo 22, fragmentos vermelho sólido modo 8). Origem segue o dono, porque o servidor acerta em volta da posição dele no tick 10. Mecânica do servidor sem mudança.
+- Prévia: `python -B tools/preview_asta_black_hurricane.py --output <pasta>` → `minezin-outputs/refs-asta/asta-black-hurricane-fases.png` e `asta-black-hurricane.mp4` (sem giro do corpo, espada, mobs nem luz do Minecraft). **Não foi testado no jogo.** Giro do corpo durante o golpe fica como possível etapa futura.
+
+Verificação: 211 testes Java, 3 testes Blockbench, build ok, `git diff --check` limpo.
+
+## Espadas pelas referências do usuário — aprovadas em prévia (02/11/2026)
+
+O usuário mandou imagens das duas espadas e um print da Matadora na forma ("não tem essas linhas vermelhas, mas sim uma aura negra e avermelhada"). Isso **substitui o visual da Matadora desperta aprovado antes** (lâmina preta serrilhada com linhas vermelhas).
+
+| Espada | Modelo |
+| --- | --- |
+| Matadora (Demon-Slayer) | Lâmina larga cinza com nuvens de tinta preta nas bordas (`_manchas`), guarda em cruz com pontas abertas, disco central, pomo redondo, cabo longo com anéis. Textura própria `textures/armor/trajes/matadora.png` (antes usava o atlas genérico) |
+| Matadora desperta | Mesma silhueta; lâmina carmesim escura com as mesmas manchas, sem linhas nem serrilhado. Aura animada `core/vfx/AuraMatadora` (22 chamas pretas de borda vermelha nas bordas e na ponta, ciclo de 26 ticks, halo carmesim), desenhada em `RenderEspadaAsta.aura` junto com a espada na mão; some enquanto o Black Divider estica a lâmina |
+| Demon-Dweller (nova, para a ult) | Lâmina reta fina com sulco cinza, guarda arredondada em lóbulos, cabo em gomos, estrelas de quatro pontas em vermelho brilhante perto da guarda e da ponta (`_estrelas`). `geo/asta/demon_dweller.geo.json`; ainda não aparece no jogo (entra com a ult) |
+
+Mesmo cabo e mesmos ossos (`root`/`blade`/`energia_divider`) nas duas Matadoras. Testes: `AuraMatadoraTest` (chamas nascem na borda, ficam perto, ciclo sem salto), `AstaTest.matadoraDespertaMantemCaboEOssosDaNormal`; `SfxAnimeTest.laminaTemOssoIndependenteDaGuarda` adaptado (a guarda nova tem 12 peças em vez de 7; a garantia de nada da guarda no osso da lâmina continua). Prévia: `python -B tools/preview_asta_espadas.py --output <pasta>/asta-espadas.png` (+ `asta-matadora-aura.mp4`). **Não foi testado no jogo.** 218 testes Java, build ok.
+
+## Ult (V na forma) — aprovada em prévia (02/11/2026)
+
+Pedido do usuário: "o V deveria ser a ult… não vi nenhuma cutscene… o Asta puxando duas espadas e fazendo diversos cortes de antimagia… a meia-lua parece 2D". Referência: vídeo `demon-dweller` ("My second sword!"). Decisões do usuário: **combo de cortes** no servidor (mecânica nova) e a Demon-Dweller feita junto. A meia-lua v1 (onda de 24 blocos, 310 ao bater em bloco) foi removida. Coreografia v1 aprovada depois da v2 com animação dos braços.
+
+| Ticks | Fase | Servidor | Visual |
+| --- | --- | --- | --- |
+| 0–18 | Grimório | Protegido (dano ×0,25, sem recuo) até o fim | Grimório abre à esquerda (páginas vermelhas); a Demon-Dweller sobe do livro, cabo primeiro; braço esquerdo puxa |
+| 18–30 | Cruza | — | Lâminas cruzadas em X diante do rosto; 16 chamas pretas explodem em volta |
+| 30–58 | Avanço | Anda 6 blocos na direção do olhar (`mover`, respeita colisão) | — |
+| 32–52 | Rajada | Um corte a cada 4 ticks: 4 de dano em raio 3 do centro do corte, com linha de visão (i-frames zerados) | 6 cortes com volume (seção em lente, costura vermelha na borda), braços alternando |
+| 60 | X | 20 de dano + Silêncio (4 s) em raio 7 do centro do X | Duas lâminas longas cruzadas; impact frame vermelho (`RoteiroUltimate` 307) e tremor |
+| 60–80 | Final | Golpe termina no tick 80; bloqueio de habilidades por 80 ticks | X some; a espada volta ao livro |
+
+- Geometria pura e chaves de câmera: `core/vfx/UltAsta` (teste `UltAstaTest`: cada corte fecha no seu tick e cabe no raio 3, X cabe no raio 7, cortes têm volume, espada sai do livro antes dos cortes e volta, câmera nunca entra no corpo; exporta `build/asta-ult-samples.json`).
+- Servidor: `PoderesAsta.ult`; `PerfilAsta.impacto(3,true)` = 60 (`UltAsta.FINAL`); `alcanceOnda` e o 310 saíram. Recarga 400 t e custo 35 iguais.
+- Cliente: `EfeitosAsta.ultAsta` (livro, explosão, cortes, X); câmera tipo 36 só para quem usa (`GerenciadorCutscene3D.iniciarUltAsta`, via `UltimatesTransformadas`), encerrada no cancelamento; `CamadaDemonDweller` (espada na mão esquerda e subindo do livro, com estrelas brilhantes).
+- Animação: `asta_307` gerada de `build_asta_assets.ULT_BRACOS` (80 ticks, braços e tronco); `refine_player_timing` não mexe mais no 307. Testes adaptados: só um gesto pode passar de 55 ticks; a pose de impacto do V é conferida no tick 60.
+- Prévia: `python -B tools/preview_asta_ult.py --output <pasta>` → `asta-ult-fases.png`, `asta-ult.mp4` (cutscene + vista externa). **Não foi testado no jogo.** Sem SFX próprio (parte 6).
+
+Verificação: 219 testes Java (os 4 da meia-lua saíram), 3 Blockbench, build ok.
+
+## Roupa base — capa do Touro Negro em tecido, aprovada em prévia (02/11/2026)
+
+Pedido: "o modelo está muito bom, foque mais na animação" (+ imagem de referência da roupa); "pode usar o Cid também como base, a capa dele está em outro nível"; depois "mais animações nessa capa" e "a logo dos Touros Negros tem que ser no lado direito, e na bandana a mesma coisa". v2 aprovada ("Aprovar").
+
+- Capa como tecido no padrão do Cid (`MantoDirecionalCid`): **costas** = `MalhaTecido` 3×3 presa nos ombros (3 colunas × 2 segmentos); **abas da frente** abertas sobre a camisa, cada uma numa `MolaMantoCid` (como as abas do Cid), barra dobrando em relação ao topo. Mantos dos ombros continuam rígidos nos braços. Simulação pura `client/tecido/TecidoAsta`, estado por jogador `asta/TecidoAstaCliente` (opção `tecidoAsta`, a mesma das asas da Devil Union), render `asta/RenderTrajeAsta` (estende `RenderTrajeAnime`, que deixou de ser `final`, mantendo o esconder da roupa na forma).
+- Animações extras: vento parado (`TecidoAsta.vento`, senos incomensuráveis), golpes base Z/X/C/V (`asta/RoteiroTecidoAsta` + `EfeitosAsta.tecido`, no tempo de cada golpe), chicote no ataque com a espada (`getAttackAnim`) e assentar ao agachar.
+- Detalhes da referência: gola alta com borda dourada e botão; emblema do touro na aba **direita** da capa (osso `asta_capa_frente_dir_0_0`, balança junto) e na faixa, deslocado para a direita; barra dourada em cada painel.
+- Geometria: `armor_reference_shapes.asta` (`CAPA_PAINEIS`, ossos `asta_capa_{costas|frente_esq|frente_dir}_{coluna}_{segmento}`); a capa rígida antiga saiu de `polish_clothing_shapes`. `build_asta_assets.uniforme()` gera só a roupa (geo, ícones, textura rasterizada do vetor — o PNG anterior era exatamente o vetor antigo — e o projeto Blockbench).
+- Testes `TecidoAstaTest` (ossos em cadeia no modelo, amostrar sem avançar, estabilidade, corrida/parada, barra dobra, vento, golpes; exporta `build/asta-capa-samples.json`). Prévia: `python -B tools/preview_asta_capa.py --output <pasta>` → `asta-capa-fases.png`, `asta-capa.mp4`. **Não foi testado no jogo.** 227 testes Java, 3 Blockbench, build ok.
+
+## Ult travada no alvo + JAR 3.9.0-asta-preview.4 (02/11/2026)
+
+Teste do preview.3: "ficou muito bom, porém a ult deveria ficar focando no inimigo ou nunca irá acertar todos os hits". Mudança:
+- Servidor: ao lançar, pega o inimigo mais próximo na mira (até 24 blocos, mesmo critério do Black Meteorite); o quadro do golpe vira para ele. O avanço (30–58) aproxima até 2,2 blocos do alvo (no máximo 0,45 bloco/tick). Cada corte e o X são centrados na posição **atual** do alvo (1,1 / 2,8 blocos acima dos pés). Sem alvo, comportamento anterior (6 blocos para a frente, cortes fixos).
+- Efeito novo **311**: o servidor anuncia o centro de cada corte (b.x = índice; 6 = X) 3 ticks antes do acerto, para todos os clientes desenharem o golpe inteiro ali. O cliente guarda em `Efeito.impacto[j]` do 307 e não desenha o 311 sozinho.
+- Cliente: a origem do 307 segue o dono; livro e chamas presos ao corpo real; câmera tipo 36 segue o corpo real e olha na direção do alvo.
+- `UltAsta`: `corte/cruz` com centro explícito, `anuncio(j)`, constantes de trava. Teste novo `cortesTravadosNoAlvoSaoAnunciadosAntesECabemNaArea`. 220 testes Java, 3 Blockbench, build ok.
+
+- Cortes em 3D (pedido no mesmo teste: "ainda ficou em 2D… mudar a direção do golpe"): cada corte agora é um rastro de espada **envolvendo o alvo** (centro de curvatura no alvo, arco de ±1,3 rad) num plano próprio, girado e inclinado (`ROLAGEM` + `INCLINACAO`: horizontal, diagonais, quase vertical), com a mesma espessura em lente e costura vermelha; em perspectiva lê como elipse. A câmera da rajada recuou para os cortes não a atravessarem. O X não mudou.
+
+`minezin-outputs/minezin-3.9.0-asta-preview.4.jar`: 4.568.570 bytes, SHA-256 `047179603f29733b33e3d2397c72667b254119511288a8bcc39bb8de9f15dd64`. Zip íntegro, versão no `mods.toml`, nomes SRG. Roteiro: o do preview.3, mais — ult mirando num mob que anda/foge: os 6 cortes e o X caem nele; ult mirando no vazio: sai para a frente como antes.
+
+## JAR de teste — 3.9.0-asta-preview.3 (02/11/2026)
+
+`minezin-outputs/minezin-3.9.0-asta-preview.3.jar`: 4.566.752 bytes, SHA-256 `56b358a5fb19e65cab16bfcc44025e74243b3ce8444da128c0ebf6ee42dca0a9`. Build limpo, 219 testes Java + 3 Blockbench. Conferido: zip íntegro, `version=` no `mods.toml`, classes e recursos novos (`UltAsta`, `BlackMeteoriteAsta`, `BlackHurricaneAsta`, `AuraMatadora`, `CamadaDemonDweller`, `demon_dweller*`, `matadora.png`, `asta_307` com 4 s), `MeiaLuaAsta` ausente, nomes SRG no bytecode. Protocolo de rede sem mudança de pacotes (o 310 só deixou de ser enviado).
+
+| Cenário | Aceitação |
+| --- | --- |
+| Matadora fora da forma | Lâmina cinza com manchas pretas nas bordas, guarda em cruz, disco, pomo redondo |
+| Ativar a forma (G) com a Matadora | Espada troca para a carmesim escura com aura de chamas pretas em loop, em 1ª e 3ª pessoa; aura some durante o Black Divider (C) |
+| Z — Black Meteorite (mire num inimigo a até 20 blocos) | Corpo some e vira feixe preto de borda vermelha com rastro até a partida; reaparece no tick 9 para o corte; cratera de tinta raio 4 e estrela no impacto (tick 12) |
+| X — Black Hurricane | Fios puxados, funil de riscos girando, lâminas chegam ao raio 8 no estouro; anel preto no chão; fragmentos sugados |
+| V — Ult (na forma) | Câmera da cutscene só para quem usa; grimório abre, Demon-Dweller sobe do livro e vai para a mão esquerda; espadas cruzam com explosão de chamas; avança ~6 blocos com 6 cortes com volume; X gigante no tick 60 com impact frame e tremor; espada volta ao livro |
+| Ult com mobs | Cada corte acerta (4) quem estiver perto; o X dá 20 + Silêncio em raio 7; Asta leva pouco dano e não é empurrado durante a ult |
+| Ult perto de parede | O avanço para na parede, sem atravessar |
+| Outro jogador olhando | Vê cortes, livro e espadas, sem a câmera |
+| Cinemáticas desligadas (config) | Ult funciona sem a câmera |
+| Morrer ou sair da forma no meio da ult | Câmera e efeitos encerram |
+
+Pontos mais prováveis de ajuste: posição/ângulo da Demon-Dweller na mão, encaixe da câmera, sombra do jogador visível durante o feixe do Meteorite.
 
 ## JAR de teste — 3.9.0-asta-preview.2 (02/11/2026)
 

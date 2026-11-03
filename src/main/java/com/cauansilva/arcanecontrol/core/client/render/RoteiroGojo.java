@@ -77,6 +77,7 @@ public final class RoteiroGojo {
 
     public static double impacto(int tipo, double tick) {
         if(tipo==32)return com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo.impacto(tick);
+        if(tipo==36){double d=tick-com.cauansilva.arcanecontrol.core.vfx.UltAsta.FINAL;return d<0?0:.8*Math.max(0,1-d/14);}
         if(tipo==35){double d=tick-com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.FORMA_IMPACTO;return d<0?0:.75*Math.max(0,1-d/16);}
         if(tipo==24){double d=tick>=220?tick-220:tick-70;return d<0?0:.65*Math.max(0,1-d/12);}
         double desde = tick - (tipo == 14 ? 90 : tipo == 5 ? 35 : 30);

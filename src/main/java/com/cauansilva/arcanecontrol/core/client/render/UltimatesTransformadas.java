@@ -15,6 +15,7 @@ public final class UltimatesTransformadas {
         }
         var c=RoteiroUltimate.para(p.kit(),p.tipo(),p.ticks());if(c==null)return;
         if(p.kit()==1&&p.tipo()==32)GerenciadorCutscene3D.iniciarRoxoMaximo(p.dono(),p.a(),p.ticks());
+        if(p.kit()==4&&p.tipo()==307)GerenciadorCutscene3D.iniciarUltAsta(p.dono(),p.a(),p.b(),p.ticks());
         ImpactosAnime.programar(p.dono(),p.a(),c.tick(),c.cor(),c.forca(),c.raio(),p.kit());
         if(c.som()!=null)AudioAnime.programar(p.dono(),"ultimate_"+p.tipo(),p.a(),p.kit()==1&&p.tipo()==32?RoteiroAudio.roxoMaximo():java.util.List.of(new RoteiroAudio.Cue(c.som(),c.tick(),32,.7f,false)));
     }
