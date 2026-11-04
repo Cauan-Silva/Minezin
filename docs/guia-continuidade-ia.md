@@ -1,6 +1,6 @@
 # Minezin — modelo de roadmap e guia para IAs
 
-Atualizado em **02/11/2026**. Documento de passagem de bastão para qualquer IA que continue o projeto. A parte 1 é um **modelo de roadmap** para copiar a cada onda; a parte 2 traz o **estado atual**; a parte 3 reúne **dicas práticas** aprendidas nas ondas Gojo e Frieren. Não autoriza commit, push, merge ou publicação: isso continua dependendo de pedido explícito do usuário.
+Atualizado em **02/11/2026**. **O estado atual (parte 2) está desatualizado:** o resumo vigente para IAs fica em [conhecimento-assistente.md](conhecimento-assistente.md); as partes 1 e 3 continuam válidas. Documento de passagem de bastão para qualquer IA que continue o projeto. A parte 1 é um **modelo de roadmap** para copiar a cada onda; a parte 2 traz o **estado atual**; a parte 3 reúne **dicas práticas** aprendidas nas ondas Gojo e Frieren. Não autoriza commit, push, merge ou publicação: isso continua dependendo de pedido explícito do usuário.
 
 Leia junto: [workflow-roadmap-minezin.md](workflow-roadmap-minezin.md) (decisões e workflow completos), o documento da onda em andamento, [testing/asta-onda-aprovacao-visual.md](testing/asta-onda-aprovacao-visual.md), e a ficha dos ataques da forma desperta do Asta, [asta-ataques-forma-ia.md](asta-ataques-forma-ia.md).
 
