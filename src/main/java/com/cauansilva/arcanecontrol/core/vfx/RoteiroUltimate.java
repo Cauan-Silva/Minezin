@@ -10,8 +10,8 @@ public final class RoteiroUltimate {
             case 35->kit==2?new Cue(0,0x8C38DA,.86,24,"singularity_charge"):null;
             case 38->kit==3?new Cue(FormaFrieren.QUEDA,0xD7A6FF,.95,24,null):null; // Sound: RoteiroAudio.julgamento().
             case 39->kit==3?new Cue(0,0xBFF6FF,.82,20,"frieren_escudo"):null;
-            case 304->kit==4?new Cue(12,0xD42B4C,.88,20,"divider_release"):null;
-            case 305->kit==4?new Cue(10,0xD42B4C,.88,20,"divider_release"):null;
+            case 304->kit==4?new Cue(12,0xD42B4C,.88,20,null):null; // Sound: RoteiroAudio.asta.
+            case 305->kit==4?new Cue(10,0xD42B4C,.88,20,null):null; // Sound: RoteiroAudio.asta.
             case 306->kit==4?new Cue(18,0xD42B4C,1,24,null):null;
             case 307->kit==4?new Cue(UltAsta.FINAL,0xD42B4C,1,24,null):null;
             default->null;

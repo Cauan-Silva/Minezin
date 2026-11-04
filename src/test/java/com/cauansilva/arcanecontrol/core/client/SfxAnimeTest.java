@@ -37,6 +37,18 @@ class SfxAnimeTest {
         assertEquals(com.cauansilva.arcanecontrol.core.vfx.FormaFrieren.QUEDA,RoteiroAudio.julgamento().get(1).atraso());
         for(var list:List.of(RoteiroAudio.atomic(),RoteiroAudio.divider(),RoteiroAudio.singularidade(),RoteiroAudio.julgamento(),RoteiroAudio.roxoMaximo()))for(var cue:list){assertTrue(names.contains(cue.nome()));assertTrue(cue.atraso()>=0&&cue.vida()>0&&cue.volume()>0&&cue.volume()<=1);}
     }
+    /** Asta's sounds land on the VFX ticks, are registered, and each lives at least as long as its moment. */
+    @Test void sonsDoAstaNosTicksDoVfx()throws Exception{
+        var names=json("/assets/arcanecontrol/sounds.json").keySet();
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.BlackMeteoriteAsta.IMPACTO,RoteiroAudio.asta(304).get(1).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.BlackHurricaneAsta.ESTOURO,RoteiroAudio.asta(305).get(1).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.asta.PerfilAsta.impacto(0,false),RoteiroAudio.asta(300).get(1).atraso());
+        var ult=RoteiroAudio.ultAsta();assertEquals(com.cauansilva.arcanecontrol.core.vfx.UltAsta.CORTES+2,ult.size());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.UltAsta.FINAL,ult.get(ult.size()-1).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.FORMA_IMPACTO,RoteiroAudio.formaAsta().get(1).atraso());
+        for(int t=300;t<=308;t++){var l=RoteiroAudio.asta(t);assertNotNull(l,""+t);for(var c:l){assertTrue(names.contains(c.nome()),c.nome());assertTrue(c.vida()>0&&c.atraso()>=0);}}
+        assertNull(RoteiroAudio.asta(309));
+    }
     @Test void laminaTemOssoIndependenteDaGuarda(){
         assertDoesNotThrow(()->{
             var geo=json("/assets/arcanecontrol/geo/asta/matadora.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();

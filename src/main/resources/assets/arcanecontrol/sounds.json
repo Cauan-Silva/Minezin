@@ -422,5 +422,260 @@
         "attenuation_distance": 64
       }
     ]
+  },
+  "asta_brandir": {
+    "subtitle": "subtitles.arcanecontrol.asta_brandir",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_brandir",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/asta_brandir_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/asta_brandir_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "asta_impacto": {
+    "subtitle": "subtitles.arcanecontrol.asta_impacto",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_impacto",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_impacto_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_impacto_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "asta_corte": {
+    "subtitle": "subtitles.arcanecontrol.asta_corte",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_corte",
+        "attenuation_distance": 40
+      },
+      {
+        "name": "arcanecontrol:anime/asta_corte_2",
+        "attenuation_distance": 40
+      },
+      {
+        "name": "arcanecontrol:anime/asta_corte_3",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "asta_investida": {
+    "subtitle": "subtitles.arcanecontrol.asta_investida",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_investida",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_investida_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_investida_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "asta_barreira": {
+    "subtitle": "subtitles.arcanecontrol.asta_barreira",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_barreira",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_barreira_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_barreira_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "asta_reflexo": {
+    "subtitle": "subtitles.arcanecontrol.asta_reflexo",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_reflexo",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_reflexo_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_reflexo_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "asta_salto": {
+    "subtitle": "subtitles.arcanecontrol.asta_salto",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_salto",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_salto_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/asta_salto_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "asta_meteoro": {
+    "subtitle": "subtitles.arcanecontrol.asta_meteoro",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_meteoro",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/asta_meteoro_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/asta_meteoro_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "asta_furacao": {
+    "subtitle": "subtitles.arcanecontrol.asta_furacao",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_furacao",
+        "attenuation_distance": 40
+      },
+      {
+        "name": "arcanecontrol:anime/asta_furacao_2",
+        "attenuation_distance": 40
+      },
+      {
+        "name": "arcanecontrol:anime/asta_furacao_3",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "asta_estouro": {
+    "subtitle": "subtitles.arcanecontrol.asta_estouro",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_estouro",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_estouro_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_estouro_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "asta_ult_espadas": {
+    "subtitle": "subtitles.arcanecontrol.asta_ult_espadas",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_ult_espadas",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_ult_espadas_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_ult_espadas_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "asta_ult_corte": {
+    "subtitle": "subtitles.arcanecontrol.asta_ult_corte",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_ult_corte",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_ult_corte_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_ult_corte_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "asta_ult_final": {
+    "subtitle": "subtitles.arcanecontrol.asta_ult_final",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_ult_final",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/asta_ult_final_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/asta_ult_final_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "asta_forma_carga": {
+    "subtitle": "subtitles.arcanecontrol.asta_forma_carga",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_forma_carga",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_forma_carga_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/asta_forma_carga_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "asta_forma_rugido": {
+    "subtitle": "subtitles.arcanecontrol.asta_forma_rugido",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/asta_forma_rugido",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/asta_forma_rugido_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/asta_forma_rugido_3",
+        "attenuation_distance": 64
+      }
+    ]
   }
 }
