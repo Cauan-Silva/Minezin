@@ -149,12 +149,21 @@ public final class PoderesCid {
                 for (LivingEntity alvo : a.nivel.getEntitiesOfClass(LivingEntity.class, new AABB(a.centro,a.centro).inflate(14),
                         e -> e != a.jogador && e.isAlive())) {
                     if (alvo.distanceToSqr(a.centro) <= 196) {
-                        alvo.hurt(a.nivel.damageSources().indirectMagic(a.jogador,a.jogador), 45);
+                        alvo.hurt(a.nivel.damageSources().indirectMagic(a.jogador,a.jogador), com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.DANO_IMPACTO);
                         alvo.setDeltaMovement(alvo.position().subtract(a.centro).normalize().scale(1.6).add(0,.6,0));
                         alvo.hurtMarked = true;
                     }
                 }
                 a.nivel.playSound(null, net.minecraft.core.BlockPos.containing(a.centro), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 3, .5f);
+            }
+            if (com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.tickDeDano(t)) {
+                // Pillar of light: repeated hits on everyone inside its radius (a vertical cylinder), no knockback.
+                double r=com.cauansilva.arcanecontrol.core.vfx.ExplosaoAtomic.RAIO_DOMO;
+                for (LivingEntity alvo : a.nivel.getEntitiesOfClass(LivingEntity.class, new AABB(a.centro,a.centro).inflate(r,com.cauansilva.arcanecontrol.core.vfx.ExplosaoAtomic.ALTURA_PILAR,r),
+                        e -> e != a.jogador && e.isAlive() && !e.isAlliedTo(a.jogador))) {
+                    double dx=alvo.getX()-a.centro.x,dz=alvo.getZ()-a.centro.z;
+                    if (dx*dx+dz*dz<=r*r&&alvo.getY()>=a.centro.y-4) {alvo.invulnerableTime=0;alvo.hurt(a.nivel.damageSources().indirectMagic(a.jogador,a.jogador),com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.DANO_TICK);}
+                }
             }
             if (t >= com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM){com.cauansilva.arcanecontrol.core.rpg.DespertaresServidor.finalizarAtomic(a.jogador);it.remove();}
         }

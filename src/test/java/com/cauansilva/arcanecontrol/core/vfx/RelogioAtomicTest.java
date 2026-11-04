@@ -28,4 +28,11 @@ class RelogioAtomicTest {
         }
         java.nio.file.Files.writeString(java.nio.file.Path.of("build/cid-reference-camera.json"),new com.google.gson.Gson().toJson(frames));
     }
+    @Test void ultimateDaMuitosTicksEnquantoOPilarExiste(){
+        int ticks=0;for(long t=0;t<=RelogioAtomic.FIM;t++)if(RelogioAtomic.tickDeDano(t))ticks++;
+        assertEquals(28,ticks,"um golpe a cada 0,5 s do impacto ate o pilar sumir");
+        assertFalse(RelogioAtomic.tickDeDano(RelogioAtomic.IMPACTO),"o impacto tem o seu proprio dano");
+        assertFalse(RelogioAtomic.tickDeDano(RelogioAtomic.PILAR_FIM+RelogioAtomic.TICK_DANO));
+        assertEquals(76,RelogioAtomic.danoTotal(),1e-6);assertTrue(RelogioAtomic.PILAR_FIM<RelogioAtomic.FIM);
+    }
 }
