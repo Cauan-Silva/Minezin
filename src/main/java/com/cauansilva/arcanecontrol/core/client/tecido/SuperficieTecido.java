@@ -91,6 +91,18 @@ public final class SuperficieTecido {
             var c=media(Arrays.asList(e.getValue()));pecas.put(Math.atan2(c[0],c[2]),e.getKey().substring(0,e.getKey().length()-2));}
         return faixa(new ArrayList<>(pecas.values()),segmentos,posados,repouso,pernas,true,false);
     }
+    /** An open cape/robe (Asta): the pieces whose bones start with prefixo, ordered by their rest angle around the
+     *  body and cut open at the widest gap between neighbours (the front opening), straight hem. */
+    public static List<Tri> aberto(String prefixo,int segmentos,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas){
+        var pecas=new TreeMap<Double,String>();
+        for(var e:repouso.entrySet())if(e.getKey().startsWith(prefixo)&&e.getKey().endsWith("_0")){
+            var c=media(Arrays.asList(e.getValue()));pecas.put(Math.atan2(c[0],c[2]),e.getKey().substring(0,e.getKey().length()-2));}
+        var ang=new ArrayList<>(pecas.keySet());var nomes=new ArrayList<>(pecas.values());int n=nomes.size();if(n<2)return new ArrayList<>();
+        int corte=0;double maior=-1;
+        for(int i=0;i<n;i++){double d=(i+1<n?ang.get(i+1):ang.get(0)+2*Math.PI)-ang.get(i);if(d>maior){maior=d;corte=(i+1)%n;}}
+        var ordem=new ArrayList<String>();for(int i=0;i<n;i++)ordem.add(nomes.get((corte+i)%n));
+        return faixa(ordem,segmentos,posados,repouso,pernas,false,false);
+    }
     /** One sheet through the given pieces (bone = piece+"_"+segment), in order around the body.
      *  fechado: the last piece is stitched back to the first (a ring); rasgado: torn hem teeth, else a straight hem. */
     static List<Tri> faixa(List<String> ordem,int S,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas,boolean fechado,boolean rasgado){

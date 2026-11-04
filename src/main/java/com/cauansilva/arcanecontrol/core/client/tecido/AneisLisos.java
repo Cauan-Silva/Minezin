@@ -7,18 +7,20 @@ import software.bernie.geckolib.cache.object.GeoCube;
 import java.util.*;
 
 /** Closed smooth rings for a GeoArmorRenderer (docs/padrao-trajes.md, section 4): Frieren's skirt and capelet,
- *  Gojo's jacket hem. Per frame the renderer hands every bone to capturar(); cloth bones (one of the prefixes) give
+ *  Gojo's jacket hem; or open sheets cut at the front (Asta's robe). Per frame the renderer hands every bone to capturar(); cloth bones (one of the prefixes) give
  *  their posed main panel instead of drawing it, the legs give their boxes. desenhar() then emits one ring per prefix,
  *  coloured with the texel of its first panel. The trim cubes of the cloth bones are drawn as usual. */
 public final class AneisLisos {
     /** The renderer's own GeckoLib cube drawing (GeoRenderer.renderCube), so posed vertices can be captured. */
     public interface Cubo{void desenhar(PoseStack pose,GeoCube cubo,VertexConsumer saida,int luz,int overlay,float r,float g,float b,float a);}
-    private final Map<String,Integer> prefixos;
+    private final Map<String,Integer> prefixos;private final Set<String> abertos;
     private final Map<String,double[][]> cantos=new HashMap<>(),repouso=new HashMap<>();
     private final Map<String,float[]> cor=new HashMap<>();
     private final List<SuperficieTecido.Caixa> pernas=new ArrayList<>();
     /** prefixos: bone prefix -> segments of that garment, e.g. {"frieren_saia_": 3}. */
-    public AneisLisos(Map<String,Integer> prefixos){this.prefixos=Map.copyOf(prefixos);}
+    public AneisLisos(Map<String,Integer> prefixos){this(prefixos,Set.of());}
+    /** abertos: prefixes drawn as an open sheet (cut at the front opening, SuperficieTecido.aberto) instead of a ring. */
+    public AneisLisos(Map<String,Integer> prefixos,Set<String> abertos){this.prefixos=Map.copyOf(prefixos);this.abertos=Set.copyOf(abertos);}
     public void limpar(){cantos.clear();pernas.clear();}
     private String prefixo(String nome){for(var p:prefixos.keySet())if(nome.startsWith(p))return p;return null;}
     /** true when the bone was fully handled (cloth panel captured, trims drawn); false: draw it normally. */
@@ -40,7 +42,8 @@ public final class AneisLisos {
     public void desenhar(VertexConsumer v,int luz,int overlay,float r,float g,float b,float a){
         if(cantos.isEmpty())return;
         for(var e:prefixos.entrySet()){var uv=cor.get(e.getKey());if(uv==null)continue;
-            for(var t:SuperficieTecido.anel(e.getKey(),e.getValue(),cantos,repouso,pernas)){
+            var tris=abertos.contains(e.getKey())?SuperficieTecido.aberto(e.getKey(),e.getValue(),cantos,repouso,pernas):SuperficieTecido.anel(e.getKey(),e.getValue(),cantos,repouso,pernas);
+            for(var t:tris){
                 double[] n=SuperficieTecido.normal(t);
                 // One triangle as a degenerate quad (entity render types take quads); points are already posed.
                 for(var p:new double[][]{t.a(),t.b(),t.c(),t.c()})v.vertex((float)p[0],(float)p[1],(float)p[2],r,g,b,a,uv[0],uv[1],overlay,luz,(float)n[0],(float)n[1],(float)n[2]);

@@ -109,6 +109,13 @@ def anel(prefixo,segmentos,posados,repouso,pernas=()):
     """Closed ring with a straight hem (Frieren), pieces ordered by rest angle, as SuperficieTecido.anel."""
     pecas=sorted((math.atan2(*np.mean(v,axis=0)[[0,2]]),k[:-2]) for k,v in repouso.items() if k.startswith(prefixo) and k.endswith('_0'))
     return faixa([p for _,p in pecas],segmentos,posados,repouso,pernas,True,False)
+def aberto(prefixo,segmentos,posados,repouso,pernas=()):
+    """Open robe (Asta), ordered by rest angle and cut at the widest gap (the front), as SuperficieTecido.aberto."""
+    pecas=sorted((math.atan2(*np.mean(v,axis=0)[[0,2]]),k[:-2]) for k,v in repouso.items() if k.startswith(prefixo) and k.endswith('_0'))
+    n=len(pecas)
+    if n<2:return []
+    gaps=[((pecas[i+1][0] if i+1<n else pecas[0][0]+2*math.pi)-pecas[i][0],(i+1)%n) for i in range(n)];corte=max(gaps)[1]
+    return faixa([pecas[(corte+i)%n][1] for i in range(n)],segmentos,posados,repouso,pernas,False,False)
 def faixa(ordem,S,posados,repouso,pernas,fechado,rasgado):
     pecas=[p for p in ordem if all(f'{p}_{s}' in posados and f'{p}_{s}' in repouso for s in range(S))];out=[];n=len(pecas)
     if n<2:return out

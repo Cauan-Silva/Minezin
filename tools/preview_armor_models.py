@@ -73,7 +73,8 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
  # Ichigo Bankai/Mugetsu: same sheet (RenderBankaiIchigo), detail cubes stay blocks, no collar.
  superficie=style=='shadow' and 'cid_gola' in bones or style in ('ichigo_bankai','ichigo_mugetsu');detalhes=style!='shadow';cantos={};repouso={};pernas=[];gola=None;uv_tecido=None
  # Frieren: capelet and skirt are closed smooth rings (RenderTrajeFrieren + SuperficieTecido.anel); trims stay blocks.
- ANEIS={'frieren':(('frieren_capa_',2),('frieren_saia_',3)),'gojo':(('gojo_hem_',2),)}.get(style,())
+ ANEIS={'frieren':(('frieren_capa_',2),('frieren_saia_',3)),'gojo':(('gojo_hem_',2),),'asta':(('asta_capa_',2),)}.get(style,())
+ ABERTOS={'asta_capa_'}
  aneis=bool(ANEIS) and any(n.startswith(ANEIS[0][0]) for n in bones);uv_anel={}
  superficie=superficie or aneis
  for name,b in bones.items():
@@ -111,7 +112,7 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
   for pref,linhas in ANEIS:
    if pref not in uv_anel:continue
    uv,mat=uv_anel[pref]
-   for tri in st.anel(pref,linhas,cantos,repouso,pernas):
+   for tri in (st.aberto if pref in ABERTOS else st.anel)(pref,linhas,cantos,repouso,pernas):
     n=st.normal(tri)
     for p in tri[:3]:out.append([*p,*n,*uv,mat])
  if superficie and not aneis:
