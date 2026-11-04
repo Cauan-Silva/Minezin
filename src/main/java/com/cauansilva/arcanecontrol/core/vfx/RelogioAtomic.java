@@ -1,8 +1,9 @@
 package com.cauansilva.arcanecontrol.core.vfx;
-/** Accepted long presentation: 21s until release, 39s total. Visual landmark clock remains 0..240. */
+/** Balance 3.11 (user: the ult took too long): 9 s until release, 27 s total; the release keeps its length.
+ *  Visual landmark clock remains 0..240. */
 public final class RelogioAtomic {
-    public static final int IMPACTO=420,FIM=780,OCUPADO=444;
-    private static final double[] REAL={0,120,200,320,380,420,426,700,780};
+    public static final int IMPACTO=180,FIM=540,OCUPADO=204;
+    private static final double[] REAL={0,51,86,137,163,180,186,460,540};
     private static final double[] VISUAL={0,30,50,78,88,90,96,170,240};
     private static double map(double t,double[] from,double[] to){
         if(!Double.isFinite(t))return -1;if(t<0)return t;if(t>=from[from.length-1])return to[to.length-1]+t-from[from.length-1];

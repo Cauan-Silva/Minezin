@@ -107,10 +107,14 @@ public class GerenciadorMagiasGojo {
     // =========================================================================
     // 1. TÉCNICA AZUL (AO) - Esfera 3D + Vórtice de Atração (60 ticks)
     // =========================================================================
+    /** Balance 3.11 (docs/balanceamento-3.11.md). */
+    public static final float DANO_AZUL=4,DANO_VERMELHO=14,DANO_ROXO=30;public static final int ACERTOS_AZUL=5;
     private static void iniciarAzul(ServerPlayer player, ServerLevel level) {
         level.playSound(null, player.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 1.5f, 1.6f);
 
         ANIMACOES.add(new AnimacaoAtiva(PerfilVfxGojo.duracao(1)) {
+            // Balance 3.11: at most ACERTOS_AZUL hits per target per cast.
+            final Map<java.util.UUID,Integer> acertos=new HashMap<>();
             @Override
             void tick(int tickAtual) {
                 if (!player.isAlive() || player.hasDisconnected() || player.serverLevel() != level) return;
@@ -127,8 +131,8 @@ public class GerenciadorMagiasGojo {
                     alvo.setDeltaMovement(velocidade);
                     alvo.hurtMarked = true;
 
-                    if (distancia < 2.8 && alvo instanceof LivingEntity living && tickAtual % 5 == 0) {
-                        living.hurt(level.damageSources().indirectMagic(player, player), 6.0f);
+                    if (distancia < 2.8 && alvo instanceof LivingEntity living && tickAtual % 5 == 0 && acertos.merge(living.getUUID(),1,Integer::sum)<=ACERTOS_AZUL) {
+                        living.hurt(level.damageSources().indirectMagic(player, player), DANO_AZUL);
                         level.sendParticles(ParticleTypes.CRIT, alvo.getX(), alvo.getY() + 1, alvo.getZ(), 6, 0.2, 0.2, 0.2, 0.1);
                     }
                 }
@@ -167,7 +171,7 @@ public class GerenciadorMagiasGojo {
                             alvo.setDeltaMovement(empurrao);
                             alvo.hurtMarked = true;
                             if (alvo instanceof LivingEntity living) {
-                                living.hurt(level.damageSources().playerAttack(player), 18.0f);
+                                living.hurt(level.damageSources().playerAttack(player), DANO_VERMELHO);
                             }
                         }
                     }
@@ -216,6 +220,7 @@ public class GerenciadorMagiasGojo {
         player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 2, false, false));
 
         ANIMACOES.add(new AnimacaoAtiva(PerfilVfxGojo.duracao(4)) {
+            final Set<java.util.UUID> atingidosRoxo=new HashSet<>();
             Vec3 origemDisparo;
             Vec3 direcaoDisparo;
 
@@ -264,15 +269,11 @@ public class GerenciadorMagiasGojo {
                     }
 
                     AABB areaRoxo = new AABB(posEsfera, posEsfera).inflate(5.0);
-                    for (Entity alvo : level.getEntities(player, areaRoxo)) {
-                        if (alvo instanceof LivingEntity living) {
-                            living.hurt(new net.minecraft.world.damagesource.DamageSource(
-                                    level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.DAMAGE_TYPE)
-                                            .getHolderOrThrow(net.minecraft.world.damagesource.DamageTypes.FELL_OUT_OF_WORLD), player), 60.0f);
-                        } else {
-                            alvo.discard();
-                        }
-                    }
+                    // Balance 3.11: ordinary magic damage once per target (it used to deal void damage every tick
+                    // and delete every non-living entity, such as items and boats, in the sphere).
+                    for (Entity alvo : level.getEntities(player, areaRoxo))
+                        if (alvo instanceof LivingEntity living && !living.isAlliedTo(player) && atingidosRoxo.add(living.getUUID()))
+                            living.hurt(level.damageSources().indirectMagic(player, player), DANO_ROXO);
                 }
             }
         });

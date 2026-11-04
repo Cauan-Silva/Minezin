@@ -94,13 +94,13 @@ public final class PoderesAsta {
                 for(var v:inimigos(p,p.position(),g.slot==0?5:g.slot==1?7:3)){
                     var d=v.getEyePosition().subtract(p.getEyePosition());
                     boolean atinge=g.slot==0?PerfilAsta.cone(d.normalize().dot(g.dir)):g.slot==1?d.normalize().dot(g.dir)>.75: true;
-                    if(atinge&&p.hasLineOfSight(v))dano(g,v,g.slot==0?12:g.slot==1?16:10);
+                    if(atinge&&p.hasLineOfSight(v))dano(g,v,g.slot==0?10:g.slot==1?12:8);
                 }
-            }else if(g.slot==0){for(var v:inimigos(p,p.position(),4))if(p.hasLineOfSight(v))dano(g,v,22);EfeitosDespertar.enviar(g.mundo,p.getUUID(),309,p.position(),Vec3.ZERO,20,4);}
-            else if(g.slot==1){for(var v:inimigos(p,p.position(),8)){for(var efeito:List.copyOf(v.getActiveEffects()))if(efeito.getEffect().isBeneficial())v.removeEffect(efeito.getEffect());dano(g,v,8);}}
+            }else if(g.slot==0){for(var v:inimigos(p,p.position(),4))if(p.hasLineOfSight(v))dano(g,v,14);EfeitosDespertar.enviar(g.mundo,p.getUUID(),309,p.position(),Vec3.ZERO,20,4);}
+            else if(g.slot==1){for(var v:inimigos(p,p.position(),8)){for(var efeito:List.copyOf(v.getActiveEffects()))if(efeito.getEffect().isBeneficial())v.removeEffect(efeito.getEffect());dano(g,v,6);}}
             else if(g.slot==2){
                 Vec3 plano=g.dir.multiply(1,0,1).normalize();
-                for(var v:inimigos(p,g.origem,20)){var d=v.position().subtract(g.origem);double frente=d.dot(plano),lado=d.subtract(plano.scale(frente)).length();if(frente>=0&&frente<=18&&lado<2.2&&p.hasLineOfSight(v))dano(g,v,32);}
+                for(var v:inimigos(p,g.origem,20)){var d=v.position().subtract(g.origem);double frente=d.dot(plano),lado=d.subtract(plano.scale(frente)).length();if(frente>=0&&frente<=18&&lado<2.2&&p.hasLineOfSight(v))dano(g,v,20);}
                 if(com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get())com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.fenda(p,g.origem,plano,18);
             }
         }
@@ -108,6 +108,7 @@ public final class PoderesAsta {
             if(!p.isAlive()||ProgressaoPoderes.ler(p).ativo()!=PoderAnime.ASTA||p.hasEffect(RegistroAsta.SILENCIO.get()))continue;
             boolean barreira=RpgServidor.dados(p).getLong("asta_barreira")>RpgServidor.agora(p);
             if(barreira||defendendo(p))refletirProximos(p,barreira?4:2.8,!barreira);
+            if(DespertaresServidor.ativo(p))campoAntimagia(p);
         }
     }
     private static boolean defendendo(ServerPlayer p){return p.isUsingItem()&&p.getUseItem().is(RegistroAsta.ESPADA.get());}
@@ -137,7 +138,31 @@ public final class PoderesAsta {
                 &&p.getOwner() instanceof LivingEntity dono&&dono.hasEffect(RegistroAsta.SILENCIO.get()))e.setCanceled(true);
         if(e.getEntity() instanceof net.minecraft.world.entity.projectile.EvokerFangs f&&f.getOwner()!=null&&f.getOwner().hasEffect(RegistroAsta.SILENCIO.get()))e.setCanceled(true);
     }
-    @SubscribeEvent public static void protegido(LivingHurtEvent e){if(e.getEntity() instanceof ServerPlayer p&&RpgServidor.dados(p).getLong("asta_protegido")>RpgServidor.agora(p)&&!e.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY))e.setAmount(e.getAmount()*.25f);}
+    /** Balance 3.11: anti-magic field of the Devil Union (user: nullify every skill that enters 5 blocks of him).
+     *  Every enemy inside is silenced while it stays (cannot cast, its casting is broken, its magic projectiles
+     *  fizzle), foreign projectiles inside are destroyed, and magic damage to Asta or allies inside is cancelled. */
+    public static final double RAIO_ANTIMAGIA=5;
+    static boolean dentroDoCampo(ServerPlayer asta,net.minecraft.world.entity.Entity e){return e.level()==asta.level()&&e.distanceToSqr(asta)<=RAIO_ANTIMAGIA*RAIO_ANTIMAGIA;}
+    private static void campoAntimagia(ServerPlayer p){
+        if(p.tickCount%5!=0)return;var caixa=p.getBoundingBox().inflate(RAIO_ANTIMAGIA);
+        for(var v:p.serverLevel().getEntitiesOfClass(LivingEntity.class,caixa,v->v!=p&&v.isAlive()&&!v.isAlliedTo(p)&&dentroDoCampo(p,v)))
+            v.addEffect(new MobEffectInstance(RegistroAsta.SILENCIO.get(),10,0,false,false));
+        for(var proj:p.serverLevel().getEntitiesOfClass(Projectile.class,caixa,v->v.isAlive()&&dentroDoCampo(p,v)&&v.getOwner()!=p&&!(v.getOwner()!=null&&v.getOwner().isAlliedTo(p))))proj.discard();
+    }
+    @SubscribeEvent(priority=EventPriority.HIGHEST) public static void anularMagia(LivingAttackEvent e){
+        var fonte=e.getSource();if(!(fonte.is(DamageTypes.MAGIC)||fonte.is(DamageTypes.INDIRECT_MAGIC))||fonte.is(DamageTypeTags.BYPASSES_INVULNERABILITY)||e.getEntity().level().isClientSide)return;
+        var alvo=e.getEntity();
+        for(var p:alvo.getServer().getPlayerList().getPlayers())
+            if(p.isAlive()&&ProgressaoPoderes.ler(p).ativo()==PoderAnime.ASTA&&DespertaresServidor.ativo(p)&&!p.hasEffect(RegistroAsta.SILENCIO.get())
+                    &&(alvo==p||alvo.isAlliedTo(p))&&dentroDoCampo(p,alvo)&&fonte.getEntity()!=p&&!(fonte.getEntity()!=null&&fonte.getEntity().isAlliedTo(p))){e.setCanceled(true);return;}
+    }
+    /** Balance 3.11: Asta is the tank; in the Devil Union he takes REDUCAO_FORMA less damage. */
+    public static final float REDUCAO_FORMA=.35f;
+    @SubscribeEvent public static void protegido(LivingHurtEvent e){
+        if(!(e.getEntity() instanceof ServerPlayer p)||e.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY))return;
+        if(RpgServidor.dados(p).getLong("asta_protegido")>RpgServidor.agora(p))e.setAmount(e.getAmount()*.25f);
+        else if(ProgressaoPoderes.ler(p).ativo()==PoderAnime.ASTA&&DespertaresServidor.ativo(p))e.setAmount(e.getAmount()*(1-REDUCAO_FORMA));
+    }
     @SubscribeEvent public static void recuo(LivingKnockBackEvent e){if(e.getEntity() instanceof ServerPlayer p&&RpgServidor.dados(p).getLong("asta_protegido")>RpgServidor.agora(p))e.setCanceled(true);}
     public static void limpar(ServerPlayer p){RpgServidor.dados(p).remove("asta_barreira");RpgServidor.dados(p).remove("asta_protegido");if(!p.hasDisconnected())EfeitosDespertar.enviar(p.serverLevel(),p.getUUID(),0,p.position(),Vec3.ZERO,0,4);}
     @SubscribeEvent public static void sair(PlayerEvent.PlayerLoggedOutEvent e){if(e.getEntity() instanceof ServerPlayer p)limpar(p);}

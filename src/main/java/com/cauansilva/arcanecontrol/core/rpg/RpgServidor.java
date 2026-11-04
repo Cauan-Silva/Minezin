@@ -144,7 +144,8 @@ public final class RpgServidor {
     }}
     @SubscribeEvent public static void tick(TickEvent.PlayerTickEvent e){
         if(e.phase!=TickEvent.Phase.END||!(e.player instanceof ServerPlayer p)||!p.isAlive()||p.isSpectator())return;
-        if(p.tickCount%5==0){var mana=new RecursoMana(dados(p).getDouble("mana"));mana.regenerar(5,5*mestria(p,ProgressaoPoderes.ler(p).ativo().id).multiplicadorRegeneracao());dados(p).putDouble("mana",mana.atual());}
+        if(p.tickCount%5==0){var mana=new RecursoMana(dados(p).getDouble("mana"));var kit=ProgressaoPoderes.ler(p).ativo();double fator=kit==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.ICHIGO&&DespertaresServidor.ativo(p)?com.cauansilva.arcanecontrol.core.ichigo.PerfilIchigo.REGENERACAO_NO_BANKAI:1;
+            mana.regenerar(5,5*fator*mestria(p,kit.id).multiplicadorRegeneracao());dados(p).putDouble("mana",mana.atual());}
         if(p.tickCount%10==0)sincronizar(p);
     }
     @SubscribeEvent(priority=EventPriority.HIGH) public static void dano(LivingHurtEvent e){

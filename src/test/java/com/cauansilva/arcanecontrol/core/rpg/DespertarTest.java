@@ -36,7 +36,7 @@ class DespertarTest {
     }
     @Test void shadowSoConsomeDuracaoAposAtomicCompleta(){
         var f=new EstadoDespertar(PersonagemRpg.SHADOW,100);int intro=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM;
-        assertEquals(1580,f.prazoRestante(100));
+        assertEquals(intro+800,f.prazoRestante(100));
         for(int t=100;t<=100+intro;t++)assertEquals(800,f.restante(t));
         assertEquals(799,f.restante(101+intro));assertTrue(f.ativa(100+intro+799));assertFalse(f.ativa(100+intro+800));
         assertFalse(f.anteciparContagem(100+intro));

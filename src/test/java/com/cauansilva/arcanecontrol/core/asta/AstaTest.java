@@ -35,8 +35,8 @@ class AstaTest {
         assertTrue(PerfilAsta.podeRefletir(0,100,0));assertFalse(PerfilAsta.podeRefletir(1,109,110));assertTrue(PerfilAsta.podeRefletir(1,110,110));assertFalse(PerfilAsta.podeRefletir(2,200,110));
     }
     @Test void todasAsRecargasEImpactosSeguemOGddECinematicaTermina(){
-        assertArrayEquals(new int[]{80,160,240,500},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,false)).toArray());
-        assertArrayEquals(new int[]{60,200,300,400},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,true)).toArray());
+        assertArrayEquals(new int[]{80,160,240,440},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,false)).toArray());
+        assertArrayEquals(new int[]{80,200,280,480},java.util.stream.IntStream.range(0,4).map(i->PerfilAsta.recarga(i,true)).toArray());
         assertEquals(1200,new EstadoDespertar(PersonagemRpg.ASTA,0).restante(0));
         // The ultimate's strongest hit (the final X) is its damage tick.
         assertEquals(com.cauansilva.arcanecontrol.core.vfx.UltAsta.FINAL,PerfilAsta.impacto(3,true));assertEquals(0,RoteiroGojo.impacto(35,28));assertEquals(0,RoteiroGojo.impacto(35,46));assertTrue(RoteiroGojo.impacto(35,47)>0);assertEquals(1,RoteiroGojo.amostrar(35,55).fov());

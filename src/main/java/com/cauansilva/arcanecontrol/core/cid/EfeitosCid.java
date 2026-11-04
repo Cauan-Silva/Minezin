@@ -50,6 +50,17 @@ public final class EfeitosCid {
     }
     public static Vec3 centroAtomic(UUID id){for(var f:EFEITOS)if(f.tipo==14&&f.jogador.equals(id))return f.origem;return null;}
     public record AtomicVisual(UUID dono,Vec3 centro,double tick,boolean local){}
+    /** Visual tick of the Atomic whose dome holds this player (own or another Cid's), or -1. No view or occlusion
+     *  test: the lettering is for everyone in range (user), not only for whoever is looking at it. */
+    public static double atomicNoAlcance(float parcial,double raio){
+        var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null)return -1;double melhor=-1,dist=Double.MAX_VALUE;
+        for(var f:EFEITOS)if(f.tipo==14&&f.mundo==mc.level&&Double.isFinite(f.origem.lengthSqr())){
+            double raw=mc.level.getGameTime()+parcial-f.inicio;if(raw<0||raw>=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM)continue;
+            boolean local=f.jogador.equals(mc.player.getUUID());double d=mc.player.position().distanceToSqr(f.origem);
+            if((local||d<=raio*raio)&&d<dist){dist=local?-1:d;melhor=com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(raw);}
+        }
+        return melhor;
+    }
     public static AtomicVisual atomicVisual(float parcial){
         var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null)return null;
         var camera=mc.gameRenderer.getMainCamera();AtomicVisual melhor=null;double distanciaMelhor=Double.MAX_VALUE;

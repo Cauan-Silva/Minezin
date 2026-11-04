@@ -13,7 +13,7 @@ class ConjuracaoLayoutTest {
     @Test void castValidoCobraUmaVezERepeticaoNaoBurlaRecarga(){
         var m=MestriaRpg.migrar(900,true,true,true);var mana=new RecursoMana(100);var cd=new RecargasRpg();
         assertEquals(ConjuracaoRpg.Resultado.OK,ConjuracaoRpg.tentar(m,mana,cd,PersonagemRpg.FRIEREN,3,100,1200,35,true,false,false));
-        assertEquals(72,mana.atual(),1e-8);assertEquals(1146,cd.restante(PersonagemRpg.FRIEREN,3,100));
+        assertEquals(72,mana.atual(),1e-8);assertEquals(1168,cd.restante(PersonagemRpg.FRIEREN,3,100));
         assertEquals(ConjuracaoRpg.Resultado.RECARGA,ConjuracaoRpg.tentar(m,mana,cd,PersonagemRpg.FRIEREN,3,101,1200,35,true,false,false));
         assertEquals(72,mana.atual(),1e-8);
         assertEquals(ConjuracaoRpg.Resultado.OK,ConjuracaoRpg.tentar(m,mana,cd,PersonagemRpg.SHADOW,0,101,40,8,false,false,false));

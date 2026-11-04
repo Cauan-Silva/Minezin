@@ -20,7 +20,7 @@ public final class PoderesCid {
     private record Fios(ServerPlayer p,net.minecraft.server.level.ServerLevel nivel,List<LivingEntity> alvos,long inicio){}
     private static final List<Corte> CORTES=new ArrayList<>();
     private static final List<Fios> FIOS=new ArrayList<>();
-    private static final int[] RECARGAS = {80, 160, 320, 1800};
+    private static final int[] RECARGAS = {80, 140, 280, 1800};
 
     public static net.minecraft.nbt.CompoundTag dados(ServerPlayer p) {
         var raiz=p.getPersistentData();
@@ -91,7 +91,10 @@ public final class PoderesCid {
             for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(a.olho,a.olho).inflate(5),v->v!=a.p&&v.isAlive())){
                 Vec3 d=alvo.getEyePosition().subtract(a.olho);
                 if(d.length()<=5&&d.normalize().dot(a.dir)>=Math.cos(com.cauansilva.arcanecontrol.core.vfx.PerfilCid.CORTE_ANGULO)&&a.p.hasLineOfSight(alvo))
-                    alvo.hurt(a.p.damageSources().playerAttack(a.p),10);
+                    if(alvo.hurt(a.p.damageSources().playerAttack(a.p),10)){
+                        // Balance 3.11: the cut launches the target away and up (after hurt so vanilla knockback cannot cancel it).
+                        Vec3 fora=new Vec3(a.dir.x,0,a.dir.z).normalize();alvo.setDeltaMovement(fora.scale(1.1).add(0,.75,0));alvo.hurtMarked=true;
+                    }
             }
             return true;
         });
@@ -105,10 +108,13 @@ public final class PoderesCid {
             if(t==com.cauansilva.arcanecontrol.core.vfx.PerfilCid.FIOS_IMPACTO){
                 a.alvos.addAll(a.nivel.getEntitiesOfClass(LivingEntity.class,a.p.getBoundingBox().inflate(9),v->v!=a.p&&v.isAlive()
                         &&!v.isAlliedTo(a.p)&&v.distanceToSqr(a.p)<=81&&a.p.hasLineOfSight(v)).stream().sorted(Comparator.comparingDouble((LivingEntity v)->v.distanceToSqr(a.p))).limit(8).toList());
-                for(var alvo:a.alvos){alvo.hurt(a.p.damageSources().playerAttack(a.p),5);alvo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,60,2));}
+                for(var alvo:a.alvos){alvo.hurt(a.p.damageSources().playerAttack(a.p),3);alvo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,60,2));}
                 RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->a.p),new PacoteAlvosCid(a.p.getUUID(),a.alvos.stream().map(v->v.getUUID()).toList()));
             }
+            // Balance 3.11: life drain while the threads hold (1 per second per target), healing Cid by what was drained.
+            boolean drenar=t>=8&&t<40&&(t-com.cauansilva.arcanecontrol.core.vfx.PerfilCid.FIOS_IMPACTO)%20==0&&t>com.cauansilva.arcanecontrol.core.vfx.PerfilCid.FIOS_IMPACTO;
             if(t>=8&&t<40)for(var alvo:a.alvos)if(alvo.level()==a.nivel&&alvo.isAlive()&&alvo.distanceToSqr(a.p)<=100&&a.p.hasLineOfSight(alvo)){
+                if(drenar){float antes=alvo.getHealth();alvo.invulnerableTime=0;if(alvo.hurt(a.p.damageSources().indirectMagic(a.p,a.p),1))a.p.heal(Math.max(0,antes-alvo.getHealth()));}
                 Vec3 d=a.p.position().subtract(alvo.position());if(d.lengthSqr()>2.25){alvo.setDeltaMovement(d.normalize().scale(.3));alvo.hurtMarked=true;}
             }
         }
@@ -126,7 +132,7 @@ public final class PoderesCid {
                 it.remove();continue;
             }
             if(t<com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO)AtordoamentoAtomic.aplicar(a.jogador,a.centro);
-            if (t < 380 && t % 30 == 0) {
+            if (t < com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO-40 && t % 30 == 0) {
                 a.nivel.playSound(null, a.jogador.blockPosition(), SoundEvents.WARDEN_HEARTBEAT,
                         SoundSource.PLAYERS, 1.8f, (float)(.55 + com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(t) / 130.0));
             }

@@ -29,14 +29,14 @@ class IchigoTest {
     @Test void alcanceRecargasEImpactosTemLimitesCoerentes(){
         assertEquals(0,PerfilIchigo.alcance(-1));assertEquals(28,PerfilIchigo.alcance(Integer.MAX_VALUE));
         for(boolean forma:new boolean[]{false,true})for(int s=0;s<4;s++){assertTrue(PerfilIchigo.recarga(s,forma)>0);assertTrue(PerfilIchigo.impacto(s,forma)<40);}
-        assertEquals(20,PerfilIchigo.recarga(0,true));assertEquals(8,PerfilIchigo.impacto(0,false));
+        assertEquals(30,PerfilIchigo.recarga(0,true));assertEquals(8,PerfilIchigo.impacto(0,false));
         assertThrows(IllegalArgumentException.class,()->PerfilIchigo.recarga(4,true));
     }
     @Test void bankaiConsomeMaisQueRegeneracaoMesmoComConjuntoEArvoreCompleta(){
         var m=MestriaRpg.maximaParaTeste();var mana=new RecursoMana(100);
         for(int segundo=0;segundo<10;segundo++){
             assertTrue(mana.consumir(PerfilIchigo.MANA_BANKAI_POR_SEGUNDO,true));
-            mana.regenerar(20,5*m.multiplicadorRegeneracao());
+            mana.regenerar(20,5*PerfilIchigo.REGENERACAO_NO_BANKAI*m.multiplicadorRegeneracao());
         }
         assertTrue(mana.atual()<100);assertTrue(mana.atual()>0);
         var pouca=new RecursoMana(.1);assertFalse(pouca.consumir(PerfilIchigo.MANA_BANKAI_POR_SEGUNDO,false));assertEquals(.1,pouca.atual());

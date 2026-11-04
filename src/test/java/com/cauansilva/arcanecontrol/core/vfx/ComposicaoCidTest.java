@@ -13,7 +13,7 @@ class ComposicaoCidTest {
             for(var l:normal){assertFalse(l.faces().isEmpty());}
             for(var l:normal)for(var q:l.faces()){
                 assertTrue(q.alpha()>=0&&q.alpha()<=1);
-                for(var v:List.of(q.a(),q.b(),q.c(),q.d()))assertTrue(Double.isFinite(v.x()+v.y()+v.z())&&v.len()<(tipo==14?80:25));
+                for(var v:List.of(q.a(),q.b(),q.c(),q.d()))assertTrue(Double.isFinite(v.x()+v.y()+v.z())&&v.len()<(tipo==14?ExplosaoAtomic.ALTURA_PILAR+40:25));
             }
         }
         for(int tipo:new int[]{11,12,14,17})assertTrue(ComposicaoCid.gerar(tipo,242,6,CAMERA,false).isEmpty());
