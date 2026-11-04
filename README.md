@@ -287,6 +287,9 @@ Nada destas entregas recentes foi testado dentro do Minecraft ainda:
 
 ## Roadmap
 
+O roadmap completo, com fases, critérios de saída e o roteiro de teste no jogo, está em
+[docs/workflow-roadmap-minezin.md](docs/workflow-roadmap-minezin.md) (seções 9 e 10). Resumo:
+
 1. Testar o `3.13.0-tecido-preview.1` no jogo e corrigir o que aparecer.
 2. Personagens novos, uma técnica por vez, começando pelo **Subaru** ([próximos personagens](docs/design/proximos-personagens.md)).
 3. Desempenho com muitos jogadores de capa; colisão do cenário dentro da física; asas e cauda do Devil Union lisas.

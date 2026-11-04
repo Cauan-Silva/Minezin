@@ -1,6 +1,6 @@
 # Minezin — workflow, decisões e roadmap
 
-Atualizado em **02/11/2026**. Documento de continuidade do projeto, baseado nas decisões desta conversa e nos arquivos locais verificados. Não estabelece datas de entrega nem autoriza mudanças futuras, commits, push, merge ou publicação.
+Atualizado em **04/11/2026**. Documento de continuidade do projeto, baseado nas decisões desta conversa e nos arquivos locais verificados. Não estabelece datas de entrega nem autoriza mudanças futuras, commits, push, merge ou publicação.
 
 ## 1. Objetivo do projeto
 
@@ -10,35 +10,28 @@ Qualidade tem prioridade sobre velocidade de entrega. Cada habilidade deve comun
 
 “Minezin 2.0” identifica o plano de evolução e organização técnica. Não é a versão atual do arquivo JAR.
 
-## 2. Estado verificável desta entrega
+## 2. Estado verificável (04/11/2026)
 
-> **Atualização de 02/11/2026 (onda Frieren).** A onda Gojo foi publicada e integrada: PR #26 mergeado na `main` (`1ec0aab`), CI de build aprovado. A onda Frieren (técnicas, forma desperta, traje com tecido, cajado, Qual e SFX) foi aprovada em prévias, entregue como `minezin-3.8.0-frieren-preview.2.jar` e integrada pelo PR #27 (merge `7b5f88e`). Teste completo no Minecraft ainda pendente; a preview.1 teve o Zoltraak corrigido na preview.2. Detalhes, hashes e roteiro: [frieren-onda-aprovacao-visual.md](testing/frieren-onda-aprovacao-visual.md). A tabela abaixo descreve a entrega anterior (Gojo).
-
-| Item | Estado em 02/11/2026 |
+| Item | Estado |
 | --- | --- |
-| Repositório | `Cauan-Silva/Minezin` |
-| Modid | `arcanecontrol` |
-| Base do checkout | `fc561496e7419c761efd64c7d32515e4dd88b984`, merge do PR #25 |
-| Branch local | `feat/gojo-onda-qualidade` |
-| Versão de teste | `3.7.0-gojo-preview.1` |
-| Onda Gojo | Publicação autorizada; preparação do commit e PR em 02/11/2026 |
-| Aprovação visual | VFX, transformação, cutscenes, SFX e tecido Gojo aprovados em prévias |
-| Artefato | `minezin-3.7.0-gojo-preview.1.jar` gerado e entregue para teste |
-| Verificação local | Build/reobfuscação aprovados; 167 testes Java, zero falhas/erros/ignorados; três testes Python aprovados |
-| Teste Minecraft desta preview | Pendente de retorno do usuário; prévias offline não comprovam integração no jogo |
-| Rede | Protocolo 15; a onda Gojo preserva o formato existente |
+| Repositório | `Cauan-Silva/Minezin`, modid `arcanecontrol` |
+| `main` | Merge do tecido liso (`49b70f5`) e da documentação (`5f8ff5f`) |
+| Versão | `3.13.0-tecido-preview.1`; JAR em `../minezin-outputs/` |
+| Testes | 252 testes Java + 3 testes Python (Blockbench), zero falhas |
+| Rede | Protocolo 16 |
+| Teste no Minecraft | **Pendente** para tudo desde a onda Ichigo (ver seção 12) |
 
-O HEAD acima é a **base** do trabalho, não um commit contendo a onda Gojo. O JAR incorpora alterações ainda não commitadas. Não atribuir a ele um SHA de código final inexistente.
+Integrado na `main` desde 02/11, em ordem:
 
-Artefato entregue na pasta `outputs/` do workspace, fora do repositório:
-
-```text
-minezin-3.7.0-gojo-preview.1.jar
-Tamanho: 4.124.883 bytes
-SHA-256: df08b88c9f1a16d7ffe7256b2ab4c5e630ea99556199d8ad71c10294d5998b21
-```
-
-O empacotamento foi conferido por integridade ZIP, versão e presença de classes/recursos novos. Não houve instalação automática no Minecraft do usuário.
+| Entrega | Conteúdo | Integração |
+| --- | --- | --- |
+| Onda Asta | Black Divider, golpes base, Devil Union, Black Meteorite, Black Hurricane, ultimate, capa em tecido | PR #31 |
+| Onda Ichigo | Shikai, Bankai, Mugetsu, máscara Hollow, trajes em tecido, Zangetsu e Tensa com acessórios em tecido | PR #32 |
+| Traje do Cid e tecido liso | Traje refeito pela referência, gola curva, superfície lisa no Cid e no Ichigo, colisão com as pernas | PR #33 |
+| Balanceamento 3.11 | Danos, recargas e maestria dos cinco kits; Atomic de 27 s com dano em ticks e sem empurrão | PR #34 e `fix/ci-previa-atomic` |
+| Rework de SFX | Motor em camadas (`tools/sfx_motor.py`), sons próprios de todos os kits e do Qual, 3 variações, sincronia por tick | merge direto `9e4f5ea` |
+| Tecido em todos os kits | Frieren, Gojo e Asta lisos (`AneisLisos`), colisão com o cenário, peso por traje em JSON | merge direto `49b70f5` |
+| Documentação | README completo e `docs/conhecimento-assistente.md` | `5f8ff5f` |
 
 ## 3. Decisões de produto que continuam valendo
 
@@ -143,81 +136,59 @@ Não substituir teste de cliente por renderização OpenGL, teste de rede por fu
 
 O tecido atual usa partículas com restrições e molas secundárias em ossos, não uma malha de roupa com colisão exata em toda a superfície do corpo. A aceitação é visual e funcional, além da estabilidade numérica.
 
-## 8. Inventário e posição das ondas
+## 8. Inventário dos kits
 
-Existem **cinco kits implementados** na base de trabalho; o catálogo maior é planejamento. O mapa técnico antigo inventariava quatro porque foi escrito antes da entrega do Ichigo.
+Os **cinco kits** existentes já passaram pela onda de qualidade e seguem o padrão de trajes
+([padrao-trajes.md](padrao-trajes.md)), com tecido liso, sons próprios e o balanceamento 3.11.
 
-| Personagem | Base existente | Posição no rework |
-| --- | --- | --- |
-| Cid / Shadow | Moveset, Atomic, equipamento, Aurora, despertar, tecido direcional e controle de terreno | Referência de qualidade aprovada pelo usuário; integrada na base até PR #25. Preservar durante as próximas ondas |
-| Gojo | Técnicas base, Domínio, Toji, progressão e roupa | Primeira onda: aprovada visualmente e integrada pelo PR #26; teste de jogo da 3.7.0 pendente |
-| Frieren | Kit base/transformado, cajado, traje e Qual | Segunda onda: aprovada em prévias com referências do anime; JAR 3.8.0-frieren-preview.2 entregue; integrada pelo PR #27; teste de jogo pendente |
-| Asta | Antimagia, espadas, traje, Assimilação Demoníaca e Liebe | Próxima candidata: revisar animações, Black Divider, forma e tecido; testar empunhadura no jogo |
-| Ichigo | Zangetsu/Tensa Zangetsu, Bankai, máscara, roupa e Zangetsu Interior | Implementado antes da onda Gojo; ainda não recebeu esta onda de acabamento equivalente ao Cid |
+| Personagem | Situação |
+| --- | --- |
+| Cid / Shadow | Referência de qualidade; traje refeito (gola curva, casaco liso), Atomic de 9 s de carga |
+| Gojo | Onda integrada (PR #26); sons próprios; barra do casaco lisa |
+| Frieren | Onda integrada (PR #27); sons refeitos; saia e capinha lisas |
+| Asta | Onda integrada (PR #31); sons próprios; manto liso; asas e cauda do Devil Union em blocos |
+| Ichigo | Onda integrada (PR #32); sons refeitos; casaco do Bankai e saia do Mugetsu lisos |
 
-### O que compõe a onda Gojo entregue
-
-- Azul: núcleo escuro, borda ciano e fluxos convergentes.
-- Vermelho: energia concentrada, núcleo claro, descarga e ondas de repulsão.
-- Vazio Roxo: núcleo/coroa e raios ramificados em direções independentes.
-- Vazio Infinito: domo exterior escuro, interior cósmico sem esfera negra central, névoa móvel e linhas coloridas intensas.
-- Transformação: entrada e aura que acompanham o jogador.
-- Chuva de Informações: fluxos coloridos descendentes.
-- Morte Cerebral: informação caindo de cima para baixo até a cabeça, no acerto confirmado.
-- Roxo Máximo: cutscene própria, maior impacto, pós-processamento e SFX revisado sem a repetição rejeitada.
-- Teleporte: ruptura de saída/chegada e rastro residual.
-- Traje: barra segmentada e gola com física secundária sutil, preservando mangas e ombros.
-
-Detalhes técnicos e limites: [gojo-onda1-aprovacao-visual.md](testing/gojo-onda1-aprovacao-visual.md). O “Fechou” do usuário aprovou a prévia do tecido; os dois documentos registram essa decisão.
+Registros detalhados de cada onda: `docs/testing/<personagem>-onda-aprovacao-visual.md`.
 
 ## 9. Roadmap a partir de agora
 
-As fases abaixo são uma ordem proposta de execução, não um cronograma nem autorização para iniciar todas elas. A próxima personagem após Gojo ainda depende da escolha do usuário.
+As fases R2 e R3 do plano anterior (completar os cinco kits) estão concluídas em prévia. A ordem abaixo é proposta,
+não cronograma; cada fase começa com a aprovação do usuário.
 
-| Fase | Entrega | Dependência | Critério de saída |
-| --- | --- | --- | --- |
-| R0 — fechar Gojo no jogo | Testar o JAR entregue e corrigir problemas confirmados | Retorno sobre a preview 3.7.0 | Roteiro de cliente concluído, regressões resolvidas e resultado registrado |
-| R1 — publicar Gojo | Diff final, documentação, commit/PR e verificações | Aprovação de publicação | PR rastreável, CI conferido e merge conforme autorização |
-| R2 — próxima onda | Frieren **ou** Asta, escolhido pelo usuário | Gojo estabilizado; definição da personagem | Moveset, transformação, ultimate, SFX e roupa no padrão Cid, com aprovação e teste no jogo |
-| R3 — completar existentes | Personagem restante entre Frieren/Asta; depois Ichigo como proposta | Uma onda concluída de cada vez | Cinco kits com apresentação consistente; ordem confirmada a cada nova onda |
-| R4 — bosses e integração | Revisar bosses em cada onda e fechar validação conjunta | Modelos/armas e poderes correspondentes | Escala, animações, telegraphs, armas, hitboxes e limpeza de estado coerentes |
-| R5 — base técnica e regressão | Atualizar mapa/baseline, validar rede e saves; refatorações pequenas quando justificadas | Evidências da versão estabilizada | Comparação antes/depois na mesma base, sem regressões de gameplay ou persistência |
-| R6 — expansão do GDD | Novos kits e sistemas próprios, com escopo aprovado | Padrão visual e fundação estáveis | Cada kit com formas, progressão, equipamento, boss/desafio e validação completos |
+| Fase | Entrega | Critério de saída |
+| --- | --- | --- |
+| R0 — testar no jogo | Roteiro da seção 10 com o `3.13.0-tecido-preview.1`; corrigir o que for confirmado | Roteiro concluído e regressões resolvidas e registradas |
+| R4 — bosses | Revisar Toji, Aurora, Qual, Liebe e Zangetsu no padrão novo (escala, telegraphs, armas, tecido, sons) | Cada boss aprovado em prévia e testado |
+| R5 — base técnica | Desempenho com vários jogadores de capa e efeitos sobrepostos; rede e saves | Medição antes/depois no PC do usuário, meta de FPS combinada |
+| R6 — personagens novos | Kits de [design/proximos-personagens.md](design/proximos-personagens.md), um por vez | Moveset, despertar, traje com tecido, arma, sons e boss aprovados em prévia e testados |
 
-### Direções das próximas ondas
+Ordem dos personagens novos informada pelo usuário em 03/11/2026: **Subaru (Re:Zero)**, Killua (Hunter x Hunter),
+Guts (Berserk), Douma (Demon Slayer) e os demais da lista. A lista antiga do GDD (Tanjiro, Naruto, Jin-Woo etc.)
+fica como histórico; vale a ordem do documento de próximos personagens.
 
-**Frieren:** construir uma linguagem de magia precisa e legível; melhorar concentração, disparos e transições da forma; tornar o Buraco Negro um clímax reconhecível. Confirmar atração, destruição e limites de terreno no código antes de prometer comportamento novo. Preservar o mapeamento adotado: Buraco Negro no C transformado, apesar do pedido anterior de tratá-lo como ultimate. Revisar cajado, mangas/saia e Qual, incluindo a escala de cinco blocos.
+### Melhorias técnicas anotadas
 
-**Asta:** dar peso e direção aos golpes, antimagia preta/vermelha e crescimento legível do Black Divider; revisar entrada da Assimilação, asa/forma, roupa e Liebe. Confirmar empunhadura, mão esquerda/direita e primeira/terceira pessoa dentro do jogo. Não confundir prévia geométrica com correção comprovada do renderer de mão.
+- Tecido: colisão do cenário dentro da física (hoje só no desenho); asas e cauda do Devil Union como superfície lisa.
+- Desempenho do tecido com muitos jogadores (cada um roda a própria simulação, até 64).
+- Cinema da Atomic sem opção própria de redução.
 
-**Ichigo:** revisar Getsuga e variações, velocidade/afterimages, Bankai e máscara, com peso próprio de espada e pressão espiritual. Preservar as regras existentes de manutenção por mana; não converter a forma em duração fixa por causa da apresentação visual.
+## 10. Próximo roteiro de teste — 3.13.0-tecido-preview.1
 
-### Expansão de longo prazo do GDD
-
-Personagens restantes no planejamento: **Tanjiro, Naruto, Jin-Woo, Eren, Sukuna, Rimuru, Killua, Genos, Jotaro e Edward**. Não estão anunciados como kits jogáveis por este documento. A ordem precisa ser acordada; Tanjiro pertence à leva histórica Asta/Ichigo/Tanjiro, mas não substitui automaticamente o foco atual em qualidade dos kits existentes.
-
-As entregas futuras trazem riscos próprios: invocações/IA e descarte; movimento e câmera de titãs/DMT; domínios simultâneos; calor/recursos; tempo parado e dano adiado; transmutação e conservação de blocos/itens. Avaliar essas mecânicas individualmente antes da implementação.
-
-## 10. Próximo roteiro de teste — Gojo 3.7.0
-
-Usar um mundo de testes ou cópia; substituir o JAR anterior do Minezin, evitando duplicatas. Confirmar a versão carregada e manter as dependências necessárias. No multiplayer, usar a versão compatível nos dois lados.
+Usar um mundo de testes ou cópia; substituir o JAR anterior do Minezin, sem duplicatas. Para liberar tudo rápido:
+`/minezin rpg maestria maxima todos` e `/minezin rpg restaurar_recursos`. No multiplayer, mesma versão nos dois lados.
 
 | Cenário | Aceitação |
 | --- | --- |
-| Inicialização | Cliente carrega o mod, dependências e recursos sem falha |
-| Roupa | Gola/barra respondem em corrida, passo lateral, giro, salto, queda e pouso; ombros fechados, sem deformação persistente |
-| Azul/Vermelho/Roxo | Efeitos legíveis, direção correta, raios multidirecionais; colisão e acerto coerentes |
-| Transformação/Domínio | Aura acompanha jogador; domo exterior e interior corretos; névoa move e linhas coloridas permanecem visíveis |
-| Informação | Chuva e acerto passivo descem para a cabeça; repetição não reinicia indevidamente som/animação |
-| Roxo Máximo | Cutscene, liberação e SFX sincronizados; câmera/FOV e pós-processamento restaurados ao terminar/cancelar |
-| Teleporte | Saída/chegada corretas inclusive na vertical; sem roupa ou câmera carregando inércia de grande deslocamento |
-| Opções | Cinemáticas, tecido, efeitos reduzidos e flashes podem ser desativados sem quebrar a técnica |
-| Ciclo de vida | Morte, logout, dimensão, troca de kit e equipamento não deixam aura, forma, som ou roupa presos |
-| Multiplayer/dedicado | Inicialização sem classes client-only indevidas; observadores coerentes e sem contaminação entre jogadores |
-| Compatibilidade | Conferir com e sem os shader packs usados, primeira/terceira pessoa e múltiplas técnicas; registrar FPS/frametimes e hardware |
-| Mundo antigo | Progresso, itens e recargas persistem após salvar/reabrir; migração não concede benefícios indevidos |
-
-Para relatar falhas: informar nome do JAR, habilidade/tecla, forma ativa, perspectiva, shaders/mods relevantes, passos de reprodução e resultado esperado/observado. Screenshot/vídeo e `latest.log` ajudam quando disponíveis.
+| Inicialização | Cliente e servidor carregam sem erro; versão `3.13.0-tecido-preview.1` |
+| Tecido liso (5 kits) | Correndo, parando, girando e caindo: sem frestas entre frente, lateral e costas; nada atravessa as pernas |
+| Colisão com o cenário | Encostar em parede, agachar perto de cerca, andar em laje: o pano não entra nos blocos; no inventário o traje aparece normal |
+| Gola do Cid | Envolve a cabeça, ligada ao corpo, sem degraus; alças balançam |
+| Sons | Cada técnica com som próprio, sem som do Minecraft; impacto no instante do efeito; variações ao repetir |
+| Atomic | Carga de 9 s com batimentos, pilar de luz, dano em vários golpes, ninguém é empurrado, letreiro para outro jogador |
+| Balanceamento 3.11 | Danos e recargas da tabela; Z do Cid lança, C drena; escudo da Frieren acompanha; antimagia do Asta; Bankai dura ~45 s |
+| Ichigo | Empunhadura da Zangetsu e da Tensa; Mugetsu de 10 s com a aura sumindo após o corte; faixa e corrente balançando |
+| Desempenho | FPS com vários efeitos e jogadores de capa; anotar para combinar a meta da fase R5 |
 
 ### Comandos já existentes para facilitar os testes
 
@@ -291,7 +262,7 @@ Os documentos `mapa-sistemas-dependencias.md` e `baseline-build-validacao.md` es
 
 1. Ler este documento e a nota técnica da onda ativa.
 2. Conferir branch/HEAD/status e a versão que o usuário realmente está usando.
-3. Recuperar o último feedback e a última autorização explícita. Hoje: visual Gojo aprovado, JAR entregue, teste em jogo pendente e publicação em PR autorizada.
+3. Recuperar o último feedback e a última autorização explícita. Hoje (04/11/2026): os cinco kits aprovados em prévia e na `main`, JAR `3.13.0-tecido-preview.1` entregue, teste em jogo pendente; próximo personagem: Subaru.
 4. Corrigir primeiro os problemas reproduzidos; preservar o Cid e as partes já aprovadas.
 5. Atualizar a evidência e a documentação antes de concluir ou publicar.
 
