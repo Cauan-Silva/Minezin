@@ -1,20 +1,4 @@
 {
-  "atomic_charge": {
-    "duration": 21.0,
-    "sample_rate": 48000,
-    "channels": 1,
-    "peak": 0.61846,
-    "rms": 0.10243,
-    "sha256": "a412c7fd2a603ff1c45ddfd7408453fcea38d9649bc7d7035276116fef12c598"
-  },
-  "atomic_release": {
-    "duration": 18.0,
-    "sample_rate": 48000,
-    "channels": 1,
-    "peak": 0.76094,
-    "rms": 0.08984,
-    "sha256": "74f1b5cfef86381dc3232cdc886ad8292254a0b73d5ebd179c19506c9e489b8d"
-  },
   "divider_charge": {
     "duration": 0.9,
     "sample_rate": 48000,
@@ -62,22 +46,6 @@
     "peak": 0.80912,
     "rms": 0.1276,
     "sha256": "10080e386fabd53704bce500036391892628e99f5898053a48be3e2b74337ccd"
-  },
-  "singularity_charge": {
-    "duration": 3.5,
-    "sample_rate": 48000,
-    "channels": 1,
-    "peak": 0.7686,
-    "rms": 0.13573,
-    "sha256": "c74d9db72356b1ced1db2d57d79714966f088573e23883e10ab9b1f2f44da169"
-  },
-  "singularity_collapse": {
-    "duration": 2.5,
-    "sample_rate": 48000,
-    "channels": 1,
-    "peak": 0.78422,
-    "rms": 0.09017,
-    "sha256": "06d011cd5b2d219fea804e997cb0fb28cf5788fb72b3a69956fd301596f52c67"
   },
   "frieren_barrier_break": {
     "duration": 0.9,

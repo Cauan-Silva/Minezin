@@ -1,22 +1,4 @@
 {
-  "atomic_charge": {
-    "subtitle": "subtitles.arcanecontrol.atomic_charge",
-    "sounds": [
-      {
-        "name": "arcanecontrol:anime/atomic_charge",
-        "attenuation_distance": 64
-      }
-    ]
-  },
-  "atomic_release": {
-    "subtitle": "subtitles.arcanecontrol.atomic_release",
-    "sounds": [
-      {
-        "name": "arcanecontrol:anime/atomic_release",
-        "attenuation_distance": 64
-      }
-    ]
-  },
   "divider_charge": {
     "subtitle": "subtitles.arcanecontrol.divider_charge",
     "sounds": [
@@ -84,24 +66,6 @@
       {
         "name": "arcanecontrol:anime/frieren_barrier_3",
         "attenuation_distance": 32
-      }
-    ]
-  },
-  "singularity_charge": {
-    "subtitle": "subtitles.arcanecontrol.singularity_charge",
-    "sounds": [
-      {
-        "name": "arcanecontrol:anime/singularity_charge",
-        "attenuation_distance": 64
-      }
-    ]
-  },
-  "singularity_collapse": {
-    "subtitle": "subtitles.arcanecontrol.singularity_collapse",
-    "sounds": [
-      {
-        "name": "arcanecontrol:anime/singularity_collapse",
-        "attenuation_distance": 64
       }
     ]
   },
