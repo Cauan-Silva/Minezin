@@ -15,14 +15,17 @@ Estrategista: controle tático, suporte e manipulação temporal.
 | C | Instrução Tática | Velocidade e recarga de pulo reduzida em aliados próximos (ou agilidade própria sozinho) por 5 s |
 | V | Recuperação Psicológica | Remove venenos e lentidão; Regeneração I por 2 s |
 
-**G — Autoridade da Preguiça (Mãos Invisíveis):** combate de médio alcance destrutivo.
+**G — Contrato com a Beatrice (proposta de 04/11/2026, aguardando aprovação):** o usuário trocou a ultimate da Autoridade da Preguiça pela forma de contrato. A Beatrice aparece com modelo 3D próprio, flutuando ao lado do Subaru, e é ela quem lança a magia Yin.
 
-| Tecla | Técnica | Efeito pedido |
+| Tecla | Técnica | Efeito proposto |
 | --- | --- | --- |
-| Z | Garras Ocultas | Leque frontal com as mãos; dano moderado e repulsão |
-| X | Esmagamento Espectral | Agarra um inimigo a até 6 blocos e o bate no chão; lentidão severa |
-| C | Barreira de Mãos | Escudo rotativo que bloqueia flechas e projéteis de frente |
-| V | Arremesso Catastrófico | Arremessa blocos do terreno ou o oponente em linha reta |
+| G | Contrato | Círculo do contrato, a Beatrice surge ao lado do Subaru e a forma dura N s |
+| Z | Minya | Estacas de cristal violeta disparadas em leque; dano e lentidão no acerto |
+| X | E.M.M. | O Subaru fica invulnerável por um instante (1,5 s) dentro de uma aura de mana |
+| C | Murak | Reduz o peso: salto alto e queda lenta para o Subaru e os aliados próximos |
+| V | Ul Minya / Al Shamak | Final: chuva de cristais numa área, ou o vazio do Al Shamak que engole os alvos |
+
+**Antiga G — Autoridade da Preguiça (Mãos Invisíveis), substituída:** Garras Ocultas, Esmagamento Espectral, Barreira de Mãos e Arremesso Catastrófico.
 
 ## 2. Killua Zoldyck (Hunter x Hunter)
 

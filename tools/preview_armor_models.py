@@ -19,7 +19,7 @@ def transform(obj,gecko=True):
  pivot=np.array(obj.get('pivot',[0,0,0]));r=obj.get('rotation',[0,0,0]);return translation(pivot)@rotation([-r[0],r[1],-r[2]] if gecko else r)@np.diag([*obj.get('scale',[1,1,1]),1])@translation(-pivot)
 def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
  bosses={'toji':1,'aurora':2,'qual':3,'liebe':4,'zangetsu_boss':6}
- path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else f'geo/ichigo/{style}.geo.json' if style in ['zangetsu','tensa_zangetsu'] else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/matadora_desperta.geo.json' if style=='matadora_desperta' else 'geo/asta/demon_dweller.geo.json' if style=='demon_dweller' else 'geo/frieren/cajado.geo.json' if style=='cajado' else f'geo/armaduras/{style}.geo.json')
+ path=ASSETS/(f'geo/nemesis/{bosses[style]}.geo.json' if style in bosses else f'geo/ichigo/{style}.geo.json' if style in ['zangetsu','tensa_zangetsu'] else 'geo/asta/matadora.geo.json' if style=='matadora' else 'geo/asta/matadora_desperta.geo.json' if style=='matadora_desperta' else 'geo/asta/demon_dweller.geo.json' if style=='demon_dweller' else 'geo/frieren/cajado.geo.json' if style=='cajado' else 'geo/subaru/beatrice.geo.json' if style=='beatrice' else f'geo/armaduras/{style}.geo.json')
  d=json.loads(path.read_text(encoding='utf-8'))['minecraft:geometry'][0]
  bones={b['name']:b for b in d['bones']};cache={}
  if style=='gojo' and pose_name.startswith('gojo_cloth_'):
@@ -60,7 +60,7 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
         'east':([1,3,7,5],[1,0,0]),'down':([0,1,5,4],[0,-1,0]),'up':([2,6,7,3],[0,1,0])}
  # Neutral mannequin skin exposes where the real player's own face/hands remain visible.
  skin={'uv':[0,0],'uv_size':[1,1]}
- if style not in ['cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora','matadora_desperta','demon_dweller']:
+ if style not in ['beatrice','cajado','toji','aurora','qual','liebe','zangetsu_boss','zangetsu','tensa_zangetsu','matadora','matadora_desperta','demon_dweller']:
   for n,parent,o,size in [('skin_head','armorHead',[-4,24,-4],[8,8,8]),('skin_left','armorLeftArm',[4,12,-2],[4,12,4]),('skin_right','armorRightArm',[-8,12,-2],[4,12,4])]:
    bones[n]={'name':n,'parent':parent,'cubes':[{'origin':o,'size':size,'uv':{f:skin for f in faces}}]}
   if pose_name!='idle' and not pose_name.startswith(('cid_','gojo_cloth_','frieren_cloth_','du_')):
@@ -73,7 +73,7 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
  # Ichigo Bankai/Mugetsu: same sheet (RenderBankaiIchigo), detail cubes stay blocks, no collar.
  superficie=style=='shadow' and 'cid_gola' in bones or style in ('ichigo_bankai','ichigo_mugetsu');detalhes=style!='shadow';cantos={};repouso={};pernas=[];gola=None;uv_tecido=None
  # Frieren: capelet and skirt are closed smooth rings (RenderTrajeFrieren + SuperficieTecido.anel); trims stay blocks.
- ANEIS={'frieren':(('frieren_capa_',2),('frieren_saia_',3)),'gojo':(('gojo_hem_',2),),'asta':(('asta_capa_',2),)}.get(style,())
+ ANEIS={'frieren':(('frieren_capa_',2),('frieren_saia_',3)),'gojo':(('gojo_hem_',2),),'asta':(('asta_capa_',2),),'beatrice':(('beatrice_saia_',3),('beatrice_barra_',1))}.get(style,())
  ABERTOS={'asta_capa_'}
  aneis=bool(ANEIS) and any(n.startswith(ANEIS[0][0]) for n in bones);uv_anel={}
  superficie=superficie or aneis
