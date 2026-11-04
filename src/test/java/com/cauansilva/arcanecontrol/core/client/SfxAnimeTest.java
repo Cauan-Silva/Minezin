@@ -49,6 +49,17 @@ class SfxAnimeTest {
         for(int t=300;t<=308;t++){var l=RoteiroAudio.asta(t);assertNotNull(l,""+t);for(var c:l){assertTrue(names.contains(c.nome()),c.nome());assertTrue(c.vida()>0&&c.atraso()>=0);}}
         assertNull(RoteiroAudio.asta(309));
     }
+    /** Cid: hits on the VFX/server ticks, the Atomic release on IMPACTO lasting until FIM, all registered. */
+    @Test void sonsDoCidNosTicksDoVfx()throws Exception{
+        var names=json("/assets/arcanecontrol/sounds.json").keySet();
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.PerfilCid.CORTE_IMPACTO,RoteiroAudio.cid(11).get(1).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.PerfilCid.FIOS_IMPACTO,RoteiroAudio.cid(13).get(1).atraso());
+        var a=RoteiroAudio.atomic();assertEquals(com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO,a.get(1).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.FIM,a.get(1).atraso()+a.get(1).vida());
+        assertEquals(11,RoteiroAudio.chuvaCid().size(),"lamina a cada 4 ticks de 24 a 60");
+        for(int t:new int[]{11,12,13,16,17,31,34,35})for(var c:RoteiroAudio.cid(t))assertTrue(names.contains(c.nome()),c.nome());
+        for(var c:a)assertTrue(names.contains(c.nome()));
+    }
     @Test void laminaTemOssoIndependenteDaGuarda(){
         assertDoesNotThrow(()->{
             var geo=json("/assets/arcanecontrol/geo/asta/matadora.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();

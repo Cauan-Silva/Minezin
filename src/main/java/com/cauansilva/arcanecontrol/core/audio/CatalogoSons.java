@@ -7,6 +7,7 @@ public final class CatalogoSons {
             "frieren_julgamento_carga","frieren_julgamento_trovao","frieren_escudo","frieren_gaiola","qual_zoltraak_carga","qual_zoltraak",
             "ichigo_getsuga","ichigo_getsuga_bankai","ichigo_shunpo","ichigo_golpe_pesado","ichigo_corte_ascendente","ichigo_bankai","ichigo_mascara","ichigo_mugetsu",
             "gojo_azul","gojo_vermelho_carga","gojo_vermelho_disparo","gojo_infinito_ativa","gojo_infinito_desativa","gojo_roxo_carga","gojo_roxo_disparo","gojo_dominio",
-            "asta_brandir","asta_impacto","asta_corte","asta_investida","asta_barreira","asta_reflexo","asta_salto","asta_meteoro","asta_furacao","asta_estouro","asta_ult_espadas","asta_ult_corte","asta_ult_final","asta_forma_carga","asta_forma_rugido"};
+            "asta_brandir","asta_impacto","asta_corte","asta_investida","asta_barreira","asta_reflexo","asta_salto","asta_meteoro","asta_furacao","asta_estouro","asta_ult_espadas","asta_ult_corte","asta_ult_final","asta_forma_carga","asta_forma_rugido",
+            "cid_corte_ar","cid_corte_impacto","cid_passo","cid_passo_chegada","cid_fios_lanca","cid_fios_prende","cid_fios_dreno","cid_lamina","cid_despertar","cid_chuva","cid_lamina_queda","cid_singularidade","cid_atomic_carga","cid_atomic_explosao"};
     private CatalogoSons(){}
 }

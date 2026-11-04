@@ -90,5 +90,19 @@
   "subtitles.arcanecontrol.asta_ult_corte": "Corte da ultimate",
   "subtitles.arcanecontrol.asta_ult_final": "Golpe final em X",
   "subtitles.arcanecontrol.asta_forma_carga": "O demônio desperta",
-  "subtitles.arcanecontrol.asta_forma_rugido": "Assimilação Demoníaca"
+  "subtitles.arcanecontrol.asta_forma_rugido": "Assimilação Demoníaca",
+  "subtitles.arcanecontrol.cid_corte_ar": "Lâmina de slime corta o ar",
+  "subtitles.arcanecontrol.cid_corte_impacto": "Corte de Slime acerta",
+  "subtitles.arcanecontrol.cid_passo": "Cid some nas sombras",
+  "subtitles.arcanecontrol.cid_passo_chegada": "Cid surge das sombras",
+  "subtitles.arcanecontrol.cid_fios_lanca": "Fios de slime disparam",
+  "subtitles.arcanecontrol.cid_fios_prende": "Fios de slime prendem",
+  "subtitles.arcanecontrol.cid_fios_dreno": "Os fios drenam vida",
+  "subtitles.arcanecontrol.cid_lamina": "Lâmina oculta",
+  "subtitles.arcanecontrol.cid_despertar": "Shadow desperta",
+  "subtitles.arcanecontrol.cid_chuva": "Lâminas se erguem no céu",
+  "subtitles.arcanecontrol.cid_lamina_queda": "Lâmina cai do céu",
+  "subtitles.arcanecontrol.cid_singularidade": "Singularidade de slime",
+  "subtitles.arcanecontrol.cid_atomic_carga": "Energia Atomic se concentra",
+  "subtitles.arcanecontrol.cid_atomic_explosao": "I Am Atomic"
 }

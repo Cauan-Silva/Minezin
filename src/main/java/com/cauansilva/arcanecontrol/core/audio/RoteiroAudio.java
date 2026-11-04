@@ -4,7 +4,8 @@ import com.cauansilva.arcanecontrol.core.vfx.*;
 import com.cauansilva.arcanecontrol.core.asta.PerfilAsta;
 public final class RoteiroAudio {
     public record Cue(String nome,int atraso,int vida,float volume,boolean seguir){}
-    public static List<Cue> atomic(){return List.of(new Cue("atomic_charge",0,RelogioAtomic.IMPACTO,.75f,false),new Cue("atomic_release",RelogioAtomic.IMPACTO,360,.9f,false));}
+    /** Cid's Atomic (tools/build_cid_sfx.py): the 9 s charge with its heartbeat, then the release and pillar roar. */
+    public static List<Cue> atomic(){return List.of(new Cue("cid_atomic_carga",0,RelogioAtomic.IMPACTO,.8f,false),new Cue("cid_atomic_explosao",RelogioAtomic.IMPACTO,RelogioAtomic.FIM-RelogioAtomic.IMPACTO,1f,false));}
     public static List<Cue> roxoMaximo(){return List.of(new Cue("purple_maximum_charge",0,90,.65f,false),new Cue("purple_maximum_release",RoxoMaximoGojo.COLAPSO,48,.95f,false));}
     public static List<Cue> divider(){return List.of(new Cue("divider_charge",0,18,.65f,true),new Cue("divider_release",18,24,.85f,true));}
     // Formation in hand and launch until ABERTURA, pull with tension until COLAPSO, burst and sparkles until FIM.
@@ -36,6 +37,23 @@ public final class RoteiroAudio {
         for(int j=0;j<UltAsta.CORTES;j++)l.add(new Cue("asta_ult_corte",UltAsta.tempoCorte(j),10,.9f,false));
         l.add(new Cue("asta_ult_final",UltAsta.FINAL,48,1f,false));return List.copyOf(l);
     }
+    /** Cid base kit (EfeitosCid types): 11 Slime Cut, 12 Shadow Step (16 = arrival), 13 Slime Threads, 17 awakening;
+     *  awakened moveset (kit 2 effects): 31 hidden blade strike, 34 blade rain, 35 singularity. Null otherwise. */
+    public static List<Cue> cid(int tipo){
+        return switch(tipo){
+            case 11->List.of(new Cue("cid_corte_ar",0,8,.8f,true),new Cue("cid_corte_impacto",PerfilCid.CORTE_IMPACTO,16,.9f,false));
+            case 12->List.of(new Cue("cid_passo",0,10,.8f,false));
+            case 16->List.of(new Cue("cid_passo_chegada",0,10,.85f,false));
+            case 13->List.of(new Cue("cid_fios_lanca",0,10,.8f,true),new Cue("cid_fios_prende",PerfilCid.FIOS_IMPACTO,14,.85f,false),new Cue("cid_fios_dreno",PerfilCid.FIOS_IMPACTO+20,12,.8f,false));
+            case 17->List.of(new Cue("cid_despertar",0,34,.9f,true));
+            case 31->List.of(new Cue("cid_lamina",0,8,.8f,false));
+            case 34->chuvaCid();
+            case 35->List.of(new Cue("cid_singularidade",0,100,.85f,false));
+            default->null;
+        };
+    }
+    /** Blade rain (MovesetsServidor case 34): blades rise, then one falls every 4 ticks from tick 24 to the end (64). */
+    public static List<Cue> chuvaCid(){var l=new java.util.ArrayList<Cue>();l.add(new Cue("cid_chuva",0,24,.85f,false));for(int t=24;t<64;t+=4)l.add(new Cue("cid_lamina_queda",t,11,.8f,false));return List.copyOf(l);}
     /** Devil Union: the heartbeat until the release on FORMA_IMPACTO, then the roar. */
     public static List<Cue> formaAsta(){return List.of(new Cue("asta_forma_carga",0,PerfilCinematico.FORMA_IMPACTO,.85f,true),new Cue("asta_forma_rugido",PerfilCinematico.FORMA_IMPACTO,44,1f,false));}
 }

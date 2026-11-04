@@ -677,5 +677,243 @@
         "attenuation_distance": 64
       }
     ]
+  },
+  "cid_corte_ar": {
+    "subtitle": "subtitles.arcanecontrol.cid_corte_ar",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_corte_ar",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_corte_ar_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_corte_ar_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "cid_corte_impacto": {
+    "subtitle": "subtitles.arcanecontrol.cid_corte_impacto",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_corte_impacto",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_corte_impacto_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_corte_impacto_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "cid_passo": {
+    "subtitle": "subtitles.arcanecontrol.cid_passo",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_passo",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_passo_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_passo_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "cid_passo_chegada": {
+    "subtitle": "subtitles.arcanecontrol.cid_passo_chegada",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_passo_chegada",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_passo_chegada_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_passo_chegada_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "cid_fios_lanca": {
+    "subtitle": "subtitles.arcanecontrol.cid_fios_lanca",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_fios_lanca",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_fios_lanca_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_fios_lanca_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "cid_fios_prende": {
+    "subtitle": "subtitles.arcanecontrol.cid_fios_prende",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_fios_prende",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_fios_prende_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_fios_prende_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "cid_fios_dreno": {
+    "subtitle": "subtitles.arcanecontrol.cid_fios_dreno",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_fios_dreno",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_fios_dreno_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/cid_fios_dreno_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "cid_lamina": {
+    "subtitle": "subtitles.arcanecontrol.cid_lamina",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_lamina",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_lamina_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/cid_lamina_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "cid_despertar": {
+    "subtitle": "subtitles.arcanecontrol.cid_despertar",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_despertar",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_despertar_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_despertar_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cid_chuva": {
+    "subtitle": "subtitles.arcanecontrol.cid_chuva",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_chuva",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_chuva_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_chuva_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cid_lamina_queda": {
+    "subtitle": "subtitles.arcanecontrol.cid_lamina_queda",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_lamina_queda",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_lamina_queda_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_lamina_queda_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cid_singularidade": {
+    "subtitle": "subtitles.arcanecontrol.cid_singularidade",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_singularidade",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_singularidade_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/cid_singularidade_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "cid_atomic_carga": {
+    "subtitle": "subtitles.arcanecontrol.cid_atomic_carga",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_atomic_carga",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/cid_atomic_carga_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/cid_atomic_carga_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "cid_atomic_explosao": {
+    "subtitle": "subtitles.arcanecontrol.cid_atomic_explosao",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/cid_atomic_explosao",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/cid_atomic_explosao_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/cid_atomic_explosao_3",
+        "attenuation_distance": 64
+      }
+    ]
   }
 }

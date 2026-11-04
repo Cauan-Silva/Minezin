@@ -25,6 +25,9 @@ public final class EfeitosCid {
     public static void iniciar(int tipo, UUID jogador, Vec3 origem, Vec3 direcao) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
+        // Cid's own sounds on the VFX ticks (RoteiroAudio.cid); 16 plays where he reappears.
+        var sons=com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.cid(tipo);
+        if(sons!=null)com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(jogador,"cid_"+tipo,origem,sons);
         if(tipo==16){if(DESTINOS.size()>=64)DESTINOS.clear();DESTINOS.put(jogador,new Destino(origem,mc.level.getGameTime(),mc.level));return;}
         if(tipo==15){
             PhotonAtomic.cancelar(jogador);com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(jogador,"atomic");
