@@ -11,6 +11,8 @@ import java.util.*;
  * body (front right, its corner, side, back corner, back columns, ..., front left) and each shared edge is the
  * average of both neighbours, so front, sides and back are literally one sheet; the hem is cut into uneven teeth.
  *
+ * anel(): the same sheet closed all the way round with a straight hem (Frieren's skirt and capelet).
+ *
  * gola(): Shadow's high collar as one rounded shell around the neck (model units, 1 = 1/16 block): it rises
  * tallest at the back, flares outward as it climbs, rounds off at both tips by the chin, black outside, purple
  * inside, gold rim along the top edge and down the tips.
@@ -44,9 +46,10 @@ public final class SuperficieTecido {
         var out=new int[4][];for(int q=0;q<4;q++)out[q]=grupos.get(q).stream().mapToInt(Integer::intValue).toArray();return out;
     }
     /** Traversal direction of ORDEM around the body, from the rest centres: +1 if the angle grows along it. */
-    public static int direcao(Map<String,double[][]> repouso){
+    public static int direcao(Map<String,double[][]> repouso){var l=new ArrayList<String>();for(var p:ORDEM)l.add("bk_capa_"+p);return direcao(repouso,l);}
+    static int direcao(Map<String,double[][]> repouso,List<String> ordem){
         double soma=0;Double ant=null;
-        for(var p:ORDEM){var r=repouso.get(osso(p,0));if(r==null)continue;double[] c=media(Arrays.asList(r));double a=Math.atan2(c[0],c[2]);
+        for(var p:ordem){var r=repouso.get(p+"_0");if(r==null)continue;double[] c=media(Arrays.asList(r));double a=Math.atan2(c[0],c[2]);
             if(ant!=null){double d=a-ant;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;soma+=d;}ant=a;}
         return soma>=0?1:-1;
     }
@@ -77,19 +80,35 @@ public final class SuperficieTecido {
     /** posados: bone -> posed vertices (same order as repouso); repouso: bone -> rest vertices. Missing pieces skipped.
      *  pernas: the posed legs; the sheet is pushed out of them (user: the front cloth collides with the legs). */
     public static List<Tri> casaco(Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas){
-        int S=TecidoIchigo.SEGMENTOS;var pecas=new ArrayList<String>();
-        for(var p:ORDEM){boolean ok=true;for(int s=0;s<S;s++)ok&=posados.containsKey(osso(p,s))&&repouso.containsKey(osso(p,s));if(ok)pecas.add(p);}
-        var out=new ArrayList<Tri>();int n=pecas.size();if(n<2)return out;int dir=direcao(repouso);
+        var l=new ArrayList<String>();for(var p:ORDEM)l.add("bk_capa_"+p);
+        return faixa(l,TecidoIchigo.SEGMENTOS,posados,repouso,pernas,false,true);
+    }
+    /** A closed skirt/capelet ring (Frieren): the pieces whose bones start with prefixo (named prefixo+face_col_seg),
+     *  ordered by their rest angle around the body, stitched all the way round, straight hem. */
+    public static List<Tri> anel(String prefixo,int segmentos,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas){
+        var pecas=new TreeMap<Double,String>();
+        for(var e:repouso.entrySet())if(e.getKey().startsWith(prefixo)&&e.getKey().endsWith("_0")){
+            var c=media(Arrays.asList(e.getValue()));pecas.put(Math.atan2(c[0],c[2]),e.getKey().substring(0,e.getKey().length()-2));}
+        return faixa(new ArrayList<>(pecas.values()),segmentos,posados,repouso,pernas,true,false);
+    }
+    /** One sheet through the given pieces (bone = piece+"_"+segment), in order around the body.
+     *  fechado: the last piece is stitched back to the first (a ring); rasgado: torn hem teeth, else a straight hem. */
+    static List<Tri> faixa(List<String> ordem,int S,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas,boolean fechado,boolean rasgado){
+        var pecas=new ArrayList<String>();
+        for(var p:ordem){boolean ok=true;for(int s=0;s<S;s++)ok&=posados.containsKey(p+"_"+s)&&repouso.containsKey(p+"_"+s);if(ok)pecas.add(p);}
+        var out=new ArrayList<Tri>();int n=pecas.size();if(n<2)return out;int dir=direcao(repouso,pecas);
         var meio=new double[n][S][][];var meioR=new double[n][S][][];
-        for(int i=0;i<n;i++)for(int s=0;s<S;s++){String o=osso(pecas.get(i),s);var idx=rotular(repouso.get(o),dir);var v=posados.get(o);
+        for(int i=0;i<n;i++)for(int s=0;s<S;s++){String o=pecas.get(i)+"_"+s;var idx=rotular(repouso.get(o),dir);var v=posados.get(o);
             var vr=repouso.get(o);meio[i][s]=new double[4][];meioR[i][s]=new double[4][];
             for(int q=0;q<4;q++){var acc=new ArrayList<double[]>();var accR=new ArrayList<double[]>();for(int k:idx[q])if(k<v.length){acc.add(v[k]);accR.add(vr[k]);}
                 meio[i][s][q]=acc.isEmpty()?v[0]:media(acc);meioR[i][s][q]=accR.isEmpty()?vr[0]:media(accR);}}
-        var g=grade(meio,S,n);var gr=grade(meioR,S,n);
-        suavizar(g,gr);
-        g=subdividir(g);int R=g.length-1,N=g[0].length-1;
+        var g=grade(meio,S,n,fechado);var gr=grade(meioR,S,n,fechado);
+        suavizar(g,gr,fechado);
+        g=subdividir(g,fechado);int R=g.length-1,N=g[0].length-1;
         for(var linha:g)for(int c=0;c<=N;c++)linha[c]=colidir(linha[c],pernas);
+        if(fechado)for(var linha:g)linha[N]=linha[0];
         for(int r=0;r<R;r++)for(int c=0;c<N;c++)quad(out,g[r][c],g[r][c+1],g[r+1][c+1],g[r+1][c],PRETO);
+        if(!rasgado)return out;
         S=R;n=N;
         for(int c=0;c<n;c++){
             double[] a=g[S][c],b=g[S][c+1],da=desce(g[S-1][c],a),db=desce(g[S-1][c+1],b);
@@ -101,12 +120,15 @@ public final class SuperficieTecido {
         return out;
     }
     /** Grid of seam points: each shared edge is the average of both neighbouring panels. */
-    static double[][][] grade(double[][][][] meio,int S,int n){
+    static double[][][] grade(double[][][][] meio,int S,int n){return grade(meio,S,n,false);}
+    /** fechado: column 0 is also the end edge of the last piece, and column n repeats column 0. */
+    static double[][][] grade(double[][][][] meio,int S,int n,boolean fechado){
         var g=new double[S+1][n+1][];
         for(int r=0;r<=S;r++)for(int c=0;c<=n;c++){
+            if(fechado&&c==n){g[r][c]=g[r][0];continue;}
             var acc=new ArrayList<double[]>();
-            for(int i:new int[]{c-1,c})if(i>=0&&i<n){int lado=i==c?0:1;
-                if(r<S)acc.add(meio[i][r][lado]);if(r>0)acc.add(meio[i][r-1][2+lado]);}
+            for(int i:new int[]{c-1,c}){int lado=i==c?0:1;if(fechado)i=(i+n)%n;
+                if(i>=0&&i<n){if(r<S)acc.add(meio[i][r][lado]);if(r>0)acc.add(meio[i][r-1][2+lado]);}}
             g[r][c]=media(acc);
         }
         return g;
@@ -115,16 +137,21 @@ public final class SuperficieTecido {
     /** Finer sheet between the bones (user: more bones so the side folds around the leg): every panel is split into
      *  SUB_COLUNAS x SUB_LINHAS cells, Catmull-Rom across the body (round, passes through every seam) and linear down,
      *  so the leg collision can wrap the cloth around a leg instead of cutting a whole panel at once. */
-    static double[][][] subdividir(double[][][] g){
+    static double[][][] subdividir(double[][][] g){return subdividir(g,false);}
+    static double[][][] subdividir(double[][][] g,boolean fechado){
         int S=g.length-1,n=g[0].length-1,R=S*SUB_LINHAS,N=n*SUB_COLUNAS;var f=new double[R+1][N+1][];
         for(int r=0;r<=R;r++){int r0=Math.min(S-1,r/SUB_LINHAS);double v=r/(double)SUB_LINHAS-r0;
             for(int c=0;c<=N;c++){int c0=Math.min(n-1,c/SUB_COLUNAS);double u=c/(double)SUB_COLUNAS-c0;
-                f[r][c]=lerp(curva(g[r0],c0,u),curva(g[r0+1],c0,u),v);}}
+                f[r][c]=lerp(curva(g[r0],c0,u,fechado),curva(g[r0+1],c0,u,fechado),v);}}
         return f;
     }
-    /** Catmull-Rom point between l[c] and l[c+1]; the open ends repeat their edge point. */
-    static double[] curva(double[][] l,int c,double u){
-        int n=l.length-1;double[] p0=l[Math.max(0,c-1)],p1=l[c],p2=l[c+1],p3=l[Math.min(n,c+2)];double u2=u*u,u3=u2*u;
+    static double[] curva(double[][] l,int c,double u){return curva(l,c,u,false);}
+    /** Catmull-Rom point between l[c] and l[c+1]; open ends repeat their edge point, a closed ring wraps around
+     *  (l[n] is l[0]). */
+    static double[] curva(double[][] l,int c,double u,boolean fechado){
+        int n=l.length-1;double[] p0,p3;
+        if(fechado){p0=l[(c-1+n)%n];p3=l[(c+2)%n];}else{p0=l[Math.max(0,c-1)];p3=l[Math.min(n,c+2)];}
+        double[] p1=l[c],p2=l[c+1];double u2=u*u,u3=u2*u;
         double[] o=new double[3];for(int k=0;k<3;k++)o[k]=.5*(2*p1[k]+(-p0[k]+p2[k])*u+(2*p0[k]-5*p1[k]+4*p2[k]-p3[k])*u2+(-p0[k]+3*p1[k]-3*p2[k]+p3[k])*u3);return o;
     }
     public static final int PASSES_SUAVE=3;public static final double SUAVE=.45;
@@ -132,12 +159,15 @@ public final class SuperficieTecido {
      *  swings open). Only the bend that is not in the rest shape is smoothed (rest: gr), so the ring never shrinks
      *  into the legs: each point moves by k times (neighbour mean - point) minus the same at rest; more toward the hem,
      *  the waist row stays pinned, the open front edges are left as they are. */
-    static void suavizar(double[][][] g,double[][][] gr){
+    static void suavizar(double[][][] g,double[][][] gr){suavizar(g,gr,false);}
+    static void suavizar(double[][][] g,double[][][] gr,boolean fechado){
         int S=g.length-1,n=g[0].length-1;if(n<2)return;
         for(int r=1;r<=S;r++){double k=SUAVE*r/S;var lr=gr[r];
             for(int it=0;it<PASSES_SUAVE;it++){var l=g[r];var novo=l.clone();
-                for(int c=1;c<n;c++){double[] lap=desce(l[c],lerp(l[c-1],l[c+1],.5)),lapR=desce(lr[c],lerp(lr[c-1],lr[c+1],.5));
+                for(int c=fechado?0:1;c<n;c++){int a=fechado?(c-1+n)%n:c-1,b=c+1;
+                    double[] lap=desce(l[c],lerp(l[a],l[b],.5)),lapR=desce(lr[c],lerp(lr[a],lr[b],.5));
                     novo[c]=soma(l[c],escala(desce(lapR,lap),k));}
+                if(fechado)novo[n]=novo[0];
                 g[r]=novo;}}
     }
     /** Tooth length (in the posed units of the hanging direction, i.e. segment lengths) per column, deterministic. */

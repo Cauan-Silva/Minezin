@@ -11,6 +11,8 @@ public final class TecidoFrieren {
     private static final String[] FACES={"back","front","left","right"};
     private static final int[][] COLUNAS={{4,4,2,2},{3,3,2,2}};
     private static final int[] LINHAS={2,3};
+    /** Segments of the capelet and of the skirt (RenderTrajeFrieren stitches each into one smooth ring). */
+    public static final int LINHAS_CAPA=2,LINHAS_SAIA=3;
     private static final String[] PREFIXO={"capa","saia"};
     private static final Map<String,Indice> INDICES=new LinkedHashMap<>();
     public static final List<String> OSSOS;

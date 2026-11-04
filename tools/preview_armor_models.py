@@ -72,6 +72,9 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
  # Shadow: coat and collar are smooth surfaces in game (RenderTrajeCid + SuperficieTecido), same here.
  # Ichigo Bankai/Mugetsu: same sheet (RenderBankaiIchigo), detail cubes stay blocks, no collar.
  superficie=style=='shadow' and 'cid_gola' in bones or style in ('ichigo_bankai','ichigo_mugetsu');detalhes=style!='shadow';cantos={};repouso={};pernas=[];gola=None;uv_tecido=None
+ # Frieren: capelet and skirt are closed smooth rings (RenderTrajeFrieren + SuperficieTecido.anel); trims stay blocks.
+ aneis=style=='frieren' and any(n.startswith('frieren_saia_') for n in bones);uv_anel={}
+ superficie=superficie or aneis
  for name,b in bones.items():
   tw,th,material=materials.get(name,(1,1,0))
   if superficie and name.startswith('bk_capa_'):
@@ -81,7 +84,11 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
     cantos[name]=[(m@np.r_[q,1])[:3] for q in rep]
     if uv_tecido is None:f=cube['uv']['north'];uv_tecido=((f['uv'][0]+.5)/tw,(f['uv'][1]+.5)/th),material
    if not detalhes:continue
-  cubos=b.get('cubes',[])[1:] if superficie and name.startswith('bk_capa_') else b.get('cubes',[])
+  if aneis and name.startswith(('frieren_capa_','frieren_saia_')) and b.get('cubes'):
+   cube=b['cubes'][0];m=bone_matrix(name)@transform(cube,name not in native_form);o=np.array(cube['origin']);sz=np.array(cube['size'])
+   rep=[o+sz*np.array([i&1,(i>>1)&1,(i>>2)&1]) for i in range(8)];repouso[name]=rep;cantos[name]=[(m@np.r_[q,1])[:3] for q in rep]
+   f=cube['uv']['north'];uv_anel.setdefault(name[:13],(((f['uv'][0]+.5)/tw,(f['uv'][1]+.5)/th),material))
+  cubos=b.get('cubes',[])[1:] if superficie and name.startswith(('bk_capa_','frieren_capa_','frieren_saia_')) else b.get('cubes',[])
   if superficie and name in ('armorLeftLeg','armorRightLeg') and b.get('cubes'):
    import superficie_tecido as st
    cube=b['cubes'][0];m=bone_matrix(name)@transform(cube,name not in native_form);o=np.array(cube['origin']);sz=np.array(cube['size'])
@@ -98,7 +105,15 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
     elif face in ['south','west']:tex=[(u/tw,(v+h)/th),((u+w)/tw,(v+h)/th),((u+w)/tw,v/th),(u/tw,v/th)]
     n=m[:3,:3]@normal
     for k in [0,1,2,0,2,3]:out.append([*(m@np.r_[corners[indices[k]],1])[:3],*n,*tex[k],material])
- if superficie:
+ if aneis:
+  import superficie_tecido as st
+  for pref,linhas in (('frieren_capa_',2),('frieren_saia_',3)):
+   if pref not in uv_anel:continue
+   uv,mat=uv_anel[pref]
+   for tri in st.anel(pref,linhas,cantos,repouso,pernas):
+    n=st.normal(tri)
+    for p in tri[:3]:out.append([*p,*n,*uv,mat])
+ if superficie and not aneis:
   import superficie_tecido as st
   uvs,mg,material=gola if gola else ([uv_tecido[0]]*3,None,uv_tecido[1])
   for tri in st.casaco(cantos,repouso,pernas):
