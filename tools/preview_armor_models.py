@@ -28,7 +28,8 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
  if style=='frieren' and pose_name.startswith('frieren_cloth_'):
   sample=json.loads((ROOT/'build/frieren-cloth-samples.json').read_text(encoding='utf-8'))[int(pose_name[len('frieren_cloth_'):])]
   for name,(x,y,z) in sample['ossos'].items():bones[name]['rotation']=[-math.degrees(x),-math.degrees(y),math.degrees(z)]
- if style=='shadow' and pose_name.startswith('cid_'):
+ # Old Cid cape samples: the current outfit has no cid_cape_ bones and its test no longer exports them.
+ if style=='shadow' and pose_name.startswith('cid_') and (ROOT/'build/cid-cape-samples.json').exists():
   samples=json.loads((ROOT/'build/cid-cape-samples.json').read_text());sample=samples[pose_name[4:]]
   for name,bone in bones.items():
    if name.startswith('cid_cape_'):
@@ -65,12 +66,30 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
   if pose_name!='idle' and not pose_name.startswith(('cid_','gojo_cloth_','frieren_cloth_','du_')):
    for n,angle in [('armorLeftArm',-35 if pose_name=='walk' else -75),('armorRightArm',35 if pose_name=='walk' else -115),('armorLeftLeg',30 if pose_name=='walk' else 0),('armorRightLeg',-30 if pose_name=='walk' else 0),('armorLeftBoot',30 if pose_name=='walk' else 0),('armorRightBoot',-30 if pose_name=='walk' else 0)]:bones[n]['rotation']=[angle,0,0]
  if pose_rotations:
-  for source,target in [('right_arm','armorRightArm'),('left_arm','armorLeftArm'),('head','armorHead'),('torso','armorBody')]:
+  for source,target in [('right_arm','armorRightArm'),('left_arm','armorLeftArm'),('right_leg','armorRightLeg'),('left_leg','armorLeftLeg'),('right_leg','armorRightBoot'),('left_leg','armorLeftBoot'),('head','armorHead'),('torso','armorBody')]:
    if source in pose_rotations and target in bones:bones[target]['rotation']=pose_rotations[source]
  out=[];tw,th=d['description']['texture_width'],d['description']['texture_height']
+ # Shadow: coat and collar are smooth surfaces in game (RenderTrajeCid + SuperficieTecido), same here.
+ # Ichigo Bankai/Mugetsu: same sheet (RenderBankaiIchigo), detail cubes stay blocks, no collar.
+ superficie=style=='shadow' and 'cid_gola' in bones or style in ('ichigo_bankai','ichigo_mugetsu');detalhes=style!='shadow';cantos={};repouso={};pernas=[];gola=None;uv_tecido=None
  for name,b in bones.items():
   tw,th,material=materials.get(name,(1,1,0))
-  for cube in b.get('cubes',[]):
+  if superficie and name.startswith('bk_capa_'):
+   if b.get('cubes'):
+    cube=b['cubes'][0];m=bone_matrix(name)@transform(cube,name not in native_form);o=np.array(cube['origin']);sz=np.array(cube['size'])
+    rep=[o+sz*np.array([i&1,(i>>1)&1,(i>>2)&1]) for i in range(8)];repouso[name]=rep
+    cantos[name]=[(m@np.r_[q,1])[:3] for q in rep]
+    if uv_tecido is None:f=cube['uv']['north'];uv_tecido=((f['uv'][0]+.5)/tw,(f['uv'][1]+.5)/th),material
+   if not detalhes:continue
+  cubos=b.get('cubes',[])[1:] if superficie and name.startswith('bk_capa_') else b.get('cubes',[])
+  if superficie and name in ('armorLeftLeg','armorRightLeg') and b.get('cubes'):
+   import superficie_tecido as st
+   cube=b['cubes'][0];m=bone_matrix(name)@transform(cube,name not in native_form);o=np.array(cube['origin']);sz=np.array(cube['size'])
+   rep=[o+sz*np.array([i&1,(i>>1)&1,(i>>2)&1]) for i in range(8)];pernas.append(st.caixa(rep,[(m@np.r_[q,1])[:3] for q in rep]))
+  if superficie and name=='cid_gola':
+   gola=([((q['uv']['north']['uv'][0]+.5)/tw,(q['uv']['north']['uv'][1]+.5)/th) for q in b['cubes'][:3]],bone_matrix(name),material)
+   continue
+  for cube in cubos:
    m=bone_matrix(name)@transform(cube,name not in native_form);inflate=cube.get('inflate',0);origin=np.array(cube['origin'])-inflate;size=np.array(cube['size'])+2*inflate
    corners=[origin+size*np.array([i&1,(i>>1)&1,(i>>2)&1]) for i in range(8)]
    for face,(indices,normal) in faces.items():
@@ -79,6 +98,15 @@ def mesh(style,pose_name="idle",pose_rotations=None,bone_rotations=None):
     elif face in ['south','west']:tex=[(u/tw,(v+h)/th),((u+w)/tw,(v+h)/th),((u+w)/tw,v/th),(u/tw,v/th)]
     n=m[:3,:3]@normal
     for k in [0,1,2,0,2,3]:out.append([*(m@np.r_[corners[indices[k]],1])[:3],*n,*tex[k],material])
+ if superficie:
+  import superficie_tecido as st
+  uvs,mg,material=gola if gola else ([uv_tecido[0]]*3,None,uv_tecido[1])
+  for tri in st.casaco(cantos,repouso,pernas):
+   n=st.normal(tri)
+   for p in tri[:3]:out.append([*p,*n,*uvs[tri[3]],material])
+  for tri in (st.gola() if gola else []):
+   pts=[(mg@np.r_[p,1])[:3] for p in tri[:3]];n=st.normal(pts)
+   for p in pts:out.append([*p,*n,*uvs[tri[3]],material])
  return np.array(out,dtype='f4')
 def lookat(eye,target):
  f=(target-eye);f=f/np.linalg.norm(f);s=np.cross(f,[0,1,0]);s=s/np.linalg.norm(s);u=np.cross(s,f)

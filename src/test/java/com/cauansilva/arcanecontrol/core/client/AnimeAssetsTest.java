@@ -58,11 +58,11 @@ class AnimeAssetsTest {
                 assertFalse(bones.containsKey("saia_esq")||bones.containsKey("saia_dir"));
             }
             else {
-                assertEquals(20,bones.keySet().stream().filter(n->n.startsWith("cid_cape_")).count());
-                for(int panel=0;panel<5;panel++)for(int segment=0;segment<4;segment++){
-                    var n="cid_cape_"+panel+"_"+segment;
-                    assertEquals(segment==0?"armorBody":"cid_cape_"+panel+"_"+(segment-1),bones.get(n).get("parent").getAsString());
-                    assertTrue(bones.get(n).getAsJsonArray("cubes").get(0).getAsJsonObject().getAsJsonArray("size").get(0).getAsDouble()>=2.7);
+                // Shadow's coat on the outfit standard: every TecidoIchigo coat bone, chained segment by segment.
+                for(var n:com.cauansilva.arcanecontrol.core.client.tecido.TecidoIchigo.OSSOS){
+                    if(n.startsWith("bk_manga_")||n.startsWith("mg_saia_"))continue;assertTrue(bones.containsKey(n),n);
+                    int s=Integer.parseInt(n.substring(n.lastIndexOf('_')+1));
+                    if(s>0)assertEquals(n.substring(0,n.lastIndexOf('_')+1)+(s-1),bones.get(n).get("parent").getAsString());
                 }
             }
         }
@@ -124,7 +124,8 @@ class AnimeAssetsTest {
             assertEquals(128,geometry.getAsJsonObject("description").get("texture_width").getAsInt());
             var names=new HashSet<String>();var bones=geometry.getAsJsonArray("bones");int cubes=0;
             for(var element:bones){var b=element.getAsJsonObject();assertTrue(names.add(b.get("name").getAsString()));if(b.has("cubes"))cubes+=b.getAsJsonArray("cubes").size();}
-            assertTrue(cubes>=20&&cubes<120);
+            // Shadow follows the outfit standard (docs/padrao-trajes.md): the coat is many small cloth panels.
+            assertTrue(cubes>=20&&cubes<(style.equals("shadow")?320:120),style+" "+cubes);
             for(var element:bones){var b=element.getAsJsonObject();if(!style.equals("shadow")&&b.get("name").getAsString().equals("armorHead")){
                 for(var cube:b.getAsJsonArray("cubes")){var c=cube.getAsJsonObject();assertTrue(c.getAsJsonArray("origin").get(1).getAsDouble()+c.getAsJsonArray("size").get(1).getAsDouble()<=30.5,"Sem cabelo acima da testa");}
             }}
