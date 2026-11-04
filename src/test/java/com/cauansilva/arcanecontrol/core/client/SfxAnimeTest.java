@@ -17,14 +17,16 @@ class SfxAnimeTest {
         var pt=json("/assets/arcanecontrol/lang/pt_br.json");var en=json("/assets/arcanecontrol/lang/en_us.json");
         for(var entry:defs.entrySet()){
             var d=entry.getValue().getAsJsonObject();String subtitle=d.get("subtitle").getAsString();assertTrue(pt.has(subtitle)&&en.has(subtitle));
-            var sounds=d.getAsJsonArray("sounds");assertEquals(1,sounds.size());var sound=sounds.get(0).getAsJsonObject();
+            // One file, or up to 3 takes of the layered engine (tools/sfx_motor.py: Minecraft picks one at random).
+            var sounds=d.getAsJsonArray("sounds");assertTrue(sounds.size()>=1&&sounds.size()<=3,entry.getKey());
+            for(var el:sounds){var sound=el.getAsJsonObject();
             assertTrue(sound.get("attenuation_distance").getAsInt()<=64);
             String path="/assets/arcanecontrol/sounds/"+sound.get("name").getAsString().split(":")[1]+".ogg";
             try(var in=getClass().getResourceAsStream(path)){
                 assertNotNull(in,path);byte[] bytes=in.readAllBytes();assertEquals("OggS",new String(bytes,0,4,StandardCharsets.US_ASCII));
                 int pos=-1;for(int i=0;i<bytes.length-16;i++)if(bytes[i]==1&&new String(bytes,i+1,6,StandardCharsets.US_ASCII).equals("vorbis")){pos=i;break;}
                 assertTrue(pos>=0);assertEquals(1,bytes[pos+11]);assertEquals(48000,ByteBuffer.wrap(bytes,pos+12,4).order(ByteOrder.LITTLE_ENDIAN).getInt());
-            }
+            }}
         }
     }
     @Test void cuesSaoSincronizadosComImpactosERegistrados()throws Exception{

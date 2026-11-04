@@ -286,5 +286,141 @@
         "attenuation_distance": 64
       }
     ]
+  },
+  "gojo_azul": {
+    "subtitle": "subtitles.arcanecontrol.gojo_azul",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_azul",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_azul_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_azul_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "gojo_vermelho_carga": {
+    "subtitle": "subtitles.arcanecontrol.gojo_vermelho_carga",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_vermelho_carga",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_vermelho_carga_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_vermelho_carga_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "gojo_vermelho_disparo": {
+    "subtitle": "subtitles.arcanecontrol.gojo_vermelho_disparo",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_vermelho_disparo",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_vermelho_disparo_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_vermelho_disparo_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "gojo_infinito_ativa": {
+    "subtitle": "subtitles.arcanecontrol.gojo_infinito_ativa",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_infinito_ativa",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_infinito_ativa_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_infinito_ativa_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "gojo_infinito_desativa": {
+    "subtitle": "subtitles.arcanecontrol.gojo_infinito_desativa",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_infinito_desativa",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_infinito_desativa_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_infinito_desativa_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "gojo_roxo_carga": {
+    "subtitle": "subtitles.arcanecontrol.gojo_roxo_carga",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_roxo_carga",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_roxo_carga_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_roxo_carga_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "gojo_roxo_disparo": {
+    "subtitle": "subtitles.arcanecontrol.gojo_roxo_disparo",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_roxo_disparo",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_roxo_disparo_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_roxo_disparo_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "gojo_dominio": {
+    "subtitle": "subtitles.arcanecontrol.gojo_dominio",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/gojo_dominio",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_dominio_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/gojo_dominio_3",
+        "attenuation_distance": 64
+      }
+    ]
   }
 }
