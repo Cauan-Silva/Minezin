@@ -85,7 +85,7 @@ public final class PoderesFrieren {
         float reserva=t.getFloat("fri_barreira_reserva"),bloqueado=Math.min(reserva,e.getAmount()*.9f);
         if(bloqueado<=0)return;
         e.setAmount(e.getAmount()-bloqueado);reserva-=bloqueado;t.putFloat("fri_barreira_reserva",reserva);
-        p.serverLevel().playSound(null,p.blockPosition(),SoundEvents.AMETHYST_BLOCK_HIT,SoundSource.PLAYERS,1,1.2f);
+        p.serverLevel().playSound(null,p.getX(),p.getY(),p.getZ(),com.cauansilva.arcanecontrol.core.audio.RegistroSons.obter("frieren_barreira_golpe"),SoundSource.PLAYERS,1,1);
         if(reserva<=0){t.putLong("fri_barreira_ate",0);enviar(p,26,p.position(),Vec3.ZERO);}
     }
     @SubscribeEvent public static void tick(TickEvent.ServerTickEvent e){

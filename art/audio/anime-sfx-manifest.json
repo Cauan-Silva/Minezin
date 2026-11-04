@@ -51,17 +51,17 @@
     "duration": 0.9,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.80557,
-    "rms": 0.07629,
-    "sha256": "a6cda6d77d8860ef288fad47f891ea0ec5f8651ddbc13f012356a9e8bdb42ad9"
+    "peak": 0.6804,
+    "rms": 0.0796,
+    "sha256": "7223b17037b10622dfca219dec2681421367d28735fed480c3792c6969954dc8"
   },
   "frieren_barrier": {
     "duration": 0.8,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.34317,
-    "rms": 0.07128,
-    "sha256": "18f70e040d608d7fe4729545687a47d8dd40e8b0c361a09443ef06f148513533"
+    "peak": 0.80912,
+    "rms": 0.1276,
+    "sha256": "10080e386fabd53704bce500036391892628e99f5898053a48be3e2b74337ccd"
   },
   "singularity_charge": {
     "duration": 3.5,
@@ -83,97 +83,97 @@
     "duration": 0.9,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.79404,
-    "rms": 0.08136,
-    "sha256": "e95c22563c3edfbde92a98af86a37efbbfb0230e403ad13db5b2198d98c54814"
+    "peak": 0.65197,
+    "rms": 0.08451,
+    "sha256": "bf31038ca89b0410650e0f0137f9f0e1e316467b3149f45124541fce5e359e54"
   },
   "frieren_impulso": {
     "duration": 0.7,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.78375,
-    "rms": 0.1226,
-    "sha256": "8dd7680717b13e40c0ff94aa1297f38d55ffe3916f92bc55e8cf19c889541d00"
+    "peak": 0.65342,
+    "rms": 0.13084,
+    "sha256": "be38628f066a6538475bac6d65eeefb76fd9d782ff9729bf5fc6f2ad2ea374c6"
   },
   "frieren_buraco_carga": {
     "duration": 3.5,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.75611,
-    "rms": 0.15027,
-    "sha256": "0894f59dffb0376d4959959e1f6aa3e665e97aab273ea7965bb51fc9ed5bc72a"
+    "peak": 0.75715,
+    "rms": 0.0893,
+    "sha256": "f1ba2eb5c0496dc6bf015aa6fa09f938059621cbcf9915955f1fd3f362d51663"
   },
   "frieren_buraco_atracao": {
     "duration": 7.5,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.72646,
-    "rms": 0.17031,
-    "sha256": "8df2a50c1fd78d3356e99d4ffacab8aded6b6909e00086e73c9569f594c59ee5"
+    "peak": 0.60942,
+    "rms": 0.17674,
+    "sha256": "71c2dcfe594bdafbd8a4e4a3bfcf331b3f1f2336a9406e9d5681c0b40b0265b9"
   },
   "frieren_buraco_colapso": {
     "duration": 3.0,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.89312,
-    "rms": 0.11452,
-    "sha256": "e7de64e28395f28913b515b835928442e43e1a8d7086af366bae64f50ef829ef"
+    "peak": 0.60675,
+    "rms": 0.12794,
+    "sha256": "320af28300ad9baf5d2dc7fafd6ad54c2d02b4fa65a1504b76604ad70b00fcdc"
   },
   "frieren_mana": {
     "duration": 3.0,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.70843,
-    "rms": 0.17638,
-    "sha256": "37784c4d120083c76301a5a0a50285481b721eb6c47d9ef27cf6f724257d1131"
+    "peak": 0.57424,
+    "rms": 0.12693,
+    "sha256": "0b0dc0bd779b1c62dc5c57b6b61093ac2513fa401eb5c764d848157532599c7f"
   },
   "frieren_julgamento_carga": {
     "duration": 1.25,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.66886,
-    "rms": 0.10839,
-    "sha256": "ab7c72d7c7b042d72f93831494d71786137c53384fbb30de8323830111218caf"
+    "peak": 0.62408,
+    "rms": 0.1108,
+    "sha256": "69bd36cd70873a348a032d9f94f1454539bef1a26b4a79f20df526e02387224a"
   },
   "frieren_julgamento_trovao": {
     "duration": 2.0,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.90423,
-    "rms": 0.10257,
-    "sha256": "0be670f83baae9b462107c392cee5577f65f21444cd6397ee7303265cd2d8ff4"
+    "peak": 0.59206,
+    "rms": 0.12804,
+    "sha256": "6d49035f3b49919ac6b35805cba59e1323eddb3eee76be71d76e2ddb7412228c"
   },
   "frieren_escudo": {
     "duration": 1.2,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.50011,
-    "rms": 0.07385,
-    "sha256": "5fd3ae42bb061e2015f08216f847c436a9726638d80e4a56de79041ff488ca80"
+    "peak": 0.63775,
+    "rms": 0.21019,
+    "sha256": "5e82a4dae188a843fd9fdef3cd9146a197e2eb963443c12f897001e816577847"
   },
   "frieren_gaiola": {
     "duration": 6.0,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.8137,
-    "rms": 0.22282,
-    "sha256": "3cc522c26964cb230672ea27bc2589215b11b75eda556b240a2e012122873243"
+    "peak": 0.64608,
+    "rms": 0.14409,
+    "sha256": "c0352af03a6ce20966855847b184f1bac0c8c10c20467c284f45b4143d0e3bed"
   },
   "qual_zoltraak_carga": {
     "duration": 1.5,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.68977,
-    "rms": 0.15224,
-    "sha256": "6a441409c66734fcf2b26a060877e16713e5033391a432e03ae1c9e19e7345eb"
+    "peak": 0.62876,
+    "rms": 0.15667,
+    "sha256": "ee7d30c4d2fc0a8694dc57f9fac22d4229a0dc7dbbdd19fda49a64d50c990cbf"
   },
   "qual_zoltraak": {
     "duration": 1.2,
     "sample_rate": 48000,
     "channels": 1,
-    "peak": 0.68385,
-    "rms": 0.14439,
-    "sha256": "6cd50f0f4016d1a8234b94344f580ad1c58e07a68a5ad2ccd135729c7feb5580"
+    "peak": 0.68207,
+    "rms": 0.15306,
+    "sha256": "287ba414635bb5b2eb4b2d4dc0d4de90c2e0d16cb027e6dcd5fe65653e2350d0"
   },
   "ichigo_getsuga": {
     "duration": 1.4,
@@ -1470,5 +1470,253 @@
     "peak": 0.60267,
     "rms": 0.16446,
     "sha256": "bba1f879d1d1096b255884155ebd623b56bd01f84d1e4c38d83764f9460bbe35"
+  },
+  "frieren_cast_2": {
+    "duration": 0.8654,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57702,
+    "rms": 0.06855,
+    "sha256": "74f9e7022af240850948c6410944a14196f67324eaf372811697c6c9622440ae"
+  },
+  "frieren_cast_3": {
+    "duration": 0.9375,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.80383,
+    "rms": 0.0972,
+    "sha256": "331ba4a6fde3a5dbe46d957b9926478bbb463155b52012c7fb80356489d35422"
+  },
+  "frieren_barrier_2": {
+    "duration": 0.7692,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62712,
+    "rms": 0.12902,
+    "sha256": "1e0c5a3ebabd068d699fb3f0fe2dc8a3c329657d2f845377f03dd4674dea1953"
+  },
+  "frieren_barrier_3": {
+    "duration": 0.8333,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61006,
+    "rms": 0.11515,
+    "sha256": "0910815c21aaa7208a490b61fcf7b6b05a0c77c969995c4b5ebd27ef1a0cabae"
+  },
+  "frieren_barrier_break_2": {
+    "duration": 0.8654,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.71956,
+    "rms": 0.10862,
+    "sha256": "2c69dd1c53e1e6909fcb7968adda3cbbc537d439c2f71cb20337b72940fef268"
+  },
+  "frieren_barrier_break_3": {
+    "duration": 0.9375,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.54138,
+    "rms": 0.0789,
+    "sha256": "b45c88d370a9cb73916525e98bd41d12848e32f13683e8edae21f60a84be38da"
+  },
+  "frieren_barreira_golpe": {
+    "duration": 0.45,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62481,
+    "rms": 0.11605,
+    "sha256": "d294a645b6e41ef227949e5d363ead01b6c2e6ae96d5f3d24edfd4c5a4b2a79d"
+  },
+  "frieren_barreira_golpe_2": {
+    "duration": 0.4327,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6127,
+    "rms": 0.10883,
+    "sha256": "66093363f8fe92fb38b2de374fbfc94bbc808e56b707e4bfe139de3898da838b"
+  },
+  "frieren_barreira_golpe_3": {
+    "duration": 0.4687,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59189,
+    "rms": 0.11696,
+    "sha256": "7b55563c9baedaae622b8effaade723562299e6a423f30b5d171914dcb56a7ea"
+  },
+  "frieren_impulso_2": {
+    "duration": 0.6731,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61569,
+    "rms": 0.12625,
+    "sha256": "4d4145cfc2bc6cdb0c95e1a03b281cf54005aee3ac18a9abc471102f84e69d31"
+  },
+  "frieren_impulso_3": {
+    "duration": 0.7291,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.66397,
+    "rms": 0.13051,
+    "sha256": "5d61dd6843883d860de4077550c6cffbaa0afcffcbf14fb184c55d968e0c800e"
+  },
+  "frieren_buraco_carga_2": {
+    "duration": 3.3654,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63748,
+    "rms": 0.07489,
+    "sha256": "65353778d118adfd1bbf377749da5193a7c168dcf92868673c0b948d2a4af27b"
+  },
+  "frieren_buraco_carga_3": {
+    "duration": 3.6458,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6396,
+    "rms": 0.0847,
+    "sha256": "6ce8c152ca3ff7e0c2769a3403f13b3bad7be96a6688c0e161b01d18f8cb497f"
+  },
+  "frieren_buraco_atracao_2": {
+    "duration": 7.2115,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59581,
+    "rms": 0.18153,
+    "sha256": "e70a668b5fdb29e51a1e21a4732281e8119e76fecf6a4bff33c37e67f1bfd156"
+  },
+  "frieren_buraco_atracao_3": {
+    "duration": 7.8125,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59861,
+    "rms": 0.16146,
+    "sha256": "a1d262aa5d9b5aba7a749f198503536f4d4d8b12b3671d889c6a0dc4fc3628ed"
+  },
+  "frieren_buraco_colapso_2": {
+    "duration": 2.8846,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59588,
+    "rms": 0.12928,
+    "sha256": "4eeaa5a6181c3d0689814f5d3dbaa4570ed89a54b5053ffc0e32c8443fba6c7a"
+  },
+  "frieren_buraco_colapso_3": {
+    "duration": 3.125,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60815,
+    "rms": 0.15193,
+    "sha256": "969ce947e2ca54be2c88effa929b7ab10177b155b3af49d76981af20a2ada5eb"
+  },
+  "frieren_mana_2": {
+    "duration": 2.8846,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61855,
+    "rms": 0.16153,
+    "sha256": "2834f2ad7a1f2671424a77ac13f5e588e57b8b9b4c2934ef6e8b6c3cd7de4399"
+  },
+  "frieren_mana_3": {
+    "duration": 3.125,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59562,
+    "rms": 0.12245,
+    "sha256": "89c01194034c9c6f5bc060320dfa4535e5f09b1cafd3a7d218ad7ac2224bc6e8"
+  },
+  "frieren_julgamento_carga_2": {
+    "duration": 1.2019,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57633,
+    "rms": 0.08426,
+    "sha256": "c98a5a8eac7c6f6b5abe9848e2e107c99ae6463c5a9620c62d2e49e3c2adfc6f"
+  },
+  "frieren_julgamento_carga_3": {
+    "duration": 1.3021,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.58895,
+    "rms": 0.09396,
+    "sha256": "58df8f8777757f71841743900341708282c8e5bd867dc5209cadcf576bf05d35"
+  },
+  "frieren_julgamento_trovao_2": {
+    "duration": 1.9231,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59572,
+    "rms": 0.15211,
+    "sha256": "e8fa965ad86e75b8a7207259717b9136e9fb277b04a57adc478f5003d6954d8e"
+  },
+  "frieren_julgamento_trovao_3": {
+    "duration": 2.0833,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.64021,
+    "rms": 0.13661,
+    "sha256": "0afeca04368045dac076a2e93f356563632fa88b68b641981e4ed67542524381"
+  },
+  "frieren_escudo_2": {
+    "duration": 1.1538,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62832,
+    "rms": 0.17604,
+    "sha256": "4a884085e83c5222f26addb27b960e9a3baa6dc0230f8b5916e1adc23c9451a3"
+  },
+  "frieren_escudo_3": {
+    "duration": 1.25,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61777,
+    "rms": 0.17921,
+    "sha256": "2c728c241691821a6f48e0dc8b0ed291c0440c32579b4b4aaeaaa28e92b37a73"
+  },
+  "frieren_gaiola_2": {
+    "duration": 5.7692,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61784,
+    "rms": 0.13761,
+    "sha256": "d322778a7689759bdb81bf3577a977e4e94adf13be94f2ce64f175652013b915"
+  },
+  "frieren_gaiola_3": {
+    "duration": 6.25,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59212,
+    "rms": 0.12,
+    "sha256": "dae4cd1f58709e325d033974902803a67135d4837b98e5bba559b6640fa0f4e1"
+  },
+  "qual_zoltraak_carga_2": {
+    "duration": 1.4423,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62133,
+    "rms": 0.13386,
+    "sha256": "56ef8d8f0be4f1fe51f37409f28992a4a68046e5060dfde527887aa2ffab08d7"
+  },
+  "qual_zoltraak_carga_3": {
+    "duration": 1.5625,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57009,
+    "rms": 0.13342,
+    "sha256": "f83eb873391805280d353d6eea949eedaf177049ac35361ebf4c5335c9508cf6"
+  },
+  "qual_zoltraak_2": {
+    "duration": 1.1538,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.687,
+    "rms": 0.17315,
+    "sha256": "41eca14183fd9bbb0ea1bce7ce4c8beebbfd80552e87a6061ca3621eb20174e3"
+  },
+  "qual_zoltraak_3": {
+    "duration": 1.25,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.66539,
+    "rms": 0.15353,
+    "sha256": "afcf322f5ff8d2a04f15c35b8adc73ea3cee2c1d4f28bc760c313cefdbf87593"
   }
 }

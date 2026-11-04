@@ -4,7 +4,7 @@ package com.cauansilva.arcanecontrol.core.audio;
 public final class CatalogoSons {
     public static final String[] NOMES={"atomic_charge","atomic_release","divider_charge","divider_release","purple_charge","purple_release","frieren_cast","frieren_barrier","singularity_charge","singularity_collapse","purple_maximum_release","purple_maximum_charge",
             "frieren_barrier_break","frieren_impulso","frieren_buraco_carga","frieren_buraco_atracao","frieren_buraco_colapso","frieren_mana",
-            "frieren_julgamento_carga","frieren_julgamento_trovao","frieren_escudo","frieren_gaiola","qual_zoltraak_carga","qual_zoltraak",
+            "frieren_barreira_golpe","frieren_julgamento_carga","frieren_julgamento_trovao","frieren_escudo","frieren_gaiola","qual_zoltraak_carga","qual_zoltraak",
             "ichigo_getsuga","ichigo_getsuga_bankai","ichigo_shunpo","ichigo_golpe_pesado","ichigo_corte_ascendente","ichigo_mascara","ichigo_preparo","ichigo_preparo_pesado","ichigo_investida","ichigo_jujisho","ichigo_acerto","ichigo_lancamento",
             "ichigo_bankai_pressao","ichigo_bankai_grito","ichigo_bankai_revela","ichigo_mugetsu_forma","ichigo_mugetsu_corte",
             "gojo_azul","gojo_vermelho_carga","gojo_vermelho_disparo","gojo_infinito_ativa","gojo_infinito_desativa","gojo_roxo_carga","gojo_roxo_disparo","gojo_dominio",
