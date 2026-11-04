@@ -19,10 +19,10 @@ def rotular(rep,dir_):
         while ang<-math.pi:ang+=2*math.pi
         g[(0 if p[1]>c[1] else 2)+(0 if ang*dir_<0 else 1)].append(i)
     return g
-def direcao(repouso):
+def direcao(repouso,ordem=None):
     soma=0;ant=None
-    for p in ORDEM:
-        r=repouso.get(osso(p,0))
+    for p in (ordem if ordem is not None else ['bk_capa_'+q for q in ORDEM]):
+        r=repouso.get(p+'_0')
         if r is None:continue
         cc=np.mean(r,axis=0);a=math.atan2(cc[0],cc[2])
         if ant is not None:
@@ -60,7 +60,7 @@ def colidir(p,obst):
     for c in obst:p=fora(p,c)
     return p
 PASSES_SUAVE,SUAVE=3,.45
-def suavizar(g,gr):
+def suavizar(g,gr,fechado=False):
     # Same as SuperficieTecido.suavizar: only the bend not in the rest shape is smoothed, so the ring never shrinks.
     S=len(g)-1;n=len(g[0])-1
     if n<2:return
@@ -68,50 +68,72 @@ def suavizar(g,gr):
         k=SUAVE*r/S;lr=gr[r]
         for _ in range(PASSES_SUAVE):
             l=[np.asarray(q,float) for q in g[r]];novo=list(l)
-            for c in range(1,n):novo[c]=l[c]+(((l[c-1]+l[c+1])/2-l[c])-((lr[c-1]+lr[c+1])/2-lr[c]))*k
+            for c in range(0 if fechado else 1,n):
+                a=(c-1)%n if fechado else c-1;b=c+1
+                novo[c]=l[c]+(((l[a]+l[b])/2-l[c])-((lr[a]+lr[b])/2-lr[c]))*k
+            if fechado:novo[n]=novo[0]
             g[r]=novo
-def grade(meio,S,n):
+def grade(meio,S,n,fechado=False):
     g=[[None]*(n+1) for _ in range(S+1)]
     for r in range(S+1):
         for c in range(n+1):
+            if fechado and c==n:g[r][c]=g[r][0];continue
             acc=[]
-            for i in (c-1,c):
+            for i0 in (c-1,c):
+                i=i0%n if fechado else i0
                 if 0<=i<n:
-                    lado=0 if i==c else 1
+                    lado=0 if i0==c else 1
                     if r<S:acc.append(meio[i][r][lado])
                     if r>0:acc.append(meio[i][r-1][2+lado])
             g[r][c]=np.mean(acc,axis=0)
     return g
 SUB_COLUNAS,SUB_LINHAS=3,2
-def curva(l,c,u):
-    # Catmull-Rom between l[c] and l[c+1], as SuperficieTecido.curva.
-    n=len(l)-1;p0,p1,p2,p3=(np.asarray(l[i],float) for i in (max(0,c-1),c,c+1,min(n,c+2)))
+def curva(l,c,u,fechado=False):
+    # Catmull-Rom between l[c] and l[c+1], as SuperficieTecido.curva (a closed ring wraps around).
+    n=len(l)-1;ids=((c-1)%n,c,c+1,(c+2)%n) if fechado else (max(0,c-1),c,c+1,min(n,c+2))
+    p0,p1,p2,p3=(np.asarray(l[i],float) for i in ids)
     return .5*(2*p1+(-p0+p2)*u+(2*p0-5*p1+4*p2-p3)*u*u+(-p0+3*p1-3*p2+p3)*u**3)
-def subdividir(g):
+def subdividir(g,fechado=False):
     # Finer sheet between the bones, as SuperficieTecido.subdividir.
     S=len(g)-1;n=len(g[0])-1;f=[]
     for r in range(S*SUB_LINHAS+1):
         r0=min(S-1,r//SUB_LINHAS);v=r/SUB_LINHAS-r0;linha=[]
         for c in range(n*SUB_COLUNAS+1):
             c0=min(n-1,c//SUB_COLUNAS);u=c/SUB_COLUNAS-c0
-            linha.append(_lerp(curva(g[r0],c0,u),curva(g[r0+1],c0,u),v))
+            linha.append(_lerp(curva(g[r0],c0,u,fechado),curva(g[r0+1],c0,u,fechado),v))
         f.append(linha)
     return f
 def casaco(posados,repouso,pernas=()):
-    S=SEGMENTOS;pecas=[p for p in ORDEM if all(osso(p,s) in posados and osso(p,s) in repouso for s in range(S))];out=[];n=len(pecas)
+    return faixa(['bk_capa_'+p for p in ORDEM],SEGMENTOS,posados,repouso,pernas,False,True)
+def anel(prefixo,segmentos,posados,repouso,pernas=()):
+    """Closed ring with a straight hem (Frieren), pieces ordered by rest angle, as SuperficieTecido.anel."""
+    pecas=sorted((math.atan2(*np.mean(v,axis=0)[[0,2]]),k[:-2]) for k,v in repouso.items() if k.startswith(prefixo) and k.endswith('_0'))
+    return faixa([p for _,p in pecas],segmentos,posados,repouso,pernas,True,False)
+def aberto(prefixo,segmentos,posados,repouso,pernas=()):
+    """Open robe (Asta), ordered by rest angle and cut at the widest gap (the front), as SuperficieTecido.aberto."""
+    pecas=sorted((math.atan2(*np.mean(v,axis=0)[[0,2]]),k[:-2]) for k,v in repouso.items() if k.startswith(prefixo) and k.endswith('_0'))
+    n=len(pecas)
+    if n<2:return []
+    gaps=[((pecas[i+1][0] if i+1<n else pecas[0][0]+2*math.pi)-pecas[i][0],(i+1)%n) for i in range(n)];corte=max(gaps)[1]
+    return faixa([pecas[(corte+i)%n][1] for i in range(n)],segmentos,posados,repouso,pernas,False,False)
+def faixa(ordem,S,posados,repouso,pernas,fechado,rasgado):
+    pecas=[p for p in ordem if all(f'{p}_{s}' in posados and f'{p}_{s}' in repouso for s in range(S))];out=[];n=len(pecas)
     if n<2:return out
-    d=direcao(repouso);meio=[];meioR=[]
+    d=direcao(repouso,pecas);meio=[];meioR=[]
     for p in pecas:
         linha=[];linhaR=[]
         for s in range(S):
-            o=osso(p,s);idx=rotular(repouso[o],d);v=np.asarray(posados[o],float);vr=np.asarray(repouso[o],float)
+            o=f'{p}_{s}';idx=rotular(repouso[o],d);v=np.asarray(posados[o],float);vr=np.asarray(repouso[o],float)
             linha.append([v[ix].mean(0) if len(ix) else v[0] for ix in idx]);linhaR.append([vr[ix].mean(0) if len(ix) else vr[0] for ix in idx])
         meio.append(linha);meioR.append(linhaR)
-    g=grade(meio,S,n);suavizar(g,grade(meioR,S,n))
-    g=subdividir(g);S=len(g)-1;n=len(g[0])-1
+    g=grade(meio,S,n,fechado);suavizar(g,grade(meioR,S,n,fechado),fechado)
+    g=subdividir(g,fechado);S=len(g)-1;n=len(g[0])-1
     g=[[colidir(q,pernas) for q in linha] for linha in g]
+    if fechado:
+        for linha in g:linha[n]=linha[0]
     for r in range(S):
         for c in range(n):out+=[(g[r][c],g[r][c+1],g[r+1][c+1],PRETO),(g[r][c],g[r+1][c+1],g[r+1][c],PRETO)]
+    if not rasgado:return out
     for c in range(n):
         a,b=g[S][c],g[S][c+1];da,db=a-g[S-1][c],b-g[S-1][c+1]
         l1,l2,l3=dente(c,0)*SUB_LINHAS,dente(c,1)*SUB_LINHAS,dente(c,2)*.35*SUB_LINHAS

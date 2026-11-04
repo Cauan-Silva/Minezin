@@ -17,7 +17,7 @@ import java.util.*;
 
 @Mod.EventBusSubscriber(modid="arcanecontrol",value=Dist.CLIENT)
 public final class TecidoGojoCliente {
-    private static final class Estado{final TecidoGojo tecido=new TecidoGojo();Object mundo;Vec3 pos;float yaw;int entidade;}
+    private static final class Estado{final TecidoGojo tecido=new TecidoGojo(com.cauansilva.arcanecontrol.core.client.tecido.PerfilTecido.de("gojo"));Object mundo;Vec3 pos;float yaw;int entidade;}
     private static final Map<UUID,Estado> ESTADOS=new HashMap<>();
     private static final TecidoGojo.Pose ZERO=new TecidoGojo.Pose(0,0,0);
     public static TecidoGojo.Pose pose(UUID id,String osso,float parcial){var e=ESTADOS.get(id);return e==null||!ConfigCliente.TECIDO_GOJO.get()?ZERO:e.tecido.pose(osso,parcial);}

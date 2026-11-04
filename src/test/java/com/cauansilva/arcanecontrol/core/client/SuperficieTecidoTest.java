@@ -56,4 +56,18 @@ class SuperficieTecidoTest {
         assertTrue(SuperficieTecido.pontoGola(0,1,0)[2]>SuperficieTecido.pontoGola(0,0,0)[2],"abre para fora");
         assertTrue(g.stream().anyMatch(x->x.material()==SuperficieTecido.ROXO)&&g.stream().anyMatch(x->x.material()==SuperficieTecido.OURO));
     }
+    /** Frieren's skirt is one closed ring: every piece stitched to its neighbours, the last one back to the first. */
+    @Test void saiaDaFrierenEhUmAnelFechado()throws Exception{
+        var geo=JsonParser.parseString(Files.readString(Path.of("src/main/resources/assets/arcanecontrol/geo/armaduras/frieren.geo.json"))).getAsJsonObject().getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();
+        var cantos=new HashMap<String,double[][]>();int pecas=0;
+        for(var e:geo.getAsJsonArray("bones")){var b=e.getAsJsonObject();var n=b.get("name").getAsString();if(!n.startsWith("frieren_saia_"))continue;if(n.endsWith("_0"))pecas++;
+            var c=b.getAsJsonArray("cubes").get(0).getAsJsonObject();var o=c.getAsJsonArray("origin");var s=c.getAsJsonArray("size");var v=new double[8][];
+            for(int i=0;i<8;i++)v[i]=new double[]{o.get(0).getAsDouble()+s.get(0).getAsDouble()*(i&1),o.get(1).getAsDouble()+s.get(1).getAsDouble()*((i>>1)&1),o.get(2).getAsDouble()+s.get(2).getAsDouble()*((i>>2)&1)};
+            cantos.put(n,v);}
+        var t=SuperficieTecido.anel("frieren_saia_",com.cauansilva.arcanecontrol.core.client.tecido.TecidoFrieren.LINHAS_SAIA,cantos,cantos,List.of());
+        int R=com.cauansilva.arcanecontrol.core.client.tecido.TecidoFrieren.LINHAS_SAIA*SuperficieTecido.SUB_LINHAS,N=pecas*SuperficieTecido.SUB_COLUNAS;
+        assertEquals(R*N*2,t.size(),"sem barra rasgada: so a grade");
+        var pts=new HashSet<String>();for(var x:t)for(var p:new double[][]{x.a(),x.b(),x.c()})pts.add(Math.round(p[0]*1e4)+","+Math.round(p[1]*1e4)+","+Math.round(p[2]*1e4));
+        assertEquals((R+1)*N,pts.size(),"anel fechado: a ultima coluna e a primeira");
+    }
 }

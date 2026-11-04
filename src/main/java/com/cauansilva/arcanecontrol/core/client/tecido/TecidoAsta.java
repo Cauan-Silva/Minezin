@@ -18,8 +18,13 @@ public final class TecidoAsta {
         OSSOS=List.copyOf(nomes);
     }
     private static final MolaMantoCid.Pose ZERO=new MolaMantoCid.Pose(0,0,0);
-    private final MalhaTecido costas=new MalhaTecido(COLUNAS_COSTAS,SEGMENTOS+1,3.2/16,2.8/16);
-    private final MolaMantoCid esquerda=new MolaMantoCid(1.15),direita=new MolaMantoCid(1.0);
+    private final MalhaTecido costas;
+    private final MolaMantoCid esquerda,direita;
+    public TecidoAsta(){this(PerfilTecido.PADRAO);}
+    public TecidoAsta(PerfilTecido perfil){
+        costas=new MalhaTecido(COLUNAS_COSTAS,SEGMENTOS+1,3.2/16,2.8/16,perfil);
+        esquerda=new MolaMantoCid(1.15*perfil.mola());direita=new MolaMantoCid(1.0*perfil.mola());
+    }
     private double tempo;
     public void reset(){costas.reset();esquerda.reset();direita.reset();tempo=0;}
     public void tick(MolaMantoCid.Entrada e){

@@ -17,7 +17,7 @@ import java.util.*;
  *  reset on teleport (Passo das Sombras); Cid's abilities push it through EfeitosCid.tecido. */
 @Mod.EventBusSubscriber(modid="arcanecontrol",value=Dist.CLIENT)
 public final class MantoCidCliente {
-    private static final class Estado{final TecidoIchigo tecido=new TecidoIchigo();Object mundo;Vec3 pos;float yaw;int entidade;double braco,forca;}
+    private static final class Estado{final TecidoIchigo tecido=new TecidoIchigo(com.cauansilva.arcanecontrol.core.client.tecido.PerfilTecido.de("shadow"));Object mundo;Vec3 pos;float yaw;int entidade;double braco,forca;}
     private static final Map<UUID,Estado> ESTADOS=new HashMap<>();
     private static final MolaMantoCid.Pose ZERO=new MolaMantoCid.Pose(0,0,0);
     public static MolaMantoCid.Pose pose(UUID id,String osso,float parcial){var e=ESTADOS.get(id);return e==null||!ConfigCliente.TECIDO_CID.get()?ZERO:e.tecido.pose(osso,parcial);}

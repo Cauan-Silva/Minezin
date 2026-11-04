@@ -11,6 +11,8 @@ public final class TecidoFrieren {
     private static final String[] FACES={"back","front","left","right"};
     private static final int[][] COLUNAS={{4,4,2,2},{3,3,2,2}};
     private static final int[] LINHAS={2,3};
+    /** Segments of the capelet and of the skirt (RenderTrajeFrieren stitches each into one smooth ring). */
+    public static final int LINHAS_CAPA=2,LINHAS_SAIA=3;
     private static final String[] PREFIXO={"capa","saia"};
     private static final Map<String,Indice> INDICES=new LinkedHashMap<>();
     public static final List<String> OSSOS;
@@ -21,9 +23,11 @@ public final class TecidoFrieren {
     }
     private static final Pose ZERO=new Pose(0,0,0);
     // Panel widths/heights in metres (model units / 16), matching the generated geometry.
-    private final MalhaTecido[][] malhas={
-        {new MalhaTecido(4,3,2.6/16,1.6/16),new MalhaTecido(4,3,3.2/16,1.6/16),new MalhaTecido(2,3,2.75/16,1.6/16),new MalhaTecido(2,3,2.75/16,1.6/16)},
-        {new MalhaTecido(3,4,3.07/16,1.5/16),new MalhaTecido(3,4,3.07/16,1.5/16),new MalhaTecido(2,4,2.5/16,1.5/16),new MalhaTecido(2,4,2.5/16,1.5/16)}};
+    private final MalhaTecido[][] malhas;
+    public TecidoFrieren(){this(PerfilTecido.PADRAO);}
+    public TecidoFrieren(PerfilTecido perfil){malhas=new MalhaTecido[][]{
+        {new MalhaTecido(4,3,2.6/16,1.6/16,perfil),new MalhaTecido(4,3,3.2/16,1.6/16,perfil),new MalhaTecido(2,3,2.75/16,1.6/16,perfil),new MalhaTecido(2,3,2.75/16,1.6/16,perfil)},
+        {new MalhaTecido(3,4,3.07/16,1.5/16,perfil),new MalhaTecido(3,4,3.07/16,1.5/16,perfil),new MalhaTecido(2,4,2.5/16,1.5/16,perfil),new MalhaTecido(2,4,2.5/16,1.5/16,perfil)}};}
     public void reset(){for(var g:malhas)for(var m:g)m.reset();}
     public void tick(Entrada e){
         if(!Double.isFinite(e.frente+e.lado+e.vertical+e.giro)){reset();return;}

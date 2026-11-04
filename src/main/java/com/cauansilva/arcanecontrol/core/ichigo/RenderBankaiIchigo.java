@@ -28,7 +28,7 @@ public final class RenderBankaiIchigo extends GeoArmorRenderer<TrajeAnime>{
         @Override public ResourceLocation getAnimationResource(TrajeAnime a){return id("animations/armaduras/"+estilo+".animation.json");}
     }
     private final Map<String,double[][]> cantos=new HashMap<>(),repouso=new HashMap<>();
-    private final List<SuperficieTecido.Caixa> pernas=new ArrayList<>();
+    private final List<SuperficieTecido.Obstaculo> pernas=new ArrayList<>();
     private float[] tecido;
     /** estilo: ichigo_bankai (coat) or ichigo_mugetsu (Mugetsu form); both use TecidoIchigo bones. */
     public RenderBankaiIchigo(String estilo){super(new Modelo(estilo));}
@@ -63,7 +63,7 @@ public final class RenderBankaiIchigo extends GeoArmorRenderer<TrajeAnime>{
         cantos.clear();pernas.clear();
         super.actuallyRender(pose,item,model,type,buffer,consumer,reRender,parcial,luz,overlay,red,green,blue,alpha);
         if(consumer==null||tecido==null||cantos.isEmpty())return;
-        for(var t:SuperficieTecido.casaco(cantos,repouso,pernas)){
+        for(var t:SuperficieTecido.casaco(cantos,repouso,com.cauansilva.arcanecontrol.core.client.tecido.ColisaoCenario.com(pernas,getCurrentEntity()))){
             // One triangle as a degenerate quad (entity render types take quads); points are already posed.
             double[] n=SuperficieTecido.normal(t);
             for(var p:new double[][]{t.a(),t.b(),t.c(),t.c()})
