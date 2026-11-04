@@ -50,8 +50,9 @@ def render(output,video=None,backend=None,explosion=False,reference=False):
   if tipo==14:local_proj[0,0]=2/76;local_proj[1,1]=2/47.5
   local_view=view
   if tipo==14 and t>=90:
-   local_proj[0,0]=2/88;local_proj[1,1]=2/55
-   local_view=lookat(camera,np.array([0.,22.,0.])).astype('f4')
+   # Colossal pillar (dome radius, far above the build limit): wider framing.
+   local_proj[0,0]=2/300;local_proj[1,1]=2/188;local_proj[2,2]=-2/900
+   local_view=lookat(np.array([160.,60.,-200.]),np.array([0.,75.,0.])).astype('f4')
   program=base;program['ModelViewMat'].write(local_view.T.tobytes());program['ProjMat'].write(local_proj.T.tobytes());program['EffectMode'].value=8;program['EffectTime'].value=0;program['Viewer'].value=tuple(camera)
   b=ctx.buffer(np.array(grid,dtype='f4').tobytes());v=ctx.vertex_array(program,[(b,'3f 4f 2f','Position','Color','UV0')]);v.render(moderngl.LINES);v.release();b.release()
   verts=mesh('shadow','cid_frame'+str(frame%220));verts[:,:3]/=16
@@ -74,7 +75,7 @@ def render(output,video=None,backend=None,explosion=False,reference=False):
  if video:
   import av
   container=av.open(str(video),'w');stream=container.add_stream('libx264',rate=20);stream.width=w if explosion or reference else w*2;stream.height=h+32 if explosion or reference else h*2+32;stream.pix_fmt='yuv420p';stream.options={'crf':'20'}
-  for frame in range(780 if reference else 160 if explosion else 140):
+  for frame in range(540 if reference else 160 if explosion else 140):
    if reference:
     tick=visual_time(frame);screen=Image.new('RGB',(w,h+32),(10,14,20));screen.paste(draw(14,tick,0),(0,0));bottom=h
     title='I AM' if 78<=tick<86 else 'ATOMIC' if 86<=tick<88 else ''

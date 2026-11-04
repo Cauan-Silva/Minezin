@@ -17,7 +17,7 @@ class RegrasRpgTest {
     @Test void mestriaTemCemNiveisEscalaLimitadaENaoEstouraInteiros(){
         var m=new MestriaRpg();assertEquals(1,m.nivel());assertEquals(0,m.vidaAdicional());
         assertEquals(99,m.ganharXp(Integer.MAX_VALUE));assertEquals(100,m.nivel());assertEquals(9900,m.xp());
-        assertEquals(198,m.vidaAdicional());assertEquals(2.485,m.multiplicadorMagico(),1e-9);assertEquals(.505,m.multiplicadorRecarga(),1e-9);
+        assertEquals(198,m.vidaAdicional());assertEquals(1.7425,m.multiplicadorMagico(),1e-9);assertEquals(.703,m.multiplicadorRecarga(),1e-9);
         assertEquals(0,m.ganharXp(-10));assertEquals(99,m.pontos());
     }
     @Test void despertarExigeArvoreNivelEAlmaDoMesmoKit(){

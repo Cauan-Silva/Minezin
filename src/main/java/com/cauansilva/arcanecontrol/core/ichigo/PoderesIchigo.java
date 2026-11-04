@@ -142,7 +142,7 @@ public final class PoderesIchigo {
             for(var v:g.mundo.getEntitiesOfClass(LivingEntity.class,new AABB(g.anterior,fim).inflate(raio),v->v!=p&&v.isAlive()&&!v.isAlliedTo(p))){
                 if(g.atingidos.size()>=64)break;
                 if(!g.atingidos.contains(v.getUUID())&&(v.getBoundingBox().inflate(raio).contains(g.anterior)||v.getBoundingBox().inflate(raio).clip(g.anterior,fim).isPresent())&&p.hasLineOfSight(v)){
-                    g.atingidos.add(v.getUUID());v.hurt(g.mundo.damageSources().indirectMagic(p,p),g.bankai?(g.slot==2?28:18):14);fx(p,521,v.getEyePosition(),Vec3.ZERO,10);
+                    g.atingidos.add(v.getUUID());v.hurt(g.mundo.damageSources().indirectMagic(p,p),g.bankai?(g.slot==2?22:14):12);fx(p,521,v.getEyePosition(),Vec3.ZERO,10);
                 }
             }
             g.anterior=fim;
@@ -151,7 +151,7 @@ public final class PoderesIchigo {
     }
     private static List<LivingEntity> alvos(ServerPlayer p,Vec3 c,double r){return p.serverLevel().getEntitiesOfClass(LivingEntity.class,new AABB(c,c).inflate(r),v->v!=p&&v.isAlive()&&!v.isAlliedTo(p)&&v.distanceToSqr(c)<=r*r).stream().limit(64).toList();}
     @SubscribeEvent public static void dano(LivingHurtEvent e){
-        if(e.getSource().getEntity() instanceof ServerPlayer p&&e.getEntity()!=p&&ProgressaoPoderes.ler(p).ativo()==KIT&&DespertaresServidor.ativo(p)&&RpgServidor.dados(p).getLong("ichigo_mascara")>RpgServidor.agora(p))e.setAmount(e.getAmount()*1.5f);
+        if(e.getSource().getEntity() instanceof ServerPlayer p&&e.getEntity()!=p&&ProgressaoPoderes.ler(p).ativo()==KIT&&DespertaresServidor.ativo(p)&&RpgServidor.dados(p).getLong("ichigo_mascara")>RpgServidor.agora(p))e.setAmount(e.getAmount()*1.3f);
     }
     @SubscribeEvent public static void observar(PlayerEvent.StartTracking e){
         if(e.getEntity() instanceof ServerPlayer observador&&e.getTarget() instanceof ServerPlayer p&&DespertaresServidor.ativo(p)&&ProgressaoPoderes.ler(p).ativo()==KIT){

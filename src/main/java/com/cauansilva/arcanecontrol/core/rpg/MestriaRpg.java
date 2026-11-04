@@ -29,9 +29,9 @@ public final class MestriaRpg {
     public boolean despertarLiberado(){return despertar;}
     public boolean podeUsarSlot(int slot){return switch(slot){case 0->true;case 1->tem(NoRpg.TECNICA_X);case 2->tem(NoRpg.TECNICA_C);case 3->tem(NoRpg.TECNICA_V);case 4->despertar;default->false;};}
     public double vidaAdicional(){return (nivel()-1)*2.0;}
-    public double multiplicadorFisico(){return 1+(nivel()-1)*.015+(tem(NoRpg.DANO_FISICO)?.10:0);}
-    public double multiplicadorMagico(){return 1+(nivel()-1)*.015+(tem(NoRpg.DANO_MAGICO)?.10:0);}
-    public double multiplicadorRecarga(){return 1-(nivel()-1)*.005;}
+    public double multiplicadorFisico(){return 1+(nivel()-1)*.0075+(tem(NoRpg.DANO_FISICO)?.10:0);}
+    public double multiplicadorMagico(){return 1+(nivel()-1)*.0075+(tem(NoRpg.DANO_MAGICO)?.10:0);}
+    public double multiplicadorRecarga(){return 1-(nivel()-1)*.003;}
     public double multiplicadorRegeneracao(){return tem(NoRpg.REGENERACAO_MANA)?1.25:1;}
     public double velocidadeAdicional(){return tem(NoRpg.MOVIMENTO)?.10:0;}
     /** Perfil administrativo completo, sem alterar os requisitos da progressão survival. */

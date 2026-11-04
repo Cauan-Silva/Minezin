@@ -9,13 +9,15 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-/** The reference's two-word cadence. Local cinematic only, never another player's HUD. */
+/** The reference's two-word cadence, shown to the caster and to everyone inside the Atomic's range (user). */
 @Mod.EventBusSubscriber(modid="arcanecontrol",value=Dist.CLIENT)
 public final class LetreiroAtomic {
+    /** The dome plus a margin, so whoever stands at its edge also reads it. */
+    public static final double ALCANCE=com.cauansilva.arcanecontrol.core.vfx.ExplosaoAtomic.RAIO_DOMO+8;
     @SubscribeEvent public static void desenhar(RenderGuiOverlayEvent.Post event){
         var mc=Minecraft.getInstance();if(mc.level==null||mc.player==null||mc.options.hideGui||!ConfigCliente.CINEMATICAS.get()||!event.getOverlay().id().equals(VanillaGuiOverlay.HOTBAR.id()))return;
-        var visual=EfeitosCid.atomicVisual(mc.getFrameTime());if(visual==null||!visual.local())return;
-        String texto=RelogioAtomic.letreiro(visual.tick());if(texto.isEmpty())return;
+        double tick=EfeitosCid.atomicNoAlcance(mc.getFrameTime(),ALCANCE);if(tick<0)return;
+        String texto=RelogioAtomic.letreiro(tick);if(texto.isEmpty())return;
         var g=event.getGuiGraphics();var palavra=Component.literal(texto).withStyle(ChatFormatting.BOLD);
         int w=mc.getWindow().getGuiScaledWidth(),h=mc.getWindow().getGuiScaledHeight();
         float scale=(float)Math.min(w*.84/mc.font.width(palavra),h*(texto.equals("ATOMIC")?.22:.045)/mc.font.lineHeight);

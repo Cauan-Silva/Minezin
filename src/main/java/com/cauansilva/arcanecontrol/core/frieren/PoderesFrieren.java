@@ -23,7 +23,7 @@ import com.cauansilva.arcanecontrol.core.vfx.PerfilFrieren;
 public final class PoderesFrieren {
     private record Singularidade(ServerPlayer jogador,ServerLevel nivel,Vec3 centro,long inicio,boolean silencioso){}
     private static final List<Singularidade> ATIVOS=new ArrayList<>();
-    private static final int[] RECARGAS={80,240,200,500};
+    private static final int[] RECARGAS={70,200,160,500};
     private static void enviar(ServerPlayer p,int tipo,Vec3 origem,Vec3 alvo){
         RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->p),
                 new PacoteSincronizarCutscene3D(tipo,p.getUUID(),origem.x,origem.y,origem.z,alvo.x,alvo.y,alvo.z));
@@ -45,7 +45,7 @@ public final class PoderesFrieren {
             if(ATIVOS.stream().anyMatch(a->a.jogador==p))return;
             if(alvo.distanceToSqr(p.position())<9){p.displayClientMessage(net.minecraft.network.chat.Component.literal("Mire em uma área mais distante para formar a singularidade."),true);return;}
         }
-        if(!com.cauansilva.arcanecontrol.core.rpg.RpgServidor.conjurar(p,PoderAnime.FRIEREN,despertado?2:slot,RECARGAS[slot]))return;
+        if(!com.cauansilva.arcanecontrol.core.rpg.RpgServidor.conjurar(p,PoderAnime.FRIEREN,despertado?2:slot,despertado?400:RECARGAS[slot]))return;
         if(slot==0){
             Vec3 fim=alvo;
             var hit=ProjectileUtil.getEntityHitResult(p,origem,fim,p.getBoundingBox().expandTowards(fim.subtract(origem)).inflate(1),
@@ -63,7 +63,7 @@ public final class PoderesFrieren {
             }
             enviar(p,21,origemVisual,alvo);
         } else if(slot==1){
-            tag.putLong("fri_barreira_ate",agora+80);tag.putFloat("fri_barreira_reserva",30);
+            tag.putLong("fri_barreira_ate",agora+80);tag.putFloat("fri_barreira_reserva",40);
             enviar(p,22,p.position(),dir);
         } else if(slot==2){
             p.setDeltaMovement(dir.x*.9,Math.max(.7,dir.y*.9+.4),dir.z*.9);p.hurtMarked=true;
@@ -82,7 +82,7 @@ public final class PoderesFrieren {
         if(!(e.getEntity() instanceof ServerPlayer p)||e.getSource().getEntity()==null)return;
         var t=ProgressaoPoderes.tag(p);
         if(t.getLong("fri_barreira_ate")<=ProgressaoPoderes.agora(p))return;
-        float reserva=t.getFloat("fri_barreira_reserva"),bloqueado=Math.min(reserva,e.getAmount()*.7f);
+        float reserva=t.getFloat("fri_barreira_reserva"),bloqueado=Math.min(reserva,e.getAmount()*.9f);
         if(bloqueado<=0)return;
         e.setAmount(e.getAmount()-bloqueado);reserva-=bloqueado;t.putFloat("fri_barreira_reserva",reserva);
         p.serverLevel().playSound(null,p.blockPosition(),SoundEvents.AMETHYST_BLOCK_HIT,SoundSource.PLAYERS,1,1.2f);

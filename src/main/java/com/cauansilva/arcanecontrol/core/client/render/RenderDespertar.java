@@ -89,7 +89,9 @@ public final class RenderDespertar {
             if(p.tipo()==41&&p.kit()==1&&RenderGojo.ativo()){RenderGojo.teleporte(pose,cam,p.a(),p.b(),t);continue;}
             if(p.tipo()==40&&p.kit()==1&&RenderGojo.ativo()){RenderGojo.chuvaInformacoes(pose,cam,p.a(),t);continue;}
             if(p.tipo()==32&&RenderGojo.ativo()){RenderGojo.roxoMaximo(pose,cam,p.a(),com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo.raio(t),t,(float)com.cauansilva.arcanecontrol.core.vfx.RoxoMaximoGojo.alpha(t));continue;}
-            pose.pushPose();pose.translate(p.a().x-cam.x,p.a().y-cam.y,p.a().z-cam.z);
+            // Frieren's awakened shield (39) follows her, like the server-side protection (balance 3.11).
+            var origem=p.a();var dona=p.tipo()==39?mc.level.getPlayerByUUID(p.dono()):null;if(dona!=null)origem=dona.getPosition(e.getPartialTick());
+            pose.pushPose();pose.translate(origem.x-cam.x,origem.y-cam.y,origem.z-cam.z);
             DesenhoMagia.iniciar(agora);
             try{desenhar(pose,cam.subtract(p.a()),p,t,(float)Math.min(1,Math.min(t/3,(p.ticks()-t)/6)));}finally{pose.popPose();}
         }}finally{DesenhoMagia.terminar();}

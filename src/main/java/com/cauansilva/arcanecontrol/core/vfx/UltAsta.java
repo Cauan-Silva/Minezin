@@ -10,7 +10,7 @@ public final class UltAsta {
     public record P(double x,double y,double z){}
     public record Quadro(P camera,P alvo,double fov){}
     public static final int DURACAO=80,SAIDA_ESPADA=18,CORTES=6,PRIMEIRO=32,PASSO=4,FINAL=60,AVANCO=6;
-    public static final float DANO_CORTE=4,DANO_X=20;
+    public static final float DANO_CORTE=3,DANO_X=14;
     public static final double ALCANCE_X=7,RAIO_CORTE=2.6,ESPESSURA_CORTE=.35,RAIO_X=8,ARCO_X=.45,ESPESSURA_X=.6,ARCO=1.05,CURVA=.9;
     private static final double[] ROLAGEM={35,-35,80,-20,15,-60};
     // Tilt of each cut's plane away from facing the path (90 = horizontal): the blades wrap around the target in 3D.

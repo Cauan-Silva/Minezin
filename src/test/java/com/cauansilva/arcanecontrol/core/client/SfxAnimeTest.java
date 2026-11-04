@@ -29,7 +29,7 @@ class SfxAnimeTest {
     }
     @Test void cuesSaoSincronizadosComImpactosERegistrados()throws Exception{
         var names=json("/assets/arcanecontrol/sounds.json").keySet();
-        assertEquals(420,RoteiroAudio.atomic().get(1).atraso());assertEquals(18,RoteiroAudio.divider().get(1).atraso());assertEquals(0,RoteiroAudio.singularidade().get(0).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO,RoteiroAudio.atomic().get(1).atraso());assertEquals(18,RoteiroAudio.divider().get(1).atraso());assertEquals(0,RoteiroAudio.singularidade().get(0).atraso());
         // Black hole: formation until ABERTURA (70), pull until COLAPSO (220); Judradjim thunder on the damage tick (25).
         assertEquals(com.cauansilva.arcanecontrol.core.vfx.PerfilFrieren.ABERTURA,RoteiroAudio.singularidade().get(1).atraso());assertEquals(com.cauansilva.arcanecontrol.core.vfx.PerfilFrieren.COLAPSO,RoteiroAudio.singularidade().get(2).atraso());
         assertEquals(com.cauansilva.arcanecontrol.core.vfx.FormaFrieren.QUEDA,RoteiroAudio.julgamento().get(1).atraso());
