@@ -221,6 +221,14 @@
       {
         "name": "arcanecontrol:anime/ichigo_getsuga",
         "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_getsuga_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_getsuga_3",
+        "attenuation_distance": 48
       }
     ]
   },
@@ -229,6 +237,14 @@
     "sounds": [
       {
         "name": "arcanecontrol:anime/ichigo_getsuga_bankai",
+        "attenuation_distance": 56
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_getsuga_bankai_2",
+        "attenuation_distance": 56
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_getsuga_bankai_3",
         "attenuation_distance": 56
       }
     ]
@@ -239,6 +255,14 @@
       {
         "name": "arcanecontrol:anime/ichigo_shunpo",
         "attenuation_distance": 20
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_shunpo_2",
+        "attenuation_distance": 20
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_shunpo_3",
+        "attenuation_distance": 20
       }
     ]
   },
@@ -247,7 +271,15 @@
     "sounds": [
       {
         "name": "arcanecontrol:anime/ichigo_golpe_pesado",
-        "attenuation_distance": 40
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_golpe_pesado_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_golpe_pesado_3",
+        "attenuation_distance": 48
       }
     ]
   },
@@ -257,15 +289,14 @@
       {
         "name": "arcanecontrol:anime/ichigo_corte_ascendente",
         "attenuation_distance": 32
-      }
-    ]
-  },
-  "ichigo_bankai": {
-    "subtitle": "subtitles.arcanecontrol.ichigo_bankai",
-    "sounds": [
+      },
       {
-        "name": "arcanecontrol:anime/ichigo_bankai",
-        "attenuation_distance": 64
+        "name": "arcanecontrol:anime/ichigo_corte_ascendente_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_corte_ascendente_3",
+        "attenuation_distance": 32
       }
     ]
   },
@@ -275,15 +306,14 @@
       {
         "name": "arcanecontrol:anime/ichigo_mascara",
         "attenuation_distance": 32
-      }
-    ]
-  },
-  "ichigo_mugetsu": {
-    "subtitle": "subtitles.arcanecontrol.ichigo_mugetsu",
-    "sounds": [
+      },
       {
-        "name": "arcanecontrol:anime/ichigo_mugetsu",
-        "attenuation_distance": 64
+        "name": "arcanecontrol:anime/ichigo_mascara_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_mascara_3",
+        "attenuation_distance": 32
       }
     ]
   },
@@ -912,6 +942,193 @@
       },
       {
         "name": "arcanecontrol:anime/cid_atomic_explosao_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "ichigo_preparo": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_preparo",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_preparo",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_preparo_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_preparo_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ichigo_preparo_pesado": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_preparo_pesado",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_preparo_pesado",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_preparo_pesado_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_preparo_pesado_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ichigo_investida": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_investida",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_investida",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_investida_2",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_investida_3",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "ichigo_jujisho": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_jujisho",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_jujisho",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_jujisho_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_jujisho_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "ichigo_acerto": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_acerto",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_acerto",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_acerto_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_acerto_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ichigo_lancamento": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_lancamento",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_lancamento",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_lancamento_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_lancamento_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "ichigo_bankai_pressao": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_bankai_pressao",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_pressao",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_pressao_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_pressao_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ichigo_bankai_grito": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_bankai_grito",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_grito",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_grito_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_grito_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "ichigo_bankai_revela": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_bankai_revela",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_revela",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_revela_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_bankai_revela_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "ichigo_mugetsu_forma": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_mugetsu_forma",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_mugetsu_forma",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_mugetsu_forma_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_mugetsu_forma_3",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "ichigo_mugetsu_corte": {
+    "subtitle": "subtitles.arcanecontrol.ichigo_mugetsu_corte",
+    "sounds": [
+      {
+        "name": "arcanecontrol:anime/ichigo_mugetsu_corte",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_mugetsu_corte_2",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "arcanecontrol:anime/ichigo_mugetsu_corte_3",
         "attenuation_distance": 64
       }
     ]

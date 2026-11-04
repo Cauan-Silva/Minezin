@@ -54,6 +54,22 @@ public final class RoteiroAudio {
     }
     /** Blade rain (MovesetsServidor case 34): blades rise, then one falls every 4 ticks from tick 24 to the end (64). */
     public static List<Cue> chuvaCid(){var l=new java.util.ArrayList<Cue>();l.add(new Cue("cid_chuva",0,24,.85f,false));for(int t=24;t<64;t+=4)l.add(new Cue("cid_lamina_queda",t,11,.8f,false));return List.copyOf(l);}
+    /** Ichigo (tools/build_ichigo_sfx.py): wind-ups on the cast packets (500+slot base, 510+slot Bankai, 512 Jujisho
+     *  with the mask), releases on the packets the server sends on each impact tick. Null when it has no sound. */
+    public static List<Cue> ichigo(int tipo){
+        String n=switch(tipo){
+            case 500,510->"ichigo_preparo";case 502,512->"ichigo_preparo_pesado";case 503,513->"ichigo_investida";case 501,511->"ichigo_shunpo";
+            case 520->"ichigo_getsuga";case 524->"ichigo_getsuga_bankai";case 523->"ichigo_jujisho";case 521->"ichigo_acerto";
+            case 525->"ichigo_golpe_pesado";case 526->"ichigo_corte_ascendente";case 527->"ichigo_lancamento";case 522->"ichigo_mascara";
+            default->null;};
+        if(n==null)return null;
+        int vida=switch(tipo){case 520,524,521->30;case 523->36;case 525->32;case 522->28;case 527->16;default->14;};
+        return List.of(new Cue(n,0,vida,.85f,tipo>=500&&tipo<=513));
+    }
+    /** Bankai release (EntradaBankai): pressure until the shout (GRITO), the coat reveal on REVELA. */
+    public static List<Cue> bankai(){return List.of(new Cue("ichigo_bankai_pressao",0,EntradaBankai.GRITO,.8f,true),new Cue("ichigo_bankai_grito",EntradaBankai.GRITO,EntradaBankai.REVELA-EntradaBankai.GRITO+1,1f,false),new Cue("ichigo_bankai_revela",EntradaBankai.REVELA,32,.9f,false));}
+    /** Mugetsu: darkness gathers until the cut (GOLPE), then the line and the boom. */
+    public static List<Cue> mugetsu(){return List.of(new Cue("ichigo_mugetsu_forma",0,MugetsuIchigo.GOLPE,.85f,false),new Cue("ichigo_mugetsu_corte",MugetsuIchigo.GOLPE,80,1f,false));}
     /** Devil Union: the heartbeat until the release on FORMA_IMPACTO, then the roar. */
     public static List<Cue> formaAsta(){return List.of(new Cue("asta_forma_carga",0,PerfilCinematico.FORMA_IMPACTO,.85f,true),new Cue("asta_forma_rugido",PerfilCinematico.FORMA_IMPACTO,44,1f,false));}
 }

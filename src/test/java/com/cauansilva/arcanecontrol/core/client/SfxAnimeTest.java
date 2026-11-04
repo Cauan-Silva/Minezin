@@ -60,6 +60,15 @@ class SfxAnimeTest {
         for(int t:new int[]{11,12,13,16,17,31,34,35})for(var c:RoteiroAudio.cid(t))assertTrue(names.contains(c.nome()),c.nome());
         for(var c:a)assertTrue(names.contains(c.nome()));
     }
+    /** Ichigo: Bankai shout/reveal and the Mugetsu cut on their VFX ticks; every effect with sound is registered. */
+    @Test void sonsDoIchigoNosTicksDoVfx()throws Exception{
+        var names=json("/assets/arcanecontrol/sounds.json").keySet();
+        var b=RoteiroAudio.bankai();assertEquals(com.cauansilva.arcanecontrol.core.vfx.EntradaBankai.GRITO,b.get(1).atraso());assertEquals(com.cauansilva.arcanecontrol.core.vfx.EntradaBankai.REVELA,b.get(2).atraso());
+        assertEquals(com.cauansilva.arcanecontrol.core.vfx.MugetsuIchigo.GOLPE,RoteiroAudio.mugetsu().get(1).atraso());
+        for(int t:new int[]{500,501,502,503,510,511,512,513,520,521,522,523,524,525,526,527})for(var c:RoteiroAudio.ichigo(t))assertTrue(names.contains(c.nome()),c.nome());
+        for(var c:b)assertTrue(names.contains(c.nome()));for(var c:RoteiroAudio.mugetsu())assertTrue(names.contains(c.nome()));
+        assertNull(RoteiroAudio.ichigo(530));
+    }
     @Test void laminaTemOssoIndependenteDaGuarda(){
         assertDoesNotThrow(()->{
             var geo=json("/assets/arcanecontrol/geo/asta/matadora.geo.json").getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject();

@@ -65,9 +65,7 @@
   "subtitles.arcanecontrol.ichigo_shunpo": "Flash step",
   "subtitles.arcanecontrol.ichigo_golpe_pesado": "Heavy blow cracks the ground",
   "subtitles.arcanecontrol.ichigo_corte_ascendente": "Rising slash",
-  "subtitles.arcanecontrol.ichigo_bankai": "Bankai is released",
   "subtitles.arcanecontrol.ichigo_mascara": "Hollow mask forms",
-  "subtitles.arcanecontrol.ichigo_mugetsu": "Mugetsu: darkness swallows everything",
   "subtitles.arcanecontrol.gojo_azul": "Blue pulls everything in",
   "subtitles.arcanecontrol.gojo_vermelho_carga": "Red gathers at the fingertip",
   "subtitles.arcanecontrol.gojo_vermelho_disparo": "Red blasts forward",
@@ -104,5 +102,16 @@
   "subtitles.arcanecontrol.cid_lamina_queda": "Blade falls from the sky",
   "subtitles.arcanecontrol.cid_singularidade": "Slime singularity",
   "subtitles.arcanecontrol.cid_atomic_carga": "Atomic energy gathers",
-  "subtitles.arcanecontrol.cid_atomic_explosao": "I Am Atomic"
+  "subtitles.arcanecontrol.cid_atomic_explosao": "I Am Atomic",
+  "subtitles.arcanecontrol.ichigo_preparo": "Ichigo raises Zangetsu",
+  "subtitles.arcanecontrol.ichigo_preparo_pesado": "Reiatsu gathers on the blade",
+  "subtitles.arcanecontrol.ichigo_investida": "Ichigo lunges",
+  "subtitles.arcanecontrol.ichigo_jujisho": "Getsuga Jujisho",
+  "subtitles.arcanecontrol.ichigo_acerto": "Getsuga hits",
+  "subtitles.arcanecontrol.ichigo_lancamento": "The target is launched up",
+  "subtitles.arcanecontrol.ichigo_bankai_pressao": "Spiritual pressure rises",
+  "subtitles.arcanecontrol.ichigo_bankai_grito": "Bankai!",
+  "subtitles.arcanecontrol.ichigo_bankai_revela": "Tensa Zangetsu is revealed",
+  "subtitles.arcanecontrol.ichigo_mugetsu_forma": "Mugetsu darkness gathers",
+  "subtitles.arcanecontrol.ichigo_mugetsu_corte": "Mugetsu"
 }

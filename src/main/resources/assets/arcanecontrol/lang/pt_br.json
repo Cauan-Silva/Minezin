@@ -65,9 +65,7 @@
   "subtitles.arcanecontrol.ichigo_shunpo": "Passo flash",
   "subtitles.arcanecontrol.ichigo_golpe_pesado": "Golpe pesado racha o chão",
   "subtitles.arcanecontrol.ichigo_corte_ascendente": "Corte ascendente",
-  "subtitles.arcanecontrol.ichigo_bankai": "Bankai é liberado",
   "subtitles.arcanecontrol.ichigo_mascara": "Máscara Hollow se forma",
-  "subtitles.arcanecontrol.ichigo_mugetsu": "Mugetsu: as trevas engolem tudo",
   "subtitles.arcanecontrol.gojo_azul": "Azul puxa tudo para o centro",
   "subtitles.arcanecontrol.gojo_vermelho_carga": "Vermelho se concentra na ponta do dedo",
   "subtitles.arcanecontrol.gojo_vermelho_disparo": "Vermelho explode para frente",
@@ -104,5 +102,16 @@
   "subtitles.arcanecontrol.cid_lamina_queda": "Lâmina cai do céu",
   "subtitles.arcanecontrol.cid_singularidade": "Singularidade de slime",
   "subtitles.arcanecontrol.cid_atomic_carga": "Energia Atomic se concentra",
-  "subtitles.arcanecontrol.cid_atomic_explosao": "I Am Atomic"
+  "subtitles.arcanecontrol.cid_atomic_explosao": "I Am Atomic",
+  "subtitles.arcanecontrol.ichigo_preparo": "Ichigo ergue a Zangetsu",
+  "subtitles.arcanecontrol.ichigo_preparo_pesado": "Reiatsu se acumula na lâmina",
+  "subtitles.arcanecontrol.ichigo_investida": "Ichigo avança",
+  "subtitles.arcanecontrol.ichigo_jujisho": "Getsuga Jūjishō",
+  "subtitles.arcanecontrol.ichigo_acerto": "Getsuga acerta",
+  "subtitles.arcanecontrol.ichigo_lancamento": "O alvo é lançado para o alto",
+  "subtitles.arcanecontrol.ichigo_bankai_pressao": "A pressão espiritual cresce",
+  "subtitles.arcanecontrol.ichigo_bankai_grito": "Bankai!",
+  "subtitles.arcanecontrol.ichigo_bankai_revela": "Tensa Zangetsu é revelada",
+  "subtitles.arcanecontrol.ichigo_mugetsu_forma": "As trevas do Mugetsu se reúnem",
+  "subtitles.arcanecontrol.ichigo_mugetsu_corte": "Mugetsu"
 }
