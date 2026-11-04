@@ -58,6 +58,10 @@ public class GerenciadorMagiasGojo {
         executarEfeito(player,idMagia);
         if(!desligando)com.cauansilva.arcanecontrol.core.rpg.RpgServidor.uso(player,com.cauansilva.arcanecontrol.core.poderes.PoderAnime.GOJO);
     }
+    /** Gojo's own SFX (tools/build_gojo_sfx.py), played by the server on the tick of the event they belong to. */
+    private static void som(ServerLevel level,ServerPlayer player,String nome,float volume){
+        level.playSound(null,player.getX(),player.getY(),player.getZ(),com.cauansilva.arcanecontrol.core.audio.RegistroSons.obter(nome),SoundSource.PLAYERS,volume,1f);
+    }
     public static void executarEfeito(ServerPlayer player,int idMagia){
         ServerLevel level = player.serverLevel();
         Vec3 olho = player.getEyePosition();
@@ -110,7 +114,7 @@ public class GerenciadorMagiasGojo {
     /** Balance 3.11 (docs/balanceamento-3.11.md). */
     public static final float DANO_AZUL=4,DANO_VERMELHO=14,DANO_ROXO=30;public static final int ACERTOS_AZUL=5;
     private static void iniciarAzul(ServerPlayer player, ServerLevel level) {
-        level.playSound(null, player.blockPosition(), SoundEvents.BEACON_ACTIVATE, SoundSource.PLAYERS, 1.5f, 1.6f);
+        som(level,player,"gojo_azul",1.4f);
 
         ANIMACOES.add(new AnimacaoAtiva(PerfilVfxGojo.duracao(1)) {
             // Balance 3.11: at most ACERTOS_AZUL hits per target per cast.
@@ -144,7 +148,7 @@ public class GerenciadorMagiasGojo {
     // 2. TÉCNICA VERMELHO (AKA) - Esfera 3D + Onda de Choque Repulsora (28 ticks)
     // =========================================================================
     private static void iniciarVermelho(ServerPlayer player, ServerLevel level) {
-        level.playSound(null, player.blockPosition(), SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.PLAYERS, 1.5f, 1.9f);
+        som(level,player,"gojo_vermelho_carga",1.2f);
 
         ANIMACOES.add(new AnimacaoAtiva(PerfilVfxGojo.duracao(2)) {
             @Override
@@ -157,8 +161,7 @@ public class GerenciadorMagiasGojo {
                 if (tickAtual == PerfilVfxGojo.VERMELHO_DISPARO) {
                     RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
                             new PacoteSincronizarCutscene3D(7,player.getUUID(),olho.x,olho.y,olho.z,dir.x,dir.y,dir.z));
-                    level.playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 2.0f, 0.7f);
-                    level.playSound(null, player.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 1.8f, 1.2f);
+                    som(level,player,"gojo_vermelho_disparo",2.0f);
                     level.sendParticles(ParticleTypes.FLASH, pontoDedo.x, pontoDedo.y, pontoDedo.z, 2, 0, 0, 0, 0);
 
                     for (int dist = 2; dist <= 22; dist += 2) {
@@ -187,10 +190,10 @@ public class GerenciadorMagiasGojo {
         UUID id = player.getUUID();
         if (INFINITO_ATIVO.contains(id)) {
             INFINITO_ATIVO.remove(id);
-            level.playSound(null, player.blockPosition(), SoundEvents.BEACON_DEACTIVATE, SoundSource.PLAYERS, 1.0f, 1.5f);
+            som(level,player,"gojo_infinito_desativa",1.0f);
         } else {
             INFINITO_ATIVO.add(id);
-            level.playSound(null, player.blockPosition(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 1.5f, 1.8f);
+            som(level,player,"gojo_infinito_ativa",1.2f);
         }
         sincronizarInfinito(player);
     }
@@ -214,7 +217,7 @@ public class GerenciadorMagiasGojo {
     // 4. ULTIMATE 1: VAZIO ROXO (MURASAKI) - Cutscene + Fusão 3D + Apagamento!
     // =========================================================================
     private static void iniciarVazioRoxo(ServerPlayer player, ServerLevel level) {
-        level.playSound(null, player.blockPosition(), SoundEvents.END_PORTAL_SPAWN, SoundSource.PLAYERS, 2.0f, 1.4f);
+        som(level,player,"gojo_roxo_carga",1.6f);
 
         // Levitação cinemática durante a Cutscene de fusão do Azul + Vermelho!
         player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 2, false, false));
@@ -241,8 +244,7 @@ public class GerenciadorMagiasGojo {
                         RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
                                 new PacoteSincronizarCutscene3D(6, player.getUUID(),
                                         olho.x, olho.y, olho.z, dir.x, dir.y, dir.z));
-                        level.playSound(null, player.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 3.0f, 0.5f);
-                        level.playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 3.0f, 0.5f);
+                        som(level,player,"gojo_roxo_disparo",3.0f);
                         level.sendParticles(ParticleTypes.FLASH, origemDisparo.x, origemDisparo.y, origemDisparo.z, 5, 0.2, 0.2, 0.2, 0);
                     }
                 } else {
@@ -283,8 +285,7 @@ public class GerenciadorMagiasGojo {
     // 5. ULTIMATE 2: EXPANSÃO DE DOMÍNIO - VAZIO INFINITO (MURYŌKŪSHO) (Tecla R)
     // =========================================================================
     private static void iniciarExpansaoDominio(ServerPlayer player, ServerLevel level) {
-        level.playSound(null, player.blockPosition(), SoundEvents.BEACON_POWER_SELECT, SoundSource.PLAYERS, 3.0f, 0.6f);
-        level.playSound(null, player.blockPosition(), SoundEvents.END_PORTAL_SPAWN, SoundSource.PLAYERS, 2.5f, 0.8f);
+        som(level,player,"gojo_dominio",3.0f);
         Vec3 centroDominio = player.position();
 
         ANIMACOES.add(new AnimacaoAtiva(PerfilVfxGojo.duracao(5)) {

@@ -13,6 +13,7 @@ public final class UltimatesTransformadas {
             if(p.tipo()==30)AudioAnime.programar(p.dono(),"gaiola",p.a(),RoteiroAudio.imediato("frieren_gaiola",p.ticks()));
             if(p.tipo()==38)AudioAnime.programar(p.dono(),"julgamento",p.a(),RoteiroAudio.julgamento());
         }
+        if(p.kit()==2){var sons=RoteiroAudio.cid(p.tipo());if(sons!=null)AudioAnime.programar(p.dono(),"cid_"+p.tipo(),p.tipo()==31?p.b():p.a(),sons);}
         var c=RoteiroUltimate.para(p.kit(),p.tipo(),p.ticks());if(c==null)return;
         if(p.kit()==1&&p.tipo()==32)GerenciadorCutscene3D.iniciarRoxoMaximo(p.dono(),p.a(),p.ticks());
         if(p.kit()==4&&p.tipo()==307)GerenciadorCutscene3D.iniciarUltAsta(p.dono(),p.a(),p.b(),p.ticks());

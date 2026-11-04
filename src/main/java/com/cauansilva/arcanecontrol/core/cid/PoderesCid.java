@@ -70,8 +70,7 @@ public final class PoderesCid {
         else FIOS.add(new Fios(p,p.serverLevel(),new ArrayList<>(),agora));
         RegistoRede.ENVIAR.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> p),
                 new PacoteSincronizarCutscene3D(id, p.getUUID(), origem.x, origem.y, origem.z, dir.x, dir.y, dir.z));
-        p.serverLevel().playSound(null, p.blockPosition(), slot == 3 ? SoundEvents.WARDEN_HEARTBEAT : SoundEvents.PLAYER_ATTACK_SWEEP,
-                SoundSource.PLAYERS, 1.2f, .65f);
+        // Sound: the client plays Cid's own cues on the VFX ticks (RoteiroAudio.cid / atomic).
         com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.registrarUso(p,
                 com.cauansilva.arcanecontrol.core.poderes.PoderAnime.CID,slot,slot==3?com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.OCUPADO:slot==1?12:slot==2?48:25);
     }
@@ -132,10 +131,7 @@ public final class PoderesCid {
                 it.remove();continue;
             }
             if(t<com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO)AtordoamentoAtomic.aplicar(a.jogador,a.centro);
-            if (t < com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO-40 && t % 30 == 0) {
-                a.nivel.playSound(null, a.jogador.blockPosition(), SoundEvents.WARDEN_HEARTBEAT,
-                        SoundSource.PLAYERS, 1.8f, (float)(.55 + com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.visual(t) / 130.0));
-            }
+            // The heartbeat is part of cid_atomic_carga now (client cue), not the warden sound.
             if (t == com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.IMPACTO) {
                 AtordoamentoAtomic.liberar(a.jogador.getUUID());
                 a.jogador.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,180,0,false,false));
@@ -157,7 +153,6 @@ public final class PoderesCid {
                         // No knockback (user): targets stay inside the pillar for its hits.
                     }
                 }
-                a.nivel.playSound(null, net.minecraft.core.BlockPos.containing(a.centro), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 3, .5f);
             }
             if (com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.tickDeDano(t)) {
                 // Pillar of light: repeated hits on everyone inside its radius (a vertical cylinder), no knockback.

@@ -70,11 +70,13 @@ public final class EfeitosAsta {
             return;
         }
         com.cauansilva.arcanecontrol.core.client.render.UltimatesTransformadas.receber(p);
-        if(p.tipo()==306)com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(p.dono(),"divider",p.a(),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.divider());
+        // Asta's own sounds on the VFX ticks (RoteiroAudio.asta); the awakening below.
+        var sons=com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.asta(p.tipo());
+        if(sons!=null)com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(p.dono(),"asta_"+p.tipo(),p.a(),sons);
         if(p.tipo()==309)ImpactosAnime.programar(p.dono(),p.a().add(0,.7,0),0,0xD5264C,.75,18,4);
         if(p.tipo()==200){
             EFEITOS.removeIf(e->e.p.dono().equals(p.dono())&&e.p.tipo()==200);
-            if(p.ticks()==1200){ImpactosAnime.programar(p.dono(),p.a().add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.FORMA_IMPACTO,0xD5264C,.85,24,4);AnimacoesGojo.tocarAsta(p.dono(),200);if(mc.player!=null&&p.dono().equals(mc.player.getUUID()))GerenciadorCutscene3D.iniciarCutsceneLocal(35,PerfilAsta.ABERTURA);}
+            if(p.ticks()==1200){com.cauansilva.arcanecontrol.core.client.AudioAnime.programar(p.dono(),"asta_forma",p.a(),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.formaAsta());ImpactosAnime.programar(p.dono(),p.a().add(0,1,0),com.cauansilva.arcanecontrol.core.vfx.PerfilCinematico.FORMA_IMPACTO,0xD5264C,.85,24,4);AnimacoesGojo.tocarAsta(p.dono(),200);if(mc.player!=null&&p.dono().equals(mc.player.getUUID()))GerenciadorCutscene3D.iniciarCutsceneLocal(35,PerfilAsta.ABERTURA);}
         }else if(p.tipo()>=300&&p.tipo()<=307)AnimacoesGojo.tocarAsta(p.dono(),p.tipo());
         if(EFEITOS.size()>=64)EFEITOS.remove(0);
         EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime(),new Vec3[UltAsta.CORTES+1]));

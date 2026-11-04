@@ -40,7 +40,7 @@ public final class PoderesAsta {
         if(!forma&&slot==3)RpgServidor.dados(p).putLong("asta_barreira",RpgServidor.agora(p)+PerfilAsta.BARREIRA);
         else GOLPES.add(new Golpe(p,p.serverLevel(),p.position(),dir,RpgServidor.agora(p),slot,forma,alvo,new HashSet<>()));
         EfeitosDespertar.enviar(p.serverLevel(),p.getUUID(),300+(forma?4:0)+slot,p.position(),dir,!forma&&slot==3?100:forma&&slot==3?UltAsta.DURACAO:32,4);
-        p.serverLevel().playSound(null,p.blockPosition(),SoundEvents.PLAYER_ATTACK_SWEEP,SoundSource.PLAYERS,1.3f,.55f);
+        // Sound: the client plays Asta's own cues on the VFX ticks (RoteiroAudio.asta).
         if(forma||slot!=3)ProgressaoPoderes.bloquear(p,forma&&slot==3?UltAsta.DURACAO:32);
         RpgServidor.uso(p,PoderAnime.ASTA);
     }

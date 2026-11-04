@@ -1,4 +1,4 @@
-"""Original procedural SFX. Tools only: numpy 2.5.4, soundfile 0.14.0. No sampled media."""
+"""Original procedural SFX (first set, now only Divider and the Gojo purple sounds; the rest moved to the build_*_sfx.py generators on sfx_motor). Tools only: numpy 2.5.4, soundfile 0.14.0. No sampled media."""
 from pathlib import Path
 import argparse,hashlib,json
 import numpy as np
@@ -7,10 +7,10 @@ import soundfile as sf
 ROOT=Path(__file__).resolve().parents[1]
 ASSETS=ROOT/'src/main/resources/assets/arcanecontrol'
 RATE=48000
-NAMES=['atomic_charge','atomic_release','divider_charge','divider_release','purple_charge','purple_release','frieren_cast','frieren_barrier','singularity_charge','singularity_collapse']
-DURATIONS=[21,18,.9,.9,1.5,1.6,.55,.6,3.5,2.5]
-PT=['Energia Atomic se concentra','Atomic detona','Lâmina de antimagia se estende','Black Divider corta','Azul e Vermelho convergem','Vazio Roxo dispara','Zoltraak dispara','Barreira mágica ressoa','Singularidade se forma','Singularidade colapsa']
-EN=['Atomic energy gathers','Atomic detonates','Antimagic blade extends','Black Divider slashes','Blue and Red converge','Hollow Purple fires','Zoltraak fires','Magic barrier resonates','Singularity forms','Singularity collapses']
+NAMES=['divider_charge', 'divider_release', 'purple_charge', 'purple_release']
+DURATIONS=[0.9, 0.9, 1.5, 1.6]
+PT=["Lâmina de antimagia se estende", "Black Divider corta", "Azul e Vermelho convergem", "Vazio Roxo dispara"]
+EN=["Antimagic blade extends", "Black Divider slashes", "Blue and Red converge", "Hollow Purple fires"]
 
 def synth(name,duration):
     t=np.arange(round(duration*RATE))/RATE;u=t/duration
@@ -56,8 +56,9 @@ def synth(name,duration):
 
 def build(preview=None,atomic_only=False):
     folder=ASSETS/'sounds/anime';folder.mkdir(parents=True,exist_ok=True)
-    definitions=json.loads((ASSETS/'sounds.json').read_text(encoding='utf-8')) if atomic_only else {}
-    manifest=json.loads((ROOT/'art/audio/anime-sfx-manifest.json').read_text(encoding='utf-8')) if atomic_only else {};mix=[]
+    # Always merge: the other generators (build_*_sfx.py on sfx_motor) own the rest of sounds.json and the manifest.
+    definitions=json.loads((ASSETS/'sounds.json').read_text(encoding='utf-8'))
+    manifest=json.loads((ROOT/'art/audio/anime-sfx-manifest.json').read_text(encoding='utf-8'));mix=[]
     for name,duration in zip(NAMES,DURATIONS):
         if atomic_only and not name.startswith('atomic_'):continue
         x=synth(name,duration);p=folder/(name+'.ogg')

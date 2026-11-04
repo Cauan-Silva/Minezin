@@ -51,16 +51,15 @@ public final class EfeitosIchigo {
         if(p.tipo()==522)EFEITOS.removeIf(f->f.p.tipo()==522&&f.p.dono().equals(p.dono()));
         if(p.tipo()==530){ImpactosAnime.programar(p.dono(),p.a().add(0,1.2,0),MugetsuIchigo.FORMA,0x101010,.85,18,6);ImpactosAnime.programar(p.dono(),p.a().add(0,2,0),MugetsuIchigo.GOLPE,0x0A0610,1,26,6);}
         if(p.tipo()>=500&&p.tipo()<=513||p.tipo()==530||inicio)AnimacoesGojo.tocarDesperto(p.dono(),6,p.tipo());
-        if(inicio){ENTRADAS.put(p.dono(),mc.level.getGameTime());ImpactosAnime.programar(p.dono(),p.a().add(0,1,0),EntradaBankai.GRITO,0xC4355C,.92,20,6);ImpactosAnime.programar(p.dono(),p.a().add(0,1.3,0),EntradaBankai.REVELA,0xD32A50,.8,14,6);AudioAnime.programar(p.dono(),"bankai",p.a(),RoteiroAudio.imediato("ichigo_bankai",48));}
-        if(p.tipo()==520||p.tipo()==523||p.tipo()==524){AudioAnime.programar(p.dono(),"getsuga",p.a(),RoteiroAudio.imediato(p.tipo()==520?"ichigo_getsuga":"ichigo_getsuga_bankai",24));ImpactosAnime.programar(p.dono(),p.a(),0,p.tipo()!=520?0xD82C56:0x70CBFF,p.tipo()!=520?.92:.55,18,6);}
+        if(inicio){ENTRADAS.put(p.dono(),mc.level.getGameTime());ImpactosAnime.programar(p.dono(),p.a().add(0,1,0),EntradaBankai.GRITO,0xC4355C,.92,20,6);ImpactosAnime.programar(p.dono(),p.a().add(0,1.3,0),EntradaBankai.REVELA,0xD32A50,.8,14,6);AudioAnime.programar(p.dono(),"bankai",p.a(),RoteiroAudio.bankai());}
+        if(p.tipo()==520||p.tipo()==523||p.tipo()==524){ImpactosAnime.programar(p.dono(),p.a(),0,p.tipo()!=520?0xD82C56:0x70CBFF,p.tipo()!=520?.92:.55,18,6);}
         if(p.tipo()==521)ImpactosAnime.programar(p.dono(),p.a(),0,0x89D9FF,.8,16,6);
         if(p.tipo()==527)ImpactosAnime.programar(p.dono(),p.a().add(0,1,0),0,0x89D9FF,.8,16,6);
         // Ichigo's own SFX (tools/build_ichigo_sfx.py); cues start with the effect, impacts are timed inside the sound.
-        if(p.tipo()==501||p.tipo()==511)AudioAnime.programar(p.dono(),"shunpo",p.a(),RoteiroAudio.imediato("ichigo_shunpo",8));
-        if(p.tipo()==526)AudioAnime.programar(p.dono(),"corte",p.a(),RoteiroAudio.imediato("ichigo_corte_ascendente",16));
-        if(p.tipo()==522)AudioAnime.programar(p.dono(),"mascara",p.a(),RoteiroAudio.imediato("ichigo_mascara",18));
-        if(p.tipo()==530)AudioAnime.programar(p.dono(),"mugetsu",p.a(),RoteiroAudio.imediato("ichigo_mugetsu",MugetsuIchigo.FIM+4));
-        if(p.tipo()==525){ImpactosAnime.programar(p.dono(),p.a().add(0,.5,0),0,0x89D9FF,.85,18,6);AudioAnime.programar(p.dono(),"onda",p.a(),RoteiroAudio.imediato("ichigo_golpe_pesado",32));}
+        // Ichigo's own sounds: wind-ups on the cast, releases on the impact packets (RoteiroAudio.ichigo).
+        if(p.tipo()==530)AudioAnime.programar(p.dono(),"mugetsu",p.a(),RoteiroAudio.mugetsu());
+        var sons=RoteiroAudio.ichigo(p.tipo());if(sons!=null)AudioAnime.programar(p.dono(),"ichigo_"+p.tipo(),p.a(),sons);
+        if(p.tipo()==525){ImpactosAnime.programar(p.dono(),p.a().add(0,.5,0),0,0x89D9FF,.85,18,6);}
         if(p.tipo()==522)ImpactosAnime.programar(p.dono(),p.a().add(0,1.5,0),0,0xE02F51,.9,18,6);
         if(EFEITOS.size()>=96)EFEITOS.remove(0);EFEITOS.add(new Efeito(p,mc.level,mc.level.getGameTime()));
     }
