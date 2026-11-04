@@ -44,7 +44,8 @@ def render(output,video=None,backend=None):
   if title:
    font=ImageFont.load_default(size=int(h*(.22 if title=='ATOMIC' else .045)));d.text((w/2,h*(.43 if title=='ATOMIC' else .57)),title,font=font,fill=(255,248,255),anchor='mm')
   d.rectangle((0,h-27,w,h),fill=(10,13,21));d.text((10,h-20),f'PREVIA OFFLINE | {raw/20:.2f}s | NAO E MINECRAFT. AVATAR ESTATICO / CENA DE TESTE.',fill=(232,235,245));return image
- marks=[40,120,200,320,373,400,420,470,600,730,770,779];sheet=Image.new('RGB',(w*3,h*4));
+ # Moments picked on the old 39 s clock (780 ticks), scaled to the current length (3.11: 27 s).
+ marks=[round(m*(len(frames)-1)/779) for m in [40,120,200,320,373,400,420,470,600,730,770,779]];sheet=Image.new('RGB',(w*3,h*4));
  for i,t in enumerate(marks):sheet.paste(draw(t),(i%3*w,i//3*h))
  Path(output).parent.mkdir(parents=True,exist_ok=True);sheet.save(output)
  if video:
