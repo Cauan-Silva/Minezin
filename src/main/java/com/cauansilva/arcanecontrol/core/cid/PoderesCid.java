@@ -143,15 +143,18 @@ public final class PoderesCid {
                     com.cauansilva.arcanecontrol.core.magia.DestruicaoAnime.crateraAtomic(a.jogador,a.centro,com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get(),8);
                 }
                 // The terrain switch affects blocks, not the explosion's entity damage.
+                // The vanilla explosion pushes entities: keep everyone's motion as it was (user: no knockback).
+                var antes=new java.util.HashMap<LivingEntity,Vec3>();
+                for(LivingEntity e:a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(a.centro,a.centro).inflate(com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get()*2+4),e->e!=a.jogador))antes.put(e,e.getDeltaMovement());
                 a.nivel.explode(a.jogador,a.centro.x,a.centro.y,a.centro.z,
                         com.cauansilva.arcanecontrol.ConfigServidor.RAIO.get()/2f,false,
                         com.cauansilva.arcanecontrol.ConfigServidor.DESTRUIR.get()?net.minecraft.world.level.Level.ExplosionInteraction.TNT:net.minecraft.world.level.Level.ExplosionInteraction.NONE);
+                antes.forEach((e,v)->{e.setDeltaMovement(v);e.hurtMarked=true;});
                 for (LivingEntity alvo : a.nivel.getEntitiesOfClass(LivingEntity.class, new AABB(a.centro,a.centro).inflate(14),
                         e -> e != a.jogador && e.isAlive())) {
                     if (alvo.distanceToSqr(a.centro) <= 196) {
                         alvo.hurt(a.nivel.damageSources().indirectMagic(a.jogador,a.jogador), com.cauansilva.arcanecontrol.core.vfx.RelogioAtomic.DANO_IMPACTO);
-                        alvo.setDeltaMovement(alvo.position().subtract(a.centro).normalize().scale(1.6).add(0,.6,0));
-                        alvo.hurtMarked = true;
+                        // No knockback (user): targets stay inside the pillar for its hits.
                     }
                 }
                 a.nivel.playSound(null, net.minecraft.core.BlockPos.containing(a.centro), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.PLAYERS, 3, .5f);

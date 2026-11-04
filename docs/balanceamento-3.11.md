@@ -115,7 +115,7 @@ Aplicado além da tabela:
   - Feixe trocado por um pilar de luz colossal com o raio do domo (24 blocos) e 320 de altura (`ExplosaoAtomic.RAIO_DOMO`, `ALTURA_PILAR`).
   - Carga de 21 s → 9 s; Atomic inteira 39 s → 27 s (`RelogioAtomic`: IMPACTO 180, FIM 540, OCUPADO 204). Pose `cid_4` em `player_animation/cid.json` reajustada pelo mapa do relógio; som da carga e batimentos seguem `IMPACTO`.
   - Letreiro "I AM ATOMIC" para todos a até 32 blocos (`LetreiroAtomic.ALCANCE`, `EfeitosCid.atomicNoAlcance`).
-  - Dano em vários ticks (pedido do usuário: "se for para demorar, que dê muitos ticks"): 20 no impacto e 2 a cada 0,5 s enquanto o pilar existe (até o tick 460), para quem estiver dentro do raio do pilar (24 blocos). São 28 golpes; total de 76 para quem fica o tempo todo, antes 45 de uma vez (`RelogioAtomic.DANO_IMPACTO`, `DANO_TICK`, `TICK_DANO`, `PILAR_FIM`).
+  - Dano em vários ticks (pedido do usuário: "se for para demorar, que dê muitos ticks"): 20 no impacto e 2 a cada 0,5 s enquanto o pilar existe (até o tick 460), para quem estiver dentro do raio do pilar (24 blocos). Sem empurrão (nem do impacto nem da explosão). São 28 golpes; total de 76 para quem fica o tempo todo, antes 45 de uma vez (`RelogioAtomic.DANO_IMPACTO`, `DANO_TICK`, `TICK_DANO`, `PILAR_FIM`).
   - `tools/preview_cid_composition.py`: enquadramento largo para o pilar e vídeo `--reference` com 540 ticks.
 
 ## Próximos passos
