@@ -53,8 +53,12 @@ public final class SuperficieTecido {
             if(ant!=null){double d=a-ant;while(d>Math.PI)d-=2*Math.PI;while(d<-Math.PI)d+=2*Math.PI;soma+=d;}ant=a;}
         return soma>=0?1:-1;
     }
+    /** Anything the cloth is pushed out of: the legs (Caixa) or the world's blocks (ColisaoCenario). */
+    public interface Obstaculo{double[] fora(double[] p);}
     /** A posed box (a leg): origin corner and its three edge vectors. */
-    public record Caixa(double[] o,double[] ax,double[] ay,double[] az){}
+    public record Caixa(double[] o,double[] ax,double[] ay,double[] az) implements Obstaculo{
+        @Override public double[] fora(double[] p){return SuperficieTecido.fora(p,this);}
+    }
     /** Box from a cube's rest and posed vertices (same order): the rest min corner and its neighbours along x, y, z. */
     public static Caixa caixa(double[][] rep,double[][] pos){
         double[] lo={1e9,1e9,1e9},hi={-1e9,-1e9,-1e9};for(var p:rep)for(int k=0;k<3;k++){lo[k]=Math.min(lo[k],p[k]);hi[k]=Math.max(hi[k],p[k]);}
@@ -75,17 +79,17 @@ public final class SuperficieTecido {
             double a=t[k]+m,b=1+m-t[k];if(a<melhor&&!internoA){melhor=a;eixo=k;alvo=-m;}if(b<melhor&&!internoB){melhor=b;eixo=k;alvo=1+m;}}
         return soma(p,escala(e[eixo],alvo-t[eixo]));
     }
-    public static double[] colidir(double[] p,List<Caixa> obst){for(var c:obst)p=fora(p,c);return p;}
+    public static double[] colidir(double[] p,List<? extends Obstaculo> obst){for(var c:obst)p=c.fora(p);return p;}
     public static List<Tri> casaco(Map<String,double[][]> posados,Map<String,double[][]> repouso){return casaco(posados,repouso,List.of());}
     /** posados: bone -> posed vertices (same order as repouso); repouso: bone -> rest vertices. Missing pieces skipped.
      *  pernas: the posed legs; the sheet is pushed out of them (user: the front cloth collides with the legs). */
-    public static List<Tri> casaco(Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas){
+    public static List<Tri> casaco(Map<String,double[][]> posados,Map<String,double[][]> repouso,List<? extends Obstaculo> pernas){
         var l=new ArrayList<String>();for(var p:ORDEM)l.add("bk_capa_"+p);
         return faixa(l,TecidoIchigo.SEGMENTOS,posados,repouso,pernas,false,true);
     }
     /** A closed skirt/capelet ring (Frieren): the pieces whose bones start with prefixo (named prefixo+face_col_seg),
      *  ordered by their rest angle around the body, stitched all the way round, straight hem. */
-    public static List<Tri> anel(String prefixo,int segmentos,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas){
+    public static List<Tri> anel(String prefixo,int segmentos,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<? extends Obstaculo> pernas){
         var pecas=new TreeMap<Double,String>();
         for(var e:repouso.entrySet())if(e.getKey().startsWith(prefixo)&&e.getKey().endsWith("_0")){
             var c=media(Arrays.asList(e.getValue()));pecas.put(Math.atan2(c[0],c[2]),e.getKey().substring(0,e.getKey().length()-2));}
@@ -93,7 +97,7 @@ public final class SuperficieTecido {
     }
     /** An open cape/robe (Asta): the pieces whose bones start with prefixo, ordered by their rest angle around the
      *  body and cut open at the widest gap between neighbours (the front opening), straight hem. */
-    public static List<Tri> aberto(String prefixo,int segmentos,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas){
+    public static List<Tri> aberto(String prefixo,int segmentos,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<? extends Obstaculo> pernas){
         var pecas=new TreeMap<Double,String>();
         for(var e:repouso.entrySet())if(e.getKey().startsWith(prefixo)&&e.getKey().endsWith("_0")){
             var c=media(Arrays.asList(e.getValue()));pecas.put(Math.atan2(c[0],c[2]),e.getKey().substring(0,e.getKey().length()-2));}
@@ -105,7 +109,7 @@ public final class SuperficieTecido {
     }
     /** One sheet through the given pieces (bone = piece+"_"+segment), in order around the body.
      *  fechado: the last piece is stitched back to the first (a ring); rasgado: torn hem teeth, else a straight hem. */
-    static List<Tri> faixa(List<String> ordem,int S,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<Caixa> pernas,boolean fechado,boolean rasgado){
+    static List<Tri> faixa(List<String> ordem,int S,Map<String,double[][]> posados,Map<String,double[][]> repouso,List<? extends Obstaculo> pernas,boolean fechado,boolean rasgado){
         var pecas=new ArrayList<String>();
         for(var p:ordem){boolean ok=true;for(int s=0;s<S;s++)ok&=posados.containsKey(p+"_"+s)&&repouso.containsKey(p+"_"+s);if(ok)pecas.add(p);}
         var out=new ArrayList<Tri>();int n=pecas.size();if(n<2)return out;int dir=direcao(repouso,pecas);

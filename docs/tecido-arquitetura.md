@@ -38,16 +38,33 @@ testes e a mesma geometria da superfície, para aprovar antes de abrir o jogo.
 |---|---|---|
 | Cid (Shadow) | `TecidoIchigo` (casaco e alças) | Superfície lisa, gola curva, colisão com as pernas |
 | Ichigo (Bankai, Mugetsu) | `TecidoIchigo` | Superfície lisa e colisão; debrum e saia da frente do Mugetsu em blocos |
-| Asta | `TecidoAsta`, `DevilUnionTecido` | Blocos |
-| Frieren | `TecidoFrieren` | Blocos |
-| Gojo | `TecidoGojo` | Blocos |
+| Asta | `TecidoAsta` (manto), `DevilUnionTecido` (asas e cauda) | Manto liso aberto na frente (`SuperficieTecido.aberto`); asas e cauda em blocos |
+| Frieren | `TecidoFrieren` | Saia e capinha lisas, em anel fechado (`SuperficieTecido.anel`) |
+| Gojo | `TecidoGojo` | Barra do casaco lisa, em anel fechado; gola em blocos |
 
-## 4. Melhorias futuras
+Frieren, Gojo e Asta usam o mesmo ajudante, `AneisLisos`: o renderizador só diz quais ossos são pano.
+
+## 4. Colisão e comportamento por traje
+
+- **Pernas** (`SuperficieTecido.caixa`): as duas pernas posadas viram caixas e o pano sai pela lateral mais próxima.
+- **Cenário** (`ColisaoCenario`): os blocos do mundo (chão, lajes, paredes, cercas) também empurram o pano, para cima
+  ou para os lados, nunca para baixo. Só liga quando o traje é desenhado no mundo: o código confere que as pernas
+  posadas estão onde o jogador está, então no inventário ou numa prévia ele desliga sozinho.
+- As duas colisões mexem só na superfície desenhada, não na física, então o pano não treme.
+- **Peso e rigidez por traje** (`PerfilTecido`): `assets/arcanecontrol/tecido/<estilo>.json` com `peso`, `rigidez`,
+  `arrasto`, `inercia` e `mola`. Cada valor multiplica o comportamento atual (1 = igual) e é limitado a uma faixa
+  segura; arquivo ausente ou quebrado dá o padrão. Hoje existem `shadow`, `ichigo_bankai`, `frieren`, `gojo` e `asta`,
+  todos em 1.
+
+  ```json
+  { "peso": 2.0, "rigidez": 1.0, "arrasto": 1.4, "inercia": 0.7, "mola": 1.0 }
+  ```
+  Exemplo de capa pesada de armadura: cai mais reta, balança menos e assenta mais rápido.
+
+## 5. Melhorias futuras
 
 - **Desempenho com muitos jogadores**: cada jogador com traje roda a própria simulação (até 64 ao mesmo tempo). Medir o FPS
   com vários jogadores de capa no mesmo lugar antes de otimizar; se cair, agrupar os cálculos e partir o espaço.
-- **Colisão com o cenário**: hoje o pano só colide com as pernas, e só na superfície desenhada. Falta o chão, paredes e cercas
-  (por exemplo, agachado ou encostado).
-- **Peso e rigidez por traje**: tamanho da grade, força das molas e vento estão fixos no código; passar para o JSON de cada
-  traje permitiria uma capa pesada de armadura ou uma seda leve sem mexer em Java.
-- **Levar a superfície lisa para Asta, Frieren e Gojo.**
+- **Colisão na física**: hoje as colisões ajustam só o desenho. Levar o cenário para dentro da `MalhaTecido` faria o pano
+  realmente se apoiar no chão (deitado, agachado), ao custo de mais cálculo.
+- **Asas e cauda do Devil Union** como superfície lisa, se ficar melhor que os blocos.

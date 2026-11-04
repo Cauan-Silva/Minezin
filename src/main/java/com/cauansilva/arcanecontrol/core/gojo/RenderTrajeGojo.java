@@ -31,6 +31,6 @@ public final class RenderTrajeGojo extends GeoArmorRenderer<TrajeAnime>{
     @Override public void actuallyRender(PoseStack pose,TrajeAnime item,BakedGeoModel model,RenderType type,MultiBufferSource buffer,VertexConsumer consumer,boolean reRender,float parcial,int luz,int overlay,float red,float green,float blue,float alpha){
         aneis.limpar();
         super.actuallyRender(pose,item,model,type,buffer,consumer,reRender,parcial,luz,overlay,red,green,blue,alpha);
-        if(!reRender&&consumer!=null)aneis.desenhar(consumer,luz,overlay,red,green,blue,alpha);
+        if(!reRender&&consumer!=null)aneis.desenhar(consumer,getCurrentEntity(),luz,overlay,red,green,blue,alpha);
     }
 }

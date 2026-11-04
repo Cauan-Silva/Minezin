@@ -19,7 +19,7 @@ import java.util.*;
  *  resets on teleport, world or entity change. */
 @Mod.EventBusSubscriber(modid="arcanecontrol",value=Dist.CLIENT)
 public final class TecidoAstaCliente {
-    private static final class Estado{final TecidoAsta tecido=new TecidoAsta();Object mundo;Vec3 pos;float yaw;int entidade;}
+    private static final class Estado{final TecidoAsta tecido=new TecidoAsta(com.cauansilva.arcanecontrol.core.client.tecido.PerfilTecido.de("asta"));Object mundo;Vec3 pos;float yaw;int entidade;}
     private static final Map<UUID,Estado> ESTADOS=new HashMap<>();
     private static final MolaMantoCid.Pose ZERO=new MolaMantoCid.Pose(0,0,0);
     public static MolaMantoCid.Pose pose(UUID id,String osso,float parcial){var e=ESTADOS.get(id);return e==null||!ConfigCliente.TECIDO_ASTA.get()?ZERO:e.tecido.pose(osso,parcial);}

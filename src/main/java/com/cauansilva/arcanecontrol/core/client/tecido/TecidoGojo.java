@@ -18,8 +18,13 @@ public final class TecidoGojo {
     /** Segments of the hem (RenderTrajeGojo stitches it into one smooth ring). */
     public static final int LINHAS_BARRA=2;
     private static final Pose ZERO=new Pose(0,0,0);
-    private final MalhaTecido[] malhas={new MalhaTecido(3,3,2.8/16,1.3/16),new MalhaTecido(3,3,2.8/16,1.3/16),new MalhaTecido(2,3,2.1/16,1.3/16),new MalhaTecido(2,3,2.1/16,1.3/16)};
-    private final MolaMantoCid gola=new MolaMantoCid(2);
+    private final MalhaTecido[] malhas;
+    private final MolaMantoCid gola;
+    public TecidoGojo(){this(PerfilTecido.PADRAO);}
+    public TecidoGojo(PerfilTecido perfil){
+        malhas=new MalhaTecido[]{new MalhaTecido(3,3,2.8/16,1.3/16,perfil),new MalhaTecido(3,3,2.8/16,1.3/16,perfil),new MalhaTecido(2,3,2.1/16,1.3/16,perfil),new MalhaTecido(2,3,2.1/16,1.3/16,perfil)};
+        gola=new MolaMantoCid(2*perfil.mola());
+    }
     public void reset(){for(var m:malhas)m.reset();gola.reset();}
     public void tick(Entrada e){
         if(!Double.isFinite(e.frente+e.lado+e.vertical+e.giro)){reset();return;}

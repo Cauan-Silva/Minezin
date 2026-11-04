@@ -94,6 +94,11 @@ física, mas **não são desenhados como blocos**: o renderizador lê onde cada 
   ponto do pano dentro de uma delas sai pela lateral mais próxima, com folga. Nunca para cima ou para baixo.
   Limite: só os pontos da malha colidem (agora mais densa); um pedaço do pano entre dois pontos ainda pode
   atravessar, e o pano não colide com o cenário nem com o resto do corpo.
+- **Colisão com o cenário** (`ColisaoCenario`): blocos do mundo empurram o pano para cima ou para os lados; só no
+  mundo, nunca no inventário.
+- **Peso e rigidez**: `assets/arcanecontrol/tecido/<estilo>.json` (`PerfilTecido`, ver tecido-arquitetura.md).
+- **Anel fechado ou folha aberta** (`AneisLisos`): saias, capinhas e barras que dão a volta no corpo usam `anel`;
+  mantos abertos na frente usam `aberto`, que corta a folha na maior abertura entre as peças.
 - **Gola curva** (`gola`, Cid): uma casca lisa que sai do contorno do tronco, vira um quadrado arredondado em volta
   da cabeça e abre até a borda redonda; preta por fora, roxa por dentro, debrum dourado. As cores vêm de três cubos
   minúsculos de paleta no osso `cid_gola`, que não são desenhados.
@@ -107,7 +112,7 @@ física, mas **não são desenhados como blocos**: o renderizador lê onde cada 
 3. Toda peça solta é osso em cadeia; painéis laterais e frente **seguem a malha das costas**; quinas arredondadas.
 4. Peças leves (mangas, faixas, cabelo) em `MolaMantoCid`, amostradas continuamente.
 5. Onda viajante + agitação + vento + subida + impulso nos eventos do personagem.
-6. Casaco, capa ou saia desenhados pela superfície lisa (seção 4), com colisão com as pernas; formas curvas como
-   golas também viram superfície, não degraus de blocos.
+6. Casaco, capa ou saia desenhados pela superfície lisa (seção 4), com colisão com as pernas e o cenário; formas
+   curvas como golas também viram superfície, não degraus de blocos. Um `tecido/<estilo>.json` com o peso do pano.
 7. Teste: ossos batem com o geo, sem esticar, repouso estável, folha sem costura aberta, sem torcer em movimento.
 8. Prévia (frente/costas/lado + vídeo do tecido) aprovada antes de gerar o JAR.

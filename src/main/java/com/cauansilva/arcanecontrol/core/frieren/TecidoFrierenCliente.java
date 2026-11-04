@@ -17,7 +17,7 @@ import java.util.*;
 /** Per-player cloth state, fixed 20 Hz ticks; resets on teleport, world or entity change. Mirrors TecidoGojoCliente. */
 @Mod.EventBusSubscriber(modid="arcanecontrol",value=Dist.CLIENT)
 public final class TecidoFrierenCliente {
-    private static final class Estado{final TecidoFrieren tecido=new TecidoFrieren();Object mundo;Vec3 pos;float yaw;int entidade;}
+    private static final class Estado{final TecidoFrieren tecido=new TecidoFrieren(com.cauansilva.arcanecontrol.core.client.tecido.PerfilTecido.de("frieren"));Object mundo;Vec3 pos;float yaw;int entidade;}
     private static final Map<UUID,Estado> ESTADOS=new HashMap<>();
     private static final TecidoFrieren.Pose ZERO=new TecidoFrieren.Pose(0,0,0);
     public static TecidoFrieren.Pose pose(UUID id,String osso,float parcial){var e=ESTADOS.get(id);return e==null||!ConfigCliente.TECIDO_FRIEREN.get()?ZERO:e.tecido.pose(osso,parcial);}

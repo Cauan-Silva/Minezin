@@ -26,8 +26,14 @@ public final class TecidoIchigo {
         OSSOS=List.copyOf(nomes);
     }
     private static final MolaMantoCid.Pose ZERO=new MolaMantoCid.Pose(0,0,0);
-    private final MalhaTecido costas=new MalhaTecido(COLUNAS_COSTAS,SEGMENTOS+1,1.46/16,1.85/16);
-    private final MolaMantoCid mangaEsq=new MolaMantoCid(1.5),mangaDir=new MolaMantoCid(1.45),cabelo=new MolaMantoCid(1.7);
+    private final MalhaTecido costas;
+    private final MolaMantoCid mangaEsq,mangaDir,cabelo;
+    public TecidoIchigo(){this(PerfilTecido.PADRAO);}
+    /** perfil: weight, stiffness, drag, inertia and spring response of the outfit (PerfilTecido). */
+    public TecidoIchigo(PerfilTecido perfil){
+        costas=new MalhaTecido(COLUNAS_COSTAS,SEGMENTOS+1,1.46/16,1.85/16,perfil);
+        mangaEsq=new MolaMantoCid(1.5*perfil.mola());mangaDir=new MolaMantoCid(1.45*perfil.mola());cabelo=new MolaMantoCid(1.7*perfil.mola());
+    }
     private double tempo,impulso,agitacao,anteriorAgitacao,subida;
     public void reset(){costas.reset();for(var m:molas())m.reset();tempo=impulso=agitacao=anteriorAgitacao=subida=0;}
     private MolaMantoCid[] molas(){return new MolaMantoCid[]{mangaEsq,mangaDir,cabelo};}

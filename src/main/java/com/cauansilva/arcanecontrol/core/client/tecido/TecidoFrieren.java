@@ -23,9 +23,11 @@ public final class TecidoFrieren {
     }
     private static final Pose ZERO=new Pose(0,0,0);
     // Panel widths/heights in metres (model units / 16), matching the generated geometry.
-    private final MalhaTecido[][] malhas={
-        {new MalhaTecido(4,3,2.6/16,1.6/16),new MalhaTecido(4,3,3.2/16,1.6/16),new MalhaTecido(2,3,2.75/16,1.6/16),new MalhaTecido(2,3,2.75/16,1.6/16)},
-        {new MalhaTecido(3,4,3.07/16,1.5/16),new MalhaTecido(3,4,3.07/16,1.5/16),new MalhaTecido(2,4,2.5/16,1.5/16),new MalhaTecido(2,4,2.5/16,1.5/16)}};
+    private final MalhaTecido[][] malhas;
+    public TecidoFrieren(){this(PerfilTecido.PADRAO);}
+    public TecidoFrieren(PerfilTecido perfil){malhas=new MalhaTecido[][]{
+        {new MalhaTecido(4,3,2.6/16,1.6/16,perfil),new MalhaTecido(4,3,3.2/16,1.6/16,perfil),new MalhaTecido(2,3,2.75/16,1.6/16,perfil),new MalhaTecido(2,3,2.75/16,1.6/16,perfil)},
+        {new MalhaTecido(3,4,3.07/16,1.5/16,perfil),new MalhaTecido(3,4,3.07/16,1.5/16,perfil),new MalhaTecido(2,4,2.5/16,1.5/16,perfil),new MalhaTecido(2,4,2.5/16,1.5/16,perfil)}};}
     public void reset(){for(var g:malhas)for(var m:g)m.reset();}
     public void tick(Entrada e){
         if(!Double.isFinite(e.frente+e.lado+e.vertical+e.giro)){reset();return;}

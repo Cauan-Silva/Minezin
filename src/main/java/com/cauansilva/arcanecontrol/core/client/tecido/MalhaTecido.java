@@ -16,7 +16,11 @@ public final class MalhaTecido {
     private final double[][] atual,verlet,anterior;
     private final List<Ligacao> ligacoes=new ArrayList<>();
     private double frenteAnterior,ladoAnterior,verticalAnterior,tempo;
-    public MalhaTecido(int colunas,int linhas,double passoX,double passoY){
+    private final PerfilTecido perfil;
+    public MalhaTecido(int colunas,int linhas,double passoX,double passoY){this(colunas,linhas,passoX,passoY,PerfilTecido.PADRAO);}
+    /** perfil: weight, stiffness, drag and inertia of this garment (assets/arcanecontrol/tecido/<estilo>.json). */
+    public MalhaTecido(int colunas,int linhas,double passoX,double passoY,PerfilTecido perfil){
+        this.perfil=perfil==null?PerfilTecido.PADRAO:perfil;
         if(colunas<2||colunas>16||linhas<2||linhas>24||!Double.isFinite(passoX+passoY)||passoX<=0||passoY<=0)throw new IllegalArgumentException("Dimensoes de tecido invalidas");
         this.colunas=colunas;this.linhas=linhas;this.passoX=passoX;this.passoY=passoY;
         atual=new double[colunas*linhas][3];verlet=new double[colunas*linhas][3];anterior=new double[colunas*linhas][3];
@@ -41,18 +45,18 @@ public final class MalhaTecido {
     public void tick(double frente,double lado,double vertical,double giro){
         if(!Double.isFinite(frente+lado+vertical+giro)){reset();return;}
         frente=clamp(frente,-.6,.6);lado=clamp(lado,-.6,.6);vertical=clamp(vertical,-2.5,1.5);giro=clamp(giro,-.25,.25);
-        double ax=-lado*35-clamp((lado-ladoAnterior)*90,-18,18),az=frente*28+clamp((frente-frenteAnterior)*90,-18,18);
+        double ax=(-lado*35-clamp((lado-ladoAnterior)*90,-18,18))*perfil.inercia(),az=(frente*28+clamp((frente-frenteAnterior)*90,-18,18))*perfil.inercia();
         double queda=Math.max(0,-vertical),sustentacao=clamp(-vertical*21-(vertical-verticalAnterior)*38,-16,7.5);
         frenteAnterior=frente;ladoAnterior=lado;verticalAnterior=vertical;
         for(int i=0;i<atual.length;i++)System.arraycopy(atual[i],0,anterior[i],0,3);
-        double dt=1d/60,arrasto=Math.exp(-2.8*dt),c=Math.cos(-giro/3),s=Math.sin(-giro/3);
+        double dt=1d/60,arrasto=Math.exp(-2.8*perfil.arrasto()*dt),c=Math.cos(-giro/3),s=Math.sin(-giro/3);
         for(int sub=0;sub<3;sub++){
             for(int i=colunas;i<atual.length;i++){
                 // Transport previous/current positions into the turning body's local frame.
                 girar(atual[i],c,s);girar(verlet[i],c,s);
                 double[] p=atual[i],v=verlet[i];
                 double dx=clamp((p[0]-v[0])*arrasto+ax*dt*dt,-.10,.10);
-                double dy=clamp((p[1]-v[1])*arrasto+(-9.81+sustentacao)*dt*dt,-.10,.10);
+                double dy=clamp((p[1]-v[1])*arrasto+(-9.81*perfil.peso()+sustentacao)*dt*dt,-.10,.10);
                 double pressao=az+queda*12*(.7+.3*Math.sin(tempo*7+(i/colunas)*.9+(i%colunas)*.6))+Math.abs(lado)*12*(.75+.25*Math.sin(tempo*6+(i%colunas)*.8+(i/colunas)*.45));
                 double dz=clamp((p[2]-v[2])*arrasto+pressao*dt*dt,-.10,.10);
                 System.arraycopy(p,0,v,0,3);p[0]+=dx;p[1]+=dy;p[2]+=dz;
@@ -62,7 +66,7 @@ public final class MalhaTecido {
                 for(var link:ligacoes){
                     double[] a=atual[link.a],b=atual[link.b];double x=b[0]-a[0],y=b[1]-a[1],z=b[2]-a[2];double d=Math.sqrt(x*x+y*y+z*z);if(d<1e-10)continue;
                     double wa=link.a<colunas?0:1,wb=link.b<colunas?0:1;if(wa+wb==0)continue;
-                    double q=(d-link.comprimento)/d*link.rigidez/(wa+wb);
+                    double q=(d-link.comprimento)/d*link.rigidez*perfil.rigidez()/(wa+wb);
                     for(int k=0;k<3;k++){double delta=(b[k]-a[k])*q;a[k]+=delta*wa;b[k]-=delta*wb;}
                 }
                 for(int i=colunas;i<atual.length;i++){

@@ -23,7 +23,7 @@ public final class RenderTrajeCid extends GeoArmorRenderer<TrajeAnime>{
     private static final ResourceLocation GLOW=new ResourceLocation("arcanecontrol","textures/armor/trajes/shadow_glowmask.png");
     private final Map<String,double[][]> cantos=new HashMap<>(),repouso=new HashMap<>();
     private final float[][] paleta=new float[3][];
-    private final List<SuperficieTecido.Caixa> pernas=new ArrayList<>();
+    private final List<SuperficieTecido.Obstaculo> pernas=new ArrayList<>();
     private Matrix4f gola;private Matrix3f golaNormal;
     public RenderTrajeCid(){super(new ModeloTrajeAnime(false));addRenderLayer(new Emissao(this));}
     @Override protected void setBoneVisible(GeoBone bone,boolean visivel){super.setBoneVisible(bone,visivel);if(bone!=null)bone.setChildrenHidden(!visivel);}
@@ -62,7 +62,7 @@ public final class RenderTrajeCid extends GeoArmorRenderer<TrajeAnime>{
         cantos.clear();pernas.clear();gola=null;
         super.actuallyRender(pose,item,model,type,buffer,consumer,reRender,parcial,luz,overlay,red,green,blue,alpha);
         if(reRender||consumer==null||paleta[0]==null)return;
-        if(!cantos.isEmpty())for(var t:SuperficieTecido.casaco(cantos,repouso,pernas))emitir(consumer,t,null,null,luz,overlay,red,green,blue,alpha);
+        if(!cantos.isEmpty())for(var t:SuperficieTecido.casaco(cantos,repouso,com.cauansilva.arcanecontrol.core.client.tecido.ColisaoCenario.com(pernas,getCurrentEntity())))emitir(consumer,t,null,null,luz,overlay,red,green,blue,alpha);
         if(gola!=null)for(var t:SuperficieTecido.gola())emitir(consumer,t,gola,golaNormal,luz,overlay,red,green,blue,alpha);
     }
     /** One triangle as a degenerate quad (entity render types take quads); m == null: points already posed. */

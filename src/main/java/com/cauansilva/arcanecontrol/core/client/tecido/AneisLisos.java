@@ -16,7 +16,7 @@ public final class AneisLisos {
     private final Map<String,Integer> prefixos;private final Set<String> abertos;
     private final Map<String,double[][]> cantos=new HashMap<>(),repouso=new HashMap<>();
     private final Map<String,float[]> cor=new HashMap<>();
-    private final List<SuperficieTecido.Caixa> pernas=new ArrayList<>();
+    private final List<SuperficieTecido.Obstaculo> pernas=new ArrayList<>();
     /** prefixos: bone prefix -> segments of that garment, e.g. {"frieren_saia_": 3}. */
     public AneisLisos(Map<String,Integer> prefixos){this(prefixos,Set.of());}
     /** abertos: prefixes drawn as an open sheet (cut at the front opening, SuperficieTecido.aberto) instead of a ring. */
@@ -39,8 +39,10 @@ public final class AneisLisos {
         }
         return false;
     }
-    public void desenhar(VertexConsumer v,int luz,int overlay,float r,float g,float b,float a){
-        if(cantos.isEmpty())return;
+    public void desenhar(VertexConsumer v,int luz,int overlay,float r,float g,float b,float a){desenhar(v,null,luz,overlay,r,g,b,a);}
+    /** dono: the entity wearing it, so the cloth also collides with the world's blocks (ColisaoCenario). */
+    public void desenhar(VertexConsumer v,net.minecraft.world.entity.Entity dono,int luz,int overlay,float r,float g,float b,float a){
+        if(cantos.isEmpty())return;var pernas=ColisaoCenario.com(this.pernas,dono);
         for(var e:prefixos.entrySet()){var uv=cor.get(e.getKey());if(uv==null)continue;
             var tris=abertos.contains(e.getKey())?SuperficieTecido.aberto(e.getKey(),e.getValue(),cantos,repouso,pernas):SuperficieTecido.anel(e.getKey(),e.getValue(),cantos,repouso,pernas);
             for(var t:tris){
