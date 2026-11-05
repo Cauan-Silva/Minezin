@@ -109,6 +109,9 @@ public class GerenciadorCutscene3D {
             com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));
             return;
         }
+        if(com.cauansilva.arcanecontrol.core.subaru.EfeitosSubaru.trata(tipo)){
+            com.cauansilva.arcanecontrol.core.subaru.EfeitosSubaru.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));return;
+        }
         if(tipo>=21&&tipo<=26){
             com.cauansilva.arcanecontrol.core.frieren.EfeitosFrieren.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));return;
         }

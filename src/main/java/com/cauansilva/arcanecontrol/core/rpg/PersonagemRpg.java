@@ -16,7 +16,8 @@ public enum PersonagemRpg {
     KILLUA(12,"Killua Zoldyck","Raio de Eletricidade Absoluta",45,300),
     GENOS(13,"Genos","Carnage Kabuto",0,300),
     JOTARO(14,"Jotaro Kujo","DIO Vampire",6,180),
-    EDWARD(15,"Edward Elric","Homunculus Mestre",120,300);
+    EDWARD(15,"Edward Elric","Homunculus Mestre",120,300),
+    SUBARU(16,"Subaru Natsuki","Petelgeuse Romanée-Conti",20,300);
 
     public final int id,duracaoSegundos,recargaSegundos;
     public final String nome,nemesis;

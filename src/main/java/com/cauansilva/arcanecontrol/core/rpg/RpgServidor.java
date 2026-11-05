@@ -107,7 +107,7 @@ public final class RpgServidor {
     }
     private static void mensagem(ServerPlayer p,String texto){p.displayClientMessage(Component.literal(texto),true);sincronizar(p);}
     public static void sincronizar(ServerPlayer p){
-        var legado=ProgressaoPoderes.ler(p);int[] xp=new int[15],nos=new int[15];boolean[] despertar=new boolean[15];
+        var legado=ProgressaoPoderes.ler(p);int[] xp=new int[PoderAnime.KITS],nos=new int[PoderAnime.KITS];boolean[] despertar=new boolean[PoderAnime.KITS];
         for(var kit:PoderAnime.values())if(legado.tem(kit)){var m=mestria(p,kit.id);xp[kit.id-1]=m.xp();nos[kit.id-1]=m.nos();despertar[kit.id-1]=m.despertarLiberado();}
         int[] restante=new int[5],duracao=new int[5];var cds=recargas(p);var atual=PersonagemRpg.porId(legado.ativo().id);
         for(int i=0;i<5;i++){restante[i]=cds.restante(atual,i,agora(p),DespertaresServidor.ativo(p));duracao[i]=cds.duracao(atual,i,DespertaresServidor.ativo(p));}
@@ -131,7 +131,9 @@ public final class RpgServidor {
             case ICHIGO->com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.conjunto();
             case ASTA->com.cauansilva.arcanecontrol.core.asta.RegistroAsta.conjunto();
             case FRIEREN->new Item[]{RegistroTrajes.FRI_CABECA.get(),RegistroTrajes.FRI_PEITO.get(),RegistroTrajes.FRI_PERNAS.get(),RegistroTrajes.FRI_BOTAS.get()};
+            case SUBARU->null; // o Subaru ainda nao tem traje
         };
+        if(itens==null)return false;
         EquipmentSlot[] slots={EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET};
         for(int i=0;i<4;i++)if(!p.getItemBySlot(slots[i]).is(itens[i]))return false;return true;
     }

@@ -765,6 +765,57 @@
           "descricao": "Animação da terra levantando Golem 3D com aggro e muita vida. Cooldown: 40s."
         }
       ]
+    },
+    {
+      "id": 16,
+      "nome": "Subaru Natsuki",
+      "universo": "Re:Zero",
+      "descricao": "Estrategista: controle tático e suporte. Magia Yin e espíritos; sem arma.",
+      "despertar": "Contrato com a Beatrice: círculo e porta da Biblioteca Proibida; a Beatrice sai e lança a magia Yin ao lado dele. Duração: 20s.",
+      "base": [
+        {
+          "tecla": "Z",
+          "nome": "Shamak",
+          "descricao": "Orbe de sombra; névoa na cabeça do alvo: cegueira + confusão por 3s. Cooldown: 6s."
+        },
+        {
+          "tecla": "X",
+          "nome": "Chamado Espiritual de Emergência",
+          "descricao": "Bolha de mana absorve um golpe (até 2 corações) e estoura. Dura 5s. Cooldown: 15s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Instrução Tática",
+          "descricao": "Pulso dourado (6 blocos): velocidade e salto para ele e aliados por 5s. Cooldown: 20s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Recuperação Psicológica",
+          "descricao": "Remove veneno, lentidão e afins; Regeneração I por 2s. Cooldown: 25s."
+        }
+      ],
+      "transformada": [
+        {
+          "tecla": "Z",
+          "nome": "Minya",
+          "descricao": "Leque de 7 estacas de cristal que cravam e cristalizam."
+        },
+        {
+          "tecla": "X",
+          "nome": "E.M.M.",
+          "descricao": "Casca Yin: invulnerável por 1,5s."
+        },
+        {
+          "tecla": "C",
+          "nome": "Murak",
+          "descricao": "Salto alto e queda lenta por 8s."
+        },
+        {
+          "tecla": "V",
+          "nome": "Ul Minya",
+          "descricao": "Chuva de cristal em área de raio 12, prisão e quebra."
+        }
+      ]
     }
   ]
 }

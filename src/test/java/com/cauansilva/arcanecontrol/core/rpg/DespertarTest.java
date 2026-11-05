@@ -21,6 +21,8 @@ class DespertarTest {
         long[] prazo=new long[75];int[] duracao=new int[75];for(int i=0;i<75;i++){prazo[i]=1000+i;duracao[i]=500+i;}
         var cd=new RecargasRpg(prazo,duracao);
         for(var kit:PersonagemRpg.values())for(int s=0;s<5;s++){
+            // o formato de 75 posicoes so tinha os 15 primeiros kits; kits novos comecam zerados
+            if(kit.id>15){assertEquals(0,cd.restante(kit,s,100,false));continue;}
             int old=(kit.id-1)*5+s;assertEquals(900+old,cd.restante(kit,s,100,false));assertEquals(500+old,cd.duracao(kit,s,false));
             assertEquals(s==4?900+old:0,cd.restante(kit,s,100,true));
         }

@@ -13,7 +13,7 @@ public final class RpgCliente {
     public static boolean recebido(){return estado!=null;}
     public static void receber(PacoteEstadoRpg p){estado=p;var mc=Minecraft.getInstance();recebidoEm=mc.level==null?0:mc.level.getGameTime();}
     public static int ativo(){return estado==null?1:estado.ativo();}
-    public static boolean tem(int kit){return estado!=null&&kit>=1&&kit<=15&&(estado.kits()&(1<<(kit-1)))!=0;}
+    public static boolean tem(int kit){return estado!=null&&kit>=1&&kit<=com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS&&(estado.kits()&(1<<(kit-1)))!=0;}
     public static boolean criativo(){return estado!=null&&estado.criativo();}
     public static int formaTicks(){var mc=Minecraft.getInstance();if(estado==null||mc.level==null)return 0;return EstadoDespertar.interpolarPrazo(estado.ativo(),estado.formaTicks(),mc.level.getGameTime()-recebidoEm);}
     public static boolean forma(){return formaTicks()>0;}
