@@ -19,7 +19,7 @@ public final class RpgCliente {
     public static boolean forma(){return formaTicks()>0;}
     public static boolean exclusivoUsado(){return estado!=null&&estado.exclusivoUsado();}
     public static boolean dominioLegado(){return estado!=null&&estado.dominioLegado();}
-    public static MestriaRpg mestria(int kit){return estado==null||kit<1||kit>15?new MestriaRpg():new MestriaRpg(estado.xp()[kit-1],estado.nos()[kit-1],estado.despertar()[kit-1]);}
+    public static MestriaRpg mestria(int kit){return estado==null||kit<1||kit>com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS?new MestriaRpg():new MestriaRpg(estado.xp()[kit-1],estado.nos()[kit-1],estado.despertar()[kit-1]);}
     public static double mana(){return estado==null?100:new RecursoMana(estado.mana()).atual();}
     public static double custo(int slot){return criativo()?0:RecursoMana.custo(ConjuracaoRpg.custoBase(slot),estado!=null&&estado.conjuntoCompleto());}
     public static int recarga(int slot){
