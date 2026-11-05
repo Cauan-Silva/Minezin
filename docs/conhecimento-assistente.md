@@ -9,11 +9,11 @@ do usuário.
 ## 1. O projeto em uma linha
 
 Mod de RPG de anime para **Minecraft 1.20.1 / Forge 47.2.0 / Java 17** (modid `arcanecontrol`, repositório
-`Cauan-Silva/Minezin`). Cinco personagens jogáveis: **Gojo, Cid (Shadow), Frieren, Asta e Ichigo**, cada um com quatro
+`Cauan-Silva/Minezin`). Seis personagens jogáveis: **Gojo, Cid (Shadow), Frieren, Asta, Ichigo e Subaru**, cada um com quatro
 técnicas (Z/X/C/V), despertar (G) com moveset próprio, traje com física de tecido, arma e sons próprios. Bosses:
 Toji, Aurora, Qual, Liebe, Zangetsu. Dependências: GeckoLib 4.4.9, Player Animator 1.0.2-rc1+1.20, Photon 1.1.17.
 
-Versão atual: `3.13.0-tecido-preview.1`, protocolo de rede **16**.
+Versão atual: `3.14.0-subaru-preview.9`, protocolo de rede **17** (16 kits nos vetores de estado).
 
 ---
 
@@ -160,7 +160,13 @@ Ao entregar um JAR: informe nome, tamanho, o que entrou e **o roteiro do que tes
 
 ---
 
-## 9. Estado e próximos passos (04/11/2026)
+## 9. Estado e próximos passos (05/11/2026)
+
+- **Subaru (kit 16) no jogo:** base Z/X/C/V, contrato com a Beatrice (G, forma de 20 s, Beatrice desenhada com
+  `GeoObjectRenderer` sem entidade), magias Minya, E.M.M., Murak e Ul Minya, agasalho e SFX com gravações CC0
+  (`art/audio/cc0/fontes.json`). JAR `3.14.0-subaru-preview.9`; correções do primeiro teste já aplicadas.
+- Vault do Obsidian em `vault/` (gerado a partir destes documentos; atualize junto quando eles mudarem).
+
 
 - Na `main`: tecido liso nos cinco kits com colisão nas pernas e no cenário, peso por traje em JSON, rework completo
   dos sons, balanceamento 3.11.

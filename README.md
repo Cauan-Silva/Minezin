@@ -5,7 +5,7 @@ maestria do kit e desperta uma forma transformada com ultimate cinematográfica.
 os trajes têm física de tecido e cada habilidade tem som próprio sincronizado com o efeito.
 
 - **modid:** `arcanecontrol` · **repositório:** `Cauan-Silva/Minezin`
-- **Versão atual:** `3.13.0-tecido-preview.1` · **protocolo de rede:** 16 (cliente e servidor precisam da mesma versão)
+- **Versão atual:** `3.14.0-subaru-preview.9` · **protocolo de rede:** 17 (cliente e servidor precisam da mesma versão)
 - **Testes:** 252 testes Java + 3 testes Python dos projetos Blockbench, todos passando
 - **Estado:** tudo abaixo passou nos testes automáticos; o que ainda não foi conferido dentro do jogo está em
   [Pendências](#pendências)
@@ -87,6 +87,7 @@ próprios. Os tempos de efeito e de som saem das mesmas constantes que o servido
 | **Frieren** (Frieren) | Zoltraak | Barreira Arcana | Impulso Arcano | Gaiola de Vento | Liberar Mana (buraco negro, Julgamento, escudo celestial) |
 | **Asta** (Black Clover) | Espada Matadora de Demônios | Corte Divisor | Avanço Touro Negro | Barreira Antimagia | Assimilação Demoníaca (Black Meteorite, Black Hurricane, Black Divider, ultimate em X) |
 | **Ichigo** (Bleach) | Getsuga Tenshou | Shunpo | Golpe pesado | Corte ascendente | Bankai: Tensa Zangetsu (Getsuga negro, Shunpo triplo, máscara Hollow, Mugetsu) |
+| **Subaru** (Re:Zero, kit 16) | Shamak | Chamado Espiritual (escudo) | Instrução Tática | Recuperação Psicológica | Contrato com a Beatrice, 20 s (Minya, E.M.M., Murak, Ul Minya) |
 
 Destaques:
 
@@ -96,6 +97,8 @@ Destaques:
 - **Mugetsu (Ichigo):** forma temporária; o corte é uma linha finíssima de 72 blocos de altura que avança 50 blocos.
   Depois o Bankai acaba e o Ichigo fica 1 minuto sem poderes.
 - **Máscara Hollow (Ichigo):** buff de dano; com ela, o Z vira Getsuga Jūjishō.
+- **Contrato (Subaru):** a porta da Biblioteca Proibida se abre e a Beatrice (modelo próprio, saia em tecido liso)
+  flutua ao lado dele; na forma, Z/X/C/V viram as magias dela. Traje: agasalho branco e preto com detalhes amarelos.
 
 Bosses (Nemesis): Toji, Aurora, Qual, Liebe e Zangetsu, com telegraphs e golpes próprios.
 
@@ -264,6 +267,7 @@ cliente → o renderizador soma a pose em cada osso e desenha a superfície lisa
 | [docs/design/proximos-personagens.md](docs/design/proximos-personagens.md) | Kits pedidos para o futuro |
 | [docs/design/gdd-v2-implementacao.md](docs/design/gdd-v2-implementacao.md) | GDD e implementação |
 | [docs/comandos-testes-rpg.md](docs/comandos-testes-rpg.md) | Comandos de teste |
+| `vault/` | Vault do Obsidian com o projeto inteiro em notas ligadas (abra a pasta como cofre) |
 | `docs/testing/*-onda-aprovacao-visual.md` | Registro de cada onda (Gojo, Frieren, Asta, Ichigo) |
 | [docs/gojo-vfx.md](docs/gojo-vfx.md), [docs/asta-ataques-forma-ia.md](docs/asta-ataques-forma-ia.md) | Detalhes de kits |
 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | Créditos de terceiros |
@@ -283,6 +287,7 @@ Nada destas entregas recentes foi testado dentro do Minecraft ainda:
 | Sons (todos os kits) | Volume, sincronia com o efeito, variações |
 | Balanceamento 3.11 | Danos e recargas, Atomic de 9 s com dano em ticks e sem empurrão, campo antimagia do Asta, Bankai ~45 s |
 | Ichigo | Empunhadura da Zangetsu, forma Mugetsu de 10 s, tecido das espadas |
+| Subaru (`3.14.0-subaru-preview.9`) | Kit base, contrato com a Beatrice, magias da forma, agasalho e SFX CC0 |
 
 ---
 
@@ -291,8 +296,8 @@ Nada destas entregas recentes foi testado dentro do Minecraft ainda:
 O roadmap completo, com fases, critérios de saída e o roteiro de teste no jogo, está em
 [docs/workflow-roadmap-minezin.md](docs/workflow-roadmap-minezin.md) (seções 9 e 10). Resumo:
 
-1. Testar o `3.13.0-tecido-preview.1` no jogo e corrigir o que aparecer.
-2. Personagens novos, uma técnica por vez, começando pelo **Subaru** ([próximos personagens](docs/design/proximos-personagens.md)).
+1. Testar o `3.14.0-subaru-preview.9` no jogo e corrigir o que aparecer.
+2. Subaru completo no jogo; seguir para o próximo personagem (Killua), uma técnica por vez ([próximos personagens](docs/design/proximos-personagens.md)).
 3. Desempenho com muitos jogadores de capa; colisão do cenário dentro da física; asas e cauda do Devil Union lisas.
 
 ---
