@@ -32,4 +32,4 @@ A antiga ultimate "Autoridade da Preguiça (Mãos Invisíveis)" foi **substituí
 - Traje: `tools/build_subaru_traje.py` (jaqueta branca, mangas e barra pretas, detalhes amarelos, "N" no peito).
 - Sons: `tools/build_subaru_sfx.py`, 13 sons com gravações CC0 (`art/audio/cc0/`).
 
-Ver também: [[2026-11-04 Subaru e Beatrice]], [[Próximos Personagens]].
+Ver também: [[2026-11-04 Subaru e Beatrice]], [[Roadmap]].
