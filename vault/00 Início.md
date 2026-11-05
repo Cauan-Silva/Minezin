@@ -14,7 +14,7 @@ originais sincronizados aos ticks.
 - **Personagens:** [[Personagens]]
 - **Sistemas:** [[Sistemas]]
 - **Desenvolvimento:** [[Desenvolvimento]]
-- **Planejamento:** [[Roadmap]] · [[Pendências]] · [[Próximos Personagens]]
+- **Planejamento:** [[Roadmap]] · [[Pendências]]
 - **Registro:** [[Diário]]
 - **Documentação original do repositório:** [[Documentos do Repositório]]
 

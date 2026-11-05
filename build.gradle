@@ -94,6 +94,7 @@ tasks.named('test').configure {
     outputs.file(layout.buildDirectory.file('subaru-recuperacao-samples.json'))
     outputs.file(layout.buildDirectory.file('subaru-contrato-samples.json'))
     outputs.file(layout.buildDirectory.file('subaru-minya-samples.json'))
+    outputs.file(layout.buildDirectory.file('killua-base-samples.json'))
     outputs.file(layout.buildDirectory.file('ichigo-kit-base-samples.json'))
     outputs.file(layout.buildDirectory.file('ichigo-bankai-entrada-samples.json'))
     outputs.file(layout.buildDirectory.file('ichigo-mugetsu-samples.json'))

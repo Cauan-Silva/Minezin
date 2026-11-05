@@ -12,5 +12,5 @@ tags: [moc, personagem]
 | Ichigo | Bleach | Bankai: Tensa Zangetsu | [[Ichigo]] |
 | Subaru | Re:Zero | Contrato com a [[Beatrice]] | [[Subaru]] |
 
-Inimigos: [[Bosses Nemesis]]. Futuro: [[Próximos Personagens]].
+Inimigos: [[Bosses Nemesis]]. Futuro: [[Roadmap]].
 Todos seguem [[Padrão de Trajes]], [[Tecido]] e [[Áudio]].
