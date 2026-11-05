@@ -18,6 +18,10 @@ public final class MinyaBeatrice {
     private static double s(double t){return PerfilVfxGojo.suave(t);}
     private static double hash(double n){double x=Math.sin(n*127.1+311.7)*43758.5453;return x-Math.floor(x);}
     private static double lim(double v){return Math.max(0,Math.min(1,v));}
+    /** Saida com leve passada do alvo (easeOutBack suave): da vida ao surgir dos cristais. */
+    private static double volta(double t){double x=lim(t)-1,c=1.1;return 1+(c+1)*x*x*x+c*x*x;}
+    /** Recuo antes do disparo, em blocos, ao longo do eixo da mira. */
+    public static final double RECUO=.22;
     public static int disparo(int k){return DISPARO+INTERVALO*ordem(k);}
     /** Ordem de disparo: do centro para as pontas, alternando os lados. */
     private static int ordem(int k){int c=ESTACAS/2,d=k-c;return d==0?0:Math.abs(d)*2-(d<0?1:0);}
@@ -36,20 +40,30 @@ public final class MinyaBeatrice {
     /** Centro da estaca k. */
     public static P centro(int k,double t){
         var l=lugar(k);int d=disparo(k);
-        if(t<d){double tremor=t>FORMA?.02*Math.sin(t*3.1+k):0;double sobe=(1-s(t/FORMA))*.25;return new P(l.x()+tremor,l.y()-sobe,l.z()+tremor);}
-        var a=pontoAcerto(k);var fimVoo=new P(a.x(),a.y()+COMPRIMENTO*.25,a.z());
-        double u=Math.pow(lim((t-d)/VOO),1.3);
-        return new P(l.x()+(fimVoo.x()-l.x())*u,l.y()+(fimVoo.y()-l.y())*u,l.z()+(fimVoo.z()-l.z())*u);
+        var a=pontoAcerto(k);double ax=a.x()-l.x(),az=a.z()-l.z(),an=Math.sqrt(ax*ax+az*az);ax/=an;az/=an;
+        if(t<d){
+            // flutua em arco, sobe com passada e treme cada vez mais na mira; puxa para tras antes de sair
+            double flut=.05*Math.sin(t*.35+k*.9),deriva=.03*Math.sin(t*.22+k*1.7);
+            double tremor=(.012+.03*lim((t-FORMA)/MIRA))*lim(t-FORMA+1);
+            double sobe=(1-volta(t/FORMA))*.35,rc=RECUO*s((t-(d-2.5))/2.5);
+            return new P(l.x()+deriva+tremor*Math.sin(t*3.1+k)-ax*rc,l.y()-sobe+flut+tremor*Math.cos(t*2.7+k*2),l.z()+tremor*Math.sin(t*2.3+k)-az*rc);
+        }
+        var ini=new P(l.x()+.03*Math.sin(d*.22+k*1.7)-ax*RECUO,l.y()+.05*Math.sin(d*.35+k*.9),l.z()-az*RECUO);
+        var fimVoo=new P(a.x(),a.y()+COMPRIMENTO*.25,a.z());
+        double v=lim((t-d)/VOO),u=Math.pow(v,1.6),arco=.55*Math.sin(Math.PI*v);
+        return new P(ini.x()+(fimVoo.x()-ini.x())*u,ini.y()+(fimVoo.y()-ini.y())*u+arco,ini.z()+(fimVoo.z()-ini.z())*u);
     }
     /** Direcao (unitaria) da ponta: antes do disparo vira do "para cima" para o alvo; no voo aponta para o acerto. */
     public static P direcao(int k,double t){
         var l=lugar(k);var a=pontoAcerto(k);double dx=a.x()-l.x(),dy=a.y()-l.y(),dz=a.z()-l.z(),n=Math.sqrt(dx*dx+dy*dy+dz*dz);
-        double m=s((t-FORMA*.4)/(FORMA*.6+MIRA*.5));double x=dx/n*m,y=dy/n*m+(1-m),z=dz/n*m;double nn=Math.sqrt(x*x+y*y+z*z);
-        return new P(x/nn,y/nn,z/nn);
+        double m=s((t-FORMA*.4)/(FORMA*.6+MIRA*.5));double x=dx/n*m,y=dy/n*m+(1-m),z=dz/n*m;
+        // depois de cravar a estaca vibra e assenta
+        double c=t-acerto(k);if(c>0){double w=.14*Math.exp(-c/2.2)*Math.sin(c*2.6);x+=-dz/n*w;z+=dx/n*w;}
+        double nn=Math.sqrt(x*x+y*y+z*z);return new P(x/nn,y/nn,z/nn);
     }
     /** Escala da estaca: cresce na formacao, some quando o cristal do acerto quebra. */
     public static double escala(int k,double t){
-        double e=s((t-ordem(k)*.5)/(FORMA-2));int a=acerto(k);return t>=a+CRISTAL?0:e;
+        double e=t<ordem(k)*.5?0:volta((t-ordem(k)*.5)/(FORMA-2));int a=acerto(k);return t>=a+CRISTAL?0:e;
     }
     /** Rastro (0..1) no voo. */
     public static double alphaRastro(int k,double t){int d=disparo(k);return t<d||t>acerto(k)+1?0:1-s((t-acerto(k))/1);}
@@ -68,7 +82,7 @@ public final class MinyaBeatrice {
         return new P(Math.cos(a)*Math.cos(el),Math.sin(el),Math.sin(a)*Math.cos(el));
     }
     public static double tamanhoEspinho(int k,int j,double t){
-        double a=t-acerto(k);if(a<0||a>=CRISTAL)return 0;return (.55+.5*hash(k*13+j))*s(a/4);
+        double a=t-acerto(k);if(a<0||a>=CRISTAL)return 0;return (.55+.5*hash(k*13+j))*volta((a-j*.25)/3.5);
     }
     /** Clarao do impacto (0..1). */
     public static double impacto(int k,double t){double a=t-acerto(k);return a<0||a>4?0:1-a/4;}
