@@ -10,4 +10,4 @@ tags: [dev, processo]
 - **Auras:** aura de tecido com raios em volta é o mínimo; ver [[Padrão de Auras]].
 - **Sons:** próprios, em camadas, 3 variações, presos aos ticks.
 - **Sincronia:** som, efeito e dano saem das mesmas constantes.
-- **Animação fluida:** chaves encadeadas, sem poses paradas; prévias a 40 fps.
+- **Animação fluida:** chaves encadeadas, sem poses paradas; prévias a 40 fps. Cada golpe tem antecipação, overshoot (`easeOutBack`), follow-through, volta à guarda, sobe e desce do corpo (`position`) e inclinação; 10 ou mais chaves por osso (reprovado como "duro" com 5 ou 6).

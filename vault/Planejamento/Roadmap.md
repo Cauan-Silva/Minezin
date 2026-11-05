@@ -66,6 +66,7 @@ Todo personagem possuirá atributos baseados em sua classe principal e uma **Hab
 * **Passiva (Imunidade Zoldyck):** Resistência natural a venenos e eletricidade.
 * **Base:** [Z] Palma Relâmpago, [X] Passo Borrão, [C] Yo-Yo de Aço, [V] Garras Assassinas.
 * **[G] Godspeed (Kanmuru):** [Z] Relâmpago Perfurante, [X] Whirlpool (Contra-ataque), [C] Soco Relâmpago, [V] Pulso Eletromagnético.
+* **Ultimate (G de novo no Godspeed): Tempestade Divina** — 12 teleportes com gaiola de raios e mergulho como relâmpago gigante (aprovada em 05/11/2026).
 
 ### 3. Guts (Berserk) - *Tank / DPS*
 * **Passiva (Vontade Indomável):** Dano e resistência aumentam com HP baixo.
