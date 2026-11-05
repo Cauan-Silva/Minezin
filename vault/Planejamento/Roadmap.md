@@ -3,7 +3,7 @@ tags: [planejamento, roadmap]
 ---
 > Roadmap oficial desde 05/11/2026 (substitui o roadmap anterior e a nota "Próximos Personagens"). Estado do teste no jogo: [[Pendências]]. Detalhes dos kits já pedidos: [[proximos-personagens]].
 >
-> **Divergência:** este roadmap lista para o [[Subaru]] o G "Autoridade da Preguiça", mas no jogo o G implementado é o Contrato com a [[Beatrice]].
+> **Decisões de 05/11/2026:** (1) o G do [[Subaru]] **continua sendo o Contrato com a [[Beatrice]]** (a "Autoridade da Preguiça" abaixo fica só como registro); (2) **as passivas serão implementadas para todos os personagens**, inclusive os já prontos (Gojo, Cid, Frieren, Asta, Ichigo, Subaru).
 
 # DOCUMENTAÇÃO E VAULT ROADMAP: MINEZIN (FORGE 1.20.1)
 
@@ -60,7 +60,7 @@ Todo personagem possuirá atributos baseados em sua classe principal e uma **Hab
 ### 1. Subaru Natsuki (Re:Zero) - *Suporte / Controle*
 * **Passiva (Return by Death):** Ao morrer, retorna a um checkpoint salvo há 3 minutos. (Longo Cooldown).
 * **Base:** [Z] Shamak (Cegueira), [X] Chamado Espiritual, [C] Instrução Tática, [V] Recuperação.
-* **[G] Autoridade da Preguiça:** [Z] Garras Ocultas, [X] Esmagamento Espectral, [C] Barreira Invisível, [V] Arremesso.
+* **[G] Contrato com a Beatrice** (decidido em 05/11/2026; substitui a Autoridade da Preguiça): [Z] Minya, [X] E.M.M., [C] Murak, [V] Ul Minya.
 
 ### 2. Killua Zoldyck (HxH) - *DPS (Velocidade)*
 * **Passiva (Imunidade Zoldyck):** Resistência natural a venenos e eletricidade.

@@ -7,6 +7,7 @@ tags: [dev, processo]
 - **VFX em volumes 3D**, nunca planos 2D (uma versão 2D foi reprovada).
 - **Uma técnica por vez** com prévia e aprovação.
 - **Trajes:** ver [[Padrão de Trajes]].
+- **Auras:** aura de tecido com raios em volta é o mínimo; ver [[Padrão de Auras]].
 - **Sons:** próprios, em camadas, 3 variações, presos aos ticks.
 - **Sincronia:** som, efeito e dano saem das mesmas constantes.
 - **Animação fluida:** chaves encadeadas, sem poses paradas; prévias a 40 fps.

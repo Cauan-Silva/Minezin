@@ -21,7 +21,7 @@ Iniciada em 05/11/2026, sobre a `main` na versão `3.14.0-subaru-preview.9` (pro
 
 | Ordem | Parte | Status | Prévia | Aprovação |
 | --- | --- | --- | --- | --- |
-| 1 | G Godspeed (entrada + aura) | ⏳ | | |
+| 1 | G Godspeed (entrada + aura) | prévia 1 enviada 05/11 | `minezin-outputs/killua-godspeed/killua-godspeed.mp4` + `-fases.png` | aguardando |
 | 2 | Kit base Z/X/C/V (pedido do usuário: base inteira primeiro) | prévia 2 enviada 05/11 (prévia 1: "VFX simples demais") | `minezin-outputs/killua-base/killua-base.mp4` + `killua-base-fases.png` | aguardando |
 | 6 | G-Z / G-X / G-C / G-V | ⏳ | | |
 | 7 | Traje (camisa, short) + cabelo | ⏳ | | |
@@ -42,3 +42,11 @@ Iniciada em 05/11/2026, sobre a `main` na versão `3.14.0-subaru-preview.9` (pro
 - Ticks: Z carga 8, avanço 4, golpe 12, paralisia 20 (fim 40) · X teleporte 14, 4 blocos (fim 32) · C lança 6, giro 20, recolhe 8 (fim 38) · V some 8, furtivo 40, golpe 48, sangramento 30 (fim 78).
 - Limites: boneco com traje provisório (do Ichigo), sem SFX, terreno ou luz do Minecraft.
 - Prévia 3 (05/11/2026): só o Narukami refeito pela referência do usuário (salto 10, estrela até 15, descarga 15, impacto 16, paralisia 20, pouso 32, fim 46). X, C e V seguem da prévia 2.
+
+## Godspeed (G) — prévia 1 (05/11/2026)
+- Geometria: `core/vfx/KilluaGodspeed`; teste `KilluaGodspeedTest` exporta `build/killua-godspeed-samples.json`; animação `killua_godspeed`.
+- Ticks: carga 0-14 (arcos nos braços e no chão), ativação 14 (coluna, estouro radial, ondas), aura contínua até 600 (30 s).
+- Prévia: `python -B tools/preview_killua_godspeed.py --output ../minezin-outputs/killua-godspeed`.
+- Decisões do usuário em 05/11: G do Subaru continua o Contrato; passivas para todos; kits passam por aprovação antes de seguir.
+- Godspeed prévia 1 reprovada (aura feia; não mexer no cabelo em transformações). Versão volumétrica (cascas) também reprovada.
+- **Protótipo de aura de tecido (05/11/2026):** `core/client/tecido/MalhaAura` (base presa ao corpo, flutuação, turbulência, pulso de chama; perfil `PerfilAura`) + `core/vfx/AuraTecidoKillua` (14 línguas + raios nas bordas). Teste `AuraTecidoKilluaTest` simula parado, corrida, salto e parada e exporta `build/killua-aura-tecido-samples.json`. Prévia: `python -B tools/preview_killua_aura_tecido.py --output ../minezin-outputs/killua-aura-tecido`. Se aprovado, vira o padrão de auras de todos os personagens.
