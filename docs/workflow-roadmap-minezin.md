@@ -262,7 +262,7 @@ Os documentos `mapa-sistemas-dependencias.md` e `baseline-build-validacao.md` es
 
 1. Ler este documento e a nota técnica da onda ativa.
 2. Conferir branch/HEAD/status e a versão que o usuário realmente está usando.
-3. Recuperar o último feedback e a última autorização explícita. Hoje (04/11/2026): os cinco kits aprovados em prévia e na `main`, JAR `3.13.0-tecido-preview.1` entregue, teste em jogo pendente; próximo personagem: Subaru.
+3. Recuperar o último feedback e a última autorização explícita. Hoje (05/11/2026): seis kits na `main` com o Subaru completo (contrato com a Beatrice), JAR `3.14.0-subaru-preview.9`; próximo personagem: Killua.
 4. Corrigir primeiro os problemas reproduzidos; preservar o Cid e as partes já aprovadas.
 5. Atualizar a evidência e a documentação antes de concluir ou publicar.
 

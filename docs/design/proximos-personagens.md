@@ -2,7 +2,9 @@
 
 Ordem informada pelo usuário em 03/11/2026. Cada um segue o workflow das ondas: uma técnica por vez, prévia offline, aprovação e só então implementação no jogo. Nada aqui está implementado.
 
-## 1. Subaru Natsuki (Re:Zero)
+## 1. Subaru Natsuki (Re:Zero) — implementado (3.14.0-subaru-preview.9)
+
+> Base e contrato com a Beatrice estão no jogo. O G final ficou: Contrato (20 s), Z Minya, X E.M.M., C Murak, V Ul Minya.
 
 Estrategista: controle tático, suporte e manipulação temporal.
 
