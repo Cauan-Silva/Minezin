@@ -47,6 +47,7 @@ final class RenderMagiasSubaru {
                 case PoderesSubaru.INSTRUCAO->instrucao(pose,cam,e,t,parcial);
                 case PoderesSubaru.RECUPERACAO->recuperacao(pose,cam,t,Base.horizontal(frenteCorpo(dono,parcial)));
                 case PoderesSubaru.MINYA->minya(pose,cam,t,Base.horizontal(e.alvo));
+                case PoderesSubaru.UL_MINYA->ulMinya(pose,cam,t,Base.horizontal(e.alvo));
                 case PoderesSubaru.MURAK->murak(pose,cam,e,t,Base.horizontal(frenteCorpo(dono,parcial)),dono,parcial);
                 case PoderesSubaru.EMM->emm(pose,cam,e,t,Base.horizontal(frenteCorpo(dono,parcial)));
                 default->{}
@@ -242,6 +243,48 @@ final class RenderMagiasSubaru {
                 float im=(float)MinyaBeatrice.impacto(k,t);if(im>.01)disco(pose,cam,v(b,MinyaBeatrice.pontoAcerto(k)).add(0,.2,0),.5*(1.4-im),BRILHO,im*.4f);
             }
         });
+    }
+
+    // ---------------- G-V: Ul Minya (Beatrice) ----------------
+    private static Vec3 v(Base b,UlMinyaBeatrice.P p){return b.em(p.x(),p.y(),p.z());}
+    private static void ulMinya(PoseStack pose,Vec3 cam,double t,Base b){
+        float ac=(float)UlMinyaBeatrice.alphaCirculo(t),az=(float)UlMinyaBeatrice.alphaZona(t),cl=(float)UlMinyaBeatrice.clarao(t);
+        double cg=UlMinyaBeatrice.carga(t),br=1+1.5*cg,C=UlMinyaBeatrice.COMPRIMENTO,R=UlMinyaBeatrice.RAIO;Vec3 ca=v(b,UlMinyaBeatrice.CENTRO_AREA);
+        boolean leve=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get();
+        for(int passe=0;passe<2;passe++){boolean g=passe==1;
+            DesenhoMagia.lote(pose,g?1:8,g,()->{
+                for(int k=0;k<UlMinyaBeatrice.ESTACAS;k++){
+                    double es=UlMinyaBeatrice.escala(k,t);
+                    if(es>.01)cristal(pose,cam,v(b,UlMinyaBeatrice.centro(k,t)),v(b,UlMinyaBeatrice.direcao(k)),C*es,R*es,1,br,g);
+                    Vec3 pa=v(b,UlMinyaBeatrice.pontoAcerto(k));
+                    for(int j=0;j<UlMinyaBeatrice.ESPINHOS;j++){double tam=UlMinyaBeatrice.tamanhoEspinho(k,j,t);if(tam>.01)cristal(pose,cam,pa,v(b,UlMinyaBeatrice.espinho(k,j)),tam*1.3,tam*.22,1,br*.8,g);}
+                    if(!leve||k%2==0)for(int c=0;c<UlMinyaBeatrice.CACOS;c++){double tam=UlMinyaBeatrice.tamanhoCaco(k,c,t);if(tam<=.005)continue;Vec3 q=v(b,UlMinyaBeatrice.caco(k,c,t));
+                        cristal(pose,cam,q,new Vec3(Math.sin(t+q.x),1,Math.cos(t*1.3+q.z)),tam*2.2,tam*.7,1,.6,g);}
+                }
+                for(int gi=0;gi<UlMinyaBeatrice.GIGANTES;gi++){
+                    double L=UlMinyaBeatrice.comprimentoGigante(gi,t);Vec3 e=v(b,UlMinyaBeatrice.eixoGigante(gi));
+                    if(L>.01)cristal(pose,cam,v(b,UlMinyaBeatrice.baseGigante(gi)).add(e.scale(L*.25)),e,L,UlMinyaBeatrice.raioGigante(gi)*Math.min(1,L/2.5),1,br,g);
+                    for(int c=0;c<UlMinyaBeatrice.CACOS_GIGANTE;c++){double tam=UlMinyaBeatrice.tamanhoCacoGigante(gi,c,t);if(tam<=.005)continue;Vec3 q=v(b,UlMinyaBeatrice.cacoGigante(gi,c,t));
+                        cristal(pose,cam,q,new Vec3(Math.cos(t*.9+q.z),1,Math.sin(t+q.x)),tam*2.4,tam*.7,1,.7,g);}
+                }
+            });
+        }
+        DesenhoMagia.lote(pose,1,true,()->{
+            if(ac>.01){
+                for(int a=0;a<UlMinyaBeatrice.ANEIS;a++){int N=UlMinyaBeatrice.PONTOS_CIRCULO;
+                    for(int i=0;i<N;i++){if(a==1&&i%8>=6)continue;fita(pose,cam,v(b,UlMinyaBeatrice.circulo(a,i,t)),v(b,UlMinyaBeatrice.circulo(a,(i+1)%N,t)),.12+.04*(a==2?1:0),a==2?BRILHO:M_VIOLETA,ac*(float)(.8+.2*cg));}
+                    if(a==1)for(int i=0;i<N;i+=6)fita(pose,cam,v(b,UlMinyaBeatrice.circulo(a,i,t)),v(b,UlMinyaBeatrice.circulo(a,(i+30)%N,t)),.03,M_VIOLETA,ac*.55f);}
+                for(int k=0;k<UlMinyaBeatrice.RAIOS_CIRCULO;k++)fita(pose,cam,v(b,UlMinyaBeatrice.raioCirculo(k,0,t)),v(b,UlMinyaBeatrice.raioCirculo(k,1,t)),.08,0xD9C2FF,ac*.7f);
+            }
+            if(az>.01)for(int i=0;i<UlMinyaBeatrice.PONTOS_ZONA;i++)fita(pose,cam,v(b,UlMinyaBeatrice.zona(i,t)),v(b,UlMinyaBeatrice.zona((i+1)%UlMinyaBeatrice.PONTOS_ZONA,t)),.09,M_VIOLETA,az);
+            for(int k=0;k<UlMinyaBeatrice.ESTACAS;k++){
+                float ra=(float)UlMinyaBeatrice.alphaRastro(k,t);
+                if(ra>.01&&UlMinyaBeatrice.escala(k,t)>.01){Vec3 c=v(b,UlMinyaBeatrice.centro(k,t)),d=v(b,UlMinyaBeatrice.direcao(k));
+                    for(int q=0;q<6;q++)fita(pose,cam,c.subtract(d.scale(.4+.9*q)),c.subtract(d.scale(1.3+.9*q)),.08*(1-q/6.),M_VIOLETA,ra*(1-q/6f));}
+                float im=(float)UlMinyaBeatrice.impacto(k,t);if(im>.01)disco(pose,cam,v(b,UlMinyaBeatrice.pontoAcerto(k)).add(0,.2,0),.45*(1.4-im),BRILHO,im*.35f);
+            }
+        });
+        if(cl>.01){DesenhoMagia.esfera(pose,cam,ca.add(0,2.5,0),5+7*(1-cl),1,BRILHO,cl*.4f,true,12);DesenhoMagia.esfera(pose,cam,ca.add(0,2.5,0),2.4,1,0xFFFFFF,cl*.6f,true,10);}
     }
 
     // ---------------- G-C: Murak (Beatrice) ----------------

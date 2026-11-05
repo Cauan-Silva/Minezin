@@ -43,7 +43,7 @@ public final class EfeitosSubaru {
     /** Tick (com fracao) desde o G, ou -1 se este jogador nao esta na forma. */
     public static double contrato(UUID id,float parcial){var mc=Minecraft.getInstance();var c=CONTRATOS.get(id);return c==null||mc.level==null||c.mundo!=mc.level?-1:mc.level.getGameTime()-c.inicio+parcial;}
 
-    public static boolean trata(int tipo){return tipo>=PoderesSubaru.SHAMAK&&tipo<=PoderesSubaru.RECUPERACAO||tipo==PoderesSubaru.MINYA||tipo==PoderesSubaru.EMM||tipo==PoderesSubaru.EMM_GOLPE||tipo==PoderesSubaru.MURAK;}
+    public static boolean trata(int tipo){return tipo>=PoderesSubaru.SHAMAK&&tipo<=PoderesSubaru.RECUPERACAO||tipo==PoderesSubaru.MINYA||tipo==PoderesSubaru.EMM||tipo==PoderesSubaru.EMM_GOLPE||tipo==PoderesSubaru.MURAK||tipo==PoderesSubaru.UL_MINYA;}
     /** Tick (com fracao) da magia `tipo` da Beatrice em andamento para este jogador, ou -1. */
     public static double magia(UUID id,int tipo,float parcial){var mc=Minecraft.getInstance();if(mc.level==null)return -1;
         for(var e:EFEITOS)if(e.tipo==tipo&&e.jogador.equals(id)&&e.mundo==mc.level)return mc.level.getGameTime()-e.inicio+parcial;return -1;}
@@ -82,6 +82,7 @@ public final class EfeitosSubaru {
         case PoderesSubaru.RECUPERACAO->RecuperacaoSubaru.FIM+2;
         case PoderesSubaru.MINYA->MinyaBeatrice.fim()+2;
         case PoderesSubaru.EMM->EmmBeatrice.FIM+2;
+        case PoderesSubaru.UL_MINYA->UlMinyaBeatrice.FIM+2;
         case PoderesSubaru.MURAK->MurakBeatrice.DURACAO+MurakBeatrice.ONDA+2;default->0;};}
 
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent ev){

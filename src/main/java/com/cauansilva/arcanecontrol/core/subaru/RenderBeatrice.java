@@ -91,6 +91,16 @@ final class RenderBeatrice {
         r.put("corpo",new float[]{(float)(2*Math.sin(t*.12)-4*estalo),0,(float)(1.5*Math.sin(t*.1))});
         r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)-24*olha+4*estalo),(float)(-10*olha+5*Math.sin(t*.05)),0});
     }
+    /** Ul Minya: sobe erguendo os bracos, prende o folego na carga e varre os bracos para baixo na quebra (preview_subaru_ul_minya). */
+    static void poseUlMinya(Map<String,float[]> r,double t){
+        int A=com.cauansilva.arcanecontrol.core.vfx.UlMinyaBeatrice.ABRE,Q=com.cauansilva.arcanecontrol.core.vfx.UlMinyaBeatrice.QUEBRA;
+        double alto=volta(t/A)*(1-sv((t-Q+1.5)/2.5)),varre=Math.exp(-Math.pow((t-Q-1)/2.2,2)),tensao=t<Q?sv((t-Q+20)/18):0;
+        double i0=Math.sin(t*.15),i05=Math.sin(t*.15+.5),i1=Math.sin(t*.15+1),i15=Math.sin(t*.15+1.5);
+        r.put("braco_e",new float[]{(float)(-8+4*i0*(1-alto)-150*alto+30*varre),0,(float)(-6-26*alto+6*i1*alto-10*tensao)});
+        r.put("braco_d",new float[]{(float)(-8+4*i05*(1-alto)-150*alto+30*varre),0,(float)(6+26*alto-6*i15*alto+10*tensao)});
+        r.put("corpo",new float[]{(float)(-6*alto+10*varre+2*Math.sin(t*.12)),0,(float)(1.5*Math.sin(t*.1))});
+        r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)-14*alto+8*varre),(float)(5*Math.sin(t*.05)*(1-alto)),0});
+    }
     static void desenhar(PoseStack pose,EfeitosSubaru.Contrato c,Player dono,double t,Vec3 cam,float parcial){
         var mc=Minecraft.getInstance();if(RENDER==null){RENDER=new GeoObjectRenderer<>(new Modelo());BEA=new Beatrice();}
         double escala,giro,inclina,yaw;Vec3 alvo;
@@ -102,7 +112,8 @@ final class RenderBeatrice {
         }else{
             yaw=Mth.rotLerp(parcial,dono.yBodyRotO,dono.yBodyRot);double y=Math.toRadians(yaw);
             var b=RenderMagiasSubaru.Base.horizontal(new Vec3(-Math.sin(y),0,Math.cos(y)));var L=ContratoSubaru.LUGAR;
-            alvo=dono.getPosition(parcial).add(b.em(L.x(),L.y()+.08*Math.sin(t*.2),L.z()));
+            double tu=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.UL_MINYA,parcial),sobe=tu<0?0:.9*sv(tu/12)*(1-sv((tu-com.cauansilva.arcanecontrol.core.vfx.UlMinyaBeatrice.QUEBRA-6)/14));
+            alvo=dono.getPosition(parcial).add(b.em(L.x(),L.y()+sobe+.08*Math.sin(t*.2),L.z()));
             c.beatrice=c.beatrice==null?alvo:c.beatrice.lerp(alvo,.18);
             escala=1;giro=-12;inclina=Mth.clamp(c.beatrice.distanceTo(alvo)*8,0,14);
         }
@@ -111,6 +122,7 @@ final class RenderBeatrice {
         double tm=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.MINYA,parcial);if(tm>=0)poseMinya(BEA.pose,tm);
         double te=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.EMM,parcial);if(te>=0)poseEmm(BEA.pose,te);
         double tk=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.MURAK,parcial);if(tk>=0&&tk<20)poseMurak(BEA.pose,tk,!dono.onGround());
+        double tu=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.UL_MINYA,parcial);if(tu>=0)poseUlMinya(BEA.pose,tu);
         Vec3 p=c.beatrice.subtract(cam);int luz=LevelRenderer.getLightColor(mc.level,BlockPos.containing(c.beatrice.add(0,.5,0)));
         pose.pushPose();
         pose.translate(p.x,p.y,p.z);

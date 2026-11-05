@@ -87,7 +87,7 @@ public final class AnimacoesGojo {
     }
     /** Subaru (kit base): 600 Shamak, 602 Escudo, 604 Instrucao, 605 Recuperacao (player_animation/subaru.json). */
     public static void tocarSubaru(UUID id,int tipo){
-        String nome=switch(tipo){case 600->"subaru_shamak";case 602->"subaru_escudo";case 604->"subaru_instrucao";case 605->"subaru_recuperacao";case 606->"subaru_contrato";case 610->"subaru_minya";case 611->"subaru_emm";case 613->"subaru_murak_cast";default->null;};
+        String nome=switch(tipo){case 600->"subaru_shamak";case 602->"subaru_escudo";case 604->"subaru_instrucao";case 605->"subaru_recuperacao";case 606->"subaru_contrato";case 610->"subaru_minya";case 611->"subaru_emm";case 613->"subaru_murak_cast";case 614->"subaru_ul_minya";default->null;};
         var mc=Minecraft.getInstance();if(nome==null||mc.level==null)return;
         if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
         var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,nome);
