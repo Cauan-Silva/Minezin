@@ -118,8 +118,9 @@ Volumes 3D (malhas com luz e borda), não sprites planos. A geometria de cada ef
 e Photon para o bloom de acento. Ultimates têm câmera cinematográfica, que pode ser desligada na árvore.
 
 ### Áudio
-Todo som é **original e procedural** (síntese em numpy, sem amostras de terceiros), feito no motor em camadas
-`tools/sfx_motor.py`: ataque curto, corpo, grave saturado e eco, com compressão só nos picos e **3 variações** de
+Os sons são feitos no motor em camadas (síntese em numpy); a partir do Subaru eles também usam **gravações CC0**
+(domínio público, fontes em `art/audio/cc0/fontes.json` e em THIRD_PARTY_NOTICES.md) como camadas. O motor
+`tools/sfx_motor.py` combina: ataque curto, corpo, grave saturado e eco, com compressão só nos picos e **3 variações** de
 cada som (o jogo sorteia uma por uso). Cada habilidade é dividida em momentos tocados no tick exato do efeito
 (`RoteiroAudio`). Nenhuma habilidade usa som do Minecraft.
 

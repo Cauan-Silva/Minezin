@@ -45,8 +45,6 @@ Versão atual: `3.13.0-tecido-preview.1`, protocolo de rede **16**.
    `src/main/resources/META-INF/mods.toml` juntos e copie o JAR para `../minezin-outputs/`.
 7. **Não quebre o que foi aprovado.** Mudanças em sistemas compartilhados (tecido, áudio, shader) precisam manter o
    comportamento aprovado dos outros personagens, e isso deve ser dito ao usuário ("isso também vale para o Ichigo").
-8. **Nada de assets de terceiros:** modelos, texturas e sons são gerados pelos scripts em `tools/`. Outros mods são só
-   referência de comportamento.
 
 ---
 

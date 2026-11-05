@@ -15,6 +15,23 @@ public final class RoteiroAudio {
     /** Crackle while the warning ring closes, thunder on the server's damage tick. */
     public static List<Cue> julgamento(){return List.of(new Cue("frieren_julgamento_carga",0,FormaFrieren.QUEDA,.6f,false),new Cue("frieren_julgamento_trovao",FormaFrieren.QUEDA,40,.9f,false));}
     public static List<Cue> imediato(String nome,int vida){return List.of(new Cue(nome,0,vida,.7f,false));}
+    /** Subaru e Beatrice (tools/build_subaru_sfx.py, gravacoes CC0 + sintese): um roteiro por pacote 600-614 de
+     *  PoderesSubaru; os acertos internos ja estao nos ticks das classes puras. Lista vazia quando o tipo nao tem som. */
+    public static List<Cue> subaru(int tipo){return switch(tipo){
+        case 600->List.of(new Cue("subaru_shamak_carga",0,com.cauansilva.arcanecontrol.core.vfx.SamakSubaru.CARGA+4,.75f,true),
+                new Cue("subaru_shamak_disparo",com.cauansilva.arcanecontrol.core.vfx.SamakSubaru.CARGA,14,.8f,false));
+        case 601->List.of(new Cue("subaru_shamak_nevoa",0,50,.75f,false));
+        case 602->List.of(new Cue("subaru_escudo",0,22,.7f,true));
+        case 603->List.of(new Cue("subaru_escudo_estouro",0,18,.8f,true));
+        case 604->List.of(new Cue("subaru_instrucao",0,26,.75f,false));
+        case 605->List.of(new Cue("subaru_recuperacao",0,com.cauansilva.arcanecontrol.core.vfx.RecuperacaoSubaru.FIM+2,.7f,true));
+        case 610->List.of(new Cue("beatrice_minya",0,60,.8f,false));
+        case 611->List.of(new Cue("beatrice_emm",0,56,.75f,true));
+        case 612->List.of(new Cue("beatrice_emm_golpe",0,14,.8f,true));
+        case 613->List.of(new Cue("beatrice_murak",0,28,.75f,true));
+        case 614->List.of(new Cue("beatrice_ul_minya",0,com.cauansilva.arcanecontrol.core.vfx.UlMinyaBeatrice.FIM+2,.9f,false));
+        default->List.of();};}
+    public static List<Cue> subaruContrato(){return List.of(new Cue("subaru_contrato",0,com.cauansilva.arcanecontrol.core.vfx.ContratoSubaru.FIM+2,.85f,false));}
     /** Asta (tools/build_asta_sfx.py): each skill's moments on its VFX ticks. 300-303 base Z/X/C/V, 304-307 Devil
      *  Union Z/X/C/V, 308 deflection, 200 the awakening. Null when the type has no sound of its own. */
     public static List<Cue> asta(int tipo){

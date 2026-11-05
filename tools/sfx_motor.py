@@ -21,6 +21,7 @@ import soundfile as sf
 ROOT=Path(__file__).resolve().parents[1]
 ASSETS=ROOT/'src/main/resources/assets/arcanecontrol'
 RATE=48000;VARIANTES=3
+_AMOSTRAS={}
 TICK=1/20
 
 class Som:
@@ -28,6 +29,21 @@ class Som:
     def __init__(self,duracao,semente):
         self.n=max(1,round(duracao*RATE));self.dur=self.n/RATE;self.t=np.arange(self.n)/RATE
         self.rng=np.random.default_rng(semente);self.freq=np.fft.rfftfreq(self.n,1/RATE)
+    # ---------- recorded layers (CC0, art/audio/cc0, sources in art/audio/cc0/fontes.json) ----------
+    def amostra(self,nome,ini=0.,ganho=1.,tom=1.,inverter=False,corte=None,fade=.008):
+        """A CC0 recording (path relative to art/audio/cc0, or a list to pick one at random per take) placed at `ini`
+        seconds: mono, resampled to RATE and pitched by `tom` (2 = an octave up, also twice as short), optionally
+        reversed and cut to `corte` seconds, peak-normalised and scaled by `ganho`."""
+        if isinstance(nome,(list,tuple)):nome=nome[int(self.rng.integers(len(nome)))]
+        if nome not in _AMOSTRAS:
+            d,sr=sf.read(ROOT/'art/audio/cc0'/nome,dtype='float32',always_2d=True);_AMOSTRAS[nome]=(d.mean(axis=1),sr)
+        d,sr=_AMOSTRAS[nome];passo=sr/RATE*tom;idx=np.arange(0,len(d)-1,passo);x=np.interp(idx,np.arange(len(d)),d)
+        if inverter:x=x[::-1]
+        if corte:x=x[:int(corte*RATE)]
+        k=max(1,int(fade*RATE));x=x.copy();x[:k]*=np.linspace(0,1,k);x[-k:]*=np.linspace(1,0,k)
+        x=x/max(1e-9,np.max(np.abs(x)));out=np.zeros(self.n);i=int(ini*RATE)
+        if i<self.n:m=min(len(x),self.n-i);out[i:i+m]=x[:m]
+        return ganho*out
     # ---------- sources ----------
     def ruido(self,lo=20,hi=16000,cor=0.):
         """Band-limited noise: lo/hi edges (4th/8th order), cor tilts it darker (pink ~.5, brown ~1)."""

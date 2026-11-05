@@ -1686,5 +1686,317 @@
     "peak": 0.66539,
     "rms": 0.15353,
     "sha256": "afcf322f5ff8d2a04f15c35b8adc73ea3cee2c1d4f28bc760c313cefdbf87593"
+  },
+  "subaru_shamak_carga": {
+    "duration": 0.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61098,
+    "rms": 0.12675,
+    "sha256": "09f16d14f6bcbc0f48d47584a77c1fbdfa31832cec598bd1f7d76ab3094b0db1"
+  },
+  "subaru_shamak_carga_2": {
+    "duration": 0.5769,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.56886,
+    "rms": 0.11707,
+    "sha256": "228f303f970e04f73f2076bbf4a1423c365faf7929229f3d8680ba0592fcd0cc"
+  },
+  "subaru_shamak_carga_3": {
+    "duration": 0.625,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59697,
+    "rms": 0.123,
+    "sha256": "1752876507621befe94414547ad7d3a63cd8b93415f8e80131abc70812e6b32b"
+  },
+  "subaru_shamak_disparo": {
+    "duration": 0.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59062,
+    "rms": 0.14069,
+    "sha256": "86154ec07ea03d80a88cbd049e1807a579af15bced91f26ba68ad6337c8a8fd1"
+  },
+  "subaru_shamak_disparo_2": {
+    "duration": 0.5769,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60519,
+    "rms": 0.14106,
+    "sha256": "080dc7da62563689f7093f7ccaa8488c667efc6f6f9ffdf141c9dcf9532cde91"
+  },
+  "subaru_shamak_disparo_3": {
+    "duration": 0.625,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.64254,
+    "rms": 0.153,
+    "sha256": "dc99a53cee52a207da794b807fb2b1a975fea975faa81fb1d6e6ae050958d6e7"
+  },
+  "subaru_shamak_nevoa": {
+    "duration": 2.4,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61823,
+    "rms": 0.14973,
+    "sha256": "7a879eaaa00dedfb549f172fc488a260f1c4d8cd65927731c259ca0199780dc6"
+  },
+  "subaru_shamak_nevoa_2": {
+    "duration": 2.3077,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.5795,
+    "rms": 0.15734,
+    "sha256": "fe7221031cf82571495978f101ea3ae6fb30fe504467eec0d8c76f7c492e11fe"
+  },
+  "subaru_shamak_nevoa_3": {
+    "duration": 2.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61373,
+    "rms": 0.15938,
+    "sha256": "acd0dffd2ca405d8c33a6ee7ed96f10f80e4b84b8f1dd94fe92fdf3c7444b540"
+  },
+  "subaru_escudo": {
+    "duration": 1.0,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60904,
+    "rms": 0.17647,
+    "sha256": "55d4d9e4443a4c3d6a16a8a4c6f767c6d096017cc1bb2e7357a70e6c235e4490"
+  },
+  "subaru_escudo_2": {
+    "duration": 0.9615,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62005,
+    "rms": 0.1667,
+    "sha256": "2fbc983bca9f7201ca535bd2d2f7e963c2448281b6bd41041daa5588d534136d"
+  },
+  "subaru_escudo_3": {
+    "duration": 1.0416,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63777,
+    "rms": 0.18071,
+    "sha256": "8aabbb99d6ae58e05ba1d4a7195e6ec49848daf0afc5b45a4ac8e460fdf5b6fb"
+  },
+  "subaru_escudo_estouro": {
+    "duration": 0.8,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.595,
+    "rms": 0.102,
+    "sha256": "ecd0851ee9235d066d730c1e4a1ddc186817ca025ba671145f99c567293d8974"
+  },
+  "subaru_escudo_estouro_2": {
+    "duration": 0.7692,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61975,
+    "rms": 0.09542,
+    "sha256": "5cf767e8f34b2743740ea5035f2ff93984b528783f2414261527624096f70a03"
+  },
+  "subaru_escudo_estouro_3": {
+    "duration": 0.8333,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60869,
+    "rms": 0.09263,
+    "sha256": "111d23061215b3545ad77d498fcb427d3a22a92f939da2ed576dca805188c7f2"
+  },
+  "subaru_instrucao": {
+    "duration": 1.2,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.64088,
+    "rms": 0.10927,
+    "sha256": "9d229182ac3aac85edb10024fd8fbcf8130c21e1cd4dd911006c7e5fd01c082c"
+  },
+  "subaru_instrucao_2": {
+    "duration": 1.1538,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63236,
+    "rms": 0.13857,
+    "sha256": "be4d17bb35c0e8dfbe98ed69abf39173b2680d87792fa43e2398f43e0f82ac07"
+  },
+  "subaru_instrucao_3": {
+    "duration": 1.25,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63453,
+    "rms": 0.12089,
+    "sha256": "03ea957ca049cdecc241c9f5eaaa77b9821cad6089f07ecf340bb8526aa9bc46"
+  },
+  "subaru_recuperacao": {
+    "duration": 2.9,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.64952,
+    "rms": 0.09997,
+    "sha256": "b8c345f57ad24756400d2231d8c16aa37d76b903d135830545688d4efe9ddae4"
+  },
+  "subaru_recuperacao_2": {
+    "duration": 2.7885,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.64414,
+    "rms": 0.0883,
+    "sha256": "af0fab0a5f011147f096065f224d131227788bb810555b85898683e87886a165"
+  },
+  "subaru_recuperacao_3": {
+    "duration": 3.0208,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61723,
+    "rms": 0.08819,
+    "sha256": "40e3b04546d44a53e92542370782d6cfbd4e205b9a71ac2ddf1491bae9481ab8"
+  },
+  "subaru_contrato": {
+    "duration": 3.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.64024,
+    "rms": 0.1471,
+    "sha256": "79a2561da6197ffa006bc01e38e8643b4f72fbd36dc57d2e501a53c4724510cc"
+  },
+  "subaru_contrato_2": {
+    "duration": 3.3654,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6541,
+    "rms": 0.13914,
+    "sha256": "5a8c2d10024ea2842072c2a41d9daa2a8a3aa0580ca392a9a79bae69f8ed833c"
+  },
+  "subaru_contrato_3": {
+    "duration": 3.6458,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63683,
+    "rms": 0.14134,
+    "sha256": "9a659cc0eafce45170b372ad5e7f4e78fa3325b9c036d1a23ad25ab0da2268f7"
+  },
+  "beatrice_minya": {
+    "duration": 2.8,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57495,
+    "rms": 0.082,
+    "sha256": "722f13a0eecd102b37a88b47930e073bc17e667a1821830e241d9df7efc7b47f"
+  },
+  "beatrice_minya_2": {
+    "duration": 2.6923,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62408,
+    "rms": 0.10025,
+    "sha256": "0239336d033413004ca6d6e109cef72ff951b406175a61308586196032200765"
+  },
+  "beatrice_minya_3": {
+    "duration": 2.9166,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63126,
+    "rms": 0.10637,
+    "sha256": "085bbbd9f51b271788ecf2fefd984dc50d309bfdd9eabfce0296e1cc8dac50be"
+  },
+  "beatrice_emm": {
+    "duration": 2.7,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62684,
+    "rms": 0.16567,
+    "sha256": "08ee408d1094a3ea86c833a8976a00160028dced4687c8b9beab7dae850aec12"
+  },
+  "beatrice_emm_2": {
+    "duration": 2.5961,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60982,
+    "rms": 0.16301,
+    "sha256": "6c8658ee38d2e121da95db13ce47059872f4d5c16017d89571a3c6cf0baddb9b"
+  },
+  "beatrice_emm_3": {
+    "duration": 2.8125,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60098,
+    "rms": 0.15465,
+    "sha256": "bc62f39a94486ab952f0a62c9e9b1aa08510a421b352aa100e45df8d4bc49f1e"
+  },
+  "beatrice_emm_golpe": {
+    "duration": 0.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59261,
+    "rms": 0.13326,
+    "sha256": "232c2ebd56a353239f37474484d056579ae27b2bc571d1f8f98f3b76098d74cb"
+  },
+  "beatrice_emm_golpe_2": {
+    "duration": 0.5769,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60875,
+    "rms": 0.13806,
+    "sha256": "ef1ba55015d21c69b1451f8386f651bb5b77bf40e977f4f865b5cd8b1bb01b91"
+  },
+  "beatrice_emm_golpe_3": {
+    "duration": 0.625,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61142,
+    "rms": 0.15735,
+    "sha256": "10ac9e8e73f4eb2e349a4b7b30f4b7a5ca7c72e009c66b426f5462a0a1a2bb0a"
+  },
+  "beatrice_murak": {
+    "duration": 1.3,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60277,
+    "rms": 0.10369,
+    "sha256": "e2aef42990a95dc9248dd0e26b90be7c3f97991df5af2d6b7b7b905e3944b4eb"
+  },
+  "beatrice_murak_2": {
+    "duration": 1.25,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63253,
+    "rms": 0.08761,
+    "sha256": "a2eebcc7a6e77767ebbbf8e88405def313c7441e6b88960d63bbc6d963949d89"
+  },
+  "beatrice_murak_3": {
+    "duration": 1.3541,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6193,
+    "rms": 0.10327,
+    "sha256": "1b8fe7b4c8f10d833796deabec8022d2536e2a158a6713f5df83825df1b21a6f"
+  },
+  "beatrice_ul_minya": {
+    "duration": 4.55,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59639,
+    "rms": 0.1145,
+    "sha256": "1624a409cb1e250055957d62a0f77fbc072f196399207ee02f7fc036e7ab31f8"
+  },
+  "beatrice_ul_minya_2": {
+    "duration": 4.375,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6198,
+    "rms": 0.13164,
+    "sha256": "2a5b19ed01ff6c4523c5531f93eb7da501d90496f188aa313669e07af91e74c3"
+  },
+  "beatrice_ul_minya_3": {
+    "duration": 4.7396,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61769,
+    "rms": 0.12883,
+    "sha256": "d232d239663152b2895df22ed8ddc52a1b18abfaeaacde9c4fa6d7f548bff740"
   }
 }
