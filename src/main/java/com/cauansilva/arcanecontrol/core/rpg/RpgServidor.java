@@ -131,7 +131,7 @@ public final class RpgServidor {
             case ICHIGO->com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.conjunto();
             case ASTA->com.cauansilva.arcanecontrol.core.asta.RegistroAsta.conjunto();
             case FRIEREN->new Item[]{RegistroTrajes.FRI_CABECA.get(),RegistroTrajes.FRI_PEITO.get(),RegistroTrajes.FRI_PERNAS.get(),RegistroTrajes.FRI_BOTAS.get()};
-            case SUBARU->null; // o Subaru ainda nao tem traje
+            case SUBARU->new Item[]{RegistroTrajes.SUB_CABECA.get(),RegistroTrajes.SUB_PEITO.get(),RegistroTrajes.SUB_PERNAS.get(),RegistroTrajes.SUB_BOTAS.get()};
         };
         if(itens==null)return false;
         EquipmentSlot[] slots={EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET};

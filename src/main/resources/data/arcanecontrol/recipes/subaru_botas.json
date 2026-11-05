@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "minecraft:paper"
+  },
+  "base": {
+    "item": "minecraft:iron_boots"
+  },
+  "addition": {
+    "item": "minecraft:yellow_dye"
+  },
+  "result": {
+    "item": "arcanecontrol:subaru_botas"
+  }
+}

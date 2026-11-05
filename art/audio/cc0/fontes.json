@@ -1,0 +1,311 @@
+{
+  "licenca": "CC0 1.0 (https://creativecommons.org/publicdomain/zero/1.0/) — conferida no campo de licenca de cada pagina em 2026-11-04",
+  "arquivos": {
+    "kenney_rpg/creak1.ogg": {
+      "autor": "Kenney",
+      "pacote": "50 RPG sound effects",
+      "pagina": "https://opengameart.org/content/50-rpg-sound-effects",
+      "licenca": "CC0"
+    },
+    "kenney_rpg/creak2.ogg": {
+      "autor": "Kenney",
+      "pacote": "50 RPG sound effects",
+      "pagina": "https://opengameart.org/content/50-rpg-sound-effects",
+      "licenca": "CC0"
+    },
+    "kenney_rpg/doorOpen_2.ogg": {
+      "autor": "Kenney",
+      "pacote": "50 RPG sound effects",
+      "pagina": "https://opengameart.org/content/50-rpg-sound-effects",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/engineCircular_000.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/engineCircular_002.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/explosionCrunch_004.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/forceField_000.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/forceField_001.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/forceField_002.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/forceField_003.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/impactMetal_002.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/lowFrequency_explosion_000.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/lowFrequency_explosion_001.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/slime_000.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/slime_001.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_scifi/computerNoise_000.ogg": {
+      "autor": "Kenney",
+      "pacote": "Sci-fi Sounds",
+      "pagina": "https://opengameart.org/content/sci-fi-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_ui/glass_001.ogg": {
+      "autor": "Kenney",
+      "pacote": "Interface Sounds",
+      "pagina": "https://opengameart.org/content/interface-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_ui/glass_004.ogg": {
+      "autor": "Kenney",
+      "pacote": "Interface Sounds",
+      "pagina": "https://opengameart.org/content/interface-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_ui/pluck_001.ogg": {
+      "autor": "Kenney",
+      "pacote": "Interface Sounds",
+      "pagina": "https://opengameart.org/content/interface-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_ui/pluck_002.ogg": {
+      "autor": "Kenney",
+      "pacote": "Interface Sounds",
+      "pagina": "https://opengameart.org/content/interface-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_ui/scratch_004.ogg": {
+      "autor": "Kenney",
+      "pacote": "Interface Sounds",
+      "pagina": "https://opengameart.org/content/interface-sounds",
+      "licenca": "CC0"
+    },
+    "kenney_ui/tick_004.ogg": {
+      "autor": "Kenney",
+      "pacote": "Interface Sounds",
+      "pagina": "https://opengameart.org/content/interface-sounds",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/bell_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/bell_02.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/bell_03.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/gong_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/gong_02.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/glass_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/glass_02.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/glass_03.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/glass_04.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/glass_05.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/spring_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v1/spring_03.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_air_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_air_02.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_thunder_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_glass_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_glass_02.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_glass_03.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_glass_04.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_glass_05.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_glass_06.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_stones_01.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_stones_02.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "rubberduck_v2/sfx100v2_stones_03.ogg": {
+      "autor": "rubberduck",
+      "pacote": "100 CC0 SFX #2",
+      "pagina": "https://opengameart.org/content/100-cc0-sfx-2",
+      "licenca": "CC0"
+    },
+    "swishes/swish-3.wav": {
+      "autor": "artisticdude",
+      "pacote": "Swishes Sound Pack",
+      "pagina": "https://opengameart.org/content/swishes-sound-pack",
+      "licenca": "CC0"
+    },
+    "swishes/swish-7.wav": {
+      "autor": "artisticdude",
+      "pacote": "Swishes Sound Pack",
+      "pagina": "https://opengameart.org/content/swishes-sound-pack",
+      "licenca": "CC0"
+    },
+    "swishes/swish-9.wav": {
+      "autor": "artisticdude",
+      "pacote": "Swishes Sound Pack",
+      "pagina": "https://opengameart.org/content/swishes-sound-pack",
+      "licenca": "CC0"
+    },
+    "swishes/swish-4.wav": {
+      "autor": "artisticdude",
+      "pacote": "Swishes Sound Pack",
+      "pagina": "https://opengameart.org/content/swishes-sound-pack",
+      "licenca": "CC0"
+    },
+    "swishes/swish-8.wav": {
+      "autor": "artisticdude",
+      "pacote": "Swishes Sound Pack",
+      "pagina": "https://opengameart.org/content/swishes-sound-pack",
+      "licenca": "CC0"
+    }
+  }
+}

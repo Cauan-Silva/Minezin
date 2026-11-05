@@ -31,7 +31,9 @@ public final class PoderesSubaru {
     public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610,EMM=611,EMM_GOLPE=612,MURAK=613,UL_MINYA=614;
     /** Recargas (ticks) das magias da Beatrice na forma: Z Minya. */
     static final int RECARGA_MINYA=60,RECARGA_EMM=400,RECARGA_MURAK=500,RECARGA_UL=600;
-    static final float DANO_UL_ESTACA=4,DANO_UL_QUEBRA=18;
+    static final float DANO_UL_ESTACA=4,DANO_UL_CHUVA=2,DANO_UL_QUEBRA=18;
+    /** A cada quantos ticks da chuva a Ul Minya acerta quem esta na area (multi-hit). */
+    static final int RITMO_CHUVA=4;
     /** Salto IV (~4,5 blocos com a queda lenta) e Queda Lenta por MurakBeatrice.DURACAO. */
     static final int SALTO_MURAK=3;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
     /** Recargas base (ticks) de Z/X/C/V. */
@@ -94,6 +96,11 @@ public final class PoderesSubaru {
     static Vec3 horizontal(Vec3 v){Vec3 h=new Vec3(v.x,0,v.z);return h.lengthSqr()<1e-6?new Vec3(0,0,1):h.normalize();}
     /** Ponto do referencial dos pes no momento do cast (x = esquerda, como nas classes puras) para o mundo. */
     static Vec3 noMundo(Vec3 pes,Vec3 frente,double x,double y,double z){Vec3 l=new Vec3(0,1,0).cross(frente).normalize();return pes.add(l.scale(x)).add(0,y,0).add(frente.scale(z));}
+    /** Dano das magias de varios hits: zera a invencibilidade curta e nao empurra (o hurt vanilla empurra a partir do Subaru). */
+    private static void ferir(Pendente a,LivingEntity alvo,float dano){
+        Vec3 v=alvo.getDeltaMovement();alvo.invulnerableTime=0;alvo.hurt(a.nivel.damageSources().indirectMagic(a.p,a.p),dano);
+        alvo.setDeltaMovement(v);alvo.hurtMarked=true;
+    }
     /** Inimigos vivos dentro da area da Ul Minya (cilindro de RAIO_AREA em volta do centro, 6 blocos de altura). */
     private static List<LivingEntity> naAreaUl(Pendente a){
         var c=UlMinyaBeatrice.CENTRO_AREA;Vec3 centro=noMundo(a.origem,a.dir,c.x(),c.y(),c.z());double R=UlMinyaBeatrice.RAIO_AREA;
@@ -106,9 +113,11 @@ public final class PoderesSubaru {
             for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(ponto,ponto).inflate(1.5,2.5,1.5),v->v!=a.p&&v.isAlive()&&!v.isAlliedTo(a.p))){
                 if(Math.pow(alvo.getX()-ponto.x,2)+Math.pow(alvo.getZ()-ponto.z,2)>2.25)continue;
                 if(a.acertos.merge(alvo.getId(),1,Integer::sum)>3)continue;
-                alvo.hurt(a.nivel.damageSources().indirectMagic(a.p,a.p),DANO_UL_ESTACA);
+                ferir(a,alvo,DANO_UL_ESTACA);
             }
         }
+        // chuva: enquanto as estacas caem, a area toda leva dano em ritmo (multi-hit)
+        if(t>=UlMinyaBeatrice.ABRE&&t<UlMinyaBeatrice.PRISAO&&(t-UlMinyaBeatrice.ABRE)%RITMO_CHUVA==0)for(var alvo:naAreaUl(a))ferir(a,alvo,DANO_UL_CHUVA);
         if(t>=UlMinyaBeatrice.PRISAO&&t<UlMinyaBeatrice.QUEBRA)for(var alvo:naAreaUl(a)){
             // presos no cristal: sem andar nem pular ate a quebra
             if(t==UlMinyaBeatrice.PRISAO)alvo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,UlMinyaBeatrice.QUEBRA-UlMinyaBeatrice.PRISAO+2,9,false,true));
@@ -117,19 +126,32 @@ public final class PoderesSubaru {
         if(t==UlMinyaBeatrice.QUEBRA){
             var c=UlMinyaBeatrice.CENTRO_AREA;Vec3 centro=noMundo(a.origem,a.dir,c.x(),c.y(),c.z());
             for(var alvo:naAreaUl(a)){
-                alvo.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);alvo.hurt(a.nivel.damageSources().indirectMagic(a.p,a.p),DANO_UL_QUEBRA);
+                alvo.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);ferir(a,alvo,DANO_UL_QUEBRA);
                 Vec3 fora=alvo.position().subtract(centro);fora=new Vec3(fora.x,0,fora.z);if(fora.lengthSqr()>1e-4)fora=fora.normalize();
-                alvo.setDeltaMovement(fora.scale(.9).add(0,.45,0));alvo.hurtMarked=true;
+                alvo.setDeltaMovement(fora.scale(.35).add(0,.3,0));alvo.hurtMarked=true;
+            }
+        }
+    }
+    /** Estaca k no ar: acerta o primeiro inimigo a ate 1,1 bloco dela (a estaca para ali). */
+    private static void estacaVoo(Pendente a,int k,long t){
+        if(a.acertos.containsKey(-1-k))return;
+        var q=MinyaBeatrice.centro(k,t);Vec3 c=noMundo(a.origem,a.dir,q.x(),q.y(),q.z());
+        for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(c,c).inflate(1.1),v->v!=a.p&&v.isAlive()&&!v.isAlliedTo(a.p))){
+            if(alvo.getBoundingBox().inflate(.5).contains(c)||alvo.getBoundingBox().getCenter().distanceTo(c)<1.1){
+                a.acertos.put(-1-k,1);
+                if(a.acertos.merge(alvo.getId(),1,Integer::sum)<=2){ferir(a,alvo,DANO_MINYA);alvo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,MinyaBeatrice.CRISTAL,2,false,true));}
+                return;
             }
         }
     }
     private static void estacaCrava(Pendente a,int k){
+        if(a.acertos.containsKey(-1-k))return;
         var q=MinyaBeatrice.pontoAcerto(k);Vec3 ponto=noMundo(a.origem,a.dir,q.x(),q.y(),q.z());
         var caixa=new AABB(ponto,ponto).inflate(RAIO_ESTACA,2,RAIO_ESTACA);
         for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,caixa,v->v!=a.p&&v.isAlive()&&!v.isAlliedTo(a.p))){
             double dx=alvo.getX()-ponto.x,dz=alvo.getZ()-ponto.z;if(dx*dx+dz*dz>RAIO_ESTACA*RAIO_ESTACA)continue;
             int n=a.acertos.merge(alvo.getId(),1,Integer::sum);if(n>2)continue;
-            alvo.hurt(a.nivel.damageSources().indirectMagic(a.p,a.p),DANO_MINYA);
+            ferir(a,alvo,DANO_MINYA);
             alvo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,MinyaBeatrice.CRISTAL,2,false,true));
         }
     }
@@ -172,7 +194,10 @@ public final class PoderesSubaru {
             else if(a.slot==3&&t>=RecuperacaoSubaru.LIMPA){limpar(p);it.remove();}
             else if(a.slot==13){ulMinya(a,t);if(t>=UlMinyaBeatrice.FIM)it.remove();}
             else if(a.slot==10){
-                for(int k=0;k<MinyaBeatrice.ESTACAS;k++)if(t==MinyaBeatrice.acerto(k))estacaCrava(a,k);
+                for(int k=0;k<MinyaBeatrice.ESTACAS;k++){
+                    if(t>=MinyaBeatrice.disparo(k)&&t<MinyaBeatrice.acerto(k))estacaVoo(a,k,t);
+                    if(t==MinyaBeatrice.acerto(k))estacaCrava(a,k);
+                }
                 if(t>=MinyaBeatrice.fim())it.remove();
             }
         }

@@ -25,3 +25,19 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+# Gravações de áudio CC0
+
+Os sons do Subaru e da Beatrice (`tools/build_subaru_sfx.py`) usam como camadas gravações em domínio público
+(Creative Commons Zero 1.0, https://creativecommons.org/publicdomain/zero/1.0/). O CC0 não exige crédito; ele fica
+aqui por transparência. A lista arquivo a arquivo, com a página de origem, está em `art/audio/cc0/fontes.json`.
+
+| Autor | Pacote | Página |
+| --- | --- | --- |
+| Kenney (www.kenney.nl) | 50 RPG sound effects | https://opengameart.org/content/50-rpg-sound-effects |
+| Kenney (www.kenney.nl) | Sci-fi Sounds | https://opengameart.org/content/sci-fi-sounds |
+| Kenney (www.kenney.nl) | Interface Sounds | https://opengameart.org/content/interface-sounds |
+| rubberduck | 100 CC0 SFX | https://opengameart.org/content/100-cc0-sfx |
+| rubberduck | 100 CC0 SFX #2 | https://opengameart.org/content/100-cc0-sfx-2 |
+| rubberduck | 100 CC0 metal and wood SFX | https://opengameart.org/content/100-cc0-metal-and-wood-sfx |
+| artisticdude | Swishes Sound Pack | https://opengameart.org/content/swishes-sound-pack |

@@ -34,11 +34,12 @@ public final class EfeitosSubaru {
     /** PacoteEfeitoDespertar do kit 16: 200 = contrato comecou (ticks = duracao), 0 = acabou. */
     public static void receberDespertar(com.cauansilva.arcanecontrol.core.rede.PacoteEfeitoDespertar p){
         var mc=Minecraft.getInstance();if(mc.level==null)return;
-        if(p.tipo()==0){CONTRATOS.remove(p.dono());return;}
+        if(p.tipo()==0){CONTRATOS.remove(p.dono());AudioAnime.cancelar(p.dono(),"subaru_contrato");return;}
         if(p.tipo()!=200||p.ticks()<1||p.ticks()>2400)return;
         var dono=mc.level.getPlayerByUUID(p.dono());double yaw=dono!=null?dono.getYRot():0;long agora=mc.level.getGameTime();
         CONTRATOS.put(p.dono(),new Contrato(agora,agora+p.ticks(),p.a(),yaw,mc.level));
         AnimacoesGojo.tocarSubaru(p.dono(),606);
+        AudioAnime.programar(p.dono(),"subaru_contrato",p.a(),com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.subaruContrato());
     }
     /** Tick (com fracao) desde o G, ou -1 se este jogador nao esta na forma. */
     public static double contrato(UUID id,float parcial){var mc=Minecraft.getInstance();var c=CONTRATOS.get(id);return c==null||mc.level==null||c.mundo!=mc.level?-1:mc.level.getGameTime()-c.inicio+parcial;}
@@ -49,6 +50,8 @@ public final class EfeitosSubaru {
         for(var e:EFEITOS)if(e.tipo==tipo&&e.jogador.equals(id)&&e.mundo==mc.level)return mc.level.getGameTime()-e.inicio+parcial;return -1;}
     public static void iniciar(int tipo,UUID id,Vec3 origem,Vec3 alvo){
         var mc=Minecraft.getInstance();if(mc.level==null)return;long agora=mc.level.getGameTime();
+        var sons=com.cauansilva.arcanecontrol.core.audio.RoteiroAudio.subaru(tipo);
+        if(!sons.isEmpty())AudioAnime.programar(id,"subaru_"+tipo,origem,sons);
         if(tipo==PoderesSubaru.SHAMAK_ACERTO){
             for(var e:EFEITOS)if(e.tipo==PoderesSubaru.SHAMAK&&e.jogador.equals(id)&&e.acerto==null){e.acerto=origem;e.idAlvo=(int)alvo.x;return;}
             return;

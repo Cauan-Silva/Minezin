@@ -30,6 +30,8 @@ def apply(style,bones):
     if style=='demon_dweller':palette[a.BLACK]='1a181e';palette[a.STEEL]='55535b';palette[a.SHADOW]='121015';palette[a.INK]='0e0d11'
     if style in ('asta_forma','matadora_desperta'):palette[a.BLACK]='120e16';palette[a.PLUM]='120e16';palette[a.SHADOW]='19141e';palette[a.RUBY]='ff2a3d';palette[a.INK]='3a333f'
     if style=='matadora_desperta':palette[a.STEEL]='3e0e19';palette[a.INK]='120e16';palette[a.SHADOW]='1a1519'
+    # Subaru (Re:Zero tracksuit, user's reference): white jacket body, black sleeves/yoke/collar/pants, yellow-orange trim.
+    if style=='subaru':palette[a.WHITE]='eceae4';palette[a.BLACK]='1c1d22';palette[a.GOLD]='f0b01c';palette[a.SHADOW]='26272d';palette[a.STEEL]='9fa1a8';palette[a.IVORY]='f1efe8';palette[a.INK]='3a3b42'
     islands={};rects=[];cursor_x=cursor_y=row_height=0
     def rect(x,y,w,h,color):
         rects.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#{color}"/>')
