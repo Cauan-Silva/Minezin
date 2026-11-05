@@ -51,7 +51,7 @@ class RegrasRpgTest {
         assertThrows(IllegalArgumentException.class,()->cds.restante(PersonagemRpg.SHADOW,5,0));
     }
     @Test void catalogoPreservaTodosOsMovesetsAprovados()throws Exception{
-        var catalogo=CatalogoMovesetsRpg.padrao();assertEquals(15,catalogo.tamanho());
+        var catalogo=CatalogoMovesetsRpg.padrao();assertEquals(PersonagemRpg.values().length,catalogo.tamanho());assertEquals("Shamak",catalogo.get(PersonagemRpg.SUBARU).base().get(0).nome());
         for(var p:PersonagemRpg.values()){assertEquals(4,catalogo.get(p).base().size());assertEquals(4,catalogo.get(p).transformada().size());}
         assertTrue(catalogo.get(PersonagemRpg.SHADOW).despertar().startsWith("I Am Atomic"));
         assertEquals("Teleporte Curto",catalogo.get(PersonagemRpg.GOJO).base().get(2).nome());

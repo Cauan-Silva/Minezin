@@ -9,7 +9,7 @@ class RpgRedeTest {
     @Test void selecaoExpandeArraysAntigosSemPerderPerfisOuOQuartoKit(){
         var p=new PacoteEstadoPoderes(4,15,20,new int[]{100,200,300,400},new int[]{7,8,9},false);
         var b=new FriendlyByteBuf(Unpooled.buffer());
-        try{PacoteEstadoPoderes.encode(p,b);var lido=PacoteEstadoPoderes.decode(b);assertEquals(4,lido.ativo());assertEquals(15,lido.xp().length);assertEquals(75,lido.usos().length);assertEquals(400,lido.xp()[3]);assertEquals(300,lido.xp()[2]);assertEquals(7,lido.usos()[0]);assertEquals(0,b.readableBytes());}finally{b.release();}
+        try{PacoteEstadoPoderes.encode(p,b);var lido=PacoteEstadoPoderes.decode(b);assertEquals(4,lido.ativo());assertEquals(com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS,lido.xp().length);assertEquals(com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS*5,lido.usos().length);assertEquals(400,lido.xp()[3]);assertEquals(300,lido.xp()[2]);assertEquals(7,lido.usos()[0]);assertEquals(0,b.readableBytes());}finally{b.release();}
     }
     @Test void efeitoDeChefeTransportaUuidEExtremidadesSemDependerDePlayer(){
         var pacote=new PacoteEfeitoDespertar(java.util.UUID.randomUUID(),103,new net.minecraft.world.phys.Vec3(1.25,64,-10),new net.minecraft.world.phys.Vec3(7,65,8),30,3);
@@ -35,7 +35,7 @@ class RpgRedeTest {
         assertThrows(IllegalArgumentException.class,()->PerfilRpgNbt.ler(raiz,99));
     }
     @Test void snapshotComPerfisECooldownsFazRoundTrip(){
-        int[] xp=new int[15],nos=new int[15];boolean[] g=new boolean[15];xp[0]=900;xp[2]=4900;nos[2]=127;
+        int[] xp=new int[com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS],nos=new int[com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS];boolean[] g=new boolean[com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS];xp[0]=900;xp[2]=4900;nos[2]=127;
         var pacote=new PacoteEstadoRpg(3,7,xp,nos,g,72,new int[]{10,20,30,40,0},new int[]{30,160,180,1200,0},false,true,true,350,true);
         xp[0]=0;assertEquals(900,pacote.xp()[0]);
         var buf=new FriendlyByteBuf(Unpooled.buffer());
@@ -46,7 +46,7 @@ class RpgRedeTest {
         }finally{buf.release();}
     }
     @Test void snapshotRejeitaTamanhosInvalidosECompraSoTransportaIds(){
-        assertThrows(IllegalArgumentException.class,()->new PacoteEstadoRpg(1,1,new int[1000],new int[15],new boolean[15],100,new int[5],new int[5],false,false,false));
+        assertThrows(IllegalArgumentException.class,()->new PacoteEstadoRpg(1,1,new int[1000],new int[com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS],new boolean[com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KITS],100,new int[5],new int[5],false,false,false));
         var buf=new FriendlyByteBuf(Unpooled.buffer());
         try{var p=new PacoteAcaoRpg(1,3,4);PacoteAcaoRpg.encode(p,buf);assertEquals(p,PacoteAcaoRpg.decode(buf));assertEquals(0,buf.readableBytes());}finally{buf.release();}
     }

@@ -85,6 +85,13 @@ public final class AnimacoesGojo {
         if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
         var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,"frieren_"+(tipo-20));
     }
+    /** Subaru (kit base): 600 Shamak, 602 Escudo, 604 Instrucao, 605 Recuperacao (player_animation/subaru.json). */
+    public static void tocarSubaru(UUID id,int tipo){
+        String nome=switch(tipo){case 600->"subaru_shamak";case 602->"subaru_escudo";case 604->"subaru_instrucao";case 605->"subaru_recuperacao";default->null;};
+        var mc=Minecraft.getInstance();if(nome==null||mc.level==null)return;
+        if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
+        var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,nome);
+    }
     private static void reproduzir(AbstractClientPlayer jogador, ModifierLayer<IAnimation> camada, UUID id, int tipo, String nome) {
         KeyframeAnimation animacao = PlayerAnimationRegistry.getAnimation(new ResourceLocation("arcanecontrol",nome));
         if (animacao == null) return;
