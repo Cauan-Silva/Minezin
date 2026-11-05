@@ -30,6 +30,12 @@ class EmmBeatriceTest {
             assertEquals(0,EmmBeatrice.alphaProjetil(g,EmmBeatrice.CHEGADA[g]+EmmBeatrice.CONGELA),1e-9);}
         for(int k=0;k<EmmBeatrice.POEIRA;k++)assertTrue(d(EmmBeatrice.poeira(k,EmmBeatrice.nasce(k)+EmmBeatrice.VOLTA),EmmBeatrice.MAOS)<1e-6,"a poeira volta para as maos");
     }
+    @Test void cascaDoJogoIgualAPrevia(){
+        for(double t:new double[]{3,EmmBeatrice.CHEGADA[0]+2,EmmBeatrice.ABRE-5})for(int i=0;i<=EmmBeatrice.LAT;i+=3)for(int j=0;j<EmmBeatrice.LON;j+=5){
+            var n=EmmBeatrice.esfera(i,j);double k=EmmBeatrice.raioBase(i,j,t);for(int g=0;g<EmmBeatrice.GOLPES;g++)k-=EmmBeatrice.amassado(n,EmmBeatrice.direcaoGolpe(g),EmmBeatrice.afunda(g,t));
+            assertTrue(d(EmmBeatrice.naCasca(n,k),EmmBeatrice.casca(i,j,t))<1e-12);}
+        assertEquals(0,EmmBeatrice.afundaGolpe(-1),1e-12);assertTrue(EmmBeatrice.afundaGolpe(3)>.4);
+    }
     @Test void animacoes()throws Exception{
         var j=com.google.gson.JsonParser.parseString(new String(getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/subaru.json").readAllBytes())).getAsJsonObject();
         assertTrue(j.getAsJsonObject("animations").has("subaru_emm"));

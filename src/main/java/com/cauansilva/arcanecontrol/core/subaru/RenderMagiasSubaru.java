@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import java.util.ArrayList;
 
 /**
  * Desenho no jogo do kit base do Subaru, com as mesmas classes puras e as mesmas cores das previas aprovadas
@@ -36,7 +37,7 @@ final class RenderMagiasSubaru {
 
     static void desenhar(PoseStack pose,EfeitosSubaru.Efeito e,double t,Vec3 camMundo,float parcial){
         var mc=Minecraft.getInstance();var dono=mc.level.getPlayerByUUID(e.jogador);if(dono==null)return;
-        Vec3 ancora=switch(e.tipo){case PoderesSubaru.ESCUDO,PoderesSubaru.RECUPERACAO->dono.getPosition(parcial);default->e.origem;};
+        Vec3 ancora=switch(e.tipo){case PoderesSubaru.ESCUDO,PoderesSubaru.RECUPERACAO,PoderesSubaru.EMM,PoderesSubaru.MURAK->dono.getPosition(parcial);default->e.origem;};
         if(!DesenhoMagia.iniciar(t))return;
         pose.pushPose();Vec3 d=ancora.subtract(camMundo);pose.translate(d.x,d.y,d.z);Vec3 cam=camMundo.subtract(ancora);
         try{
@@ -46,6 +47,9 @@ final class RenderMagiasSubaru {
                 case PoderesSubaru.INSTRUCAO->instrucao(pose,cam,e,t,parcial);
                 case PoderesSubaru.RECUPERACAO->recuperacao(pose,cam,t,Base.horizontal(frenteCorpo(dono,parcial)));
                 case PoderesSubaru.MINYA->minya(pose,cam,t,Base.horizontal(e.alvo));
+                case PoderesSubaru.UL_MINYA->ulMinya(pose,cam,t,Base.horizontal(e.alvo));
+                case PoderesSubaru.MURAK->murak(pose,cam,e,t,Base.horizontal(frenteCorpo(dono,parcial)),dono,parcial);
+                case PoderesSubaru.EMM->emm(pose,cam,e,t,Base.horizontal(frenteCorpo(dono,parcial)));
                 default->{}
             }
         }finally{pose.popPose();DesenhoMagia.terminar();}
@@ -238,6 +242,123 @@ final class RenderMagiasSubaru {
                     for(int q=0;q<6;q++)fita(pose,cam,c.subtract(d.scale(.3+.5*q)),c.subtract(d.scale(.8+.5*q)),.05*(1-q/6.),M_VIOLETA,ra*(1-q/6f));}
                 float im=(float)MinyaBeatrice.impacto(k,t);if(im>.01)disco(pose,cam,v(b,MinyaBeatrice.pontoAcerto(k)).add(0,.2,0),.5*(1.4-im),BRILHO,im*.4f);
             }
+        });
+    }
+
+    // ---------------- G-V: Ul Minya (Beatrice) ----------------
+    private static Vec3 v(Base b,UlMinyaBeatrice.P p){return b.em(p.x(),p.y(),p.z());}
+    private static void ulMinya(PoseStack pose,Vec3 cam,double t,Base b){
+        float ac=(float)UlMinyaBeatrice.alphaCirculo(t),az=(float)UlMinyaBeatrice.alphaZona(t),cl=(float)UlMinyaBeatrice.clarao(t);
+        double cg=UlMinyaBeatrice.carga(t),br=1+1.5*cg,C=UlMinyaBeatrice.COMPRIMENTO,R=UlMinyaBeatrice.RAIO;Vec3 ca=v(b,UlMinyaBeatrice.CENTRO_AREA);
+        boolean leve=com.cauansilva.arcanecontrol.ConfigCliente.VFX_REDUZIDOS.get();
+        for(int passe=0;passe<2;passe++){boolean g=passe==1;
+            DesenhoMagia.lote(pose,g?1:8,g,()->{
+                for(int k=0;k<UlMinyaBeatrice.ESTACAS;k++){
+                    double es=UlMinyaBeatrice.escala(k,t);
+                    if(es>.01)cristal(pose,cam,v(b,UlMinyaBeatrice.centro(k,t)),v(b,UlMinyaBeatrice.direcao(k)),C*es,R*es,1,br,g);
+                    Vec3 pa=v(b,UlMinyaBeatrice.pontoAcerto(k));
+                    for(int j=0;j<UlMinyaBeatrice.ESPINHOS;j++){double tam=UlMinyaBeatrice.tamanhoEspinho(k,j,t);if(tam>.01)cristal(pose,cam,pa,v(b,UlMinyaBeatrice.espinho(k,j)),tam*1.3,tam*.22,1,br*.8,g);}
+                    if(!leve||k%2==0)for(int c=0;c<UlMinyaBeatrice.CACOS;c++){double tam=UlMinyaBeatrice.tamanhoCaco(k,c,t);if(tam<=.005)continue;Vec3 q=v(b,UlMinyaBeatrice.caco(k,c,t));
+                        cristal(pose,cam,q,new Vec3(Math.sin(t+q.x),1,Math.cos(t*1.3+q.z)),tam*2.2,tam*.7,1,.6,g);}
+                }
+                for(int gi=0;gi<UlMinyaBeatrice.GIGANTES;gi++){
+                    double L=UlMinyaBeatrice.comprimentoGigante(gi,t);Vec3 e=v(b,UlMinyaBeatrice.eixoGigante(gi));
+                    if(L>.01)cristal(pose,cam,v(b,UlMinyaBeatrice.baseGigante(gi)).add(e.scale(L*.25)),e,L,UlMinyaBeatrice.raioGigante(gi)*Math.min(1,L/2.5),1,br,g);
+                    for(int c=0;c<UlMinyaBeatrice.CACOS_GIGANTE;c++){double tam=UlMinyaBeatrice.tamanhoCacoGigante(gi,c,t);if(tam<=.005)continue;Vec3 q=v(b,UlMinyaBeatrice.cacoGigante(gi,c,t));
+                        cristal(pose,cam,q,new Vec3(Math.cos(t*.9+q.z),1,Math.sin(t+q.x)),tam*2.4,tam*.7,1,.7,g);}
+                }
+            });
+        }
+        DesenhoMagia.lote(pose,1,true,()->{
+            if(ac>.01){
+                for(int a=0;a<UlMinyaBeatrice.ANEIS;a++){int N=UlMinyaBeatrice.PONTOS_CIRCULO;
+                    for(int i=0;i<N;i++){if(a==1&&i%8>=6)continue;fita(pose,cam,v(b,UlMinyaBeatrice.circulo(a,i,t)),v(b,UlMinyaBeatrice.circulo(a,(i+1)%N,t)),.12+.04*(a==2?1:0),a==2?BRILHO:M_VIOLETA,ac*(float)(.8+.2*cg));}
+                    if(a==1)for(int i=0;i<N;i+=6)fita(pose,cam,v(b,UlMinyaBeatrice.circulo(a,i,t)),v(b,UlMinyaBeatrice.circulo(a,(i+30)%N,t)),.03,M_VIOLETA,ac*.55f);}
+                for(int k=0;k<UlMinyaBeatrice.RAIOS_CIRCULO;k++)fita(pose,cam,v(b,UlMinyaBeatrice.raioCirculo(k,0,t)),v(b,UlMinyaBeatrice.raioCirculo(k,1,t)),.08,0xD9C2FF,ac*.7f);
+            }
+            if(az>.01)for(int i=0;i<UlMinyaBeatrice.PONTOS_ZONA;i++)fita(pose,cam,v(b,UlMinyaBeatrice.zona(i,t)),v(b,UlMinyaBeatrice.zona((i+1)%UlMinyaBeatrice.PONTOS_ZONA,t)),.09,M_VIOLETA,az);
+            for(int k=0;k<UlMinyaBeatrice.ESTACAS;k++){
+                float ra=(float)UlMinyaBeatrice.alphaRastro(k,t);
+                if(ra>.01&&UlMinyaBeatrice.escala(k,t)>.01){Vec3 c=v(b,UlMinyaBeatrice.centro(k,t)),d=v(b,UlMinyaBeatrice.direcao(k));
+                    for(int q=0;q<6;q++)fita(pose,cam,c.subtract(d.scale(.4+.9*q)),c.subtract(d.scale(1.3+.9*q)),.08*(1-q/6.),M_VIOLETA,ra*(1-q/6f));}
+                float im=(float)UlMinyaBeatrice.impacto(k,t);if(im>.01)disco(pose,cam,v(b,UlMinyaBeatrice.pontoAcerto(k)).add(0,.2,0),.45*(1.4-im),BRILHO,im*.35f);
+            }
+        });
+        if(cl>.01){DesenhoMagia.esfera(pose,cam,ca.add(0,2.5,0),5+7*(1-cl),1,BRILHO,cl*.4f,true,12);DesenhoMagia.esfera(pose,cam,ca.add(0,2.5,0),2.4,1,0xFFFFFF,cl*.6f,true,10);}
+    }
+
+    // ---------------- G-C: Murak (Beatrice) ----------------
+    private static final int K_VIOLETA=0x8A4DFF,K_LILAS=0xD9C2FF,K_PEDRA=0x8C8478;
+    private static Vec3 v(Base b,MurakBeatrice.P p){return b.em(p.x(),p.y(),p.z());}
+    private static double sv(double a){return a<=0?0:a>=1?1:a*a*(3-2*a);}
+    private static void murak(PoseStack pose,Vec3 cam,EfeitosSubaru.Efeito e,double t,Base b,Player dono,float parcial){
+        Vec3 aqui=dono.getPosition(parcial);double vy=dono.getDeltaMovement().y;
+        float fim=(float)(1-sv((t-MurakBeatrice.DURACAO+10)/10));
+        Vec3 cast=e.origem.subtract(aqui);Base bc=Base.horizontal(e.alvo);
+        DesenhoMagia.lote(pose,8,false,()->{
+            for(int k=0;k<MurakBeatrice.PEDRAS;k++){double tam=MurakBeatrice.tamanhoPedra(k,t);if(tam>.005)disco(pose,cam,cast.add(v(bc,MurakBeatrice.pedra(k,t))),tam,K_PEDRA,.95f);}
+        });
+        DesenhoMagia.lote(pose,1,true,()->{
+            if(MurakBeatrice.alphaGota(t)>.01){Vec3 ant=null;
+                for(int i=0;i<MurakBeatrice.PONTOS_GOTA;i++){Vec3 q=v(b,MurakBeatrice.gota(i,t));if(ant!=null){double k=(i+1.)/MurakBeatrice.PONTOS_GOTA;fita(pose,cam,ant,q,.05*k,K_VIOLETA,(float)k);}ant=q;}
+                disco(pose,cam,ant,.09,K_LILAS,1);}
+            for(int k=0;k<MurakBeatrice.PEDRAS;k++){double tam=MurakBeatrice.tamanhoPedra(k,t);if(tam>.005)disco(pose,cam,cast.add(v(bc,MurakBeatrice.pedra(k,t))),tam*1.3,K_VIOLETA,.18f);}
+            // aneis no corpo real: inclinam com a velocidade vertical do jogador
+            for(int a=0;a<MurakBeatrice.ANEIS;a++){double ab=MurakBeatrice.aberturaAnel(a,t);float al=(float)(Math.min(1,ab)*fim);if(al<.01)continue;
+                double r=MurakBeatrice.RAIO_ANEL[a]*ab,incl=Math.max(-.25,Math.min(.25,vy*1.2))*(a-1)+.06*Math.sin(t*.2+a*2);Vec3 ant=null,prim=null;
+                for(int i=0;i<=MurakBeatrice.PONTOS_ANEL;i++){double g=2*Math.PI*i/MurakBeatrice.PONTOS_ANEL+t*(.12+.04*a)*(a%2==0?1:-1);
+                    Vec3 q=b.em(Math.cos(g)*r,MurakBeatrice.ALTURA_ANEL[a]+Math.sin(g)*r*incl,Math.sin(g)*r);
+                    if(ant!=null)fita(pose,cam,ant,q,.04,i%9==0?K_LILAS:K_VIOLETA,al*(float)(.55+.35*Math.sin(i*1.7+t*.4)));
+                    if(i%6==0)disco(pose,cam,q,.06,K_LILAS,al);ant=q;}
+            }
+            // eco dos aneis enquanto esta no ar
+            if(e.noAr)for(int k=1;k<e.trilha.size();k++){Vec3 c=e.trilha.get(k).subtract(aqui);float al=(float)(.5*(1-k/(double)MurakBeatrice.RASTRO))*fim;
+                for(int a=0;a<MurakBeatrice.ANEIS;a++){double r=MurakBeatrice.RAIO_ANEL[a];Vec3 ant=null;
+                    for(int i=0;i<=24;i++){double g=2*Math.PI*i/24;Vec3 q=c.add(Math.cos(g)*r,MurakBeatrice.ALTURA_ANEL[a],Math.sin(g)*r);if(ant!=null)fita(pose,cam,ant,q,.018,K_VIOLETA,al*.55f);ant=q;}}}
+            // onda no pouso real
+            if(e.pouso>=0&&e.pousoPos!=null){double a=t-e.pouso;if(a>=0&&a<MurakBeatrice.ONDA){double r=.3+1.8*sv(a/MurakBeatrice.ONDA);float al=(float)(1-a/MurakBeatrice.ONDA);Vec3 c=e.pousoPos.subtract(aqui).add(0,.03,0);Vec3 ant=null;
+                for(int i=0;i<=MurakBeatrice.PONTOS_ONDA;i++){double g=2*Math.PI*i/MurakBeatrice.PONTOS_ONDA;Vec3 q=c.add(Math.cos(g)*r,0,Math.sin(g)*r);if(ant!=null)fita(pose,cam,ant,q,.04,K_LILAS,al);ant=q;}}}
+        });
+    }
+
+    // ---------------- G-X: E.M.M. (Beatrice) ----------------
+    private static final int E_ESCURO=0x1C0730,E_VIOLETA=0x8A4DFF,E_LILAS=0xD9C2FF;
+    private static Vec3 v(Base b,EmmBeatrice.P p){return b.em(p.x(),p.y(),p.z());}
+    private static void emm(PoseStack pose,Vec3 cam,EfeitosSubaru.Efeito e,double t,Base b){
+        int LAT=EmmBeatrice.LAT,LON=EmmBeatrice.LON;
+        // golpes reais bloqueados: direcao no referencial local e afundamento atual
+        var dirs=new ArrayList<EmmBeatrice.P>();var afs=new ArrayList<Double>();double golpe=0;
+        for(double[] g:e.golpes){double af=EmmBeatrice.afundaGolpe(t-g[0]);if(af<=0)continue;Vec3 d=new Vec3(g[1],g[2],g[3]);
+            dirs.add(new EmmBeatrice.P(d.dot(b.l()),d.dot(b.u()),d.dot(b.f())));afs.add(af);golpe=Math.max(golpe,af);}
+        float ab=(float)EmmBeatrice.alphaCasca(t);double[] cob=new double[LAT+1];for(int i=0;i<=LAT;i++)cob[i]=EmmBeatrice.cobertura(i,t);
+        Vec3[][] c=new Vec3[LAT+1][LON];Vec3[][] n=new Vec3[LAT+1][LON];
+        if(ab>.01)for(int i=0;i<=LAT;i++)for(int j=0;j<LON;j++){var s=EmmBeatrice.esfera(i,j);double k=EmmBeatrice.raioBase(i,j,t);
+            for(int q=0;q<dirs.size();q++)k-=EmmBeatrice.amassado(s,dirs.get(q),afs.get(q));
+            c[i][j]=v(b,EmmBeatrice.naCasca(s,k));n[i][j]=v(b,EmmBeatrice.normal(i,j));}
+        for(int passe=0;passe<2&&ab>.01;passe++){boolean g=passe==1;
+            DesenhoMagia.lote(pose,g?1:8,g,()->{
+                for(int i=0;i<LAT;i++)for(int j=0;j<LON;j++){int[][] id={{i,j},{i+1,j},{i+1,(j+1)%LON},{i,(j+1)%LON}};
+                    for(int[] q:id){double cv=cob[q[0]]<=.01?0:cob[q[0]];Vec3 p=c[q[0]][q[1]];Vec3 vv=cam.subtract(p).normalize();double rim=Math.pow(1-Math.abs(n[q[0]][q[1]].dot(vv)),2);
+                        DesenhoMagia.ponto(pose,p,q[1]/(double)LON,q[0]/(double)LAT,g?E_VIOLETA:E_ESCURO,(float)(ab*cv*(g?.05+.9*rim:.92-.25*rim)));}}
+            });
+        }
+        final double gol=golpe;
+        DesenhoMagia.lote(pose,1,true,()->{
+            float ac=(float)EmmBeatrice.alphaCirculo(t);
+            if(ac>.01)for(int a=0;a<2;a++)for(int i=0;i<EmmBeatrice.PONTOS_CIRCULO;i++){if(a==1&&i%6>=4)continue;
+                fita(pose,cam,v(b,EmmBeatrice.circulo(a,i,t)),v(b,EmmBeatrice.circulo(a,(i+1)%EmmBeatrice.PONTOS_CIRCULO,t)),.025,a==1?E_VIOLETA:E_LILAS,ac*.8f);}
+            float af=(float)EmmBeatrice.alphaFio(t);
+            if(af>.01){int m=Math.max(2,(int)(EmmBeatrice.PONTOS_FIO*EmmBeatrice.alcanceFio(t)));
+                for(int i=0;i+1<m;i++)fita(pose,cam,v(b,EmmBeatrice.fio(i,t)),v(b,EmmBeatrice.fio(i+1,t)),.03,E_LILAS,af*(.5f+.5f*i/m));
+                disco(pose,cam,v(b,EmmBeatrice.fio(m-1,t)),.06,0xFFFFFF,af);}
+            if(ab>.01)for(int k=0;k<EmmBeatrice.VEIAS;k++)for(int i=0;i+1<EmmBeatrice.PONTOS_VEIA;i++){double u=i/(EmmBeatrice.PONTOS_VEIA-1.),u1=(i+1)/(EmmBeatrice.PONTOS_VEIA-1.);
+                int iv=Math.min(LAT,(int)Math.round((.08+.84*u)*LAT));double br=EmmBeatrice.brilhoVeia(k,u,t,gol);
+                fita(pose,cam,v(b,EmmBeatrice.veia(k,u,t)),v(b,EmmBeatrice.veia(k,u1,t)),.018+.01*br,br>.7?E_LILAS:E_VIOLETA,(float)(ab*cob[iv]*br));}
+            float aa=(float)EmmBeatrice.alphaAnel(t);
+            if(aa>.01)for(int i=0;i<EmmBeatrice.PONTOS_ANEL;i++)fita(pose,cam,v(b,EmmBeatrice.anel(i,t)),v(b,EmmBeatrice.anel((i+1)%EmmBeatrice.PONTOS_ANEL,t)),.02,E_VIOLETA,aa*(float)(.35+.35*Math.sin(i*.6)));
+            float acg=(float)EmmBeatrice.alphaCongelada(t);
+            if(acg>.01)for(int k=0;k<EmmBeatrice.CONGELADAS;k++)disco(pose,cam,v(b,EmmBeatrice.congelada(k,t)),.035,E_LILAS,acg*.8f);
+            for(int k=0;k<EmmBeatrice.POEIRA;k++)disco(pose,cam,v(b,EmmBeatrice.poeira(k,t)),EmmBeatrice.tamanhoPoeira(k,t),E_VIOLETA,.8f);
         });
     }
 

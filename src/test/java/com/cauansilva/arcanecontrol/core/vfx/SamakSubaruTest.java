@@ -53,7 +53,7 @@ class SamakSubaruTest {
      *  and has the thrust keyed on the release tick. */
     @Test void animacaoDoCorpoPresaAoDisparo()throws Exception{
         try(var in=getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/subaru.json")){
-            assertNotNull(in);var l=dev.kosmx.playerAnim.core.data.gson.AnimationSerializing.deserializeAnimation(in);assertEquals(9,l.size());
+            assertNotNull(in);var l=dev.kosmx.playerAnim.core.data.gson.AnimationSerializing.deserializeAnimation(in);assertEquals(10,l.size());
             assertTrue(l.stream().allMatch(a->!a.isInfinite&&a.endTick<=Math.max(F,UlMinyaBeatrice.FIM)),"clipes finitos");assertTrue(l.stream().anyMatch(a->a.endTick>=I),"o Shamak termina depois do acerto");
         }
         var j=com.google.gson.JsonParser.parseString(new String(getClass().getResourceAsStream("/assets/arcanecontrol/player_animation/subaru.json").readAllBytes())).getAsJsonObject();

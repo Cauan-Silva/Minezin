@@ -28,9 +28,12 @@ import java.util.*;
  */
 @Mod.EventBusSubscriber(modid="arcanecontrol")
 public final class PoderesSubaru {
-    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610;
+    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610,EMM=611,EMM_GOLPE=612,MURAK=613,UL_MINYA=614;
     /** Recargas (ticks) das magias da Beatrice na forma: Z Minya. */
-    static final int RECARGA_MINYA=60;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
+    static final int RECARGA_MINYA=60,RECARGA_EMM=400,RECARGA_MURAK=500,RECARGA_UL=600;
+    static final float DANO_UL_ESTACA=4,DANO_UL_QUEBRA=18;
+    /** Salto IV (~4,5 blocos com a queda lenta) e Queda Lenta por MurakBeatrice.DURACAO. */
+    static final int SALTO_MURAK=3;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
     /** Recargas base (ticks) de Z/X/C/V. */
     static final int[] RECARGAS={120,300,400,500};
     static final float DANO_SHAMAK=4;
@@ -65,7 +68,23 @@ public final class PoderesSubaru {
 
     /** Magias da Beatrice durante o contrato (slots Z/X/C/V da forma). */
     private static void contrato(ServerPlayer p,int slot){
-        if(slot!=0){mensagem(p,"E.M.M., Murak e Ul Minya: chegam na próxima atualização.");return;}
+        if(slot==1){
+            if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,1,RECARGA_EMM))return;
+            var t=RpgServidor.dados(p);t.putLong("sub_emm_inicio",RpgServidor.agora(p));t.putLong("sub_emm_golpe",0);
+            enviar(p,EMM,p.position(),horizontal(p.getLookAngle()));RpgServidor.uso(p,PoderAnime.SUBARU);return;
+        }
+        if(slot==2){
+            if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,2,RECARGA_MURAK))return;
+            p.addEffect(new MobEffectInstance(MobEffects.JUMP,MurakBeatrice.DURACAO,SALTO_MURAK,false,false,true));
+            p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,MurakBeatrice.DURACAO,0,false,false,true));
+            enviar(p,MURAK,p.position(),horizontal(p.getLookAngle()));RpgServidor.uso(p,PoderAnime.SUBARU);return;
+        }
+        if(slot==3){
+            if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,3,RECARGA_UL))return;
+            Vec3 frente=horizontal(p.getLookAngle());
+            PENDENTES.add(new Pendente(p,p.serverLevel(),13,RpgServidor.agora(p),p.position(),frente));
+            enviar(p,UL_MINYA,p.position(),frente);RpgServidor.uso(p,PoderAnime.SUBARU);return;
+        }
         if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,0,RECARGA_MINYA))return;
         Vec3 frente=horizontal(p.getLookAngle());
         PENDENTES.add(new Pendente(p,p.serverLevel(),10,RpgServidor.agora(p),p.position(),frente));
@@ -75,6 +94,35 @@ public final class PoderesSubaru {
     static Vec3 horizontal(Vec3 v){Vec3 h=new Vec3(v.x,0,v.z);return h.lengthSqr()<1e-6?new Vec3(0,0,1):h.normalize();}
     /** Ponto do referencial dos pes no momento do cast (x = esquerda, como nas classes puras) para o mundo. */
     static Vec3 noMundo(Vec3 pes,Vec3 frente,double x,double y,double z){Vec3 l=new Vec3(0,1,0).cross(frente).normalize();return pes.add(l.scale(x)).add(0,y,0).add(frente.scale(z));}
+    /** Inimigos vivos dentro da area da Ul Minya (cilindro de RAIO_AREA em volta do centro, 6 blocos de altura). */
+    private static List<LivingEntity> naAreaUl(Pendente a){
+        var c=UlMinyaBeatrice.CENTRO_AREA;Vec3 centro=noMundo(a.origem,a.dir,c.x(),c.y(),c.z());double R=UlMinyaBeatrice.RAIO_AREA;
+        return a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(centro,centro).inflate(R,6,R),v->v!=a.p&&v.isAlive()&&!v.isAlliedTo(a.p)
+                &&Math.pow(v.getX()-centro.x,2)+Math.pow(v.getZ()-centro.z,2)<=R*R);
+    }
+    private static void ulMinya(Pendente a,long t){
+        for(int k=0;k<UlMinyaBeatrice.ESTACAS;k++)if(t==(long)Math.ceil(UlMinyaBeatrice.acerto(k))){
+            var q=UlMinyaBeatrice.pontoAcerto(k);Vec3 ponto=noMundo(a.origem,a.dir,q.x(),q.y(),q.z());
+            for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,new AABB(ponto,ponto).inflate(1.5,2.5,1.5),v->v!=a.p&&v.isAlive()&&!v.isAlliedTo(a.p))){
+                if(Math.pow(alvo.getX()-ponto.x,2)+Math.pow(alvo.getZ()-ponto.z,2)>2.25)continue;
+                if(a.acertos.merge(alvo.getId(),1,Integer::sum)>3)continue;
+                alvo.hurt(a.nivel.damageSources().indirectMagic(a.p,a.p),DANO_UL_ESTACA);
+            }
+        }
+        if(t>=UlMinyaBeatrice.PRISAO&&t<UlMinyaBeatrice.QUEBRA)for(var alvo:naAreaUl(a)){
+            // presos no cristal: sem andar nem pular ate a quebra
+            if(t==UlMinyaBeatrice.PRISAO)alvo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,UlMinyaBeatrice.QUEBRA-UlMinyaBeatrice.PRISAO+2,9,false,true));
+            if(!(alvo instanceof Player)){alvo.setDeltaMovement(0,Math.min(0,alvo.getDeltaMovement().y),0);alvo.hurtMarked=true;}
+        }
+        if(t==UlMinyaBeatrice.QUEBRA){
+            var c=UlMinyaBeatrice.CENTRO_AREA;Vec3 centro=noMundo(a.origem,a.dir,c.x(),c.y(),c.z());
+            for(var alvo:naAreaUl(a)){
+                alvo.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);alvo.hurt(a.nivel.damageSources().indirectMagic(a.p,a.p),DANO_UL_QUEBRA);
+                Vec3 fora=alvo.position().subtract(centro);fora=new Vec3(fora.x,0,fora.z);if(fora.lengthSqr()>1e-4)fora=fora.normalize();
+                alvo.setDeltaMovement(fora.scale(.9).add(0,.45,0));alvo.hurtMarked=true;
+            }
+        }
+    }
     private static void estacaCrava(Pendente a,int k){
         var q=MinyaBeatrice.pontoAcerto(k);Vec3 ponto=noMundo(a.origem,a.dir,q.x(),q.y(),q.z());
         var caixa=new AABB(ponto,ponto).inflate(RAIO_ESTACA,2,RAIO_ESTACA);
@@ -122,6 +170,7 @@ public final class PoderesSubaru {
             long t=RpgServidor.agora(p)-a.inicio;
             if(a.slot==0&&t>=SamakSubaru.IMPACTO){acertoShamak(a);it.remove();}
             else if(a.slot==3&&t>=RecuperacaoSubaru.LIMPA){limpar(p);it.remove();}
+            else if(a.slot==13){ulMinya(a,t);if(t>=UlMinyaBeatrice.FIM)it.remove();}
             else if(a.slot==10){
                 for(int k=0;k<MinyaBeatrice.ESTACAS;k++)if(t==MinyaBeatrice.acerto(k))estacaCrava(a,k);
                 if(t>=MinyaBeatrice.fim())it.remove();
@@ -136,6 +185,21 @@ public final class PoderesSubaru {
         e.setAmount(e.getAmount()-bloqueado);t.putLong("sub_escudo_ate",0);t.putFloat("sub_escudo_reserva",0);
         var autor=e.getSource().getEntity().position();
         enviar(p,ESCUDO_QUEBRA,p.position(),autor.subtract(p.position()));
+    }
+    /** E.M.M. fechado: EmmBeatrice.invulneravel no tempo desde o cast. */
+    static boolean emm(ServerPlayer p){var t=RpgServidor.dados(p);return t.contains("sub_emm_inicio")&&EmmBeatrice.invulneravel(RpgServidor.agora(p)-t.getLong("sub_emm_inicio"));}
+    /** Nada entra: o golpe e cancelado antes do dano (menos o que ignora invulnerabilidade, como /kill e o vazio). */
+    @SubscribeEvent public static void casca(net.minecraftforge.event.entity.living.LivingAttackEvent e){
+        if(!(e.getEntity() instanceof ServerPlayer p)||!emm(p)||e.getSource().is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY))return;
+        e.setCanceled(true);
+        var autor=e.getSource().getEntity()!=null?e.getSource().getEntity().position():e.getSource().getSourcePosition();
+        var t=RpgServidor.dados(p);long agora=RpgServidor.agora(p);
+        if(autor!=null&&agora-t.getLong("sub_emm_golpe")>=3){t.putLong("sub_emm_golpe",agora);
+            Vec3 d=autor.subtract(p.position().add(0,1,0));if(d.lengthSqr()>1e-6)enviar(p,EMM_GOLPE,p.position(),d.normalize());}
+    }
+    /** Efeitos nocivos novos nao pegam enquanto a casca esta fechada. */
+    @SubscribeEvent public static void cascaEfeitos(net.minecraftforge.event.entity.living.MobEffectEvent.Applicable e){
+        if(e.getEntity() instanceof ServerPlayer p&&emm(p)&&e.getEffectInstance().getEffect().getCategory()==MobEffectCategory.HARMFUL)e.setResult(net.minecraftforge.eventbus.api.Event.Result.DENY);
     }
     @SubscribeEvent public static void parar(net.minecraftforge.event.server.ServerStoppedEvent e){PENDENTES.clear();}
     private PoderesSubaru(){}
