@@ -28,11 +28,15 @@ import java.util.*;
  */
 @Mod.EventBusSubscriber(modid="arcanecontrol")
 public final class PoderesSubaru {
-    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605;
+    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610;
+    /** Recargas (ticks) das magias da Beatrice na forma: Z Minya. */
+    static final int RECARGA_MINYA=60;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
     /** Recargas base (ticks) de Z/X/C/V. */
     static final int[] RECARGAS={120,300,400,500};
     static final float DANO_SHAMAK=4;
-    private record Pendente(ServerPlayer p,ServerLevel nivel,int slot,long inicio,Vec3 origem,Vec3 dir){}
+    private record Pendente(ServerPlayer p,ServerLevel nivel,int slot,long inicio,Vec3 origem,Vec3 dir,Map<Integer,Integer> acertos){
+        Pendente(ServerPlayer p,ServerLevel nivel,int slot,long inicio,Vec3 origem,Vec3 dir){this(p,nivel,slot,inicio,origem,dir,new HashMap<>());}
+    }
     private static final List<Pendente> PENDENTES=new ArrayList<>();
 
     private static void enviar(ServerPlayer p,int tipo,Vec3 o,Vec3 a){
@@ -42,7 +46,7 @@ public final class PoderesSubaru {
 
     public static void executar(ServerPlayer p,int slot){
         if(slot<0||slot>3)return;
-        if(DespertaresServidor.ativo(p)){mensagem(p,"Magias da Beatrice (Minya, E.M.M., Murak, Ul Minya): chegam na próxima atualização.");return;}
+        if(DespertaresServidor.ativo(p)){contrato(p,slot);return;}
         if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,slot,RECARGAS[slot]))return;
         long agora=RpgServidor.agora(p);Vec3 olho=p.getEyePosition(),dir=p.getLookAngle();
         switch(slot){
@@ -59,6 +63,28 @@ public final class PoderesSubaru {
         ProgressaoPoderes.registrarUso(p,PoderAnime.SUBARU,slot,new int[]{SamakSubaru.FIM,EscudoSubaru.DURACAO,InstrucaoSubaru.ORDEM+InstrucaoSubaru.PULSO,RecuperacaoSubaru.FIM}[slot]);
     }
 
+    /** Magias da Beatrice durante o contrato (slots Z/X/C/V da forma). */
+    private static void contrato(ServerPlayer p,int slot){
+        if(slot!=0){mensagem(p,"E.M.M., Murak e Ul Minya: chegam na próxima atualização.");return;}
+        if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,0,RECARGA_MINYA))return;
+        Vec3 frente=horizontal(p.getLookAngle());
+        PENDENTES.add(new Pendente(p,p.serverLevel(),10,RpgServidor.agora(p),p.position(),frente));
+        enviar(p,MINYA,p.position(),frente);
+        RpgServidor.uso(p,PoderAnime.SUBARU);
+    }
+    static Vec3 horizontal(Vec3 v){Vec3 h=new Vec3(v.x,0,v.z);return h.lengthSqr()<1e-6?new Vec3(0,0,1):h.normalize();}
+    /** Ponto do referencial dos pes no momento do cast (x = esquerda, como nas classes puras) para o mundo. */
+    static Vec3 noMundo(Vec3 pes,Vec3 frente,double x,double y,double z){Vec3 l=new Vec3(0,1,0).cross(frente).normalize();return pes.add(l.scale(x)).add(0,y,0).add(frente.scale(z));}
+    private static void estacaCrava(Pendente a,int k){
+        var q=MinyaBeatrice.pontoAcerto(k);Vec3 ponto=noMundo(a.origem,a.dir,q.x(),q.y(),q.z());
+        var caixa=new AABB(ponto,ponto).inflate(RAIO_ESTACA,2,RAIO_ESTACA);
+        for(var alvo:a.nivel.getEntitiesOfClass(LivingEntity.class,caixa,v->v!=a.p&&v.isAlive()&&!v.isAlliedTo(a.p))){
+            double dx=alvo.getX()-ponto.x,dz=alvo.getZ()-ponto.z;if(dx*dx+dz*dz>RAIO_ESTACA*RAIO_ESTACA)continue;
+            int n=a.acertos.merge(alvo.getId(),1,Integer::sum);if(n>2)continue;
+            alvo.hurt(a.nivel.damageSources().indirectMagic(a.p,a.p),DANO_MINYA);
+            alvo.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,MinyaBeatrice.CRISTAL,2,false,true));
+        }
+    }
     /** Ele mesmo e os jogadores aliados (mesmo time) a ate InstrucaoSubaru.RAIO blocos. */
     static List<Player> aliados(ServerPlayer p){
         var r=new ArrayList<Player>();r.add(p);
@@ -96,6 +122,10 @@ public final class PoderesSubaru {
             long t=RpgServidor.agora(p)-a.inicio;
             if(a.slot==0&&t>=SamakSubaru.IMPACTO){acertoShamak(a);it.remove();}
             else if(a.slot==3&&t>=RecuperacaoSubaru.LIMPA){limpar(p);it.remove();}
+            else if(a.slot==10){
+                for(int k=0;k<MinyaBeatrice.ESTACAS;k++)if(t==MinyaBeatrice.acerto(k))estacaCrava(a,k);
+                if(t>=MinyaBeatrice.fim())it.remove();
+            }
         }
     }
     /** Escudo do X: o primeiro golpe com autor dentro da duracao e absorvido (ate ABSORVE de dano) e a bolha estoura. */

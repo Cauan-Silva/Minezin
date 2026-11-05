@@ -45,6 +45,7 @@ final class RenderMagiasSubaru {
                 case PoderesSubaru.ESCUDO->escudo(pose,cam,e,t,Base.horizontal(e.golpe!=null?e.golpe:frenteCorpo(dono,parcial)));
                 case PoderesSubaru.INSTRUCAO->instrucao(pose,cam,e,t,parcial);
                 case PoderesSubaru.RECUPERACAO->recuperacao(pose,cam,t,Base.horizontal(frenteCorpo(dono,parcial)));
+                case PoderesSubaru.MINYA->minya(pose,cam,t,Base.horizontal(e.alvo));
                 default->{}
             }
         }finally{pose.popPose();DesenhoMagia.terminar();}
@@ -194,6 +195,52 @@ final class RenderMagiasSubaru {
                 for(int k=0;k<RecuperacaoSubaru.PARTICULAS;k++)disco(pose,cam,v(b,RecuperacaoSubaru.particula(k,t)),RecuperacaoSubaru.tamanhoParticula(k,t),CURA,.9f);}
         });
     }
+    // ---------------- G-Z: Minya (Beatrice) ----------------
+    private static final int CRISTAL=0xB98CFF,CRISTAL_ESC=0x5A2FA8,BRILHO=0xF2E8FF,M_VIOLETA=0x9B5CFF;
+    private static final Vec3 LUZ=new Vec3(.4,1,.3).normalize();
+    private static Vec3 v(Base b,MinyaBeatrice.P p){return b.em(p.x(),p.y(),p.z());}
+    private static void tri(PoseStack pose,Vec3 a,Vec3 b,Vec3 c,int cor,float al){DesenhoMagia.ponto(pose,a,0,0,cor,al);DesenhoMagia.ponto(pose,b,1,0,cor,al);DesenhoMagia.ponto(pose,c,1,1,cor,al);DesenhoMagia.ponto(pose,c,0,1,cor,al);}
+    private static int sombra(int cor,double k){k=Math.max(0,Math.min(1.4,k));int r=(int)Math.min(255,(cor>>16&255)*k),g=(int)Math.min(255,(cor>>8&255)*k),b=(int)Math.min(255,(cor&255)*k);return r<<16|g<<8|b;}
+    /** Bipiramide hexagonal (ponta em base+eixo*comp*.75, cauda em base-eixo*comp*.25), como na previa. brilho=false: faces; true: borda aditiva. */
+    static void cristal(PoseStack pose,Vec3 cam,Vec3 base,Vec3 eixo,double comp,double raio,float al,double forca,boolean brilho){
+        if(comp<.01)return;eixo=eixo.normalize();Vec3 ref=Math.abs(eixo.y)<.9?CIMA:new Vec3(1,0,0);Vec3 u=eixo.cross(ref).normalize(),w=eixo.cross(u);
+        Vec3 ponta=base.add(eixo.scale(comp*.75)),cauda=base.subtract(eixo.scale(comp*.25)),meio=base.add(eixo.scale(comp*.18));Vec3[] an=new Vec3[6];
+        for(int i=0;i<6;i++){double a=Math.PI*2*i/6;an[i]=meio.add(u.scale(raio*Math.cos(a))).add(w.scale(raio*Math.sin(a)));}
+        for(int i=0;i<6;i++){Vec3 a=an[i],b=an[(i+1)%6];
+            for(Vec3[] t:new Vec3[][]{{a,b,ponta},{b,a,cauda}}){
+                Vec3 n=t[1].subtract(t[0]).cross(t[2].subtract(t[0]));n=n.lengthSqr()<1e-12?eixo:n.normalize();
+                if(!brilho)tri(pose,t[0],t[1],t[2],sombra(i%2==1?CRISTAL:CRISTAL_ESC,.45+.75*Math.max(0,n.dot(LUZ))),al*.85f);
+                else{Vec3 vv=cam.subtract(t[0]).normalize();double rim=Math.pow(1-Math.abs(n.dot(vv)),2);tri(pose,t[0],t[1],t[2],BRILHO,(float)(al*(.15+.55*rim)*forca));}
+            }
+        }
+    }
+    private static void minya(PoseStack pose,Vec3 cam,double t,Base b){
+        float ac=(float)MinyaBeatrice.alphaCirculo(t);double C=MinyaBeatrice.COMPRIMENTO,R=MinyaBeatrice.RAIO;
+        for(int passe=0;passe<2;passe++){boolean g=passe==1;
+            DesenhoMagia.lote(pose,g?1:8,g,()->{
+                for(int k=0;k<MinyaBeatrice.ESTACAS;k++){
+                    double es=MinyaBeatrice.escala(k,t);
+                    if(es>.01)cristal(pose,cam,v(b,MinyaBeatrice.centro(k,t)),v(b,MinyaBeatrice.direcao(k,t)),C*es,R*es,1,1,g);
+                    Vec3 pa=v(b,MinyaBeatrice.pontoAcerto(k));
+                    for(int j=0;j<MinyaBeatrice.ESPINHOS;j++){double tam=MinyaBeatrice.tamanhoEspinho(k,j,t);if(tam>.01)cristal(pose,cam,pa,v(b,MinyaBeatrice.espinho(k,j)),tam*1.4,tam*.22,1,.8,g);}
+                    for(int c=0;c<MinyaBeatrice.CACOS;c++){double tam=MinyaBeatrice.tamanhoCaco(k,c,t);if(tam<=.005)continue;Vec3 q=v(b,MinyaBeatrice.caco(k,c,t));
+                        cristal(pose,cam,q,new Vec3(Math.sin(t+q.x),1,Math.cos(t*1.3+q.z)),tam*2.2,tam*.7,1,.6,g);}
+                }
+            });
+        }
+        DesenhoMagia.lote(pose,1,true,()->{
+            if(ac>.01)for(int a=0;a<2;a++){int N=MinyaBeatrice.PONTOS_CIRCULO;
+                for(int i=0;i<N;i++)fita(pose,cam,v(b,MinyaBeatrice.circulo(a,i,t)),v(b,MinyaBeatrice.circulo(a,(i+1)%N,t)),.025,a==1?M_VIOLETA:BRILHO,ac);
+                if(a==1)for(int i=0;i<N;i+=8)fita(pose,cam,v(b,MinyaBeatrice.circulo(a,i,t)),v(b,MinyaBeatrice.circulo(a,(i+16)%N,t)),.015,M_VIOLETA,ac*.7f);}
+            for(int k=0;k<MinyaBeatrice.ESTACAS;k++){
+                float ra=(float)MinyaBeatrice.alphaRastro(k,t);
+                if(ra>.01&&MinyaBeatrice.escala(k,t)>.01){Vec3 c=v(b,MinyaBeatrice.centro(k,t)),d=v(b,MinyaBeatrice.direcao(k,t));
+                    for(int q=0;q<6;q++)fita(pose,cam,c.subtract(d.scale(.3+.5*q)),c.subtract(d.scale(.8+.5*q)),.05*(1-q/6.),M_VIOLETA,ra*(1-q/6f));}
+                float im=(float)MinyaBeatrice.impacto(k,t);if(im>.01)disco(pose,cam,v(b,MinyaBeatrice.pontoAcerto(k)).add(0,.2,0),.5*(1.4-im),BRILHO,im*.4f);
+            }
+        });
+    }
+
     // ---------------- G: Contrato com a Beatrice (entrada + aura da forma) ----------------
     private static final int C_VIOLETA=0x9B5CFF,C_CLARO=0xE6D6FF,C_OURO=0xFFD27A,MADEIRA=0x6B3E26,MADEIRA_ESC=0x3E2316,LUZ_PORTA=0xFFF1C9;
     private static Vec3 v(Base b,ContratoSubaru.P p){return b.em(p.x(),p.y(),p.z());}

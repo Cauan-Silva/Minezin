@@ -61,6 +61,20 @@ final class RenderBeatrice {
         r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)),(float)(8*Math.sin(t*.05)),0});
     }
 
+    private static double sv(double a){return a<=0?0:a>=1?1:a*a*(3-2*a);}
+    private static double volta(double u){u=Math.max(0,Math.min(1,u))-1;return 1+2.1*u*u*u+1.1*u*u;}
+    /** Minya: bracos sobem com passada, empurrao da mao do lado de cada estaca, corpo inclina no leque (preview_subaru_minya). */
+    static void poseMinya(Map<String,float[]> r,double t){
+        int D=com.cauansilva.arcanecontrol.core.vfx.MinyaBeatrice.DISPARO,Fm=com.cauansilva.arcanecontrol.core.vfx.MinyaBeatrice.FORMA,K=com.cauansilva.arcanecontrol.core.vfx.MinyaBeatrice.ESTACAS,c=K/2;
+        double ergue=volta(t/(Fm*.75)),solta=sv((t-D-9)/14),alto=ergue*(1-solta),pe=0,pd=0,gira=0,tot=0;
+        for(int k=0;k<K;k++){int d=k-c,ordem=d==0?0:Math.abs(d)*2-(d<0?1:0);double dk=D+ordem,g=t>dk-2?Math.exp(-Math.pow((t-dk-.4)/1.1,2)):0;
+            tot+=g;if(k<=c)pd+=g;if(k>=c)pe+=g;gira+=g*(k-c)*7;}
+        double anti=Math.exp(-Math.pow((t-D+1.5)/1.6,2)),i0=Math.sin(t*.15),i05=Math.sin(t*.15+.5),i1=Math.sin(t*.15+1),i15=Math.sin(t*.15+1.5),to=Math.min(1,tot);
+        r.put("braco_e",new float[]{(float)(-8+4*i0-102*alto+22*pe-10*anti),0,(float)(-6-16*alto+6*i1)});
+        r.put("braco_d",new float[]{(float)(-8+4*i05-102*alto+22*pd-10*anti),0,(float)(6+16*alto-6*i15)});
+        r.put("corpo",new float[]{(float)(-5*anti+7*to*(1-solta)+2*Math.sin(t*.12)),(float)(gira*.4),(float)(1.5*Math.sin(t*.1))});
+        r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)-5*alto+4*anti-3*to),(float)(gira*.9+5*Math.sin(t*.05)*(1-alto)),0});
+    }
     static void desenhar(PoseStack pose,EfeitosSubaru.Contrato c,Player dono,double t,Vec3 cam,float parcial){
         var mc=Minecraft.getInstance();if(RENDER==null){RENDER=new GeoObjectRenderer<>(new Modelo());BEA=new Beatrice();}
         double escala,giro,inclina,yaw;Vec3 alvo;
@@ -78,6 +92,7 @@ final class RenderBeatrice {
         }
         if(escala<.01)return;
         BEA.tick=t;poseOciosa(BEA.pose,t+60);
+        double tm=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.MINYA,parcial);if(tm>=0)poseMinya(BEA.pose,tm);
         Vec3 p=c.beatrice.subtract(cam);int luz=LevelRenderer.getLightColor(mc.level,BlockPos.containing(c.beatrice.add(0,.5,0)));
         pose.pushPose();
         pose.translate(p.x,p.y,p.z);
