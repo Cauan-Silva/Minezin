@@ -37,7 +37,7 @@ final class RenderMagiasSubaru {
 
     static void desenhar(PoseStack pose,EfeitosSubaru.Efeito e,double t,Vec3 camMundo,float parcial){
         var mc=Minecraft.getInstance();var dono=mc.level.getPlayerByUUID(e.jogador);if(dono==null)return;
-        Vec3 ancora=switch(e.tipo){case PoderesSubaru.ESCUDO,PoderesSubaru.RECUPERACAO,PoderesSubaru.EMM->dono.getPosition(parcial);default->e.origem;};
+        Vec3 ancora=switch(e.tipo){case PoderesSubaru.ESCUDO,PoderesSubaru.RECUPERACAO,PoderesSubaru.EMM,PoderesSubaru.MURAK->dono.getPosition(parcial);default->e.origem;};
         if(!DesenhoMagia.iniciar(t))return;
         pose.pushPose();Vec3 d=ancora.subtract(camMundo);pose.translate(d.x,d.y,d.z);Vec3 cam=camMundo.subtract(ancora);
         try{
@@ -47,6 +47,7 @@ final class RenderMagiasSubaru {
                 case PoderesSubaru.INSTRUCAO->instrucao(pose,cam,e,t,parcial);
                 case PoderesSubaru.RECUPERACAO->recuperacao(pose,cam,t,Base.horizontal(frenteCorpo(dono,parcial)));
                 case PoderesSubaru.MINYA->minya(pose,cam,t,Base.horizontal(e.alvo));
+                case PoderesSubaru.MURAK->murak(pose,cam,e,t,Base.horizontal(frenteCorpo(dono,parcial)),dono,parcial);
                 case PoderesSubaru.EMM->emm(pose,cam,e,t,Base.horizontal(frenteCorpo(dono,parcial)));
                 default->{}
             }
@@ -240,6 +241,40 @@ final class RenderMagiasSubaru {
                     for(int q=0;q<6;q++)fita(pose,cam,c.subtract(d.scale(.3+.5*q)),c.subtract(d.scale(.8+.5*q)),.05*(1-q/6.),M_VIOLETA,ra*(1-q/6f));}
                 float im=(float)MinyaBeatrice.impacto(k,t);if(im>.01)disco(pose,cam,v(b,MinyaBeatrice.pontoAcerto(k)).add(0,.2,0),.5*(1.4-im),BRILHO,im*.4f);
             }
+        });
+    }
+
+    // ---------------- G-C: Murak (Beatrice) ----------------
+    private static final int K_VIOLETA=0x8A4DFF,K_LILAS=0xD9C2FF,K_PEDRA=0x8C8478;
+    private static Vec3 v(Base b,MurakBeatrice.P p){return b.em(p.x(),p.y(),p.z());}
+    private static double sv(double a){return a<=0?0:a>=1?1:a*a*(3-2*a);}
+    private static void murak(PoseStack pose,Vec3 cam,EfeitosSubaru.Efeito e,double t,Base b,Player dono,float parcial){
+        Vec3 aqui=dono.getPosition(parcial);double vy=dono.getDeltaMovement().y;
+        float fim=(float)(1-sv((t-MurakBeatrice.DURACAO+10)/10));
+        Vec3 cast=e.origem.subtract(aqui);Base bc=Base.horizontal(e.alvo);
+        DesenhoMagia.lote(pose,8,false,()->{
+            for(int k=0;k<MurakBeatrice.PEDRAS;k++){double tam=MurakBeatrice.tamanhoPedra(k,t);if(tam>.005)disco(pose,cam,cast.add(v(bc,MurakBeatrice.pedra(k,t))),tam,K_PEDRA,.95f);}
+        });
+        DesenhoMagia.lote(pose,1,true,()->{
+            if(MurakBeatrice.alphaGota(t)>.01){Vec3 ant=null;
+                for(int i=0;i<MurakBeatrice.PONTOS_GOTA;i++){Vec3 q=v(b,MurakBeatrice.gota(i,t));if(ant!=null){double k=(i+1.)/MurakBeatrice.PONTOS_GOTA;fita(pose,cam,ant,q,.05*k,K_VIOLETA,(float)k);}ant=q;}
+                disco(pose,cam,ant,.09,K_LILAS,1);}
+            for(int k=0;k<MurakBeatrice.PEDRAS;k++){double tam=MurakBeatrice.tamanhoPedra(k,t);if(tam>.005)disco(pose,cam,cast.add(v(bc,MurakBeatrice.pedra(k,t))),tam*1.3,K_VIOLETA,.18f);}
+            // aneis no corpo real: inclinam com a velocidade vertical do jogador
+            for(int a=0;a<MurakBeatrice.ANEIS;a++){double ab=MurakBeatrice.aberturaAnel(a,t);float al=(float)(Math.min(1,ab)*fim);if(al<.01)continue;
+                double r=MurakBeatrice.RAIO_ANEL[a]*ab,incl=Math.max(-.25,Math.min(.25,vy*1.2))*(a-1)+.06*Math.sin(t*.2+a*2);Vec3 ant=null,prim=null;
+                for(int i=0;i<=MurakBeatrice.PONTOS_ANEL;i++){double g=2*Math.PI*i/MurakBeatrice.PONTOS_ANEL+t*(.12+.04*a)*(a%2==0?1:-1);
+                    Vec3 q=b.em(Math.cos(g)*r,MurakBeatrice.ALTURA_ANEL[a]+Math.sin(g)*r*incl,Math.sin(g)*r);
+                    if(ant!=null)fita(pose,cam,ant,q,.04,i%9==0?K_LILAS:K_VIOLETA,al*(float)(.55+.35*Math.sin(i*1.7+t*.4)));
+                    if(i%6==0)disco(pose,cam,q,.06,K_LILAS,al);ant=q;}
+            }
+            // eco dos aneis enquanto esta no ar
+            if(e.noAr)for(int k=1;k<e.trilha.size();k++){Vec3 c=e.trilha.get(k).subtract(aqui);float al=(float)(.5*(1-k/(double)MurakBeatrice.RASTRO))*fim;
+                for(int a=0;a<MurakBeatrice.ANEIS;a++){double r=MurakBeatrice.RAIO_ANEL[a];Vec3 ant=null;
+                    for(int i=0;i<=24;i++){double g=2*Math.PI*i/24;Vec3 q=c.add(Math.cos(g)*r,MurakBeatrice.ALTURA_ANEL[a],Math.sin(g)*r);if(ant!=null)fita(pose,cam,ant,q,.018,K_VIOLETA,al*.55f);ant=q;}}}
+            // onda no pouso real
+            if(e.pouso>=0&&e.pousoPos!=null){double a=t-e.pouso;if(a>=0&&a<MurakBeatrice.ONDA){double r=.3+1.8*sv(a/MurakBeatrice.ONDA);float al=(float)(1-a/MurakBeatrice.ONDA);Vec3 c=e.pousoPos.subtract(aqui).add(0,.03,0);Vec3 ant=null;
+                for(int i=0;i<=MurakBeatrice.PONTOS_ONDA;i++){double g=2*Math.PI*i/MurakBeatrice.PONTOS_ONDA;Vec3 q=c.add(Math.cos(g)*r,0,Math.sin(g)*r);if(ant!=null)fita(pose,cam,ant,q,.04,K_LILAS,al);ant=q;}}}
         });
     }
 

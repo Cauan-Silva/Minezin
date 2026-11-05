@@ -84,6 +84,13 @@ final class RenderBeatrice {
         r.put("corpo",new float[]{(float)(4*est+2*Math.sin(t*.12)),(float)(-14*est),(float)(-3*est+1.5*Math.sin(t*.1))});
         r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)+6*est),(float)(-22*est+5*Math.sin(t*.05)*(1-est)),0});
     }
+    /** Murak: ergue a mao, estala com um tranco curto e volta; olha para cima enquanto ele esta no ar (preview_subaru_murak). */
+    static void poseMurak(Map<String,float[]> r,double t,boolean noAr){
+        double sobe=sv(t/2.5)*(1-sv((t-6)/6)),estalo=Math.exp(-Math.pow((t-3)/.9,2)),olha=noAr?1:0,i05=Math.sin(t*.15+.5);
+        r.put("braco_d",new float[]{(float)(-8+4*i05-70*sobe-14*estalo),0,(float)(6+18*sobe)});
+        r.put("corpo",new float[]{(float)(2*Math.sin(t*.12)-4*estalo),0,(float)(1.5*Math.sin(t*.1))});
+        r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)-24*olha+4*estalo),(float)(-10*olha+5*Math.sin(t*.05)),0});
+    }
     static void desenhar(PoseStack pose,EfeitosSubaru.Contrato c,Player dono,double t,Vec3 cam,float parcial){
         var mc=Minecraft.getInstance();if(RENDER==null){RENDER=new GeoObjectRenderer<>(new Modelo());BEA=new Beatrice();}
         double escala,giro,inclina,yaw;Vec3 alvo;
@@ -103,6 +110,7 @@ final class RenderBeatrice {
         BEA.tick=t;poseOciosa(BEA.pose,t+60);
         double tm=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.MINYA,parcial);if(tm>=0)poseMinya(BEA.pose,tm);
         double te=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.EMM,parcial);if(te>=0)poseEmm(BEA.pose,te);
+        double tk=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.MURAK,parcial);if(tk>=0&&tk<20)poseMurak(BEA.pose,tk,!dono.onGround());
         Vec3 p=c.beatrice.subtract(cam);int luz=LevelRenderer.getLightColor(mc.level,BlockPos.containing(c.beatrice.add(0,.5,0)));
         pose.pushPose();
         pose.translate(p.x,p.y,p.z);

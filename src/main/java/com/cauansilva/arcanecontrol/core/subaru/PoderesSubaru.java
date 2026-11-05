@@ -28,9 +28,11 @@ import java.util.*;
  */
 @Mod.EventBusSubscriber(modid="arcanecontrol")
 public final class PoderesSubaru {
-    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610,EMM=611,EMM_GOLPE=612;
+    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610,EMM=611,EMM_GOLPE=612,MURAK=613;
     /** Recargas (ticks) das magias da Beatrice na forma: Z Minya. */
-    static final int RECARGA_MINYA=60,RECARGA_EMM=400;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
+    static final int RECARGA_MINYA=60,RECARGA_EMM=400,RECARGA_MURAK=500;
+    /** Salto IV (~4,5 blocos com a queda lenta) e Queda Lenta por MurakBeatrice.DURACAO. */
+    static final int SALTO_MURAK=3;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
     /** Recargas base (ticks) de Z/X/C/V. */
     static final int[] RECARGAS={120,300,400,500};
     static final float DANO_SHAMAK=4;
@@ -70,7 +72,13 @@ public final class PoderesSubaru {
             var t=RpgServidor.dados(p);t.putLong("sub_emm_inicio",RpgServidor.agora(p));t.putLong("sub_emm_golpe",0);
             enviar(p,EMM,p.position(),horizontal(p.getLookAngle()));RpgServidor.uso(p,PoderAnime.SUBARU);return;
         }
-        if(slot!=0){mensagem(p,"Murak e Ul Minya: chegam na próxima atualização.");return;}
+        if(slot==2){
+            if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,2,RECARGA_MURAK))return;
+            p.addEffect(new MobEffectInstance(MobEffects.JUMP,MurakBeatrice.DURACAO,SALTO_MURAK,false,false,true));
+            p.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,MurakBeatrice.DURACAO,0,false,false,true));
+            enviar(p,MURAK,p.position(),horizontal(p.getLookAngle()));RpgServidor.uso(p,PoderAnime.SUBARU);return;
+        }
+        if(slot!=0){mensagem(p,"Ul Minya: chega na próxima atualização.");return;}
         if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,0,RECARGA_MINYA))return;
         Vec3 frente=horizontal(p.getLookAngle());
         PENDENTES.add(new Pendente(p,p.serverLevel(),10,RpgServidor.agora(p),p.position(),frente));
