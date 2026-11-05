@@ -28,10 +28,24 @@ class Previa(S.Previa):
  def __init__(s,w,h,scratch):
   super().__init__(w,h,scratch);s.d=json.loads((ROOT/'build/subaru-minya-samples.json').read_text(encoding='utf-8'));BT.textura_unica(s.cena,scratch)
  def pose_beatrice(s,t):
-  D,Fm=s.d['disparo'],s.d['forma']
-  ergue=sv(t/(Fm*.7));solta=sv((t-D-8)/10);empurra=math.exp(-((t-D-1)/2.5)**2)
-  bx=-110*ergue*(1-solta)+empurra*25
-  return {'braco_e':[bx,0,-18*ergue*(1-solta)],'braco_d':[bx,0,18*ergue*(1-solta)],'cabeca':[-6*ergue*(1-solta),0,0]}
+  """Braços sobem com passada, cada estaca sai com um empurrão da mão do lado dela, o corpo inclina no leque e
+  tudo volta com atraso; o balanço idle continua por baixo (nada fica congelado)."""
+  D,Fm=s.d['disparo'],s.d['forma'];K=7;c=K//2
+  def ordem(k):d=k-c;return 0 if d==0 else abs(d)*2-(1 if d<0 else 0)
+  def volta(u):u=min(1,max(0,u))-1;return 1+2.1*u**3+1.1*u**2
+  ergue=volta(t/(Fm*.75));solta=sv((t-D-9)/14);alto=ergue*(1-solta)
+  pe=pd=0.;gira=0.;tot=0.
+  for k in range(K):
+   dk=D+ordem(k);g=math.exp(-((t-dk-.4)/1.1)**2)*(t>dk-2);tot+=g
+   if k<=c:pd+=g
+   if k>=c:pe+=g
+   gira+=g*(k-c)*7
+  anti=math.exp(-((t-D+1.5)/1.6)**2)
+  i=lambda f:math.sin(t*.15+f)
+  return {'braco_e':[-8+4*i(0)-102*alto+22*pe-10*anti,0,-6-16*alto+6*i(1)],
+          'braco_d':[-8+4*i(.5)-102*alto+22*pd-10*anti,0,6+16*alto-6*i(1.5)],
+          'corpo':[-5*anti+7*min(1,tot)*(1-solta)+2*math.sin(t*.12),gira*.4,1.5*math.sin(t*.1)],
+          'cabeca':[3*math.sin(t*.09)-5*alto+4*anti-3*min(1,tot),gira*.9+5*math.sin(t*.05)*(1-alto),0]}
  def quadro(s,t,cam,alvo,vp,fov=48):
   s.cam=np.asarray(cam,float);x,y,w,h=vp;f=1/math.tan(math.radians(fov)/2)
   s.proj=np.array([[f/(w/h),0,0,0],[0,f,0,0],[0,0,-1.002,-2.0],[0,0,-1,0]])
