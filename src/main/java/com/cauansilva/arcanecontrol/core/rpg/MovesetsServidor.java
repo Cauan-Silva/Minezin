@@ -27,8 +27,6 @@ public final class MovesetsServidor {
     private static boolean valido(Acao a){return a.p.isAlive()&&!a.p.hasDisconnected()&&a.p.serverLevel()==a.nivel&&(!a.forma||DespertaresServidor.ativo(a.p));}
     public static void executar(ServerPlayer p,int id){
         var kit=PoderAnime.daTecnica(id);if(kit==null)return;int slot=id-(kit.id-1)*10-1;
-        // Subaru: o Contrato com a Beatrice (G) entra na proxima etapa da integracao; a base Z/X/C/V ja funciona.
-        if(kit==PoderAnime.SUBARU&&slot==4){if(ProgressaoPoderes.podeUsar(p,id))mensagem(p,"Contrato com a Beatrice: chega na próxima atualização.");return;}
         if(slot==4&&DespertaresServidor.ativo(p)&&ProgressaoPoderes.ler(p).ativo()==kit){DespertaresServidor.cancelar(p);return;}
         if(!ProgressaoPoderes.podeUsar(p,id))return;
         if(slot==4){DespertaresServidor.ativar(p,kit);return;}
