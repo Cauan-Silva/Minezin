@@ -19,7 +19,7 @@ public final class EfeitosSubaru {
     /** Estado de um efeito. acerto/idAlvo: Shamak (601). quebra: tick (relativo) em que o escudo estoura. */
     public static final class Efeito{
         final int tipo;final UUID jogador;final Vec3 origem,alvo;final long inicio;final Object mundo;
-        Vec3 acerto;int idAlvo=-1;double quebra=Double.POSITIVE_INFINITY;Vec3 golpe;final List<UUID> recebem=new ArrayList<>();final List<Double> chegam=new ArrayList<>();
+        Vec3 acerto;int idAlvo=-1;double quebra=Double.POSITIVE_INFINITY;Vec3 golpe;final List<UUID> recebem=new ArrayList<>();final List<double[]> golpes=new ArrayList<>();final List<Double> chegam=new ArrayList<>();
         Efeito(int tipo,UUID jogador,Vec3 origem,Vec3 alvo,long inicio,Object mundo){this.tipo=tipo;this.jogador=jogador;this.origem=origem;this.alvo=alvo;this.inicio=inicio;this.mundo=mundo;}
     }
     private static final List<Efeito> EFEITOS=new ArrayList<>();
@@ -41,7 +41,7 @@ public final class EfeitosSubaru {
     /** Tick (com fracao) desde o G, ou -1 se este jogador nao esta na forma. */
     public static double contrato(UUID id,float parcial){var mc=Minecraft.getInstance();var c=CONTRATOS.get(id);return c==null||mc.level==null||c.mundo!=mc.level?-1:mc.level.getGameTime()-c.inicio+parcial;}
 
-    public static boolean trata(int tipo){return tipo>=PoderesSubaru.SHAMAK&&tipo<=PoderesSubaru.RECUPERACAO||tipo==PoderesSubaru.MINYA;}
+    public static boolean trata(int tipo){return tipo>=PoderesSubaru.SHAMAK&&tipo<=PoderesSubaru.RECUPERACAO||tipo==PoderesSubaru.MINYA||tipo==PoderesSubaru.EMM||tipo==PoderesSubaru.EMM_GOLPE;}
     /** Tick (com fracao) da magia `tipo` da Beatrice em andamento para este jogador, ou -1. */
     public static double magia(UUID id,int tipo,float parcial){var mc=Minecraft.getInstance();if(mc.level==null)return -1;
         for(var e:EFEITOS)if(e.tipo==tipo&&e.jogador.equals(id)&&e.mundo==mc.level)return mc.level.getGameTime()-e.inicio+parcial;return -1;}
@@ -49,6 +49,10 @@ public final class EfeitosSubaru {
         var mc=Minecraft.getInstance();if(mc.level==null)return;long agora=mc.level.getGameTime();
         if(tipo==PoderesSubaru.SHAMAK_ACERTO){
             for(var e:EFEITOS)if(e.tipo==PoderesSubaru.SHAMAK&&e.jogador.equals(id)&&e.acerto==null){e.acerto=origem;e.idAlvo=(int)alvo.x;return;}
+            return;
+        }
+        if(tipo==PoderesSubaru.EMM_GOLPE){
+            for(var e:EFEITOS)if(e.tipo==PoderesSubaru.EMM&&e.jogador.equals(id)){if(e.golpes.size()>=8)e.golpes.remove(0);e.golpes.add(new double[]{agora-e.inicio,alvo.x,alvo.y,alvo.z});}
             return;
         }
         if(tipo==PoderesSubaru.ESCUDO_QUEBRA){
@@ -74,7 +78,8 @@ public final class EfeitosSubaru {
         case PoderesSubaru.ESCUDO->(int)Math.min(EscudoSubaru.DURACAO+10,e.quebra+EscudoSubaru.ESTOURO+1);
         case PoderesSubaru.INSTRUCAO->InstrucaoSubaru.ORDEM+InstrucaoSubaru.PULSO+InstrucaoSubaru.DURACAO+2;
         case PoderesSubaru.RECUPERACAO->RecuperacaoSubaru.FIM+2;
-        case PoderesSubaru.MINYA->MinyaBeatrice.fim()+2;default->0;};}
+        case PoderesSubaru.MINYA->MinyaBeatrice.fim()+2;
+        case PoderesSubaru.EMM->EmmBeatrice.FIM+2;default->0;};}
 
     @SubscribeEvent public static void tick(TickEvent.ClientTickEvent ev){
         if(ev.phase!=TickEvent.Phase.END)return;var mc=Minecraft.getInstance();

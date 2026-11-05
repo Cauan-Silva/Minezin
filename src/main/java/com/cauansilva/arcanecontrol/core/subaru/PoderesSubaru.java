@@ -28,9 +28,9 @@ import java.util.*;
  */
 @Mod.EventBusSubscriber(modid="arcanecontrol")
 public final class PoderesSubaru {
-    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610;
+    public static final int SHAMAK=600,SHAMAK_ACERTO=601,ESCUDO=602,ESCUDO_QUEBRA=603,INSTRUCAO=604,RECUPERACAO=605,MINYA=610,EMM=611,EMM_GOLPE=612;
     /** Recargas (ticks) das magias da Beatrice na forma: Z Minya. */
-    static final int RECARGA_MINYA=60;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
+    static final int RECARGA_MINYA=60,RECARGA_EMM=400;static final float DANO_MINYA=5;static final double RAIO_ESTACA=1.3;
     /** Recargas base (ticks) de Z/X/C/V. */
     static final int[] RECARGAS={120,300,400,500};
     static final float DANO_SHAMAK=4;
@@ -65,7 +65,12 @@ public final class PoderesSubaru {
 
     /** Magias da Beatrice durante o contrato (slots Z/X/C/V da forma). */
     private static void contrato(ServerPlayer p,int slot){
-        if(slot!=0){mensagem(p,"E.M.M., Murak e Ul Minya: chegam na próxima atualização.");return;}
+        if(slot==1){
+            if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,1,RECARGA_EMM))return;
+            var t=RpgServidor.dados(p);t.putLong("sub_emm_inicio",RpgServidor.agora(p));t.putLong("sub_emm_golpe",0);
+            enviar(p,EMM,p.position(),horizontal(p.getLookAngle()));RpgServidor.uso(p,PoderAnime.SUBARU);return;
+        }
+        if(slot!=0){mensagem(p,"Murak e Ul Minya: chegam na próxima atualização.");return;}
         if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,0,RECARGA_MINYA))return;
         Vec3 frente=horizontal(p.getLookAngle());
         PENDENTES.add(new Pendente(p,p.serverLevel(),10,RpgServidor.agora(p),p.position(),frente));
@@ -136,6 +141,21 @@ public final class PoderesSubaru {
         e.setAmount(e.getAmount()-bloqueado);t.putLong("sub_escudo_ate",0);t.putFloat("sub_escudo_reserva",0);
         var autor=e.getSource().getEntity().position();
         enviar(p,ESCUDO_QUEBRA,p.position(),autor.subtract(p.position()));
+    }
+    /** E.M.M. fechado: EmmBeatrice.invulneravel no tempo desde o cast. */
+    static boolean emm(ServerPlayer p){var t=RpgServidor.dados(p);return t.contains("sub_emm_inicio")&&EmmBeatrice.invulneravel(RpgServidor.agora(p)-t.getLong("sub_emm_inicio"));}
+    /** Nada entra: o golpe e cancelado antes do dano (menos o que ignora invulnerabilidade, como /kill e o vazio). */
+    @SubscribeEvent public static void casca(net.minecraftforge.event.entity.living.LivingAttackEvent e){
+        if(!(e.getEntity() instanceof ServerPlayer p)||!emm(p)||e.getSource().is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY))return;
+        e.setCanceled(true);
+        var autor=e.getSource().getEntity()!=null?e.getSource().getEntity().position():e.getSource().getSourcePosition();
+        var t=RpgServidor.dados(p);long agora=RpgServidor.agora(p);
+        if(autor!=null&&agora-t.getLong("sub_emm_golpe")>=3){t.putLong("sub_emm_golpe",agora);
+            Vec3 d=autor.subtract(p.position().add(0,1,0));if(d.lengthSqr()>1e-6)enviar(p,EMM_GOLPE,p.position(),d.normalize());}
+    }
+    /** Efeitos nocivos novos nao pegam enquanto a casca esta fechada. */
+    @SubscribeEvent public static void cascaEfeitos(net.minecraftforge.event.entity.living.MobEffectEvent.Applicable e){
+        if(e.getEntity() instanceof ServerPlayer p&&emm(p)&&e.getEffectInstance().getEffect().getCategory()==MobEffectCategory.HARMFUL)e.setResult(net.minecraftforge.eventbus.api.Event.Result.DENY);
     }
     @SubscribeEvent public static void parar(net.minecraftforge.event.server.ServerStoppedEvent e){PENDENTES.clear();}
     private PoderesSubaru(){}

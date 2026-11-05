@@ -75,6 +75,15 @@ final class RenderBeatrice {
         r.put("corpo",new float[]{(float)(-5*anti+7*to*(1-solta)+2*Math.sin(t*.12)),(float)(gira*.4),(float)(1.5*Math.sin(t*.1))});
         r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)-5*alto+4*anti-3*to),(float)(gira*.9+5*Math.sin(t*.05)*(1-alto)),0});
     }
+    /** E.M.M.: estende a mao para o Subaru com passada, segura e recolhe quando a poeira volta (preview_subaru_emm). */
+    static void poseEmm(Map<String,float[]> r,double t){
+        int A=com.cauansilva.arcanecontrol.core.vfx.EmmBeatrice.ABRE,So=com.cauansilva.arcanecontrol.core.vfx.EmmBeatrice.SOLTA;
+        double est=volta(t/6)*(1-sv((t-A-So*.6)/12)),puxa=Math.exp(-Math.pow((t-A-So-4)/3,2)),i0=Math.sin(t*.15),i05=Math.sin(t*.15+.5);
+        r.put("braco_d",new float[]{(float)(-8+4*i05-72*est+18*puxa),0,(float)(6+46*est-10*puxa)});
+        r.put("braco_e",new float[]{(float)(-8+4*i0-18*est),0,(float)(-6-10*est)});
+        r.put("corpo",new float[]{(float)(4*est+2*Math.sin(t*.12)),(float)(-14*est),(float)(-3*est+1.5*Math.sin(t*.1))});
+        r.put("cabeca",new float[]{(float)(3*Math.sin(t*.09)+6*est),(float)(-22*est+5*Math.sin(t*.05)*(1-est)),0});
+    }
     static void desenhar(PoseStack pose,EfeitosSubaru.Contrato c,Player dono,double t,Vec3 cam,float parcial){
         var mc=Minecraft.getInstance();if(RENDER==null){RENDER=new GeoObjectRenderer<>(new Modelo());BEA=new Beatrice();}
         double escala,giro,inclina,yaw;Vec3 alvo;
@@ -93,6 +102,7 @@ final class RenderBeatrice {
         if(escala<.01)return;
         BEA.tick=t;poseOciosa(BEA.pose,t+60);
         double tm=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.MINYA,parcial);if(tm>=0)poseMinya(BEA.pose,tm);
+        double te=EfeitosSubaru.magia(dono.getUUID(),PoderesSubaru.EMM,parcial);if(te>=0)poseEmm(BEA.pose,te);
         Vec3 p=c.beatrice.subtract(cam);int luz=LevelRenderer.getLightColor(mc.level,BlockPos.containing(c.beatrice.add(0,.5,0)));
         pose.pushPose();
         pose.translate(p.x,p.y,p.z);

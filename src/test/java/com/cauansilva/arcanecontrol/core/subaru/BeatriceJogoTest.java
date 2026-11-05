@@ -17,7 +17,7 @@ class BeatriceJogoTest {
     @Test void poseDaMinyaUsaOssosDoModelo()throws Exception{
         var geo=JsonParser.parseString(ler("/assets/arcanecontrol/geo/subaru/beatrice.geo.json")).getAsJsonObject();
         var nomes=new HashSet<String>();for(var b:geo.getAsJsonArray("minecraft:geometry").get(0).getAsJsonObject().getAsJsonArray("bones"))nomes.add(b.getAsJsonObject().get("name").getAsString());
-        var pose=new HashMap<String,float[]>();for(double t=0;t<60;t+=.5){RenderBeatrice.poseMinya(pose,t);for(var n:pose.keySet())assertTrue(nomes.contains(n),n);
+        var pose=new HashMap<String,float[]>();for(double t=0;t<60;t+=.5){RenderBeatrice.poseMinya(pose,t);RenderBeatrice.poseEmm(pose,t);for(var n:pose.keySet())assertTrue(nomes.contains(n),n);
             for(var r:pose.values())for(float v:r)assertTrue(Float.isFinite(v)&&Math.abs(v)<140);}
     }
     @Test void animacaoVaziaExiste()throws Exception{

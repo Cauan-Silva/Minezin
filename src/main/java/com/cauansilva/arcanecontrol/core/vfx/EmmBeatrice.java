@@ -43,7 +43,13 @@ public final class EmmBeatrice {
     public static P direcaoGolpe(int g){var o=ORIGEM[g];return un(new P(o.x()-CENTRO.x(),(o.y()-CENTRO.y())*.4,o.z()-CENTRO.z()));}
     public static P pontoGolpe(int g){return naCasca(direcaoGolpe(g),1.02);}
     /** Afundamento (0..1) do golpe g: a casca engole o impacto e volta. */
-    public static double afunda(int g,double t){double a=t-CHEGADA[g];return a<0||a>7?0:Math.sin(Math.PI*a/7)*Math.exp(-a/5);}
+    public static double afunda(int g,double t){return afundaGolpe(t-CHEGADA[g]);}
+    /** Afundamento (0..1) idade ticks depois de um golpe qualquer (no jogo: golpes reais bloqueados). */
+    public static double afundaGolpe(double idade){return idade<0||idade>7?0:Math.sin(Math.PI*idade/7)*Math.exp(-idade/5);}
+    /** Raio relativo da casca sem golpes (respira; ondula enquanto fecha). */
+    public static double raioBase(int i,int j,double t){return 1+.012*Math.sin(t*.2+i*.7)*(t<ABRE&&t>=FECHA?.3:1)+.06*(1-s(t/FECHA))*Math.sin(j*.9+t);}
+    /** Quanto o ponto de direcao n afunda por um golpe vindo da direcao d (unitarias), dado o afundamento do golpe. */
+    public static double amassado(P n,P d,double afundamento){double c=n.x()*d.x()+n.y()*d.y()+n.z()*d.z(),ang=Math.acos(Math.max(-1,Math.min(1,c)));return .09*afundamento*Math.exp(-ang*ang/.08);}
 
     /**
      * Quanto do anel de latitude i esta visivel (0..1): fecha das duas pontas ate a cintura e, na soltura,
@@ -56,9 +62,8 @@ public final class EmmBeatrice {
         return t<0?0:fecha*descasca;
     }
     public static P casca(int i,int j,double t){
-        var n=esfera(i,j);double k=1+.012*Math.sin(t*.2+i*.7)*(t<ABRE&&t>=FECHA?.3:1)+.06*(1-s(t/FECHA))*Math.sin(j*.9+t);
-        for(int g=0;g<GOLPES;g++){var dg=direcaoGolpe(g);double c=n.x()*dg.x()+n.y()*dg.y()+n.z()*dg.z(),ang=Math.acos(Math.max(-1,Math.min(1,c)));
-            k-=.09*afunda(g,t)*Math.exp(-ang*ang/.08);}
+        var n=esfera(i,j);double k=raioBase(i,j,t);
+        for(int g=0;g<GOLPES;g++)k-=amassado(n,direcaoGolpe(g),afunda(g,t));
         return naCasca(n,k);
     }
     /** Escuridao da casca: some de fora no fechamento, fica densa no meio e pulsa devagar. */
@@ -71,8 +76,12 @@ public final class EmmBeatrice {
     }
     /** Brilho no ponto u da veia k: um pulso que corre a veia, mais forte quando um golpe acaba de ser engolido. */
     public static double brilhoVeia(int k,double u,double t){
-        double fase=(t*.045+hash(k))%1,b=Math.exp(-Math.pow((u-fase)*5,2))*.8+.2;
         double golpe=0;for(int g=0;g<GOLPES;g++)golpe=Math.max(golpe,afunda(g,t));
+        return brilhoVeia(k,u,t,golpe);
+    }
+    /** Mesmo pulso, com o afundamento do golpe mais recente informado (no jogo). */
+    public static double brilhoVeia(int k,double u,double t,double golpe){
+        double fase=(t*.045+hash(k))%1,b=Math.exp(-Math.pow((u-fase)*5,2))*.8+.2;
         return b*(.6+.8*golpe);
     }
 
