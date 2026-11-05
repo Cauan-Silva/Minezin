@@ -25,7 +25,7 @@ final class RenderMagiasSubaru {
     private static final Vec3 CIMA=new Vec3(0,1,0);
 
     /** Referencial local: L lateral, U cima, F frente (L = cima x frente, como +x das classes puras). */
-    private record Base(Vec3 l,Vec3 u,Vec3 f){
+    record Base(Vec3 l,Vec3 u,Vec3 f){
         Vec3 em(double x,double y,double z){return l.scale(x).add(u.scale(y)).add(f.scale(z));}
         static Base horizontal(Vec3 frente){Vec3 f=new Vec3(frente.x,0,frente.z);f=f.lengthSqr()<1e-6?new Vec3(0,0,1):f.normalize();return new Base(CIMA.cross(f).normalize(),CIMA,f);}
         static Base olhar(Vec3 frente){Vec3 f=frente.normalize();Vec3 l=CIMA.cross(f);l=l.lengthSqr()<1e-6?new Vec3(1,0,0):l.normalize();return new Base(l,f.cross(l).normalize(),f);}
@@ -193,6 +193,62 @@ final class RenderMagiasSubaru {
                     for(int i=0;i<RecuperacaoSubaru.PONTOS_ANEL;i++)fita(pose,cam,v(b,RecuperacaoSubaru.anel(n,i,t)),v(b,RecuperacaoSubaru.anel(n,(i+1)%RecuperacaoSubaru.PONTOS_ANEL,t)),.03,CURA,aa*.8f);}
                 for(int k=0;k<RecuperacaoSubaru.PARTICULAS;k++)disco(pose,cam,v(b,RecuperacaoSubaru.particula(k,t)),RecuperacaoSubaru.tamanhoParticula(k,t),CURA,.9f);}
         });
+    }
+    // ---------------- G: Contrato com a Beatrice (entrada + aura da forma) ----------------
+    private static final int C_VIOLETA=0x9B5CFF,C_CLARO=0xE6D6FF,C_OURO=0xFFD27A,MADEIRA=0x6B3E26,MADEIRA_ESC=0x3E2316,LUZ_PORTA=0xFFF1C9;
+    private static Vec3 v(Base b,ContratoSubaru.P p){return b.em(p.x(),p.y(),p.z());}
+    private static Vec3 giraY(Vec3 v,double graus){double a=Math.toRadians(graus);return v.scale(Math.cos(a)).add(CIMA.cross(v).scale(Math.sin(a)));}
+    /** Frente do referencial da entrada: o yaw do Subaru quando usou o G. */
+    static Base baseContrato(EfeitosSubaru.Contrato c){double y=Math.toRadians(c.yaw);return Base.horizontal(new Vec3(-Math.sin(y),0,Math.cos(y)));}
+    /** Caixa orientada: centro e os tres semi-eixos. */
+    private static void caixa(PoseStack pose,Vec3 c,Vec3 x,Vec3 y,Vec3 z,int cor,float a){
+        Vec3[] q=new Vec3[8];for(int i=0;i<8;i++)q[i]=c.add((i&1)==0?x.scale(-1):x).add((i&2)==0?y.scale(-1):y).add((i&4)==0?z.scale(-1):z);
+        int[][] f={{0,1,3,2},{4,6,7,5},{0,4,5,1},{2,3,7,6},{0,2,6,4},{1,5,7,3}};
+        for(int[] k:f){DesenhoMagia.ponto(pose,q[k[0]],0,0,cor,a);DesenhoMagia.ponto(pose,q[k[1]],1,0,cor,a);DesenhoMagia.ponto(pose,q[k[2]],1,1,cor,a);DesenhoMagia.ponto(pose,q[k[3]],0,1,cor,a);}
+    }
+    static void contrato(PoseStack pose,EfeitosSubaru.Contrato c,Player dono,double t,Vec3 camMundo,float parcial){
+        if(!DesenhoMagia.iniciar(t))return;
+        pose.pushPose();Vec3 d=c.centro.subtract(camMundo);pose.translate(d.x,d.y,d.z);Vec3 cam=camMundo.subtract(c.centro);Base b=baseContrato(c);
+        try{
+            float ac=(float)ContratoSubaru.alphaCirculo(t),cl=(float)ContratoSubaru.clarao(t),ap=(float)ContratoSubaru.alphaPorta(t),af=(float)ContratoSubaru.alphaFio(t),au=(float)ContratoSubaru.aura(t);
+            if(ap>.01&&t<ContratoSubaru.FIM)DesenhoMagia.lote(pose,8,false,()->{
+                double er=ContratoSubaru.ergue(t),ab=ContratoSubaru.abertura(t),hgt=2.6*er;Vec3 base=v(b,ContratoSubaru.PORTA_POS);
+                Vec3 L=giraY(b.l(),-35),F=giraY(b.f(),-35),topo=base.add(0,hgt,0);
+                for(int sx=-1;sx<=1;sx+=2)caixa(pose,base.add(L.scale(sx*.72)).add(0,hgt/2,0),L.scale(.09),CIMA.scale(hgt/2),F.scale(.12),MADEIRA_ESC,ap);
+                caixa(pose,topo.add(0,.1,0),L.scale(.85),CIMA.scale(.12),F.scale(.14),MADEIRA_ESC,ap);caixa(pose,topo.add(0,.3,0),L.scale(.35),CIMA.scale(.1),F.scale(.1),C_OURO,ap);
+                if(hgt>.1)for(int sx=-1;sx<=1;sx+=2){
+                    Vec3 Lf=giraY(L,sx*100*ab),Ff=giraY(F,sx*100*ab),dob=base.add(L.scale(sx*.63));
+                    caixa(pose,dob.add(Lf.scale(-sx*.31)).add(0,hgt/2,0),Lf.scale(.31),CIMA.scale(hgt/2-.04),Ff.scale(.05),MADEIRA,ap);
+                    caixa(pose,dob.add(Lf.scale(-sx*.5)).add(Ff.scale(-.06)).add(0,hgt*.5,0),Lf.scale(.03),CIMA.scale(.03),Ff.scale(.03),C_OURO,ap);
+                }
+            });
+            DesenhoMagia.lote(pose,1,true,()->{
+                if(ac>.01){
+                    for(int a=0;a<ContratoSubaru.ANEIS;a++)for(int i=0;i<ContratoSubaru.PONTOS_CIRCULO;i++)
+                        fita(pose,cam,v(b,ContratoSubaru.circulo(a,i,t)),v(b,ContratoSubaru.circulo(a,(i+1)%ContratoSubaru.PONTOS_CIRCULO,t)),.035+.01*a+.04*cl,a!=1?C_VIOLETA:C_CLARO,ac);
+                    for(int k=0;k<ContratoSubaru.ESTRELAS;k++)fita(pose,cam,v(b,ContratoSubaru.estrela(k,t)),v(b,ContratoSubaru.estrela((k+2)%ContratoSubaru.ESTRELAS,t)),.025+.03*cl,C_VIOLETA,ac*.8f);
+                    for(int k=0;k<ContratoSubaru.RUNAS;k++){float r=(float)ContratoSubaru.acendeRuna(k,t);if(r<.01)continue;Vec3 q=v(b,ContratoSubaru.runa(k,t));
+                        fita(pose,cam,q.subtract(b.l().scale(.1)),q.add(b.l().scale(.1)),.05,C_CLARO,ac*r);fita(pose,cam,q.subtract(b.f().scale(.1)),q.add(b.f().scale(.1)),.05,C_CLARO,ac*r);}
+                    if(cl>.01)disco(pose,cam,new Vec3(0,.1,0),1.9*cl+.2,C_VIOLETA,cl*.12f);
+                }
+                if(ap>.01&&t<ContratoSubaru.FIM){
+                    float lz=(float)ContratoSubaru.luzPorta(t);double hgt=2.6*ContratoSubaru.ergue(t);
+                    if(lz>.01&&hgt>.1){Vec3 base=v(b,ContratoSubaru.PORTA_POS),L=giraY(b.l(),-35),n=giraY(b.f(),-35).scale(-1),cc=base.add(0,hgt/2,0).add(n.scale(-.02));
+                        DesenhoMagia.ponto(pose,cc.subtract(L.scale(.6)).add(0,-hgt/2,0),0,0,LUZ_PORTA,lz*ap*.9f);DesenhoMagia.ponto(pose,cc.add(L.scale(.6)).add(0,-hgt/2,0),1,0,LUZ_PORTA,lz*ap*.9f);
+                        DesenhoMagia.ponto(pose,cc.add(L.scale(.6)).add(0,hgt/2,0),1,1,LUZ_PORTA,lz*ap*.9f);DesenhoMagia.ponto(pose,cc.subtract(L.scale(.6)).add(0,hgt/2,0),0,1,LUZ_PORTA,lz*ap*.9f);
+                        for(int k=0;k<6;k++)disco(pose,cam,cc.add(n.scale(.3)),(.25+.2*k)*lz,LUZ_PORTA,lz*ap*.05f);}
+                }
+                Vec3 pe=dono.getPosition(parcial).subtract(c.centro);
+                if(af>.01&&c.beatrice!=null){
+                    Vec3 A=pe.add(b.l().scale(0)).add(0,1.2,0),B=c.beatrice.subtract(c.centro).add(0,.75,0).subtract(Base.horizontal(new Vec3(-Math.sin(Math.toRadians(dono.getViewYRot(parcial))),0,Math.cos(Math.toRadians(dono.getViewYRot(parcial))))).l().scale(.25));
+                    double alc=ContratoSubaru.alcanceFio(t);Vec3 ant=A;
+                    for(int i=1;i<=ContratoSubaru.PONTOS_FIO;i++){double u=alc*i/ContratoSubaru.PONTOS_FIO;Vec3 q=A.add(B.subtract(A).scale(u)).add(0,Math.sin(Math.PI*u)*.25+.03*Math.sin(u*12-t*.6),0);
+                        fita(pose,cam,ant,q,.03,C_VIOLETA,af);fita(pose,cam,ant,q,.01,C_CLARO,af);ant=q;}
+                }
+                if(au>.01)for(int k=0;k<14;k++){double a=2*Math.PI*k/14+t*.08,h=((t*.04+k*.37)%1);Vec3 q=pe.add(Math.cos(a)*.55,.1+1.8*h,Math.sin(a)*.55);
+                    fita(pose,cam,q,q.add(0,.35,0),.04,C_VIOLETA,au*(float)Math.sin(Math.PI*h)*.7f);}
+            });
+        }finally{pose.popPose();DesenhoMagia.terminar();}
     }
     private RenderMagiasSubaru(){}
 }

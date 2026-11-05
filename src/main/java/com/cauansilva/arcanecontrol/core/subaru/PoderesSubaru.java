@@ -42,7 +42,7 @@ public final class PoderesSubaru {
 
     public static void executar(ServerPlayer p,int slot){
         if(slot<0||slot>3)return;
-        if(DespertaresServidor.ativo(p)){mensagem(p,"Contrato com a Beatrice: chega na próxima atualização.");return;}
+        if(DespertaresServidor.ativo(p)){mensagem(p,"Magias da Beatrice (Minya, E.M.M., Murak, Ul Minya): chegam na próxima atualização.");return;}
         if(!RpgServidor.conjurar(p,PoderAnime.SUBARU,slot,RECARGAS[slot]))return;
         long agora=RpgServidor.agora(p);Vec3 olho=p.getEyePosition(),dir=p.getLookAngle();
         switch(slot){
