@@ -9,3 +9,4 @@ tags: [moc, sistema]
 - [[Tecido]]: física e superfícies lisas.
 - [[Rede]]: pacotes e protocolo.
 - [[Configuração]]: arquivos TOML.
+- [[Interrupção]]: interromper técnicas e contra-ataques

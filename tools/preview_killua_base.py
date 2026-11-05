@@ -14,8 +14,10 @@ AZUL,BRANCO,CIANO=0x4FA8FF,0xF2FAFF,0x9FE6FF
 ACO,ACO_CLARO,FIO=0x6E7680,0xC9D2DC,0xE8E8E8
 FUMACA,SANGUE,OURO,LILAS=0x1C1E26,0xB0101A,0xFFD24A,0xB9C8FF
 ANIMS=json.loads((ASSETS/'player_animation/killua.json').read_text(encoding='utf-8'))['animations']
-def chave(anim,osso,seg):
- k=sorted((float(t),v['vector'],v['easing']) for t,v in ANIMS[anim]['bones'][osso]['rotation'].items())
+def chave(anim,osso,seg,canal='rotation'):
+ b=ANIMS[anim]['bones'][osso]
+ if canal not in b:return [0,0,0]
+ k=sorted((float(t),v['vector'],v['easing']) for t,v in b[canal].items())
  if seg<=k[0][0]:return k[0][1]
  for (t0,v0,_),(t1,v1,e) in zip(k,k[1:]):
   if seg<=t1:u=S.EASE.get(e,S.EASE['linear'])((seg-t0)/(t1-t0));return [a+(b-a)*u for a,b in zip(v0,v1)]

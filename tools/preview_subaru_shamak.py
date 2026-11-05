@@ -17,7 +17,7 @@ FRENTE=np.array([0,0,-1.]);LADO=np.array([1.,0,0]);CIMA=np.array([0,1.,0]);PARTI
 def W(q):return OLHO+LADO*q['x']+CIMA*q['y']+FRENTE*q['z']
 def V(q):return LADO*q['x']+CIMA*q['y']+FRENTE*q['z']
 LUZ=np.array([-.4,.8,.6]);LUZ=LUZ/np.linalg.norm(LUZ)
-EASE={'linear':lambda u:u,'easeInQuad':lambda u:u*u,'easeOutQuad':lambda u:1-(1-u)**2,'easeInOutSine':lambda u:-(math.cos(math.pi*u)-1)/2}
+EASE={'linear':lambda u:u,'easeInQuad':lambda u:u*u,'easeOutQuad':lambda u:1-(1-u)**2,'easeInOutSine':lambda u:-(math.cos(math.pi*u)-1)/2,'easeOutBack':lambda u:1+2.70158*(u-1)**3+1.70158*(u-1)**2}
 ANIM=json.loads((ASSETS/'player_animation/subaru.json').read_text(encoding='utf-8'))['animations']['subaru_shamak']
 def chave(osso,seg):
  k=sorted((float(t),v['vector'],v['easing']) for t,v in ANIM['bones'][osso]['rotation'].items())
