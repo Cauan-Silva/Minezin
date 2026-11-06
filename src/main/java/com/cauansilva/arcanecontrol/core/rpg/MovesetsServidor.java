@@ -27,6 +27,7 @@ public final class MovesetsServidor {
     private static boolean valido(Acao a){return a.p.isAlive()&&!a.p.hasDisconnected()&&a.p.serverLevel()==a.nivel&&(!a.forma||DespertaresServidor.ativo(a.p));}
     public static void executar(ServerPlayer p,int id){
         var kit=PoderAnime.daTecnica(id);if(kit==null)return;int slot=id-(kit.id-1)*10-1;
+        if(slot==4&&kit==PoderAnime.KILLUA&&ProgressaoPoderes.ler(p).ativo()==kit&&com.cauansilva.arcanecontrol.core.killua.PoderesKillua.ultimate(p))return;
         if(slot==4&&DespertaresServidor.ativo(p)&&ProgressaoPoderes.ler(p).ativo()==kit){DespertaresServidor.cancelar(p);return;}
         if(!ProgressaoPoderes.podeUsar(p,id))return;
         if(slot==4){DespertaresServidor.ativar(p,kit);return;}
@@ -35,6 +36,7 @@ public final class MovesetsServidor {
         if(kit==PoderAnime.CID&&!p.getMainHandItem().is(EspadaCid.ESPADA.get())){p.displayClientMessage(Component.literal("Segure a Lâmina Shadow."),true);return;}
         if(kit==PoderAnime.ICHIGO){com.cauansilva.arcanecontrol.core.ichigo.PoderesIchigo.executar(p,slot);return;}
         if(kit==PoderAnime.SUBARU){com.cauansilva.arcanecontrol.core.subaru.PoderesSubaru.executar(p,slot);return;}
+        if(kit==PoderAnime.KILLUA){com.cauansilva.arcanecontrol.core.killua.PoderesKillua.executar(p,slot);return;}
         if(kit==PoderAnime.ASTA){com.cauansilva.arcanecontrol.core.asta.PoderesAsta.executar(p,slot);return;}
         if(DespertaresServidor.ativo(p)){transformada(p,kit,slot);return;}
         if(kit==PoderAnime.GOJO){

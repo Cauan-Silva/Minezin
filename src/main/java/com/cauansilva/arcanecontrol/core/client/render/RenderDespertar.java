@@ -24,6 +24,7 @@ public final class RenderDespertar {
         if(com.cauansilva.arcanecontrol.core.rpg.PerfilBoss.efeito(p.tipo())){RenderBossVfx.receber(p);return;}
         if(p.kit()==6){com.cauansilva.arcanecontrol.core.ichigo.EfeitosIchigo.receber(p);return;}
         if(p.kit()==4){com.cauansilva.arcanecontrol.core.asta.EfeitosAsta.receber(p);return;}
+        if(p.kit()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.KILLUA.id){com.cauansilva.arcanecontrol.core.killua.EfeitosKillua.receberDespertar(p);return;}
         if(p.kit()==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.SUBARU.id){com.cauansilva.arcanecontrol.core.subaru.EfeitosSubaru.receberDespertar(p);return;}
         if(p.tipo()==0){com.cauansilva.arcanecontrol.core.client.AudioAnime.cancelar(p.dono(),null);ImpactosAnime.cancelar(p.dono());EFEITOS.removeIf(e->e.p.dono().equals(p.dono()));GerenciadorCutscene3D.cancelarDominioCliente(p.dono());if(p.kit()==2)com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(15,p.dono(),Vec3.ZERO,Vec3.ZERO);AnimacoesGojo.cancelar(p.dono());return;}
         if(p.ticks()<1||p.ticks()>(p.kit()==2?com.cauansilva.arcanecontrol.core.rpg.EstadoDespertar.apresentacaoInicial(com.cauansilva.arcanecontrol.core.rpg.PersonagemRpg.SHADOW):1200)||p.kit()<1||p.kit()>3||!finito(p.a())||!finito(p.b()))return;

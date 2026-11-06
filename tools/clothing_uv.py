@@ -32,6 +32,8 @@ def apply(style,bones):
     if style=='matadora_desperta':palette[a.STEEL]='3e0e19';palette[a.INK]='120e16';palette[a.SHADOW]='1a1519'
     # Subaru (Re:Zero tracksuit, user's reference): white jacket body, black sleeves/yoke/collar/pants, yellow-orange trim.
     if style=='subaru':palette[a.WHITE]='eceae4';palette[a.BLACK]='1c1d22';palette[a.GOLD]='f0b01c';palette[a.SHADOW]='26272d';palette[a.STEEL]='9fa1a8';palette[a.IVORY]='f1efe8';palette[a.INK]='3a3b42'
+    # Killua (HxH 2011, Hunter Exam, user's reference): lavender-white tee, navy turtleneck, slate shorts, purple boots.
+    if style=='killua':palette[a.WHITE]='ecebf5';palette[a.LILAC]='cfcce0';palette[a.NAVY]='2b3378';palette[a.INK]='1e2459';palette[a.BROWN]='7d82a8';palette[a.LEATHER]='62668c';palette[a.PLUM]='8c3f72';palette[a.INDIGO]='6c2f57';palette[a.IVORY]='f5f3f8';palette[a.STEEL]='f0eef4'
     islands={};rects=[];cursor_x=cursor_y=row_height=0
     def rect(x,y,w,h,color):
         rects.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#{color}"/>')

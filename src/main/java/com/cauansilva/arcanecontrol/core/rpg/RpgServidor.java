@@ -73,14 +73,17 @@ public final class RpgServidor {
     private static RecargasRpg recargas(ServerPlayer p){return PerfilRpgNbt.recargas(dados(p));}
     public static boolean conjurar(ServerPlayer p,PoderAnime kit,int slot,int baseTicks){
         if(!podeUsar(p,kit,slot)){mensagem(p,"Técnica bloqueada. Confira o kit em P e a árvore em H.");return false;}
+        baseTicks=com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.recarga(p,kit,slot,baseTicks);double antes=mana(p);
         var mana=new RecursoMana(dados(p).getDouble("mana"));var cds=recargas(p);
         var resultado=ConjuracaoRpg.tentar(mestria(p,kit.id),mana,cds,PersonagemRpg.porId(kit.id),slot,agora(p),baseTicks,
                 ConjuracaoRpg.custoBase(slot),conjuntoCompleto(p,kit),p.isCreative(),false,DespertaresServidor.ativo(p));
         if(resultado!=ConjuracaoRpg.Resultado.OK){
             mensagem(p,resultado==ConjuracaoRpg.Resultado.MANA?"Mana insuficiente.":resultado==ConjuracaoRpg.Resultado.RECARGA?"Técnica em recuperação.":"Técnica bloqueada. Abra H.");return false;
         }
-        var tag=dados(p);tag.putDouble("mana",mana.atual());PerfilRpgNbt.salvarRecargas(tag,cds);sincronizar(p);return true;
+        double gasto=Math.max(0,antes-mana.atual()),volta=com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.reembolso(p,kit,gasto);
+        var tag=dados(p);tag.putDouble("mana",Math.min(RecursoMana.MAXIMO,mana.atual()+volta));PerfilRpgNbt.salvarRecargas(tag,cds);sincronizar(p);return true;
     }
+    private static double mana(ServerPlayer p){return new RecursoMana(dados(p).getDouble("mana")).atual();}
     public static boolean consumirMana(ServerPlayer p,PoderAnime kit,double custo){
         if(p.isCreative())return true;var mana=new RecursoMana(dados(p).getDouble("mana"));
         if(!mana.consumir(custo,conjuntoCompleto(p,kit)))return false;
@@ -132,6 +135,7 @@ public final class RpgServidor {
             case ASTA->com.cauansilva.arcanecontrol.core.asta.RegistroAsta.conjunto();
             case FRIEREN->new Item[]{RegistroTrajes.FRI_CABECA.get(),RegistroTrajes.FRI_PEITO.get(),RegistroTrajes.FRI_PERNAS.get(),RegistroTrajes.FRI_BOTAS.get()};
             case SUBARU->new Item[]{RegistroTrajes.SUB_CABECA.get(),RegistroTrajes.SUB_PEITO.get(),RegistroTrajes.SUB_PERNAS.get(),RegistroTrajes.SUB_BOTAS.get()};
+            case KILLUA->new Item[]{RegistroTrajes.KIL_CABECA.get(),RegistroTrajes.KIL_PEITO.get(),RegistroTrajes.KIL_PERNAS.get(),RegistroTrajes.KIL_BOTAS.get()};
         };
         if(itens==null)return false;
         EquipmentSlot[] slots={EquipmentSlot.HEAD,EquipmentSlot.CHEST,EquipmentSlot.LEGS,EquipmentSlot.FEET};
@@ -147,7 +151,7 @@ public final class RpgServidor {
     @SubscribeEvent public static void tick(TickEvent.PlayerTickEvent e){
         if(e.phase!=TickEvent.Phase.END||!(e.player instanceof ServerPlayer p)||!p.isAlive()||p.isSpectator())return;
         if(p.tickCount%5==0){var mana=new RecursoMana(dados(p).getDouble("mana"));var kit=ProgressaoPoderes.ler(p).ativo();double fator=kit==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.ICHIGO&&DespertaresServidor.ativo(p)?com.cauansilva.arcanecontrol.core.ichigo.PerfilIchigo.REGENERACAO_NO_BANKAI:1;
-            mana.regenerar(5,5*fator*mestria(p,kit.id).multiplicadorRegeneracao());dados(p).putDouble("mana",mana.atual());}
+            mana.regenerar(5,5*fator*mestria(p,kit.id).multiplicadorRegeneracao()*com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.regeneracao(p));dados(p).putDouble("mana",mana.atual());}
         if(p.tickCount%10==0)sincronizar(p);
     }
     @SubscribeEvent(priority=EventPriority.HIGH) public static void dano(LivingHurtEvent e){

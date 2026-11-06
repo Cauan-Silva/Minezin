@@ -8,7 +8,7 @@ import net.minecraftforge.network.NetworkDirection;
 import java.util.Optional;
 
 public class RegistoRede {
-    private static final String PROTOCOL_VERSION = "17"; // 17: kit 16 (Subaru), vetores de estado com 16 kits, efeitos 600-605
+    private static final String PROTOCOL_VERSION = "18"; // 18: kit 12 (Killua), efeitos 700-716; 17: kit 16 (Subaru), efeitos 600-605
     public static final SimpleChannel ENVIAR = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(ArcaneControl.MODID, "main"),
             () -> PROTOCOL_VERSION,

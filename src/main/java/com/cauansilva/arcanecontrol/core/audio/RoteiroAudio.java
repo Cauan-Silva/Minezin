@@ -31,6 +31,21 @@ public final class RoteiroAudio {
         case 613->List.of(new Cue("beatrice_murak",0,28,.75f,true));
         case 614->List.of(new Cue("beatrice_ul_minya",0,com.cauansilva.arcanecontrol.core.vfx.UlMinyaBeatrice.FIM+2,.9f,false));
         default->List.of();};}
+    /** Killua (tools/build_killua_sfx.py): um roteiro por pacote 700-715 de PoderesKillua; 706 = entrada do Godspeed. */
+    public static List<Cue> killua(int tipo){return switch(tipo){
+        case 700->List.of(new Cue("killua_narukami",0,58,.95f,true));
+        case 701->List.of(new Cue("killua_echo",0,34,.95f,true));
+        case 702->List.of(new Cue("killua_yoyo",0,46,.9f,true));
+        case 703->List.of(new Cue("killua_garras",0,24,.9f,true));
+        case 717->List.of(new Cue("killua_garras_golpe",0,36,.95f,false));
+        case 706->List.of(new Cue("killua_godspeed",0,56,.9f,true));
+        case 710->List.of(new Cue("killua_relampago",0,42,.95f,false));
+        case 711->List.of(new Cue("killua_whirlpool",0,20,.95f,true));
+        case 712->List.of(new Cue("killua_contra",0,30,.95f,true));
+        case 713->List.of(new Cue("killua_soco",0,34,.95f,true));
+        case 714->List.of(new Cue("killua_pulso",0,50,.9f,false));
+        case 715->List.of(new Cue("killua_tempestade",0,110,1f,false));
+        default->List.of();};}
     public static List<Cue> subaruContrato(){return List.of(new Cue("subaru_contrato",0,com.cauansilva.arcanecontrol.core.vfx.ContratoSubaru.FIM+2,.85f,false));}
     /** Asta (tools/build_asta_sfx.py): each skill's moments on its VFX ticks. 300-303 base Z/X/C/V, 304-307 Devil
      *  Union Z/X/C/V, 308 deflection, 200 the awakening. Null when the type has no sound of its own. */

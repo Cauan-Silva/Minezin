@@ -92,6 +92,13 @@ public final class AnimacoesGojo {
         if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
         var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,nome);
     }
+    /** Killua (kit 12): 700-703 base, 706 Godspeed, 710-715 golpes do Godspeed (player_animation/killua.json). */
+    public static void tocarKillua(UUID id,int tipo){
+        String nome=switch(tipo){case 700->"killua_narukami";case 701->"killua_echo";case 702->"killua_ioio";case 703->"killua_garras";case 706->"killua_godspeed";case 710->"killua_relampago";case 711,712->"killua_whirlpool";case 713->"killua_soco";case 714->"killua_pulso";case 715->"killua_tempestade";default->null;};
+        var mc=Minecraft.getInstance();if(nome==null||mc.level==null)return;
+        if(!(mc.level.getPlayerByUUID(id) instanceof AbstractClientPlayer jogador))return;
+        var c=camada(jogador);if(c!=null)reproduzir(jogador,c,id,tipo,nome);
+    }
     private static void reproduzir(AbstractClientPlayer jogador, ModifierLayer<IAnimation> camada, UUID id, int tipo, String nome) {
         KeyframeAnimation animacao = PlayerAnimationRegistry.getAnimation(new ResourceLocation("arcanecontrol",nome));
         if (animacao == null) return;
@@ -101,7 +108,7 @@ public final class AnimacoesGojo {
         PRIORIDADES.put(id,prioridade(tipo));
     }
 
-    private static int prioridade(int tipo){return switch(tipo){case 4,5,14,24,32,35,38,306,512,513->4;default->1;};}
+    private static int prioridade(int tipo){return switch(tipo){case 4,5,14,24,32,35,38,306,512,513,715->4;default->1;};}
 
     @SubscribeEvent
     public static void tick(TickEvent.ClientTickEvent event) {
