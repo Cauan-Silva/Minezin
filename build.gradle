@@ -5,7 +5,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '3.30.1-superpack.12'
+version = '3.30.1'
 group = 'com.cauansilva.arcanecontrol'
 base {
     archivesName = 'minezin'
