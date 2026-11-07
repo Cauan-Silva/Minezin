@@ -85,7 +85,7 @@ public final class FamiliarServidor {
     /** Sacrificio de Emergencia: o familiar intercepta o golpe fatal e some por um tempo. */
     @SubscribeEvent(priority=EventPriority.LOWEST)
     public static void fatal(LivingDamageEvent e){
-        if(!(e.getEntity() instanceof ServerPlayer p))return;var t=tipo(p);if(t==null)return;var d=RpgServidor.dados(p);long agora=RpgServidor.agora(p);
+        if(!(e.getEntity() instanceof ServerPlayer p)||e.getSource().is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY))return;var t=tipo(p);if(t==null)return;var d=RpgServidor.dados(p);long agora=RpgServidor.agora(p);
         if(!RegrasFamiliar.intercepta(e.getAmount(),p.getHealth(),presente(p),agora,d.getLong(PRONTO)))return;
         e.setAmount(0);p.setHealth(Math.max(p.getHealth(),t.vidaSalva));
         d.putLong(PRONTO,agora+t.recargaSacrificio);d.putLong(AUSENTE,agora+t.ausencia);
