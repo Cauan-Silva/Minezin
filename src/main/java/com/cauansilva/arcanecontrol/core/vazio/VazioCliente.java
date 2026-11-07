@@ -41,7 +41,8 @@ public final class VazioCliente {
     @SubscribeEvent public static void tick(net.minecraftforge.event.TickEvent.ClientTickEvent e){
         if(e.phase!=net.minecraftforge.event.TickEvent.Phase.END)return;var mc=Minecraft.getInstance();
         if(mc.level==null||mc.player==null){camera=null;return;}
-        if(!emCena()){if(camera!=null){if(mc.getCameraEntity()==camera)mc.setCameraEntity(mc.player);camera=null;}return;}
+        // fora da cena a camera e sempre a do jogador (tambem se um marcador ficou preso por troca de mundo)
+        if(!emCena()){if(mc.getCameraEntity() instanceof net.minecraft.world.entity.Marker)mc.setCameraEntity(mc.player);camera=null;return;}
         if(camera==null||camera.level()!=mc.level){camera=net.minecraft.world.entity.EntityType.MARKER.create(mc.level);if(camera==null)return;}
         double t=tCena(0)+1;var q=CinematicaEntrada.quadro(t,rel(mc.player.getEyePosition()),new CinematicaEntrada.V(PlantaArena.RAIO_CHEFE,0,0),altura);
         double x=centro.x+q.pos().x(),y=centro.y+q.pos().y(),z=centro.z+q.pos().z();
@@ -55,6 +56,8 @@ public final class VazioCliente {
         camera.setPos(x,y,z);camera.setYRot(yaw);camera.setXRot(pitch);
         if(primeiro)mc.setCameraEntity(camera);
     }
+    /** Sem a mao do jogador na tela enquanto a camera esta solta. */
+    @SubscribeEvent public static void mao(RenderHandEvent e){if(emCena())e.setCanceled(true);}
     private static boolean hudEscondido(){var mc=Minecraft.getInstance();return mc.level!=null&&mc.level.getGameTime()<fimHud;}
 
     @SubscribeEvent public static void esconder(RenderGuiOverlayEvent.Pre e){if(hudEscondido())e.setCanceled(true);}
