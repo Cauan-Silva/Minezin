@@ -28,6 +28,7 @@ public class ArcaneControl {
         com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.registrar();
         com.cauansilva.arcanecontrol.core.familiar.RegistroFamiliar.carregar();
         com.cauansilva.arcanecontrol.core.reacao.RegistroReacao.carregar();
+        com.cauansilva.arcanecontrol.core.boneco.RegistroBoneco.carregar();
         com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.asta.RegistroAsta.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.inicializar();

@@ -160,5 +160,7 @@
   "item.arcanecontrol.frasco_fogo": "Frasco de Fogo",
   "item.arcanecontrol.frasco_gelo": "Frasco de Gelo",
   "item.arcanecontrol.frasco_raio": "Frasco de Raio",
-  "item.arcanecontrol.frasco_agua": "Frasco de Água"
+  "item.arcanecontrol.frasco_agua": "Frasco de Água",
+  "item.arcanecontrol.boneco_treino": "Boneco de Treino",
+  "entity.arcanecontrol.boneco_treino": "Boneco de Treino"
 }

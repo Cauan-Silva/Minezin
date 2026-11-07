@@ -160,5 +160,7 @@
   "item.arcanecontrol.frasco_fogo": "Fire Flask",
   "item.arcanecontrol.frasco_gelo": "Frost Flask",
   "item.arcanecontrol.frasco_raio": "Lightning Flask",
-  "item.arcanecontrol.frasco_agua": "Water Flask"
+  "item.arcanecontrol.frasco_agua": "Water Flask",
+  "item.arcanecontrol.boneco_treino": "Training Dummy",
+  "entity.arcanecontrol.boneco_treino": "Training Dummy"
 }
