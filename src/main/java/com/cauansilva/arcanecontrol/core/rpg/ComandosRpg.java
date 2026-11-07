@@ -18,6 +18,11 @@ public final class ComandosRpg {
     @SubscribeEvent public static void registrar(RegisterCommandsEvent e){
         e.getDispatcher().register(Commands.literal("minezin").requires(s->s.hasPermission(2))
             .then(comandoAtomic())
+            // teste: /minezin reliquia <tier 1-5> [kit do chefe] -> reliquia aleatoria no inventario
+            .then(Commands.literal("reliquia").then(Commands.argument("tier",com.mojang.brigadier.arguments.IntegerArgumentType.integer(1,5))
+                .executes(c->darReliquia(c.getSource(),com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c,"tier"),1))
+                .then(Commands.argument("kit",com.mojang.brigadier.arguments.IntegerArgumentType.integer(1,16))
+                    .executes(c->darReliquia(c.getSource(),com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c,"tier"),com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c,"kit"))))))
             .then(Commands.literal("rpg")
                 .then(comandoMaestria())
                 .then(Commands.literal("restaurar_recursos").executes(c->{
@@ -68,4 +73,9 @@ public final class ComandosRpg {
         return todos?PoderAnime.values().length:1;
     }
 
+    private static int darReliquia(net.minecraft.commands.CommandSourceStack src,int tier,int kit)throws com.mojang.brigadier.exceptions.CommandSyntaxException{
+        var p=src.getPlayerOrException();var r=new java.util.Random();var tipos=com.cauansilva.arcanecontrol.core.reliquias.Reliquias.Tipo.values();
+        var it=com.cauansilva.arcanecontrol.core.reliquias.ItemReliquia.criar(com.cauansilva.arcanecontrol.core.reliquias.Reliquias.gerar(r,tipos[r.nextInt(tipos.length)],tier,kit));
+        if(!p.getInventory().add(it))p.drop(it,false);src.sendSuccess(()->it.getHoverName(),false);return 1;
+    }
 }
