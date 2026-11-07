@@ -42,10 +42,11 @@ public final class NemesisEntity extends Monster implements GeoEntity {
     public int kit(){return entityData.get(KIT);}
     public void preparar(ServerPlayer p,int kit,Vec3 centro){dono=p.getUUID();configurarTamanho(kit);arena=centro;getAttribute(Attributes.MAX_HEALTH).setBaseValue(kit==1?360:kit==2?420:kit==3?460:480);setHealth(getMaxHealth());setCustomName(Component.literal(PersonagemRpg.porId(kit).nemesis));setTarget(p);}
     @Override protected void registerGoals(){goalSelector.addGoal(0,new FloatGoal(this));goalSelector.addGoal(2,new MeleeAttackGoal(this,1,true){@Override public boolean canUse(){return carga==0&&recuperacao==0&&super.canUse();}@Override public boolean canContinueToUse(){return carga==0&&recuperacao==0&&super.canContinueToUse();}});goalSelector.addGoal(4,new LookAtPlayerGoal(this,net.minecraft.world.entity.player.Player.class,32));}
-    private boolean valido(ServerPlayer p){return p!=null&&p.isAlive()&&!p.isSpectator()&&p.serverLevel()==level()&&p.distanceToSqr(arena)<64*64&&RpgServidor.dados(p).hasUUID("desafio")&&getUUID().equals(RpgServidor.dados(p).getUUID("desafio"));}
+    private boolean valido(ServerPlayer p){if(com.cauansilva.arcanecontrol.core.vazio.VazioServidor.emInstancia(this))return p!=null&&p.isAlive()&&!p.isSpectator()&&p.serverLevel()==level();return p!=null&&p.isAlive()&&!p.isSpectator()&&p.serverLevel()==level()&&p.distanceToSqr(arena)<64*64&&RpgServidor.dados(p).hasUUID("desafio")&&getUUID().equals(RpgServidor.dados(p).getUUID("desafio"));}
     @Override public void tick(){
         super.tick();if(level().isClientSide||!isAlive())return;
-        var p=dono==null?null:((ServerLevel)level()).getServer().getPlayerList().getPlayer(dono);
+        var p=com.cauansilva.arcanecontrol.core.vazio.VazioServidor.alvoChefe(this,dono);
+        if(com.cauansilva.arcanecontrol.core.vazio.VazioServidor.travado(this)){getNavigation().stop();setDeltaMovement(getDeltaMovement().multiply(0,1,0));if(p!=null)getLookControl().setLookAt(p);return;}
         if(!valido(p)){if(p!=null&&RpgServidor.dados(p).hasUUID("desafio")&&getUUID().equals(RpgServidor.dados(p).getUUID("desafio")))RpgServidor.dados(p).remove("desafio");discard();return;}
         barra.setName(getDisplayName());barra.setProgress(getHealth()/getMaxHealth());setTarget(p);
         if(distanceToSqr(arena)>48*48){setPos(arena.x,arena.y,arena.z);getNavigation().stop();}
@@ -89,6 +90,7 @@ public final class NemesisEntity extends Monster implements GeoEntity {
     }
     @Override public boolean hurt(DamageSource s,float a){if(kit()==3&&entityData.get(CONJURANDO))a*=.5f;return super.hurt(s,a);}
     @Override public void die(DamageSource fonte){
+        if(!level().isClientSide&&com.cauansilva.arcanecontrol.core.vazio.VazioServidor.emInstancia(this)){com.cauansilva.arcanecontrol.core.vazio.VazioServidor.chefeDerrotado(this,dono,kit());super.die(fonte);barra.removeAllPlayers();return;}
         if(!level().isClientSide){var p=dono==null?null:((ServerLevel)level()).getServer().getPlayerList().getPlayer(dono);
             if(valido(p)){RpgServidor.dados(p).remove("desafio");var alma=AlmaDespertar.criar(kit());if(!p.getInventory().add(alma))p.drop(alma,false);p.displayClientMessage(Component.literal("Desafio vencido! Use a Alma do Despertar com o kit correspondente."),false);}
         }super.die(fonte);barra.removeAllPlayers();
