@@ -26,6 +26,7 @@ public class ArcaneControl {
         modEventBus.addListener(this::setup);
         com.cauansilva.arcanecontrol.core.audio.RegistroSons.SONS.register(modEventBus);
         com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.registrar();
+        com.cauansilva.arcanecontrol.core.reacao.RegistroReacao.carregar();
         com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.asta.RegistroAsta.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.inicializar();

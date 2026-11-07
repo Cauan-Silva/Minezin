@@ -150,5 +150,9 @@
   "item.arcanecontrol.reliquia_brinco": "Relic: Earring",
   "key.minezin.relics": "Relic Pouch",
   "block.arcanecontrol.ferreiro_vazio": "Void Smith",
-  "item.arcanecontrol.essencia_vazio": "Void Essence"
+  "item.arcanecontrol.essencia_vazio": "Void Essence",
+  "item.arcanecontrol.frasco_fogo": "Fire Flask",
+  "item.arcanecontrol.frasco_gelo": "Frost Flask",
+  "item.arcanecontrol.frasco_raio": "Lightning Flask",
+  "item.arcanecontrol.frasco_agua": "Water Flask"
 }
