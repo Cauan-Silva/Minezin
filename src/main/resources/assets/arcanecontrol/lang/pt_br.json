@@ -143,5 +143,10 @@
   "subtitles.arcanecontrol.killua_soco": "Soco relâmpago",
   "subtitles.arcanecontrol.killua_pulso": "Pulso eletromagnético",
   "subtitles.arcanecontrol.killua_tempestade": "Tempestade divina",
-  "subtitles.arcanecontrol.killua_garras_golpe": "Garras de assassino"
+  "subtitles.arcanecontrol.killua_garras_golpe": "Garras de assassino",
+  "item.arcanecontrol.reliquia_anel": "Relíquia: Anel",
+  "item.arcanecontrol.reliquia_colar": "Relíquia: Colar",
+  "item.arcanecontrol.reliquia_amuleto": "Relíquia: Amuleto",
+  "item.arcanecontrol.reliquia_brinco": "Relíquia: Brinco",
+  "key.minezin.relics": "Bolsa de Relíquias"
 }

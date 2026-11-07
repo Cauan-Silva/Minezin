@@ -73,7 +73,7 @@ public final class RpgServidor {
     private static RecargasRpg recargas(ServerPlayer p){return PerfilRpgNbt.recargas(dados(p));}
     public static boolean conjurar(ServerPlayer p,PoderAnime kit,int slot,int baseTicks){
         if(!podeUsar(p,kit,slot)){mensagem(p,"Técnica bloqueada. Confira o kit em P e a árvore em H.");return false;}
-        baseTicks=com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.recarga(p,kit,slot,baseTicks);double antes=mana(p);
+        baseTicks=com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.recarga(p,com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.recarga(p,kit,slot,baseTicks));double antes=mana(p);
         var mana=new RecursoMana(dados(p).getDouble("mana"));var cds=recargas(p);
         var resultado=ConjuracaoRpg.tentar(mestria(p,kit.id),mana,cds,PersonagemRpg.porId(kit.id),slot,agora(p),baseTicks,
                 ConjuracaoRpg.custoBase(slot),conjuntoCompleto(p,kit),p.isCreative(),false,DespertaresServidor.ativo(p));
@@ -151,7 +151,7 @@ public final class RpgServidor {
     @SubscribeEvent public static void tick(TickEvent.PlayerTickEvent e){
         if(e.phase!=TickEvent.Phase.END||!(e.player instanceof ServerPlayer p)||!p.isAlive()||p.isSpectator())return;
         if(p.tickCount%5==0){var mana=new RecursoMana(dados(p).getDouble("mana"));var kit=ProgressaoPoderes.ler(p).ativo();double fator=kit==com.cauansilva.arcanecontrol.core.poderes.PoderAnime.ICHIGO&&DespertaresServidor.ativo(p)?com.cauansilva.arcanecontrol.core.ichigo.PerfilIchigo.REGENERACAO_NO_BANKAI:1;
-            mana.regenerar(5,5*fator*mestria(p,kit.id).multiplicadorRegeneracao()*com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.regeneracao(p));dados(p).putDouble("mana",mana.atual());}
+            mana.regenerar(5,5*fator*mestria(p,kit.id).multiplicadorRegeneracao()*com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.regeneracao(p)*com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.regeneracao(p));dados(p).putDouble("mana",mana.atual());}
         if(p.tickCount%10==0)sincronizar(p);
     }
     @SubscribeEvent(priority=EventPriority.HIGH) public static void dano(LivingHurtEvent e){

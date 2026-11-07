@@ -43,6 +43,8 @@ public final class VazioServidor {
 
     private static final class Instancia{
         final long n;final BlockPos centro;final int kit;final EstadoInstancia<UUID> estado;UUID chefe;UUID dono;long inicio;
+        /** Espolio individual de cada jogador (bau do chefe), ainda nao retirado. */
+        final Map<UUID,List<net.minecraft.world.item.ItemStack>> espolio=new HashMap<>();BlockPos bau;
         Instancia(long n,BlockPos centro,int kit,List<UUID> grupo,long agora){this.n=n;this.centro=centro;this.kit=kit;estado=new EstadoInstancia<>(grupo,agora);}
     }
     private static final Map<Long,Instancia> INSTANCIAS=new HashMap<>();
@@ -77,7 +79,11 @@ public final class VazioServidor {
         var i=doChefe(chefe);if(i==null)return;var s=chefe.getServer();i.estado.vencer(agora(s));
         var p=dono==null?null:s.getPlayerList().getPlayer(dono);
         if(p!=null){RpgServidor.dados(p).remove("desafio");var alma=AlmaDespertar.criar(kit);if(!p.getInventory().add(alma))p.drop(alma,false);}
-        for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)mensagem(o,"Desafio vencido! Voltando em "+EstadoInstancia.SAIDA_VITORIA/20+" s.",ChatFormatting.GOLD);}
+        // bau do chefe no centro: cada jogador ve so o proprio espolio (com pity de Mitico)
+        for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)i.espolio.put(id,new ArrayList<>(com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.sortear(o,i.kit)));}
+        if(chefe.level() instanceof ServerLevel reino){i.bau=i.centro.above();reino.setBlock(i.bau,Blocks.ENDER_CHEST.defaultBlockState(),Block.UPDATE_ALL);
+            reino.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD,i.bau.getX()+.5,i.bau.getY()+1,i.bau.getZ()+.5,40,.3,.6,.3,.05);}
+        for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)mensagem(o,"Desafio vencido! Abra o baú no centro (o espólio vai para o inventário ao sair). Voltando em "+EstadoInstancia.SAIDA_VITORIA/20+" s.",ChatFormatting.GOLD);}
     }
 
     // ---------------- entrada ----------------
@@ -157,7 +163,9 @@ public final class VazioServidor {
     private static void encerrar(MinecraftServer s,Instancia i){
         INSTANCIAS.remove(i.n);var reino=s.getLevel(REINO);
         if(reino!=null&&i.chefe!=null){var c=reino.getEntity(i.chefe);if(c!=null)c.discard();}
-        for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p!=null){RpgServidor.dados(p).remove("desafio");retornar(p);}}
+        for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p!=null){RpgServidor.dados(p).remove("desafio");
+            for(var it:i.espolio.getOrDefault(id,List.of()))if(!p.getInventory().add(it))p.drop(it,false);
+            i.espolio.remove(id);retornar(p);}}
     }
 
     // ---------------- eventos ----------------
@@ -212,6 +220,15 @@ public final class VazioServidor {
         p.setGameMode(GameType.SPECTATOR);i.estado.cair(p.getUUID(),agora(p.getServer()));
         Vec3 c=Vec3.atBottomCenterOf(i.centro);p.teleportTo(p.serverLevel(),c.x,c.y+8,c.z,p.getYRot(),30);
         mensagem(p,"Você caiu. Assista até o fim da luta; nada foi perdido.",ChatFormatting.GRAY);
+    }
+    /** Bau do chefe: abre o espolio de quem clicou (cada um ve so o seu). */
+    @SubscribeEvent public static void bau(net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock e){
+        if(!(e.getEntity() instanceof ServerPlayer p)||p.level().dimension()!=REINO)return;var i=doJogador(p.getUUID());
+        if(i==null||i.bau==null||!e.getPos().equals(i.bau))return;
+        e.setCanceled(true);var itens=i.espolio.remove(p.getUUID());
+        if(itens==null||itens.isEmpty()){p.displayClientMessage(Component.literal("Você já pegou o seu espólio.").withStyle(ChatFormatting.GRAY),true);return;}
+        var rpg=PersonagemRpg.porId(i.kit);
+        com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.abrirBau(p,itens,rpg==null?"Vazio":rpg.nemesis,()->{});
     }
     /** O chao e a barreira nao quebram pelos jogadores (o chefe ainda pode destruir o terreno). */
     @SubscribeEvent public static void quebrar(BlockEvent.BreakEvent e){
