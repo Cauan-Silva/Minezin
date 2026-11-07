@@ -174,8 +174,28 @@ public final class VazioServidor {
                 if(fase==EstadoInstancia.Fase.ENTRADA&&i.estado.vivos().contains(id)){p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,5,9,false,false,false));p.setDeltaMovement(0,Math.min(0,p.getDeltaMovement().y),0);p.hurtMarked=true;}
                 // espectador nao sai voando da arena
                 Vec3 c=Vec3.atBottomCenterOf(i.centro);if(p.isSpectator()&&(p.position().distanceTo(c)>PlantaArena.RAIO+10||p.getY()<c.y-4))p.teleportTo(reino,c.x,c.y+8,c.z,p.getYRot(),30);
+                else if(!p.isSpectator())corrigir(reino,i,p);
             }
         }
+    }
+    /**
+     * Teleportes de tecnicas (Passo das Sombras, Teleporte Curto...) podem parar dentro do chao, de um pilar ou fora da
+     * barreira: com a camera dentro do bloco o mundo some (tela preta). Aqui o jogador volta para o chao livre mais
+     * perto, dentro da arena.
+     */
+    private static void corrigir(ServerLevel reino,Instancia i,ServerPlayer p){
+        Vec3 c=Vec3.atBottomCenterOf(i.centro).add(0,1,0);Vec3 rel=p.position().subtract(c);double h=Math.hypot(rel.x,rel.z);
+        boolean fora=h>PlantaArena.RAIO-2.5||p.getY()<c.y-.5||p.getY()>c.y+PlantaArena.TETO-2;
+        boolean preso=!reino.noCollision(p,p.getBoundingBox().deflate(.05));
+        if(!fora&&!preso)return;
+        double k=h>PlantaArena.RAIO-3.5?(PlantaArena.RAIO-3.5)/Math.max(1e-6,h):1;
+        double x=c.x+rel.x*k,z=c.z+rel.z*k;
+        // sobe ate achar espaco livre (chao da arena ou topo de pilar)
+        double y=Math.max(c.y,Math.min(p.getY(),c.y+PlantaArena.ALTURA_PILAR+1));
+        for(int n=0;n<PlantaArena.ALTURA_PILAR+3;n++,y=Math.floor(y)+1){
+            if(reino.noCollision(p,p.getBoundingBox().move(x-p.getX(),y-p.getY(),z-p.getZ()).deflate(.05)))break;
+        }
+        p.teleportTo(reino,x,y,z,p.getYRot(),p.getXRot());p.fallDistance=0;
     }
     /** Momentos do chefe na cutscene: rugido (pose + som) e a fala. */
     private static void cena(ServerLevel reino,Instancia i,long t){
