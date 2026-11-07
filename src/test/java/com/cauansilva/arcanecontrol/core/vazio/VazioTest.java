@@ -47,4 +47,17 @@ class VazioTest {
     @Test void tempoLimiteViraWipe(){
         var e=new EstadoInstancia<>(List.of("a"),0);assertEquals(EstadoInstancia.Fase.WIPE,e.tick(EstadoInstancia.LIMITE));
     }
+    @Test void cutsceneSemSaltosVisiveis(){
+        var J=new CinematicaEntrada.V(-14,65.6,0);var C=new CinematicaEntrada.V(14,65,0);
+        CinematicaEntrada.Quadro antes=null;
+        for(double t=0;t<=CinematicaEntrada.FIM+2;t+=.5){var q=CinematicaEntrada.quadro(t,J,C,3.2);
+            if(antes!=null&&t!=CinematicaEntrada.BLACKOUT)assertTrue(q.pos().menos(antes.pos()).tamanho()<3.5,"salto em t="+t);
+            antes=q;}
+        assertEquals(J,CinematicaEntrada.quadro(CinematicaEntrada.FIM,J,C,3.2).pos());
+        assertEquals(J,CinematicaEntrada.quadro(CinematicaEntrada.BLACKOUT-1,J,C,3.2).pos());
+        // no close da fala a camera fica do lado dos jogadores, olhando a cabeca do chefe
+        var f=CinematicaEntrada.quadro(CinematicaEntrada.FALA+5,J,C,3.2);assertTrue(f.pos().x()<C.x());assertTrue(f.olha().y()>C.y()+2);
+        assertEquals(CinematicaEntrada.FIM,EstadoInstancia.ENTRADA);
+        for(int k:new int[]{1,2,3,4,6,12,16})assertFalse(CinematicaEntrada.fala(k).isBlank());
+    }
 }

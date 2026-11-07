@@ -8,7 +8,7 @@ import java.util.*;
  * Quem morre vira espectador ({@link #cair}); ninguem perde nada.
  */
 public final class EstadoInstancia<K> {
-    public static final int ENTRADA = 60, SAIDA_VITORIA = 120, SAIDA_WIPE = 80, LIMITE = 20 * 60 * 15;
+    public static final int ENTRADA = CinematicaEntrada.FIM, SAIDA_VITORIA = 120, SAIDA_WIPE = 80, LIMITE = 20 * 60 * 15;
     public enum Fase { ENTRADA, COMBATE, VITORIA, WIPE, ENCERRADA }
 
     private final long inicio;

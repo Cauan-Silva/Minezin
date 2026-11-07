@@ -33,15 +33,16 @@ import java.util.*;
  * numa arena gerada por codigo ({@link PlantaArena}) em coordenadas isoladas. Quem estava a ate {@link #RAIO_GRUPO}
  * blocos do altar entra junto (ate {@link #MAX_GRUPO}). Morreu: vira espectador sem perder nada. Vitoria ou wipe:
  * todos voltam para onde estavam. O retorno fica salvo no NBT do jogador (sobrevive a queda do servidor).
- * Pacotes ao jogador (PacoteSincronizarCutscene3D): 800 entrada (fade + HUD travado), 801 saida (fade).
+ * Pacotes ao jogador (PacoteSincronizarCutscene3D): 800 entrada (fade + HUD travado), 801 saida (fade),
+ * 802 cena (o = centro do chao da arena, a = (kit, altura do chefe, 0)) para a camera de CinematicaEntrada.
  */
 @Mod.EventBusSubscriber(modid="arcanecontrol")
 public final class VazioServidor {
     public static final ResourceKey<Level> REINO=ResourceKey.create(Registries.DIMENSION,new ResourceLocation("arcanecontrol","boss_realm"));
-    public static final int ENTRADA=800,SAIDA=801,MAX_GRUPO=4;public static final double RAIO_GRUPO=8;
+    public static final int ENTRADA=800,SAIDA=801,CENA=802,MAX_GRUPO=4;public static final double RAIO_GRUPO=8;
 
     private static final class Instancia{
-        final long n;final BlockPos centro;final int kit;final EstadoInstancia<UUID> estado;UUID chefe;UUID dono;
+        final long n;final BlockPos centro;final int kit;final EstadoInstancia<UUID> estado;UUID chefe;UUID dono;long inicio;
         Instancia(long n,BlockPos centro,int kit,List<UUID> grupo,long agora){this.n=n;this.centro=centro;this.kit=kit;estado=new EstadoInstancia<>(grupo,agora);}
     }
     private static final Map<Long,Instancia> INSTANCIAS=new HashMap<>();
@@ -89,7 +90,7 @@ public final class VazioServidor {
         for(var o:dono.serverLevel().players())if(grupo.size()<MAX_GRUPO&&o!=dono&&o.isAlive()&&!o.isSpectator()&&doJogador(o.getUUID())==null&&o.position().distanceTo(Vec3.atCenterOf(altar))<=RAIO_GRUPO)grupo.add(o);
         long n=proxima(s);int[] c=PlantaArena.centro(n);BlockPos centro=new BlockPos(c[0],PlantaArena.CHAO,c[1]);
         construir(reino,centro,kit.id);
-        var inst=new Instancia(n,centro,kit.id,grupo.stream().map(Entity::getUUID).toList(),agora(s));inst.dono=dono.getUUID();
+        var inst=new Instancia(n,centro,kit.id,grupo.stream().map(Entity::getUUID).toList(),agora(s));inst.dono=dono.getUUID();inst.inicio=agora(s);
         INSTANCIAS.put(n,inst);
         for(int k=0;k<grupo.size();k++){var p=grupo.get(k);salvarRetorno(p);double[] e=PlantaArena.entradaJogador(k,grupo.size());
             Vec3 destino=Vec3.atBottomCenterOf(centro).add(e[0],1,e[1]);float yaw=(float)Math.toDegrees(Math.atan2(e[0],-e[1]));
@@ -103,6 +104,8 @@ public final class VazioServidor {
         chefe.preparar(dono,kit.id,Vec3.atBottomCenterOf(centro).add(0,1,0));
         inst.chefe=chefe.getUUID();RpgServidor.dados(dono).putUUID("desafio",chefe.getUUID());
         if(!reino.addFreshEntity(chefe)){encerrar(s,inst);return false;}
+        Vec3 chao=Vec3.atBottomCenterOf(centro).add(0,1,0);
+        for(var p:grupo)RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),new PacoteSincronizarCutscene3D(CENA,p.getUUID(),chao.x,chao.y,chao.z,kit.id,chefe.getBbHeight(),0));
         mensagem(dono,"Desafio: "+PersonagemRpg.porId(kit.id).nemesis+" (grupo de "+grupo.size()+").",ChatFormatting.DARK_PURPLE);
         return true;
     }
@@ -164,6 +167,7 @@ public final class VazioServidor {
             var antes=i.estado.fase();var fase=i.estado.tick(agora);
             if(fase==EstadoInstancia.Fase.ENCERRADA){encerrar(s,i);continue;}
             if(fase==EstadoInstancia.Fase.WIPE&&antes!=fase)for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p!=null)mensagem(p,"Wipe! O grupo caiu. Voltando...",ChatFormatting.RED);}
+            if(fase==EstadoInstancia.Fase.ENTRADA)cena(reino,i,agora-i.inicio);
             if(fase==EstadoInstancia.Fase.COMBATE&&antes==EstadoInstancia.Fase.ENTRADA)for(var id:i.estado.vivos()){var p=s.getPlayerList().getPlayer(id);if(p!=null)p.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);}
             for(var id:i.estado.todos()){
                 var p=s.getPlayerList().getPlayer(id);if(p==null||p.level()!=reino)continue;
@@ -172,6 +176,13 @@ public final class VazioServidor {
                 Vec3 c=Vec3.atBottomCenterOf(i.centro);if(p.isSpectator()&&(p.position().distanceTo(c)>PlantaArena.RAIO+10||p.getY()<c.y-4))p.teleportTo(reino,c.x,c.y+8,c.z,p.getYRot(),30);
             }
         }
+    }
+    /** Momentos do chefe na cutscene: rugido (pose + som) e a fala. */
+    private static void cena(ServerLevel reino,Instancia i,long t){
+        if(reino==null||i.chefe==null||!(reino.getEntity(i.chefe) instanceof NemesisEntity c))return;
+        if(t==CinematicaEntrada.RUGIDO){c.rugir(true);reino.playSound(null,c.getX(),c.getY(),c.getZ(),net.minecraft.sounds.SoundEvents.RAVAGER_ROAR,net.minecraft.sounds.SoundSource.HOSTILE,2f,.6f);}
+        if(t==CinematicaEntrada.FALA)reino.playSound(null,c.getX(),c.getY(),c.getZ(),net.minecraft.sounds.SoundEvents.EVOKER_PREPARE_SUMMON,net.minecraft.sounds.SoundSource.HOSTILE,1.6f,.55f);
+        if(t==CinematicaEntrada.VOLTA)c.rugir(false);
     }
     /** Morte dentro da instancia: nao morre de verdade, vira espectador e nada cai. */
     @SubscribeEvent(priority=EventPriority.HIGHEST)
