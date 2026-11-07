@@ -15,6 +15,7 @@ public class ClientForgeEvents {
     public static void onKeyInput(InputEvent.Key event) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null || minecraft.level == null || minecraft.screen != null) return;
+        if(TeclasControlo.BOLSA.consumeClick()){RegistoRede.ENVIAR.sendToServer(new com.cauansilva.arcanecontrol.core.rede.PacoteAcaoRpg(9,0,0));return;}
         if(TeclasControlo.PODERES.consumeClick()) {
             minecraft.setScreen(new PoderesScreen());return;
         }

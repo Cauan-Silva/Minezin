@@ -29,6 +29,7 @@ public class ArcaneControl {
         com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.asta.RegistroAsta.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.inicializar();
+        com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.cid.EspadaCid.ITEMS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(GerenciadorMagiasGojo.class);
@@ -46,6 +47,7 @@ public class ArcaneControl {
         @SubscribeEvent
         public static void onClientSetup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
             event.enqueueWork(com.cauansilva.arcanecontrol.core.client.AnimacoesGojo::registrar);
+            event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.BOLSA.get(),com.cauansilva.arcanecontrol.core.reliquias.TelaBolsa::new));
         }
         @SubscribeEvent
         public static void onKeyRegister(RegisterKeyMappingsEvent event) {
@@ -58,6 +60,7 @@ public class ArcaneControl {
             event.register(TeclasControlo.ARVORE);
             event.register(TeclasControlo.ARVORE_RPG);
             event.register(TeclasControlo.PODERES);
+            event.register(TeclasControlo.BOLSA);
         }
     }
 }

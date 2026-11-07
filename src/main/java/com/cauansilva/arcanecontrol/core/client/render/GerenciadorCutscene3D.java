@@ -109,6 +109,7 @@ public class GerenciadorCutscene3D {
             com.cauansilva.arcanecontrol.core.cid.EfeitosCid.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));
             return;
         }
+        if(com.cauansilva.arcanecontrol.core.vazio.VazioCliente.trata(tipo)){if(tipo==802)com.cauansilva.arcanecontrol.core.vazio.VazioCliente.cena(new Vec3(x,y,z),new Vec3(dx,dy,dz));else com.cauansilva.arcanecontrol.core.vazio.VazioCliente.iniciar(tipo);return;}
         if(com.cauansilva.arcanecontrol.core.killua.EfeitosKillua.trata(tipo)){
             com.cauansilva.arcanecontrol.core.killua.EfeitosKillua.iniciar(tipo,playerId,new Vec3(x,y,z),new Vec3(dx,dy,dz));return;
         }

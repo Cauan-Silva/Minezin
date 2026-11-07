@@ -27,19 +27,8 @@ public final class AltarDespertar extends Block {
         var kit=ProgressaoPoderes.ler(p).ativo();var m=RpgServidor.mestria(p,kit.id);
         String erro=!p.isAlive()||p.isSpectator()?"Você precisa estar vivo.":tag.hasUUID("desafio")?"Você já tem um desafio. Agache e use o altar para cancelar.":!m.tem(NoRpg.DESPERTAR)?"Compre o nó Despertar em H (nível 50).":m.despertarLiberado()?"Este kit já despertou.":null;
         if(erro!=null){p.displayClientMessage(Component.literal(erro),true);return InteractionResult.CONSUME;}
-        Vec3 direcao=new Vec3(p.getLookAngle().x,0,p.getLookAngle().z).normalize();if(direcao.lengthSqr()<.01)direcao=new Vec3(0,0,1);
-        Vec3 centro=Vec3.atBottomCenterOf(pos);var level=(ServerLevel)l;NemesisEntity chefe=null;
-        for(int altura=0;altura<5&&chefe==null;altura++){
-            var destino=centro.add(direcao.scale(5)).add(0,altura,0);var bp=BlockPos.containing(destino);
-            if(!level.hasChunkAt(bp)||!level.getWorldBorder().isWithinBounds(bp))continue;
-            var candidato=RegistroDespertar.NEMESIS.get().create(level);if(candidato==null)break;candidato.configurarTamanho(kit.id);candidato.moveTo(destino.x,destino.y,destino.z,p.getYRot()+180,0);
-            if(!level.noCollision(candidato,EspacoInvocacao.volumeLivre(candidato.getBoundingBox()))||level.containsAnyLiquid(candidato.getBoundingBox())||!level.getBlockState(bp.below()).isFaceSturdy(level,bp.below(),Direction.UP))continue;
-            chefe=candidato;
-        }
-        if(chefe==null){int alturaLivre=(int)Math.ceil(PerfilBoss.ALTURA_BASE*PerfilBoss.escala(kit.id,com.cauansilva.arcanecontrol.ConfigServidor.escalaChefe(kit.id))+.1);p.displayClientMessage(Component.literal("Libere uma área com chão firme e "+alturaLivre+" blocos livres de altura, a cinco blocos à frente do altar."),true);return InteractionResult.CONSUME;}
-        chefe.preparar(p,kit.id,centro);tag.putUUID("desafio",chefe.getUUID());
-        if(!level.addFreshEntity(chefe)){tag.remove("desafio");return InteractionResult.FAIL;}
-        p.displayClientMessage(Component.literal("Desafio: "+PersonagemRpg.porId(kit.id).nemesis+". Permaneça próximo do altar."),false);
+        // Void System: o desafio acontece numa instancia propria no Vazio (com quem estiver perto do altar)
+        com.cauansilva.arcanecontrol.core.vazio.VazioServidor.iniciar(p,pos,kit);
         return InteractionResult.CONSUME;
     }
 }

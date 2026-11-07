@@ -143,5 +143,10 @@
   "subtitles.arcanecontrol.killua_soco": "Lightning punch",
   "subtitles.arcanecontrol.killua_pulso": "Electromagnetic pulse",
   "subtitles.arcanecontrol.killua_tempestade": "Divine storm",
-  "subtitles.arcanecontrol.killua_garras_golpe": "Assassin claws"
+  "subtitles.arcanecontrol.killua_garras_golpe": "Assassin claws",
+  "item.arcanecontrol.reliquia_anel": "Relic: Ring",
+  "item.arcanecontrol.reliquia_colar": "Relic: Necklace",
+  "item.arcanecontrol.reliquia_amuleto": "Relic: Amulet",
+  "item.arcanecontrol.reliquia_brinco": "Relic: Earring",
+  "key.minezin.relics": "Relic Pouch"
 }
