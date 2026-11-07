@@ -45,7 +45,8 @@ public final class PlantaArena {
         if (dy == -1) return Papel.CHAO;                                         // base que impede quedas
         if (dy == 0) {
             if (d > RAIO - 2.5) return Papel.BORDA;
-            if (Math.abs(d - 9) < .5 || Math.abs(d - 20) < .5) return Papel.DETALHE;   // aneis
+            if (Math.abs(d - 9) < .5 || Math.abs(d - 20) < .5 || Math.abs(d - 30) < .5)                 // aneis, com luzes embutidas
+                return Math.floorMod((int) Math.round(Math.toDegrees(Math.atan2(dz, dx))), 20) < 4 ? Papel.LUZ : Papel.DETALHE;
             if (d < 2.5) return d < 1 ? Papel.LUZ : Papel.DETALHE;                     // selo no centro
             return ruido(dx, dz) < .08 ? Papel.DETALHE : Papel.CHAO;                   // rachaduras
         }
