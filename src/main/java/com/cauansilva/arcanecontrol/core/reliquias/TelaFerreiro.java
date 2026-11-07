@@ -30,7 +30,7 @@ public final class TelaFerreiro extends AbstractContainerScreen<MenuFerreiro> {
     }
     @Override protected void renderLabels(GuiGraphics g,int mx,int my){
         super.renderLabels(g,mx,my);
-        g.drawString(font,"Relíquia",30,14,0x404040,false);g.drawString(font,"Essência",102,14,0x404040,false);
+        g.drawString(font,"Relíquia",30,14,0x404040,false);g.drawString(font,"Essência",102,14,0x404040,false);g.drawString(font,"Total: "+menu.essencia(),140,30,0x6A3A9A,false);
         var r=ItemReliquia.ler(menu.reliquia());
         if(r!=null)g.drawString(font,"T"+r.tier(),80,28,0x7A3FB0,false);
     }
@@ -45,7 +45,7 @@ public final class TelaFerreiro extends AbstractContainerScreen<MenuFerreiro> {
             if(r==null){desmanchar.setTooltip(dica("Coloque uma relíquia"));valores.setTooltip(dica("Coloque uma relíquia"));tudo.setTooltip(dica("Coloque uma relíquia"));}
             else{desmanchar.setTooltip(dica("Destrói a relíquia: +"+Reliquias.DESMANCHE[t]+" Essência"));
                 valores.setTooltip(dica("Re-sorteia os valores dos mesmos afixos: "+Reliquias.custo(t,Reforja.VALORES)+" Essência"));
-                tudo.setTooltip(dica("Sorteia afixos novos (mesmo tier e set): "+Reliquias.custo(t,Reforja.TUDO)+" Essência"));}}
+                tudo.setTooltip(dica("Sorteia afixos novos (mesmo tier e set): "+Reliquias.custo(t,Reforja.TUDO)+" Essência (usa a do inventário também)"));}}
         renderBackground(g);super.render(g,mx,my,parcial);renderTooltip(g,mx,my);
     }
 }

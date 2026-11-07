@@ -20,16 +20,23 @@ public final class MenuFerreiro extends AbstractContainerMenu {
     private static final Random RNG=new Random();
     private final Container c=new SimpleContainer(2){@Override public void setChanged(){super.setChanged();slotsChanged(this);}};
     private final ContainerLevelAccess acesso;
+    private final Inventory inv;
     public MenuFerreiro(int id,Inventory inv){this(id,inv,ContainerLevelAccess.NULL);}
     public MenuFerreiro(int id,Inventory inv,ContainerLevelAccess acesso){
-        super(RegistroReliquias.MENU_FERREIRO.get(),id);this.acesso=acesso;
+        super(RegistroReliquias.MENU_FERREIRO.get(),id);this.acesso=acesso;this.inv=inv;
         addSlot(new Slot(c,0,44,24){@Override public boolean mayPlace(ItemStack s){return ItemReliquia.ler(s)!=null;}@Override public int getMaxStackSize(){return 1;}});
         addSlot(new Slot(c,1,116,24){@Override public boolean mayPlace(ItemStack s){return s.is(RegistroReliquias.ESSENCIA.get());}});
         for(int l=0;l<3;l++)for(int k=0;k<9;k++)addSlot(new Slot(inv,k+l*9+9,8+k*18,84+l*18));
         for(int k=0;k<9;k++)addSlot(new Slot(inv,k,8+k*18,142));
     }
     public ItemStack reliquia(){return slots.get(0).getItem();}
-    public int essencia(){return slots.get(1).getItem().getCount();}
+    /** Essencia disponivel: a do slot mais a do inventario (a reforja Mitica custa mais que um pack). */
+    public int essencia(){return slots.get(1).getItem().getCount()+inv.countItem(RegistroReliquias.ESSENCIA.get());}
+    /** Gasta primeiro do slot, depois do inventario. */
+    private void gastar(int n){
+        var e=c.getItem(1);int d=Math.min(n,e.getCount());e.shrink(d);n-=d;c.setChanged();
+        for(int i=0;i<inv.getContainerSize()&&n>0;i++){var s=inv.getItem(i);if(s.is(RegistroReliquias.ESSENCIA.get())){int k=Math.min(n,s.getCount());s.shrink(k);n-=k;}}
+    }
 
     @Override public boolean clickMenuButton(Player p,int botao){
         var s=c.getItem(0);var r=ItemReliquia.ler(s);if(r==null||!(p instanceof ServerPlayer sp))return false;
@@ -41,8 +48,8 @@ public final class MenuFerreiro extends AbstractContainerMenu {
             som(sp,SoundEvents.GRINDSTONE_USE);msg(sp,"Desmanchada: +"+ganho+" Essência do Vazio",ChatFormatting.LIGHT_PURPLE);
         }else if(botao==VALORES||botao==TUDO){
             var modo=botao==TUDO?Reforja.TUDO:Reforja.VALORES;int custo=Reliquias.custo(r.tier(),modo);
-            if(c.getItem(1).getCount()<custo){msg(sp,"Essência insuficiente: precisa de "+custo+".",ChatFormatting.RED);return false;}
-            c.getItem(1).shrink(custo);
+            if(essencia()<custo){msg(sp,"Essência insuficiente: precisa de "+custo+".",ChatFormatting.RED);return false;}
+            gastar(custo);
             var nova=ItemReliquia.criar(Reliquias.reforjar(RNG,r,modo));
             if(ItemReliquia.soulbound(s))nova.getOrCreateTag().putBoolean(ItemReliquia.ALMA,true);
             c.setItem(0,nova);som(sp,SoundEvents.SMITHING_TABLE_USE);

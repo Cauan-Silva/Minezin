@@ -5,7 +5,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
-version = '3.18.0-ferreiro-preview.1'
+version = '3.18.1-ferreiro-fix.1'
 group = 'com.cauansilva.arcanecontrol'
 base {
     archivesName = 'minezin'
