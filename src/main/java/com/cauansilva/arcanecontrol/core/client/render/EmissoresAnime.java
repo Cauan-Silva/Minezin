@@ -25,7 +25,7 @@ public final class EmissoresAnime {
         c.setLooping(false);c.setDuration(1);c.setMaxParticles(128);c.setStartLifetime(NumberFunction.constant(vida));
         c.setStartSpeed(NumberFunction.constant(velocidade));c.setStartSize(new NumberFunction3(tamanho,tamanho,tamanho));
         c.setStartColor(NumberFunction.color(0xFF000000|cor));c.emission.setEmissionRate(NumberFunction.constant(Math.min(128,n)));
-        var s=new Sphere();s.setRadius(.2f);c.shape.setShape(s);c.renderer.setBloomEffect(true);c.renderer.setBloomColor(0xFF000000|cor);
+        var s=new Sphere();s.setRadius(.2f);c.shape.setShape(s);c.renderer.setBloomEffect(com.cauansilva.arcanecontrol.ConfigCliente.BLOOM_PHOTON.get());c.renderer.setBloomColor(0xFF000000|cor);
         var curva=new Curve(0,1,0,1,1,"vida","tamanho");curva.setCurves(new ECBCurves(0,1,.2f,.9f,.8f,.1f,1,0));
         c.sizeOverLifetime.setEnable(true);c.sizeOverLifetime.setSize(new NumberFunction3(curva,curva,curva));
         fx.getMainFX().objects().add(p);var r=fx.createInternalRuntime();

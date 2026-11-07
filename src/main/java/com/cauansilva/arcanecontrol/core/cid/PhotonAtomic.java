@@ -58,7 +58,7 @@ public final class PhotonAtomic {
         c.emission.setEmissionRate(NumberFunction.constant(taxa));
         var sphere = new Sphere(); sphere.setRadius((float)raio); sphere.setRadiusThickness(.15f);
         c.shape.setShape(sphere);
-        c.renderer.setBloomEffect(bloom); c.renderer.setBloomColor(cor);
+        c.renderer.setBloomEffect(bloom&&com.cauansilva.arcanecontrol.ConfigCliente.BLOOM_PHOTON.get()); c.renderer.setBloomColor(cor);
         c.material.setCull(false);
         var curva = new Curve(0,1,0,1,1,"vida","tamanho");
         curva.setCurves(new ECBCurves(0,1,.2f,1,.8f,0,1,0));
