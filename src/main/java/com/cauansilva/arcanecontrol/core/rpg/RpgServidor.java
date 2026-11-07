@@ -73,14 +73,17 @@ public final class RpgServidor {
     private static RecargasRpg recargas(ServerPlayer p){return PerfilRpgNbt.recargas(dados(p));}
     public static boolean conjurar(ServerPlayer p,PoderAnime kit,int slot,int baseTicks){
         if(!podeUsar(p,kit,slot)){mensagem(p,"Técnica bloqueada. Confira o kit em P e a árvore em H.");return false;}
+        var mutacao=slot>=1&&slot<=3?mestria(p,kit.id).mutacao(slot):MutacaoRpg.NENHUMA;
+        baseTicks=(int)Math.max(1,Math.round(baseTicks*mutacao.recarga));
         baseTicks=com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.recarga(p,com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.recarga(p,kit,slot,baseTicks));double antes=mana(p);
         var mana=new RecursoMana(dados(p).getDouble("mana"));var cds=recargas(p);
         var resultado=ConjuracaoRpg.tentar(mestria(p,kit.id),mana,cds,PersonagemRpg.porId(kit.id),slot,agora(p),baseTicks,
-                ConjuracaoRpg.custoBase(slot),conjuntoCompleto(p,kit),p.isCreative(),false,DespertaresServidor.ativo(p));
+                ConjuracaoRpg.custoBase(slot)*mutacao.mana,conjuntoCompleto(p,kit),p.isCreative(),false,DespertaresServidor.ativo(p));
         if(resultado!=ConjuracaoRpg.Resultado.OK){
             mensagem(p,resultado==ConjuracaoRpg.Resultado.MANA?"Mana insuficiente.":resultado==ConjuracaoRpg.Resultado.RECARGA?"Técnica em recuperação.":"Técnica bloqueada. Abra H.");return false;
         }
         double gasto=Math.max(0,antes-mana.atual()),volta=com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.reembolso(p,kit,gasto);
+        MutacoesServidor.conjurou(p,slot,mutacao);
         var tag=dados(p);tag.putDouble("mana",Math.min(RecursoMana.MAXIMO,mana.atual()+volta));PerfilRpgNbt.salvarRecargas(tag,cds);sincronizar(p);return true;
     }
     /** Mana atual (0..100), usada pelo Party HUD. */
@@ -110,10 +113,19 @@ public final class RpgServidor {
         if(m.comprar(no)){salvarMestria(dados(p),kit.id,m);aplicarAtributos(p);sincronizar(p);}
         else mensagem(p,"Confira nível, pontos e pré-requisitos na árvore.");
     }
+    /** Arvore: troca a mutacao da tecnica (slot 1..3) do kit. */
+    public static void mutar(ServerPlayer p,int kitId,int slot,int mut){
+        var kit=PoderAnime.porId(kitId);if(kit==null||!ProgressaoPoderes.ler(p).tem(kit)||!p.isAlive()||p.isSpectator())return;
+        long now=agora(p),antes=p.getPersistentData().getLong("rpg_compra_tick");if(antes>0&&now-antes<4)return;
+        p.getPersistentData().putLong("rpg_compra_tick",now);
+        var m=mestria(p,kit.id);
+        if(m.mutar(slot,MutacaoRpg.porId(mut))){salvarMestria(dados(p),kit.id,m);sincronizar(p);}
+        else mensagem(p,"Mutação de "+"XCV".charAt(Math.max(0,Math.min(2,slot-1)))+" exige a técnica e Maestria "+MutacaoRpg.NIVEL[Math.max(1,Math.min(3,slot))]+".");
+    }
     private static void mensagem(ServerPlayer p,String texto){p.displayClientMessage(Component.literal(texto),true);sincronizar(p);}
     public static void sincronizar(ServerPlayer p){
         var legado=ProgressaoPoderes.ler(p);int[] xp=new int[PoderAnime.KITS],nos=new int[PoderAnime.KITS];boolean[] despertar=new boolean[PoderAnime.KITS];
-        for(var kit:PoderAnime.values())if(legado.tem(kit)){var m=mestria(p,kit.id);xp[kit.id-1]=m.xp();nos[kit.id-1]=m.nos();despertar[kit.id-1]=m.despertarLiberado();}
+        for(var kit:PoderAnime.values())if(legado.tem(kit)){var m=mestria(p,kit.id);xp[kit.id-1]=m.xp();nos[kit.id-1]=m.nosComMutacoes();despertar[kit.id-1]=m.despertarLiberado();}
         int[] restante=new int[5],duracao=new int[5];var cds=recargas(p);var atual=PersonagemRpg.porId(legado.ativo().id);
         for(int i=0;i<5;i++){restante[i]=cds.restante(atual,i,agora(p),DespertaresServidor.ativo(p));duracao[i]=cds.duracao(atual,i,DespertaresServidor.ativo(p));}
         RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),new PacoteEstadoRpg(legado.ativo().id,legado.desbloqueados(),xp,nos,despertar,

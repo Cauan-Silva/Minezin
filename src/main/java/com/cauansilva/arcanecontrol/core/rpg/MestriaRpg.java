@@ -3,7 +3,7 @@ package com.cauansilva.arcanecontrol.core.rpg;
 /** Modelo de dominio independente do Minecraft: validacoes sempre executaveis no servidor. */
 public final class MestriaRpg {
     public static final int NIVEL_MAXIMO=100,XP_POR_NIVEL=100,XP_MAXIMO=9900;
-    private int xp,nos;
+    private int xp,nos,mut;
     private boolean despertar;
     public MestriaRpg(){this(0,0,false);}
     public MestriaRpg(int xp,int nos,boolean despertar){
@@ -11,10 +11,18 @@ public final class MestriaRpg {
         // NBT invalido nao pode tornar um no dependente acessivel sem os anteriores.
         for(var no:NoRpg.values())if((nos&no.bit())!=0&&(this.nos&no.requisitos)==no.requisitos&&nivel()>=no.nivel&&pontos()>=no.custo)this.nos|=no.bit();
         this.despertar=despertar&&tem(NoRpg.DESPERTAR);
+        // mutacoes vem nos bits altos de "nos"; so ficam as que o nivel e o no permitem
+        for(int s=1;s<=3;s++)if(podeMutar(s))mut=MutacaoRpg.gravar(mut,s,MutacaoRpg.porId(MutacaoRpg.ler(nos,s)).ordinal());
     }
     public int xp(){return xp;}
     public int nivel(){return 1+xp/XP_POR_NIVEL;}
     public int nos(){return nos;}
+    /** Nos + mutacoes empacotados (formato salvo no NBT e enviado ao cliente). */
+    public int nosComMutacoes(){return nos|mut;}
+    public boolean podeMutar(int slot){var no=MutacaoRpg.no(slot);return no!=null&&tem(no)&&nivel()>=MutacaoRpg.NIVEL[slot];}
+    public MutacaoRpg mutacao(int slot){return MutacaoRpg.porId(MutacaoRpg.ler(mut,slot));}
+    /** Troca a mutacao da tecnica (gratis); false se o no nao foi comprado ou falta nivel. */
+    public boolean mutar(int slot,MutacaoRpg m){if(!podeMutar(slot)||m==null)return false;mut=MutacaoRpg.gravar(mut,slot,m.ordinal());return true;}
     public boolean tem(NoRpg n){return n!=null&&(nos&n.bit())!=0;}
     public int pontos(){int gastos=0;for(var n:NoRpg.values())if(tem(n))gastos+=n.custo;return Math.max(0,nivel()-1-gastos);}
     public int ganharXp(int quantidade){int antes=nivel();if(quantidade>0)xp=(int)Math.min(XP_MAXIMO,(long)xp+quantidade);return nivel()-antes;}

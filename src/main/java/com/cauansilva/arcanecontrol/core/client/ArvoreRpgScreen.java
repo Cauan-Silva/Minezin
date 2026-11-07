@@ -13,6 +13,7 @@ public final class ArvoreRpgScreen extends Screen {
     private PoderAnime foco=PoderAnime.porId(RpgCliente.ativo());
     private LayoutArvoreRpg layout;
     private final Button[] nos=new Button[8];
+    private final Button[] mutacoes=new Button[4];
     private PostChain blur;
     private static final String[] ROTULOS={"X","C","V","+Físico","+Magia","+Mana","+Mov.","Despertar"};
     private static final String[] DETALHES={"Desbloqueia a técnica X.","Desbloqueia a técnica C.","Desbloqueia a técnica V.","+10% de dano físico.","+10% de dano mágico.","+25% de regeneração de mana.","+10% de velocidade de movimento.","Nível 50: compre este nó, vença seu chefe no Altar e use a alma. G ativa a forma."};
@@ -25,6 +26,9 @@ public final class ArvoreRpgScreen extends Screen {
         for(var no:NoRpg.values())nos[no.indice]=addRenderableWidget(Button.builder(Component.literal(ROTULOS[no.indice]),b->{
             b.active=false;RegistoRede.ENVIAR.sendToServer(new PacoteAcaoRpg(1,foco.id,no.indice));
         }).bounds(layout.nodeX(no.indice),layout.nodeY(no.indice),layout.nodeLargura(),18).build());
+        for(int s=1;s<=3;s++){final int slot=s;mutacoes[s]=addRenderableWidget(Button.builder(Component.literal("Mutação"),b->{
+            b.active=false;var atual=RpgCliente.mestria(foco.id).mutacao(slot);RegistoRede.ENVIAR.sendToServer(new PacoteAcaoRpg(10,foco.id,slot*8+atual.proxima().ordinal()));
+        }).bounds(layout.nodeX(slot-1),layout.nodeY(slot-1)+20,layout.nodeLargura(),13).build());}
         addRenderableWidget(Button.builder(Component.literal("Fechar"),b->onClose()).bounds(x+w-80,y+layout.altura()-26,68,18).build());
         RegistoRede.ENVIAR.sendToServer(new PacoteAcaoRpg(0,0,0));
         if(blur==null&&minecraft.gameRenderer.currentEffect()==null){
@@ -53,10 +57,16 @@ public final class ArvoreRpgScreen extends Screen {
             var b=nos[no.indice];boolean tem=m.tem(no);
             b.setMessage(Component.literal((tem?"OK ":"")+ROTULOS[no.indice]));
             b.active=RpgCliente.recebido()&&RpgCliente.tem(foco.id)&&!tem&&m.nivel()>=no.nivel&&m.pontos()>=no.custo&&(m.nos()&no.requisitos)==no.requisitos;
-            g.drawCenteredString(font,"Nv"+no.nivel+" "+no.custo+"pt",b.getX()+b.getWidth()/2,b.getY()+22,tem?0x86CBA8:0x9EACC0);
+            if(!(tem&&no.indice<=2))g.drawCenteredString(font,"Nv"+no.nivel+" "+no.custo+"pt",b.getX()+b.getWidth()/2,b.getY()+22,tem?0x86CBA8:0x9EACC0);
             if(mx>=b.getX()&&mx<b.getX()+b.getWidth()&&my>=b.getY()&&my<b.getY()+b.getHeight())hover=no;
         }
-        String texto=hover==null?"Vida +"+(int)m.vidaAdicional()+" · Físico +"+(int)Math.round((m.multiplicadorFisico()-1)*100)+"% · Magia +"+(int)Math.round((m.multiplicadorMagico()-1)*100)+"%":DETALHES[hover.indice];
+        String dicaMut=null;
+        for(int s=1;s<=3;s++){var b=mutacoes[s];var mu=m.mutacao(s);boolean pode=m.podeMutar(s);
+            b.setMessage(Component.literal(pode?"◆ "+mu.nome:"Mutação Nv"+MutacaoRpg.NIVEL[s]));
+            b.visible=m.tem(MutacaoRpg.no(s));b.active=RpgCliente.recebido()&&RpgCliente.tem(foco.id)&&pode;
+            if(b.visible&&mx>=b.getX()&&mx<b.getX()+b.getWidth()&&my>=b.getY()&&my<b.getY()+b.getHeight())
+                dicaMut=pode?"Mutação de "+ROTULOS[s-1]+": "+mu.nome+" — "+mu.descricao+" Clique para trocar (próxima: "+mu.proxima().nome+").":"Compre "+ROTULOS[s-1]+" e chegue à Maestria "+MutacaoRpg.NIVEL[s]+" para ramificar a técnica.";}
+        String texto=dicaMut!=null?dicaMut:hover==null?"Vida +"+(int)m.vidaAdicional()+" · Físico +"+(int)Math.round((m.multiplicadorFisico()-1)*100)+"% · Magia +"+(int)Math.round((m.multiplicadorMagico()-1)*100)+"%":DETALHES[hover.indice];
         g.drawWordWrap(font,Component.literal(texto),x+12,y+h-48,w-24,0xB9C8DE);
         if(!RpgCliente.recebido())g.drawString(font,"Sincronizando...",x+12,y+h-22,0xD9BD80);
         else g.drawString(font,"[P] Escolher kit",x+12,y+h-22,0x7C91B0);
