@@ -152,5 +152,9 @@
   "block.arcanecontrol.ferreiro_vazio": "Ferreiro do Vazio",
   "item.arcanecontrol.essencia_vazio": "Essência do Vazio",
   "key.minezin.dodge": "Esquiva (Perfect Dodge)",
-  "key.minezin.lock_on": "Travar alvo (Lock-on)"
+  "key.minezin.lock_on": "Travar alvo (Lock-on)",
+  "entity.arcanecontrol.familiar": "Familiar",
+  "item.arcanecontrol.selo_familiar_raio": "Selo: Espírito do Raio",
+  "item.arcanecontrol.selo_familiar_fonte": "Selo: Espírito da Fonte",
+  "item.arcanecontrol.selo_familiar_guardiao": "Selo: Espírito Guardião"
 }
