@@ -83,6 +83,8 @@ public final class RpgServidor {
         double gasto=Math.max(0,antes-mana.atual()),volta=com.cauansilva.arcanecontrol.core.passivas.PassivasServidor.reembolso(p,kit,gasto);
         var tag=dados(p);tag.putDouble("mana",Math.min(RecursoMana.MAXIMO,mana.atual()+volta));PerfilRpgNbt.salvarRecargas(tag,cds);sincronizar(p);return true;
     }
+    /** Mana atual (0..100), usada pelo Party HUD. */
+    public static double manaAtual(ServerPlayer p){return mana(p);}
     private static double mana(ServerPlayer p){return new RecursoMana(dados(p).getDouble("mana")).atual();}
     public static boolean consumirMana(ServerPlayer p,PoderAnime kit,double custo){
         if(p.isCreative())return true;var mana=new RecursoMana(dados(p).getDouble("mana"));

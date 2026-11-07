@@ -45,6 +45,8 @@ public final class VazioServidor {
         final long n;final BlockPos centro;final int kit;final EstadoInstancia<UUID> estado;UUID chefe;UUID dono;long inicio;
         /** Espolio individual de cada jogador (bau do chefe), ainda nao retirado. */
         final Map<UUID,List<net.minecraft.world.item.ItemStack>> espolio=new HashMap<>();BlockPos bau;
+        /** Placar da luta (Tela de MVP). */
+        final PlacarVazio<UUID> placar=new PlacarVazio<>();long combateDesde=-1;
         Instancia(long n,BlockPos centro,int kit,List<UUID> grupo,long agora){this.n=n;this.centro=centro;this.kit=kit;estado=new EstadoInstancia<>(grupo,agora);}
     }
     private static final Map<Long,Instancia> INSTANCIAS=new HashMap<>();
@@ -97,7 +99,7 @@ public final class VazioServidor {
         long n=proxima(s);int[] c=PlantaArena.centro(n);BlockPos centro=new BlockPos(c[0],PlantaArena.CHAO,c[1]);
         construir(reino,centro,kit.id);
         var inst=new Instancia(n,centro,kit.id,grupo.stream().map(Entity::getUUID).toList(),agora(s));inst.dono=dono.getUUID();inst.inicio=agora(s);
-        INSTANCIAS.put(n,inst);
+        INSTANCIAS.put(n,inst);for(var p:grupo)inst.placar.entrar(p.getUUID(),p.getGameProfile().getName());
         for(int k=0;k<grupo.size();k++){var p=grupo.get(k);salvarRetorno(p);double[] e=PlantaArena.entradaJogador(k,grupo.size());
             Vec3 destino=Vec3.atBottomCenterOf(centro).add(e[0],1,e[1]);float yaw=(float)Math.toDegrees(Math.atan2(e[0],-e[1]));
             p.teleportTo(reino,destino.x,destino.y,destino.z,yaw,0);p.fallDistance=0;pacote(p,ENTRADA,destino);
@@ -168,6 +170,35 @@ public final class VazioServidor {
             i.espolio.remove(id);retornar(p);}}
     }
 
+    // ---------------- HUD e Tela de MVP ----------------
+    private static String nomeChefe(Instancia i){var r=PersonagemRpg.porId(i.kit);return r==null?"Nêmesis":r.nemesis;}
+    private static void hud(MinecraftServer s,ServerLevel reino,Instancia i){
+        if(reino==null||i.chefe==null||!(reino.getEntity(i.chefe) instanceof NemesisEntity c))return;
+        var grupo=new ArrayList<PacoteHudVazio.Membro>();
+        for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p==null)continue;boolean caiu=!i.estado.vivos().contains(id);
+            grupo.add(new PacoteHudVazio.Membro(id,p.getGameProfile().getName(),caiu?0:p.getHealth(),p.getMaxHealth(),(float)RpgServidor.manaAtual(p),caiu));}
+        var pac=new PacoteHudVazio(nomeChefe(i),c.getHealth(),c.getMaxHealth(),grupo);
+        for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p!=null&&p.level()==reino)RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),pac);}
+    }
+    private static void mvp(MinecraftServer s,Instancia i,boolean vitoria,long agora){
+        int seg=(int)((agora-(i.combateDesde<0?agora:i.combateDesde))/20);
+        var pac=new PacoteMvpVazio(vitoria,nomeChefe(i),seg,i.placar.linhas(),i.placar.dicas(vitoria,seg,20));
+        for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p!=null){RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),PacoteHudVazio.limpar());RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),pac);}}
+    }
+    /** Placar: dano no chefe (por quem bateu) e dano recebido pelos participantes; valor final depois dos outros ganchos. */
+    @SubscribeEvent(priority=EventPriority.LOWEST)
+    public static void placarDano(net.minecraftforge.event.entity.living.LivingDamageEvent e){
+        var alvo=e.getEntity();if(alvo.level().isClientSide||alvo.level().dimension()!=REINO)return;
+        var i=doChefe(alvo);
+        if(i!=null){var autor=e.getSource().getEntity();if(autor instanceof ServerPlayer p&&i.estado.participa(p.getUUID()))i.placar.dano(p.getUUID(),Math.min(e.getAmount(),alvo.getHealth()));return;}
+        if(alvo instanceof ServerPlayer p&&(i=doJogador(p.getUUID()))!=null&&i.estado.fase()==EstadoInstancia.Fase.COMBATE)i.placar.recebido(p.getUUID(),e.getAmount());
+    }
+    @SubscribeEvent(priority=EventPriority.LOWEST)
+    public static void placarCura(net.minecraftforge.event.entity.living.LivingHealEvent e){
+        if(e.isCanceled()||!(e.getEntity() instanceof ServerPlayer p)||p.level().dimension()!=REINO)return;var i=doJogador(p.getUUID());
+        if(i!=null&&i.estado.fase()==EstadoInstancia.Fase.COMBATE)i.placar.cura(p.getUUID(),Math.min(e.getAmount(),p.getMaxHealth()-p.getHealth()));
+    }
+
     // ---------------- eventos ----------------
     @SubscribeEvent public static void tick(TickEvent.ServerTickEvent e){
         if(e.phase!=TickEvent.Phase.END||INSTANCIAS.isEmpty())return;var s=e.getServer();long agora=agora(s);var reino=s.getLevel(REINO);
@@ -176,6 +207,9 @@ public final class VazioServidor {
             if(fase==EstadoInstancia.Fase.ENCERRADA){encerrar(s,i);continue;}
             if(fase==EstadoInstancia.Fase.WIPE&&antes!=fase)for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p!=null)mensagem(p,"Wipe! O grupo caiu. Voltando...",ChatFormatting.RED);}
             if(fase==EstadoInstancia.Fase.ENTRADA)cena(reino,i,agora-i.inicio);
+            if(fase==EstadoInstancia.Fase.COMBATE&&i.combateDesde<0)i.combateDesde=agora;
+            if(fase==EstadoInstancia.Fase.COMBATE&&agora%5==0)hud(s,reino,i);
+            if((fase==EstadoInstancia.Fase.VITORIA||fase==EstadoInstancia.Fase.WIPE)&&antes!=fase)mvp(s,i,fase==EstadoInstancia.Fase.VITORIA,agora);
             if(fase==EstadoInstancia.Fase.COMBATE&&antes==EstadoInstancia.Fase.ENTRADA)for(var id:i.estado.vivos()){var p=s.getPlayerList().getPlayer(id);if(p!=null)p.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);}
             for(var id:i.estado.todos()){
                 var p=s.getPlayerList().getPlayer(id);if(p==null||p.level()!=reino)continue;
@@ -217,7 +251,7 @@ public final class VazioServidor {
     public static void morte(LivingDeathEvent e){
         if(!(e.getEntity() instanceof ServerPlayer p)||p.level().dimension()!=REINO)return;var i=doJogador(p.getUUID());if(i==null)return;
         e.setCanceled(true);p.setHealth(p.getMaxHealth());p.clearFire();p.removeAllEffects();p.fallDistance=0;
-        p.setGameMode(GameType.SPECTATOR);i.estado.cair(p.getUUID(),agora(p.getServer()));
+        p.setGameMode(GameType.SPECTATOR);i.placar.caiu(p.getUUID());i.estado.cair(p.getUUID(),agora(p.getServer()));
         Vec3 c=Vec3.atBottomCenterOf(i.centro);p.teleportTo(p.serverLevel(),c.x,c.y+8,c.z,p.getYRot(),30);
         mensagem(p,"Você caiu. Assista até o fim da luta; nada foi perdido.",ChatFormatting.GRAY);
     }
