@@ -6,6 +6,8 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.glfw.GLFW;
 
 public class TeclasControlo {
+    public static final KeyMapping ESQUIVA = new KeyMapping("key.minezin.dodge",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_LEFT_ALT,"category.minezin.magias");
+    public static final KeyMapping LOCK_ON = new KeyMapping("key.minezin.lock_on",KeyConflictContext.IN_GAME,InputConstants.Type.MOUSE,GLFW.GLFW_MOUSE_BUTTON_MIDDLE,"category.minezin.magias");
     public static final KeyMapping BOLSA = new KeyMapping("key.minezin.relics",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_B,"category.minezin.magias");
     public static final KeyMapping TECLA_G = new KeyMapping("key.minezin.g",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_G,"category.minezin.magias");
     public static final KeyMapping ARVORE_RPG = new KeyMapping("key.minezin.rpg_tree",KeyConflictContext.IN_GAME,InputConstants.Type.KEYSYM,GLFW.GLFW_KEY_H,"category.minezin.magias");

@@ -8,7 +8,7 @@ import net.minecraftforge.network.NetworkDirection;
 import java.util.Optional;
 
 public class RegistoRede {
-    private static final String PROTOCOL_VERSION = "20"; // 20: reliquias (menu da Bolsa, acao 9); 19: Void System (efeitos 800-802); 18: kit 12 (Killua), efeitos 700-717; 17: kit 16 (Subaru), efeitos 600-605
+    private static final String PROTOCOL_VERSION = "22"; // 22: polimento de combate (PacoteCombate, acao 11); 20: reliquias (menu da Bolsa, acao 9); 19: Void System (efeitos 800-802); 18: kit 12 (Killua), efeitos 700-717; 17: kit 16 (Subaru), efeitos 600-605
     public static final SimpleChannel ENVIAR = NetworkRegistry.newSimpleChannel(
             new ResourceLocation(ArcaneControl.MODID, "main"),
             () -> PROTOCOL_VERSION,
@@ -39,5 +39,6 @@ public class RegistoRede {
         ENVIAR.registerMessage(id++, PacoteProgressoGojo.class,
                 PacoteProgressoGojo::encode, PacoteProgressoGojo::decode,
                 PacoteProgressoGojo::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        ENVIAR.registerMessage(id++,com.cauansilva.arcanecontrol.core.combate.PacoteCombate.class,com.cauansilva.arcanecontrol.core.combate.PacoteCombate::encode,com.cauansilva.arcanecontrol.core.combate.PacoteCombate::decode,com.cauansilva.arcanecontrol.core.combate.PacoteCombate::handle,Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 }

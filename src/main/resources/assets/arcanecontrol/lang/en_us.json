@@ -148,5 +148,7 @@
   "item.arcanecontrol.reliquia_colar": "Relic: Necklace",
   "item.arcanecontrol.reliquia_amuleto": "Relic: Amulet",
   "item.arcanecontrol.reliquia_brinco": "Relic: Earring",
-  "key.minezin.relics": "Relic Pouch"
+  "key.minezin.relics": "Relic Pouch",
+  "key.minezin.dodge": "Dodge (Perfect Dodge)",
+  "key.minezin.lock_on": "Lock-on target"
 }

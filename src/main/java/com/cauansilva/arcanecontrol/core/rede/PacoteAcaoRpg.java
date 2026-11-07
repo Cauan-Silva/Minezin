@@ -10,6 +10,7 @@ public record PacoteAcaoRpg(int acao,int kit,int no){
         ctx.get().enqueueWork(()->{
             var jogador=ctx.get().getSender();if(jogador==null)return;
             if(p.acao==9){if(jogador.isAlive()&&!jogador.isSpectator())com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.abrir(jogador);}
+            else if(p.acao==11)com.cauansilva.arcanecontrol.core.combate.CombateServidor.esquivar(jogador);
             else if(p.acao==1)com.cauansilva.arcanecontrol.core.rpg.RpgServidor.comprar(jogador,p.kit,p.no);
             else if(p.acao==0){
                 long now=com.cauansilva.arcanecontrol.core.rpg.RpgServidor.agora(jogador),ultimo=jogador.getPersistentData().getLong("rpg_snapshot_tick");

@@ -148,5 +148,7 @@
   "item.arcanecontrol.reliquia_colar": "Relíquia: Colar",
   "item.arcanecontrol.reliquia_amuleto": "Relíquia: Amuleto",
   "item.arcanecontrol.reliquia_brinco": "Relíquia: Brinco",
-  "key.minezin.relics": "Bolsa de Relíquias"
+  "key.minezin.relics": "Bolsa de Relíquias",
+  "key.minezin.dodge": "Esquiva (Perfect Dodge)",
+  "key.minezin.lock_on": "Travar alvo (Lock-on)"
 }

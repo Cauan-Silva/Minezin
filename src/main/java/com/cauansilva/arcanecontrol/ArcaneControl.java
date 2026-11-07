@@ -60,7 +60,7 @@ public class ArcaneControl {
             event.register(TeclasControlo.ARVORE);
             event.register(TeclasControlo.ARVORE_RPG);
             event.register(TeclasControlo.PODERES);
-            event.register(TeclasControlo.BOLSA);
+            event.register(TeclasControlo.BOLSA);event.register(TeclasControlo.ESQUIVA);event.register(TeclasControlo.LOCK_ON);
         }
     }
 }
