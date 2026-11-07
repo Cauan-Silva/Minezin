@@ -49,7 +49,7 @@ public final class EmissoresGojo {
         c.setStartSize(new NumberFunction3(tamanho,tamanho,tamanho));c.setStartColor(NumberFunction.color(cor));
         c.emission.setEmissionRate(NumberFunction.constant(ConfigCliente.VFX_REDUZIDOS.get()?Math.max(1,taxa/2):taxa));
         var s=new Sphere();s.setRadius((float)raio);s.setRadiusThickness(.2f);c.shape.setShape(s);
-        c.renderer.setBloomEffect(true);c.renderer.setBloomColor(cor);c.material.setCull(false);
+        c.renderer.setBloomEffect(ConfigCliente.BLOOM_PHOTON.get());c.renderer.setBloomColor(cor);c.material.setCull(false);
         var curva=new Curve(0,1,0,1,1,"vida","tamanho");curva.setCurves(new ECBCurves(0,1,.2f,.9f,.8f,.1f,1,0));
         c.sizeOverLifetime.setEnable(true);c.sizeOverLifetime.setSize(new NumberFunction3(curva,curva,curva));
         return p;

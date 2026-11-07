@@ -8,7 +8,7 @@ public final class ConfigCliente {
     public static final ForgeConfigSpec.BooleanValue TECIDO_CID,EMISSAO_CID,TECIDO_GOJO,TECIDO_FRIEREN,TECIDO_ASTA,TECIDO_ICHIGO;
     public static final ForgeConfigSpec.DoubleValue VOLUME_SFX;
     public static final ForgeConfigSpec.BooleanValue CINEMATICAS;
-    public static final ForgeConfigSpec.BooleanValue PHOTON;
+    public static final ForgeConfigSpec.BooleanValue PHOTON,BLOOM_PHOTON;
     public static final ForgeConfigSpec.BooleanValue VFX_REDUZIDOS;
     public static final ForgeConfigSpec.BooleanValue CLARAO;
     public static final ForgeConfigSpec.BooleanValue SHADER_ATOMIC;
@@ -39,6 +39,7 @@ public final class ConfigCliente {
         SHADER_ATOMIC = builder.comment("Material procedural e filamentos da Atomic. Desligar restaura a geometria anterior.")
                 .define("shaderAtomic", true);
         PHOTON = builder.comment("Ativar emissores e bloom Photon da Atomic.").define("photonAtomic", true);
+        BLOOM_PHOTON = builder.comment("Bloom (pos-processamento) das particulas Photon. Em algumas placas de video deixa o mundo preto por alguns segundos; desligado por padrao.").define("bloomPhoton", false);
         VFX_REDUZIDOS = builder.comment("Reduzir a densidade dos efeitos do Gojo e da Atomic.").define("vfxReduzidos", false);
         CLARAO = builder.comment("Ativar o clarao breve da Atomic.").define("claraoAtomic", true);
         CINEMATICAS = builder.comment("Ativar câmera, zoom e tremor nas Ultimates locais.")
