@@ -148,5 +148,9 @@
   "item.arcanecontrol.reliquia_colar": "Relíquia: Colar",
   "item.arcanecontrol.reliquia_amuleto": "Relíquia: Amuleto",
   "item.arcanecontrol.reliquia_brinco": "Relíquia: Brinco",
-  "key.minezin.relics": "Bolsa de Relíquias"
+  "key.minezin.relics": "Bolsa de Relíquias",
+  "entity.arcanecontrol.familiar": "Familiar",
+  "item.arcanecontrol.selo_familiar_raio": "Selo: Espírito do Raio",
+  "item.arcanecontrol.selo_familiar_fonte": "Selo: Espírito da Fonte",
+  "item.arcanecontrol.selo_familiar_guardiao": "Selo: Espírito Guardião"
 }
