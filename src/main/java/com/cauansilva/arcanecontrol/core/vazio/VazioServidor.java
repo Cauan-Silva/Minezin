@@ -78,7 +78,7 @@ public final class VazioServidor {
     public static void chefeDerrotado(Entity chefe,UUID dono,int kit){
         var i=doChefe(chefe);if(i==null)return;var s=chefe.getServer();i.estado.vencer(agora(s));
         var p=dono==null?null:s.getPlayerList().getPlayer(dono);
-        if(p!=null){RpgServidor.dados(p).remove("desafio");var alma=AlmaDespertar.criar(kit);if(!p.getInventory().add(alma))p.drop(alma,false);}
+        if(p!=null){NemesisMemoria.vencido(p,kit);RpgServidor.dados(p).remove("desafio");var alma=AlmaDespertar.criar(kit);if(!p.getInventory().add(alma))p.drop(alma,false);}
         // bau do chefe no centro: cada jogador ve so o proprio espolio (com pity de Mitico)
         for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)i.espolio.put(id,new ArrayList<>(com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.sortear(o,i.kit)));}
         if(chefe.level() instanceof ServerLevel reino){i.bau=i.centro.above();reino.setBlock(i.bau,Blocks.ENDER_CHEST.defaultBlockState(),Block.UPDATE_ALL);
@@ -107,7 +107,7 @@ public final class VazioServidor {
         if(chefe==null){encerrar(s,inst);return false;}
         double[] ec=PlantaArena.entradaChefe();chefe.configurarTamanho(kit.id);
         chefe.moveTo(centro.getX()+.5+ec[0],centro.getY()+1,centro.getZ()+.5+ec[1],90,0);
-        chefe.preparar(dono,kit.id,Vec3.atBottomCenterOf(centro).add(0,1,0));
+        chefe.preparar(dono,kit.id,Vec3.atBottomCenterOf(centro).add(0,1,0));NemesisMemoria.aplicar(chefe,dono,kit.id);
         inst.chefe=chefe.getUUID();RpgServidor.dados(dono).putUUID("desafio",chefe.getUUID());
         if(!reino.addFreshEntity(chefe)){encerrar(s,inst);return false;}
         Vec3 chao=Vec3.atBottomCenterOf(centro).add(0,1,0);
@@ -174,6 +174,7 @@ public final class VazioServidor {
         for(var i:List.copyOf(INSTANCIAS.values())){
             var antes=i.estado.fase();var fase=i.estado.tick(agora);
             if(fase==EstadoInstancia.Fase.ENCERRADA){encerrar(s,i);continue;}
+            if(fase==EstadoInstancia.Fase.WIPE&&antes!=fase&&reino!=null)NemesisMemoria.wipe(i.dono==null?null:s.getPlayerList().getPlayer(i.dono),i.chefe==null?null:reino.getEntity(i.chefe) instanceof com.cauansilva.arcanecontrol.core.rpg.NemesisEntity n?n:null,i.kit);
             if(fase==EstadoInstancia.Fase.WIPE&&antes!=fase)for(var id:i.estado.todos()){var p=s.getPlayerList().getPlayer(id);if(p!=null)mensagem(p,"Wipe! O grupo caiu. Voltando...",ChatFormatting.RED);}
             if(fase==EstadoInstancia.Fase.ENTRADA)cena(reino,i,agora-i.inicio);
             if(fase==EstadoInstancia.Fase.COMBATE&&antes==EstadoInstancia.Fase.ENTRADA)for(var id:i.estado.vivos()){var p=s.getPlayerList().getPlayer(id);if(p!=null)p.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);}
