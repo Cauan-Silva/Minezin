@@ -28,7 +28,7 @@ public final class AltarDespertar extends Block {
         String erro=!p.isAlive()||p.isSpectator()?"Você precisa estar vivo.":tag.hasUUID("desafio")?"Você já tem um desafio. Agache e use o altar para cancelar.":!m.tem(NoRpg.DESPERTAR)?"Compre o nó Despertar em H (nível 50).":m.despertarLiberado()?"Este kit já despertou.":null;
         if(erro!=null){p.displayClientMessage(Component.literal(erro),true);return InteractionResult.CONSUME;}
         // Void System: o desafio acontece numa instancia propria no Vazio (com quem estiver perto do altar)
-        com.cauansilva.arcanecontrol.core.vazio.VazioServidor.iniciar(p,pos,kit);
+        com.cauansilva.arcanecontrol.core.rank.RankServidor.abrirMenu(p,pos);
         return InteractionResult.CONSUME;
     }
 }

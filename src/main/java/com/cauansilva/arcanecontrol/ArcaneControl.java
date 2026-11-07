@@ -30,6 +30,7 @@ public class ArcaneControl {
         com.cauansilva.arcanecontrol.core.asta.RegistroAsta.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.inicializar();
         com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.registrar(modEventBus);
+        com.cauansilva.arcanecontrol.core.rank.RankServidor.MENUS.register(modEventBus);
         com.cauansilva.arcanecontrol.core.cid.EspadaCid.ITEMS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(GerenciadorMagiasGojo.class);
@@ -49,6 +50,7 @@ public class ArcaneControl {
             event.enqueueWork(com.cauansilva.arcanecontrol.core.client.AnimacoesGojo::registrar);
             event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.BOLSA.get(),com.cauansilva.arcanecontrol.core.reliquias.TelaBolsa::new));
             event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.MENU_FERREIRO.get(),com.cauansilva.arcanecontrol.core.reliquias.TelaFerreiro::new));
+            event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.rank.RankServidor.MENU.get(),com.cauansilva.arcanecontrol.core.rank.TelaDificuldade::new));
         }
         @SubscribeEvent
         public static void onKeyRegister(RegisterKeyMappingsEvent event) {
