@@ -5,7 +5,14 @@ public final class MestriaRpg {
     public static final int NIVEL_MAXIMO=100,XP_POR_NIVEL=100,XP_MAXIMO=9900;
     private int xp,nos,mut;
     private boolean despertar;
+    /** Ascensao: renascimentos deste kit e se o Despertar ja foi conquistado antes (volta ao recomprar o no). */
+    private int asc;private boolean despertarMemoria;
+    public static final int ASC_MAX=10;
     public MestriaRpg(){this(0,0,false);}
+    public MestriaRpg(int xp,int nos,boolean despertar,int asc,boolean memoria){
+        this(xp,nos,despertar);this.asc=Math.max(0,Math.min(ASC_MAX,asc));despertarMemoria=memoria;
+        if(memoria&&tem(NoRpg.DESPERTAR))this.despertar=true;
+    }
     public MestriaRpg(int xp,int nos,boolean despertar){
         this.xp=Math.max(0,Math.min(XP_MAXIMO,xp));
         // NBT invalido nao pode tornar um no dependente acessivel sem os anteriores.
@@ -25,21 +32,33 @@ public final class MestriaRpg {
     public boolean mutar(int slot,MutacaoRpg m){if(!podeMutar(slot)||m==null)return false;mut=MutacaoRpg.gravar(mut,slot,m.ordinal());return true;}
     public boolean tem(NoRpg n){return n!=null&&(nos&n.bit())!=0;}
     public int pontos(){int gastos=0;for(var n:NoRpg.values())if(tem(n))gastos+=n.custo;return Math.max(0,nivel()-1-gastos);}
-    public int ganharXp(int quantidade){int antes=nivel();if(quantidade>0)xp=(int)Math.min(XP_MAXIMO,(long)xp+quantidade);return nivel()-antes;}
+    public int ganharXp(int quantidade){int antes=nivel();if(quantidade>0)xp=(int)Math.min(XP_MAXIMO,(long)xp+Math.round(quantidade*bonusXp()));return nivel()-antes;}
     public boolean comprar(NoRpg no){
         if(no==null||tem(no)||nivel()<no.nivel||pontos()<no.custo||(nos&no.requisitos)!=no.requisitos)return false;
-        nos|=no.bit();return true;
+        nos|=no.bit();if(no==NoRpg.DESPERTAR&&despertarMemoria)despertar=true;return true;
     }
     public boolean consumirAlma(PersonagemRpg ativo,PersonagemRpg alma){
         if(ativo==null||ativo!=alma||!tem(NoRpg.DESPERTAR)||despertar)return false;
         despertar=true;return true;
     }
     public boolean despertarLiberado(){return despertar;}
+    public int ascensoes(){return asc;}
+    public boolean memoriaDespertar(){return despertarMemoria;}
+    public boolean podeAscender(){return nivel()>=NIVEL_MAXIMO&&asc<ASC_MAX;}
+    /** Renasce: volta ao nivel 1 sem nos, guardando a ascensao e a memoria do Despertar. */
+    public boolean ascender(){
+        if(!podeAscender())return false;
+        despertarMemoria|=despertar;asc++;xp=0;nos=0;mut=0;despertar=false;return true;
+    }
+    /** Bonus permanentes por ascensao. */
+    public double bonusDano(){return asc*.04;}
+    public double bonusVida(){return asc*3.0;}
+    public double bonusXp(){return 1+asc*.10;}
     public boolean podeUsarSlot(int slot){return switch(slot){case 0->true;case 1->tem(NoRpg.TECNICA_X);case 2->tem(NoRpg.TECNICA_C);case 3->tem(NoRpg.TECNICA_V);case 4->despertar;default->false;};}
-    public double vidaAdicional(){return (nivel()-1)*2.0;}
-    public double multiplicadorFisico(){return 1+(nivel()-1)*.0075+(tem(NoRpg.DANO_FISICO)?.10:0);}
-    public double multiplicadorMagico(){return 1+(nivel()-1)*.0075+(tem(NoRpg.DANO_MAGICO)?.10:0);}
-    public double multiplicadorRecarga(){return 1-(nivel()-1)*.003;}
+    public double vidaAdicional(){return (nivel()-1)*2.0+bonusVida();}
+    public double multiplicadorFisico(){return 1+bonusDano()+(nivel()-1)*.0075+(tem(NoRpg.DANO_FISICO)?.10:0);}
+    public double multiplicadorMagico(){return 1+bonusDano()+(nivel()-1)*.0075+(tem(NoRpg.DANO_MAGICO)?.10:0);}
+    public double multiplicadorRecarga(){return (1-(nivel()-1)*.003)*(1-asc*.02);}
     public double multiplicadorRegeneracao(){return tem(NoRpg.REGENERACAO_MANA)?1.25:1;}
     public double velocidadeAdicional(){return tem(NoRpg.MOVIMENTO)?.10:0;}
     /** Perfil administrativo completo, sem alterar os requisitos da progressão survival. */
