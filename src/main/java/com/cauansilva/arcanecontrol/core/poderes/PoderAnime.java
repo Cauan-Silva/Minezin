@@ -6,6 +6,7 @@ public enum PoderAnime {
     FRIEREN(3,"Frieren",240,0xE8CF86,new String[]{"Zoltraak","Barreira Arcana","Impulso Arcano","Gaiola de Vento","Liberar Mana"}),
     ASTA(4,"Asta",180,0xD84559,new String[]{"Espada Matadora de Demônios","Corte Divisor","Avanço Touro Negro","Barreira Antimagia","Assimilação Demoníaca"}),
     ICHIGO(6,"Ichigo",220,0x69CFFF,new String[]{"Getsuga Tenshou","Passo Flash","Pressão Espiritual","Corte Ascendente","Bankai: Tensa Zangetsu"}),
+    KILLUA(12,"Killua",190,0x7FC8FF,new String[]{"Palma Relâmpago","Passo Borrão","Yo-Yo de Aço","Garras de Assassino","Godspeed"}),
     SUBARU(16,"Subaru",200,0x8A4DFF,new String[]{"Shamak","Chamado Espiritual","Instrução Tática","Recuperação Psicológica","Contrato com a Beatrice"});
     /** Quantos kits cabem nos vetores de estado (xp, usos, mestria): o maior id. */
     public static final int KITS=16;

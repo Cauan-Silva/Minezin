@@ -93,7 +93,7 @@ def build():
     if 'pivot'in c:c['pivot'][1]-=mid
   a.save(A/f'geo/armaduras/shadow_{part}.geo.json',a.document('shadow_'+part,icon))
   suffix={'helmet':'capuz','chestplate':'manto','leggings':'calcas','boots':'botas'}[part];scale=round(min(1.3,14/max(hi[i]-lo[i] for i in range(3))),3)
-  a.save(A/f'models/item/{suffix}_shadow.json',{'parent':'builtin/entity','display':{'gui':{'rotation':[8,-28,0],'scale':[scale]*3},'ground':{'translation':[0,3,0],'scale':[.5]*3},'fixed':{'scale':[.8]*3}}})
+  a.save(A/f'models/item/{suffix}_shadow.json',{'parent':'builtin/entity','display':{'gui':{'rotation':[20,-35,0],'translation':[0,0,0],'scale':[.72]*3},'ground':{'translation':[0,3,0],'scale':[.35]*3},'fixed':{'scale':[.7]*3},'thirdperson_righthand':{'translation':[0,2,1],'scale':[.35]*3},'firstperson_righthand':{'translation':[0,3,0],'scale':[.4]*3}}})
  a.save(A/'animations/armaduras/shadow.animation.json',{'format_version':'1.8.0','animations':{'animation.traje.idle':{'loop':True,'animation_length':2,'bones':{}}}})
  print('Cid trial: 5 panels x 4 linked bones; sparse emissive mask; worn head/hair preserved.')
 if __name__=='__main__':build()

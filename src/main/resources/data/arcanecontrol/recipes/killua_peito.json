@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "minecraft:paper"
+  },
+  "base": {
+    "item": "minecraft:iron_chestplate"
+  },
+  "addition": {
+    "item": "minecraft:purple_dye"
+  },
+  "result": {
+    "item": "arcanecontrol:killua_peito"
+  }
+}

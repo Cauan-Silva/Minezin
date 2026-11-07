@@ -1998,5 +1998,293 @@
     "peak": 0.61769,
     "rms": 0.12883,
     "sha256": "d232d239663152b2895df22ed8ddc52a1b18abfaeaacde9c4fa6d7f548bff740"
+  },
+  "killua_narukami": {
+    "duration": 2.9,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57735,
+    "rms": 0.08609,
+    "sha256": "5c1915aab0b9af97136c71f2f6221ee1caac800b609508f6da54c4636dc48d8f"
+  },
+  "killua_narukami_2": {
+    "duration": 2.7885,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60938,
+    "rms": 0.08501,
+    "sha256": "7187556ad79efee94e6696516788f8a3404e269daac0891af897b89f948bfefd"
+  },
+  "killua_narukami_3": {
+    "duration": 3.0208,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6741,
+    "rms": 0.08912,
+    "sha256": "dc278ae171f29e70a890180c7c0f96fa2d195e080a23e834994f009db91fca39"
+  },
+  "killua_echo": {
+    "duration": 1.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62383,
+    "rms": 0.10954,
+    "sha256": "7be17e236dee3b9fb9460efb0a9d3b865c67dbd5a9a89766eeb6930b9c45ff88"
+  },
+  "killua_echo_2": {
+    "duration": 1.5385,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.56276,
+    "rms": 0.10187,
+    "sha256": "157094161f29abc8ea5eaa4e972067d5d1f80960c9e04c8f4be3302bc34284cf"
+  },
+  "killua_echo_3": {
+    "duration": 1.6666,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.67722,
+    "rms": 0.09726,
+    "sha256": "e0224c62a7fd2279c05fb728719b05c1d71799b1cb2669c8cc1b5d5be886781c"
+  },
+  "killua_yoyo": {
+    "duration": 2.1,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62014,
+    "rms": 0.18329,
+    "sha256": "55e8c65b6e69759ecfc98d01d3e60ddf8e5ce7c0884e861258454674e1bfb818"
+  },
+  "killua_yoyo_2": {
+    "duration": 2.0192,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62922,
+    "rms": 0.18255,
+    "sha256": "b5f38c1c6124497c2bd3c455ab2f94624b892de1ce505f14b67c78b43c30b5a5"
+  },
+  "killua_yoyo_3": {
+    "duration": 2.1875,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59652,
+    "rms": 0.19709,
+    "sha256": "c6fcb8b824e05909a77dd0b4f7d1f02a7486624de852e1cece31c6979a410068"
+  },
+  "killua_garras": {
+    "duration": 1.0,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57473,
+    "rms": 0.20138,
+    "sha256": "2648b24497f55f31c4cd61140d469ed57ba94fbfa8bd7ed562e954d94f5382c0"
+  },
+  "killua_garras_2": {
+    "duration": 0.9615,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61659,
+    "rms": 0.2206,
+    "sha256": "3dc0f54e7143c2fa88ac5882835d959a2ff3ca7c718af06152543b9e67ffcf74"
+  },
+  "killua_garras_3": {
+    "duration": 1.0416,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62907,
+    "rms": 0.20173,
+    "sha256": "50a50d05d37232b0bba53f98ec8edf9ef778b06e70ba63083a875975f77d4464"
+  },
+  "killua_godspeed": {
+    "duration": 2.7,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.5635,
+    "rms": 0.08726,
+    "sha256": "84f99364825e066d8505220c32040cb62fc73853c0f2fc4cc12e172c7417d997"
+  },
+  "killua_godspeed_2": {
+    "duration": 2.5961,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.67615,
+    "rms": 0.0969,
+    "sha256": "707c3e29428e1941aceb3936922700cb69aa58e2737a7bc0e50613ddc6258f0c"
+  },
+  "killua_godspeed_3": {
+    "duration": 2.8125,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.55343,
+    "rms": 0.10156,
+    "sha256": "5f55be90894e38e07db639b3efa17116a7f2e3deebde35807155b56ed49c7953"
+  },
+  "killua_relampago": {
+    "duration": 2.0,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.59445,
+    "rms": 0.08016,
+    "sha256": "d00391e5487a7a590107ae2927eb5a614e673a5fb16fb01d20747eb72a506109"
+  },
+  "killua_relampago_2": {
+    "duration": 1.9231,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57698,
+    "rms": 0.1141,
+    "sha256": "4070367c79ee997b02a2eddc68eb9725d6cfdcc0b2382cf56974cce7fdd8ab50"
+  },
+  "killua_relampago_3": {
+    "duration": 2.0833,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62547,
+    "rms": 0.08423,
+    "sha256": "3d6896cd4edf2030162a63026ffee2224415ababc0a8d35c3540604ecb3a997a"
+  },
+  "killua_whirlpool": {
+    "duration": 0.9,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.66172,
+    "rms": 0.14805,
+    "sha256": "b9d393934e80bddb129fecd87e0f021cc0dec4d29b75682e3a3cfc30ea12770e"
+  },
+  "killua_whirlpool_2": {
+    "duration": 0.8654,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61134,
+    "rms": 0.14687,
+    "sha256": "d7d4bee310668e10a46659cd9af3e35a4c83a33de35f71e0ce27c487e4e3d18d"
+  },
+  "killua_whirlpool_3": {
+    "duration": 0.9375,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.63992,
+    "rms": 0.14823,
+    "sha256": "66a796c7c4ab95e37379c73afdee714f42d0a91f3e6f79ee101fd3e6b62dfecc"
+  },
+  "killua_contra": {
+    "duration": 1.4,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.66793,
+    "rms": 0.0644,
+    "sha256": "a120dd51eb668a9037787eff3ff0466d70f97bb6077f92c58979c1c9f9f700fa"
+  },
+  "killua_contra_2": {
+    "duration": 1.3461,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.43822,
+    "rms": 0.03786,
+    "sha256": "73a7692909ccc744b75730e627eb18f41d4b4899ab7219ae66902991a360dd81"
+  },
+  "killua_contra_3": {
+    "duration": 1.4583,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6512,
+    "rms": 0.06037,
+    "sha256": "52d1b692d9e9f5c1e8da652f09abb1fbd93429e247341e0a161ac5e102b41c10"
+  },
+  "killua_soco": {
+    "duration": 1.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57501,
+    "rms": 0.12799,
+    "sha256": "9406a81e83ed3a0498a8c099898d00858f2a4b05b74f6a04e8999aae7598c949"
+  },
+  "killua_soco_2": {
+    "duration": 1.5385,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.56955,
+    "rms": 0.10049,
+    "sha256": "e3d2cd51e14dd8d6b106530def534f0149d04461005b2d574fe9dd69e7124a58"
+  },
+  "killua_soco_3": {
+    "duration": 1.6666,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.57266,
+    "rms": 0.09322,
+    "sha256": "1733d325a16ffa647262519514c70d94eaf68ec9a69fceb5642f146be90bc45e"
+  },
+  "killua_pulso": {
+    "duration": 2.4,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.54395,
+    "rms": 0.10723,
+    "sha256": "77841a337a629646e28cd857a77976616df6d7fcc5f645f2f1bb08b7e2faadb7"
+  },
+  "killua_pulso_2": {
+    "duration": 2.3077,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.6531,
+    "rms": 0.15748,
+    "sha256": "0a2d3d4794c380b5d4c6e2da53ec1e10d615ef7ed874c5bc404ff5cf4631880c"
+  },
+  "killua_pulso_3": {
+    "duration": 2.5,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61636,
+    "rms": 0.1376,
+    "sha256": "299e33fb54f1b59ee325edb87c0768625efa378172d9cf1bc62fb69581851ef6"
+  },
+  "killua_tempestade": {
+    "duration": 5.3,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.55306,
+    "rms": 0.07863,
+    "sha256": "76b93fa0cb7fdb22d0edd87281a8e2f0d9d5cbad69f29e9531913f41039c9125"
+  },
+  "killua_tempestade_2": {
+    "duration": 5.0961,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.62176,
+    "rms": 0.10067,
+    "sha256": "526ece7cc3117b99068a20ce7fda6531d02919b044bc6bb653b861acbc09ede0"
+  },
+  "killua_tempestade_3": {
+    "duration": 5.5208,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61238,
+    "rms": 0.10064,
+    "sha256": "b76c9d54aa306d7f4d8241534571071eaec698852ad72f323a1e81ced006d509"
+  },
+  "killua_garras_golpe": {
+    "duration": 1.6,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.61061,
+    "rms": 0.07391,
+    "sha256": "3deb6499027d694c379c739f4060bcba350434379bc2567e9eed2866d43f587c"
+  },
+  "killua_garras_golpe_2": {
+    "duration": 1.5385,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.60598,
+    "rms": 0.06303,
+    "sha256": "739f46eec6d38bb3d06cc3d0640a13a30530f483b2f0959e6825042096e3cf46"
+  },
+  "killua_garras_golpe_3": {
+    "duration": 1.6666,
+    "sample_rate": 48000,
+    "channels": 1,
+    "peak": 0.64077,
+    "rms": 0.08627,
+    "sha256": "2d6c79650bbada20d74d41ff3e37fe9417c47fc677f4617efcdaf04189369702"
   }
 }

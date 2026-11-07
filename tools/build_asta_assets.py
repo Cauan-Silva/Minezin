@@ -328,7 +328,7 @@ def uniforme():
     if 'pivot'in c:c['pivot'][1]-=mid
   save(A/f'geo/armaduras/asta_{part}.geo.json',armor.document('asta_'+part,icon))
   suffix={'helmet':'cabeca','chestplate':'peito','leggings':'pernas','boots':'botas'}[part];scale=round(min(1.3,14/max(hi[i]-lo[i] for i in range(3))),3)
-  save(A/f'models/item/asta_{suffix}.json',{'parent':'builtin/entity','display':{'gui':{'rotation':[8,-28,0],'scale':[scale]*3},'ground':{'translation':[0,3,0],'scale':[.5]*3},'fixed':{'scale':[.8]*3}}})
+  save(A/f'models/item/asta_{suffix}.json',{'parent':'builtin/entity','display':{'gui':{'rotation':[20,-35,0],'translation':[0,0,0],'scale':[.72]*3},'ground':{'translation':[0,3,0],'scale':[.35]*3},'fixed':{'scale':[.7]*3},'thirdperson_righthand':{'translation':[0,2,1],'scale':[.35]*3},'firstperson_righthand':{'translation':[0,3,0],'scale':[.4]*3}}})
  anim={name:{'rotation':{'0':[0,0,0],'2':[1.2 if name.startswith('capa_') else .6,0,0],'4':[0,0,0]}} for name in bones if name.startswith(('manto_','capa_'))}
  save(A/'animations/armaduras/asta.animation.json',{'format_version':'1.8.0','animations':{'animation.traje.idle':{'loop':True,'animation_length':4,'bones':anim}}})
  from export_blockbench_projects import make_project,OUT

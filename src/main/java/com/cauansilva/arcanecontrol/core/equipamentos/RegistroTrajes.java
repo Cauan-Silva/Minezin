@@ -19,6 +19,10 @@ public final class RegistroTrajes {
     public static final RegistryObject<Item> SUB_PEITO=EspadaCid.ITEMS.register("subaru_peito",()->new TrajeAnime("subaru",ArmorItem.Type.CHESTPLATE));
     public static final RegistryObject<Item> SUB_PERNAS=EspadaCid.ITEMS.register("subaru_pernas",()->new TrajeAnime("subaru",ArmorItem.Type.LEGGINGS));
     public static final RegistryObject<Item> SUB_BOTAS=EspadaCid.ITEMS.register("subaru_botas",()->new TrajeAnime("subaru",ArmorItem.Type.BOOTS));
+    public static final RegistryObject<Item> KIL_CABECA=EspadaCid.ITEMS.register("killua_cabeca",()->new TrajeAnime("killua",ArmorItem.Type.HELMET));
+    public static final RegistryObject<Item> KIL_PEITO=EspadaCid.ITEMS.register("killua_peito",()->new TrajeAnime("killua",ArmorItem.Type.CHESTPLATE));
+    public static final RegistryObject<Item> KIL_PERNAS=EspadaCid.ITEMS.register("killua_pernas",()->new TrajeAnime("killua",ArmorItem.Type.LEGGINGS));
+    public static final RegistryObject<Item> KIL_BOTAS=EspadaCid.ITEMS.register("killua_botas",()->new TrajeAnime("killua",ArmorItem.Type.BOOTS));
     public static final RegistryObject<Item> CAJADO_FRIEREN=EspadaCid.ITEMS.register("cajado_frieren",com.cauansilva.arcanecontrol.core.frieren.CajadoFrieren::new);
     public static void registrar(){}
     @SubscribeEvent public static void aba(BuildCreativeModeTabContentsEvent e){if(e.getTabKey()==CreativeModeTabs.COMBAT)EspadaCid.ITEMS.getEntries().forEach(i->e.accept(i.get()));}

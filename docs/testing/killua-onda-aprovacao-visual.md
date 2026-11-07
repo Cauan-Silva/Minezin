@@ -22,15 +22,15 @@ Iniciada em 05/11/2026, sobre a `main` na versão `3.14.0-subaru-preview.9` (pro
 | Ordem | Parte | Status | Prévia | Aprovação |
 | --- | --- | --- | --- | --- |
 | 1 | G Godspeed (entrada + aura) | aura de tecido aprovada 05/11 (padrão mínimo de auras) | `minezin-outputs/killua-aura-tecido/` | ✅ aura |
-| 2 | Kit base Z/X/C/V (pedido do usuário: base inteira primeiro) | prévia 2 enviada 05/11 (prévia 1: "VFX simples demais") | `minezin-outputs/killua-base/killua-base.mp4` + `killua-base-fases.png` | aguardando |
+| 2 | Kit base Z/X/C/V (pedido do usuário: base inteira primeiro) | prévia 3 aprovada 06/11 (prévia 1: "VFX simples demais") | `minezin-outputs/killua-base/killua-base.mp4` + `killua-base-fases.png` | ✅ |
 | 6a | G-Z Relâmpago Perfurante | prévia 3 aprovada 05/11 (anim `killua_relampago`, marca queimada) | `minezin-outputs/killua-relampago-perfurante/` | ✅ |
 | 6b | G-X Whirlpool | prévia 1 aprovada 05/11 (anim `killua_whirlpool`, usa `Interrupcao`) | `minezin-outputs/killua-whirlpool/` | ✅ |
 | 6c | G-C Soco Relâmpago | prévia 2 aprovada 05/11 (anim `killua_soco` fluida; FORTE no `Interrupcao`) | `minezin-outputs/killua-soco-relampago/` | ✅ |
 | 6d | G-V Pulso Eletromagnético | prévia 1 aprovada 05/11 (anim `killua_pulso`; FORTE em área) | `minezin-outputs/killua-pulso-eletromagnetico/` | ✅ |
 | 6e | Ultimate Tempestade Divina (G no Godspeed) | prévia 1 aprovada 05/11 (anim `killua_tempestade`, ABSOLUTA, encerra o Godspeed) | `minezin-outputs/killua-tempestade-divina/` | ✅ |
-| 7 | Traje (camisa, short) + cabelo | ⏳ | | |
-| 8 | SFX | ⏳ | | |
-| 9 | JAR + roteiro | ⏳ | | |
+| 7 | Traje Exame Hunter (camiseta lilás em V sobre gola alta marinho, bermuda, botas roxas), sem cabelo | prévia 3 aprovada 06/11 (`build_killua_traje.py`; ref. rotulada do usuário) | `minezin-outputs/killua-traje/` | ✅ |
+| 8 | SFX | v2 aprovada 06/11 (eletricidade reforçada; `tools/build_killua_sfx.py`, CC0 + síntese) | `minezin-outputs/killua-sfx/killua-sfx-v2.wav` | ✅ |
+| 9 | JAR + roteiro | `minezin-3.15.0-killua-preview.1.jar` (protocolo 18), servidor `PoderesKillua`, cliente `EfeitosKillua`/`RenderMagiasKillua`; 332 testes ok; Garras: corte no próximo golpe, ancorado no alvo (06/11) | `build/libs/` | ✅ testado no jogo 06/11 |
 
 ## Pendências e riscos
 

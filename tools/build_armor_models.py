@@ -90,7 +90,7 @@ def staff():
     return b
 
 def document(style, bones):
-    clothing=style in ['gojo','frieren','shadow','asta','ichigo','ichigo_bankai','ichigo_mugetsu','subaru'] or any(style==n+'_'+slot for n in ['gojo','frieren','shadow','asta','ichigo','subaru'] for slot in ['helmet','chestplate','leggings','boots'])
+    clothing=style in ['gojo','frieren','shadow','asta','ichigo','ichigo_bankai','ichigo_mugetsu','subaru','killua'] or any(style==n+'_'+slot for n in ['gojo','frieren','shadow','asta','ichigo','subaru','killua'] for slot in ['helmet','chestplate','leggings','boots'])
     return {'format_version':'1.12.0','minecraft:geometry':[{'description':{
         'identifier':'geometry.'+style,'texture_width':128 if clothing else W,'texture_height':128 if clothing else H,
         'visible_bounds_width':4,'visible_bounds_height':5,'visible_bounds_offset':[0,1.5,0]},'bones':list(bones.values())}]}
@@ -131,8 +131,10 @@ def build(only=None):
         for part,suffix,cid in [('helmet','cabeca','capuz'),('chestplate','peito','manto'),('leggings','pernas','calcas'),('boots','botas','botas')]:
             item=cid+'_shadow' if style=='shadow' else style+'_'+suffix
             save(ASSETS/f'models/item/{item}.json',{'parent':'builtin/entity','display':{
-                'gui':{'rotation':[8,-28,0],'translation':[0,0,0],'scale':[scales[part]]*3},
-                'ground':{'translation':[0,3,0],'scale':[.5]*3},'fixed':{'scale':[.8]*3}}})
+                # RenderIconeTraje fits every piece into one block, so all icons share one display
+                'gui':{'rotation':[20,-35,0],'translation':[0,0,0],'scale':[.72]*3},
+                'ground':{'translation':[0,3,0],'scale':[.35]*3},'fixed':{'scale':[.7]*3},
+                'thirdperson_righthand':{'translation':[0,2,1],'scale':[.35]*3},'firstperson_righthand':{'translation':[0,3,0],'scale':[.4]*3}}})
         print(style,'bones',len(bones),'cubes',sum(len(b['cubes']) for b in bones.values()))
     save(ASSETS/'geo/frieren/cajado.geo.json',document('cajado_frieren',staff()))
     save(ASSETS/'animations/frieren/cajado.animation.json',{'format_version':'1.8.0','animations':{'animation.cajado.idle':{

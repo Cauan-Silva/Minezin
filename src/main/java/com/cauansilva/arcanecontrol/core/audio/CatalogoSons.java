@@ -11,6 +11,7 @@ public final class CatalogoSons {
             "asta_brandir","asta_impacto","asta_corte","asta_investida","asta_barreira","asta_reflexo","asta_salto","asta_meteoro","asta_furacao","asta_estouro","asta_ult_espadas","asta_ult_corte","asta_ult_final","asta_forma_carga","asta_forma_rugido",
             "cid_corte_ar","cid_corte_impacto","cid_passo","cid_passo_chegada","cid_fios_lanca","cid_fios_prende","cid_fios_dreno","cid_lamina","cid_despertar","cid_chuva","cid_lamina_queda","cid_singularidade","cid_atomic_carga","cid_atomic_explosao",
             "subaru_shamak_carga","subaru_shamak_disparo","subaru_shamak_nevoa","subaru_escudo","subaru_escudo_estouro","subaru_instrucao","subaru_recuperacao","subaru_contrato",
-            "beatrice_minya","beatrice_emm","beatrice_emm_golpe","beatrice_murak","beatrice_ul_minya"};
+            "beatrice_minya","beatrice_emm","beatrice_emm_golpe","beatrice_murak","beatrice_ul_minya",
+            "killua_narukami","killua_echo","killua_yoyo","killua_garras","killua_garras_golpe","killua_godspeed","killua_relampago","killua_whirlpool","killua_contra","killua_soco","killua_pulso","killua_tempestade"};
     private CatalogoSons(){}
 }
