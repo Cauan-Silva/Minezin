@@ -45,13 +45,13 @@ public final class RankServidor {
         net.minecraftforge.network.NetworkHooks.openScreen(p,new SimpleMenuProvider((id,inv,pl)->new MenuDificuldade(id,inv,altar,p),Component.literal("Desafio do Vazio")));
     }
     /** Botao do menu: confere o rank medio do grupo e abre a instancia. */
-    static boolean escolher(ServerPlayer p,BlockPos altar,Dificuldade d){
+    static boolean escolher(ServerPlayer p,BlockPos altar,Dificuldade d,com.cauansilva.arcanecontrol.core.poderes.PoderAnime chefe){
         if(p.distanceToSqr(altar.getX()+.5,altar.getY()+.5,altar.getZ()+.5)>64){p.displayClientMessage(Component.literal("Fique perto do altar.").withStyle(ChatFormatting.RED),true);return false;}
         var grupo=VazioServidor.grupo(p,altar);var media=RankCacador.media(grupo.stream().map(RankServidor::rank).toList());
         if(!RankCacador.podeEntrar(d,grupo.stream().map(RankServidor::rank).toList())){
             p.displayClientMessage(Component.literal(d.nome+" exige Rank médio "+d.minimo.name()+" (o grupo tem "+media.name()+").").withStyle(ChatFormatting.RED),false);return false;}
         p.closeContainer();
-        return VazioServidor.iniciar(p,altar,ProgressaoPoderes.ler(p).ativo(),d);
+        return VazioServidor.iniciar(p,altar,chefe,d);
     }
     private RankServidor(){}
 }

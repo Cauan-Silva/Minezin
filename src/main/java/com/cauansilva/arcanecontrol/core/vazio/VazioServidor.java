@@ -80,7 +80,7 @@ public final class VazioServidor {
     public static void chefeDerrotado(Entity chefe,UUID dono,int kit){
         var i=doChefe(chefe);if(i==null)return;var s=chefe.getServer();i.estado.vencer(agora(s));
         var p=dono==null?null:s.getPlayerList().getPlayer(dono);
-        if(p!=null){NemesisMemoria.vencido(p,kit);RpgServidor.dados(p).remove("desafio");var alma=AlmaDespertar.criar(kit);if(!p.getInventory().add(alma))p.drop(alma,false);}
+        if(p!=null){NemesisMemoria.vencido(p,kit);RpgServidor.dados(p).remove("desafio");darAlma(p,kit);}
         // Rank de Cacador: pontos para cada participante (derrota nunca tira)
         int seg=(int)Math.max(0,(agora(s)-i.inicio-CinematicaEntrada.FIM)/20);
         for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)com.cauansilva.arcanecontrol.core.rank.RankServidor.premiar(o,i.dif,seg,!i.estado.vivos().contains(id),i.estado.todos().size());}
@@ -89,6 +89,17 @@ public final class VazioServidor {
         if(chefe.level() instanceof ServerLevel reino){i.bau=i.centro.above();reino.setBlock(i.bau,Blocks.ENDER_CHEST.defaultBlockState(),Block.UPDATE_ALL);
             reino.sendParticles(net.minecraft.core.particles.ParticleTypes.END_ROD,i.bau.getX()+.5,i.bau.getY()+1,i.bau.getZ()+.5,40,.3,.6,.3,.05);}
         for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)mensagem(o,"Desafio vencido! Abra o baú no centro (o espólio vai para o inventário ao sair). Voltando em "+EstadoInstancia.SAIDA_VITORIA/20+" s.",ChatFormatting.GOLD);}
+    }
+
+    /**
+     * Alma do Despertar: so na primeira vitoria contra o Nemesis de um kit que o jogador tem e ainda nao despertou.
+     * Revanches dao so o bau/pontos.
+     */
+    static void darAlma(ServerPlayer p,int kit){
+        var k=com.cauansilva.arcanecontrol.core.poderes.PoderAnime.porId(kit);var t=RpgServidor.dados(p);
+        if(k==null||!com.cauansilva.arcanecontrol.core.poderes.ProgressaoPoderes.ler(p).tem(k)||t.getBoolean("alma_"+kit)||RpgServidor.mestria(p,kit).despertarLiberado())return;
+        t.putBoolean("alma_"+kit,true);var alma=AlmaDespertar.criar(kit);if(!p.getInventory().add(alma))p.drop(alma,false);
+        mensagem(p,"Alma do Despertar obtida! Use-a com o kit "+k.nome+" (nó Despertar comprado em H).",ChatFormatting.LIGHT_PURPLE);
     }
 
     // ---------------- entrada ----------------
