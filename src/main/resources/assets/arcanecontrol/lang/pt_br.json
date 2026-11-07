@@ -150,5 +150,7 @@
   "item.arcanecontrol.reliquia_brinco": "Relíquia: Brinco",
   "key.minezin.relics": "Bolsa de Relíquias",
   "block.arcanecontrol.ferreiro_vazio": "Ferreiro do Vazio",
-  "item.arcanecontrol.essencia_vazio": "Essência do Vazio"
+  "item.arcanecontrol.essencia_vazio": "Essência do Vazio",
+  "item.arcanecontrol.boneco_treino": "Boneco de Treino",
+  "entity.arcanecontrol.boneco_treino": "Boneco de Treino"
 }

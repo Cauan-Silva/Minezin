@@ -150,5 +150,7 @@
   "item.arcanecontrol.reliquia_brinco": "Relic: Earring",
   "key.minezin.relics": "Relic Pouch",
   "block.arcanecontrol.ferreiro_vazio": "Void Smith",
-  "item.arcanecontrol.essencia_vazio": "Void Essence"
+  "item.arcanecontrol.essencia_vazio": "Void Essence",
+  "item.arcanecontrol.boneco_treino": "Training Dummy",
+  "entity.arcanecontrol.boneco_treino": "Training Dummy"
 }
