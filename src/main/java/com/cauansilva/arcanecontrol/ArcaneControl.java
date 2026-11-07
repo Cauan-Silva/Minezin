@@ -26,10 +26,14 @@ public class ArcaneControl {
         modEventBus.addListener(this::setup);
         com.cauansilva.arcanecontrol.core.audio.RegistroSons.SONS.register(modEventBus);
         com.cauansilva.arcanecontrol.core.equipamentos.RegistroTrajes.registrar();
+        com.cauansilva.arcanecontrol.core.familiar.RegistroFamiliar.carregar();
+        com.cauansilva.arcanecontrol.core.reacao.RegistroReacao.carregar();
+        com.cauansilva.arcanecontrol.core.boneco.RegistroBoneco.carregar();
         com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.asta.RegistroAsta.registrar(modEventBus);
         com.cauansilva.arcanecontrol.core.ichigo.RegistroIchigo.inicializar();
         com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.registrar(modEventBus);
+        com.cauansilva.arcanecontrol.core.rank.RankServidor.MENUS.register(modEventBus);
         com.cauansilva.arcanecontrol.core.cid.EspadaCid.ITEMS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(GerenciadorMagiasGojo.class);
@@ -49,6 +53,7 @@ public class ArcaneControl {
             event.enqueueWork(com.cauansilva.arcanecontrol.core.client.AnimacoesGojo::registrar);
             event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.BOLSA.get(),com.cauansilva.arcanecontrol.core.reliquias.TelaBolsa::new));
             event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.MENU_FERREIRO.get(),com.cauansilva.arcanecontrol.core.reliquias.TelaFerreiro::new));
+            event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.rank.RankServidor.MENU.get(),com.cauansilva.arcanecontrol.core.rank.TelaDificuldade::new));
         }
         @SubscribeEvent
         public static void onKeyRegister(RegisterKeyMappingsEvent event) {
@@ -61,7 +66,7 @@ public class ArcaneControl {
             event.register(TeclasControlo.ARVORE);
             event.register(TeclasControlo.ARVORE_RPG);
             event.register(TeclasControlo.PODERES);
-            event.register(TeclasControlo.BOLSA);
+            event.register(TeclasControlo.BOLSA);event.register(TeclasControlo.ESQUIVA);event.register(TeclasControlo.LOCK_ON);
         }
     }
 }

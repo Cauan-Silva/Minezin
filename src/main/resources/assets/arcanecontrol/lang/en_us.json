@@ -150,5 +150,17 @@
   "item.arcanecontrol.reliquia_brinco": "Relic: Earring",
   "key.minezin.relics": "Relic Pouch",
   "block.arcanecontrol.ferreiro_vazio": "Void Smith",
-  "item.arcanecontrol.essencia_vazio": "Void Essence"
+  "item.arcanecontrol.essencia_vazio": "Void Essence",
+  "key.minezin.dodge": "Dodge (Perfect Dodge)",
+  "key.minezin.lock_on": "Lock-on target",
+  "entity.arcanecontrol.familiar": "Familiar",
+  "item.arcanecontrol.selo_familiar_raio": "Seal: Lightning Spirit",
+  "item.arcanecontrol.selo_familiar_fonte": "Seal: Wellspring Spirit",
+  "item.arcanecontrol.selo_familiar_guardiao": "Seal: Guardian Spirit",
+  "item.arcanecontrol.frasco_fogo": "Fire Flask",
+  "item.arcanecontrol.frasco_gelo": "Frost Flask",
+  "item.arcanecontrol.frasco_raio": "Lightning Flask",
+  "item.arcanecontrol.frasco_agua": "Water Flask",
+  "item.arcanecontrol.boneco_treino": "Training Dummy",
+  "entity.arcanecontrol.boneco_treino": "Training Dummy"
 }

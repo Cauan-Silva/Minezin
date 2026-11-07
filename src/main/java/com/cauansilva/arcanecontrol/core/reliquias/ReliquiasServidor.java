@@ -121,7 +121,7 @@ public final class ReliquiasServidor {
     /** Loot individual de um jogador para o chefe `kit` (aplica e atualiza o pity). */
     public static List<ItemStack> sortear(ServerPlayer p,int kit){
         var t=RpgServidor.dados(p);int[] pt=Reliquias.pity(t.getInt("rel_pity"));
-        var bau=Reliquias.bau(RNG,kit,pt[0]==1);boolean mitico=bau.stream().anyMatch(Reliquia::mitica);
+        var bau=FocoServidor.cobrar(p)?FocoCaca.bau(RNG,kit,pt[0]==1,FocoServidor.tipo(p),FocoServidor.afixo(p)):Reliquias.bau(RNG,kit,pt[0]==1);boolean mitico=bau.stream().anyMatch(Reliquia::mitica);
         t.putInt("rel_pity",Reliquias.depois(pt[1],mitico));
         var out=new ArrayList<>(bau.stream().map(ItemReliquia::criar).toList());
         out.add(new ItemStack(RegistroReliquias.ESSENCIA.get(),Reliquias.essenciaBau(RNG)));return out;

@@ -98,7 +98,7 @@ public final class NemesisEntity extends Monster implements GeoEntity {
         }super.die(fonte);barra.removeAllPlayers();
     }
     @Override public void remove(RemovalReason r){barra.removeAllPlayers();super.remove(r);}
-    @Override public void startSeenByPlayer(ServerPlayer p){super.startSeenByPlayer(p);barra.addPlayer(p);}
+    @Override public void startSeenByPlayer(ServerPlayer p){super.startSeenByPlayer(p);if(!com.cauansilva.arcanecontrol.core.vazio.VazioServidor.emInstancia(this))barra.addPlayer(p);}
     @Override public void stopSeenByPlayer(ServerPlayer p){super.stopSeenByPlayer(p);barra.removePlayer(p);}
     @Override protected boolean shouldDespawnInPeaceful(){return false;}
     @Override public boolean removeWhenFarAway(double d){return false;}

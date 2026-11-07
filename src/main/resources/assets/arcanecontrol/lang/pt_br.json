@@ -150,5 +150,17 @@
   "item.arcanecontrol.reliquia_brinco": "Relíquia: Brinco",
   "key.minezin.relics": "Bolsa de Relíquias",
   "block.arcanecontrol.ferreiro_vazio": "Ferreiro do Vazio",
-  "item.arcanecontrol.essencia_vazio": "Essência do Vazio"
+  "item.arcanecontrol.essencia_vazio": "Essência do Vazio",
+  "key.minezin.dodge": "Esquiva (Perfect Dodge)",
+  "key.minezin.lock_on": "Travar alvo (Lock-on)",
+  "entity.arcanecontrol.familiar": "Familiar",
+  "item.arcanecontrol.selo_familiar_raio": "Selo: Espírito do Raio",
+  "item.arcanecontrol.selo_familiar_fonte": "Selo: Espírito da Fonte",
+  "item.arcanecontrol.selo_familiar_guardiao": "Selo: Espírito Guardião",
+  "item.arcanecontrol.frasco_fogo": "Frasco de Fogo",
+  "item.arcanecontrol.frasco_gelo": "Frasco de Gelo",
+  "item.arcanecontrol.frasco_raio": "Frasco de Raio",
+  "item.arcanecontrol.frasco_agua": "Frasco de Água",
+  "item.arcanecontrol.boneco_treino": "Boneco de Treino",
+  "entity.arcanecontrol.boneco_treino": "Boneco de Treino"
 }
