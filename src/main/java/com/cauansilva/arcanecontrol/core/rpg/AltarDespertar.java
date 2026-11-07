@@ -24,8 +24,8 @@ public final class AltarDespertar extends Block {
             if(tag.hasUUID("desafio")){var e=((ServerLevel)l).getEntity(tag.getUUID("desafio"));if(e instanceof NemesisEntity)e.discard();tag.remove("desafio");}
             p.displayClientMessage(Component.literal("Desafio cancelado. Nenhuma alma foi concedida."),true);return InteractionResult.CONSUME;
         }
-        var kit=ProgressaoPoderes.ler(p).ativo();var m=RpgServidor.mestria(p,kit.id);
-        String erro=!p.isAlive()||p.isSpectator()?"Você precisa estar vivo.":tag.hasUUID("desafio")?"Você já tem um desafio. Agache e use o altar para cancelar.":!m.tem(NoRpg.DESPERTAR)?"Compre o nó Despertar em H (nível 50).":m.despertarLiberado()?"Este kit já despertou.":null;
+        // qualquer chefe pode ser enfrentado de novo; a Alma so sai na primeira vitoria do kit (VazioServidor)
+        String erro=!p.isAlive()||p.isSpectator()?"Você precisa estar vivo.":tag.hasUUID("desafio")?"Você já tem um desafio. Agache e use o altar para cancelar.":null;
         if(erro!=null){p.displayClientMessage(Component.literal(erro),true);return InteractionResult.CONSUME;}
         // Void System: o desafio acontece numa instancia propria no Vazio (com quem estiver perto do altar)
         com.cauansilva.arcanecontrol.core.rank.RankServidor.abrirMenu(p,pos);
