@@ -63,11 +63,30 @@ public final class Reliquias {
         var lista = new ArrayList<>(List.of(Afixo.values())); Collections.shuffle(lista, r);
         var rol = new ArrayList<Rolagem>();
         for (int i = 0; i < afixos(tier); i++) {
-            var a = lista.get(i); double[] f = a.faixa(tier); double v = f[0] + (f[1] - f[0]) * r.nextDouble();
-            rol.add(new Rolagem(a, a == Afixo.VIDA ? Math.round(v) : Math.round(v * 10) / 10.0));
+            rol.add(rolar(r, lista.get(i), tier));
         }
         return new Reliquia(tipo, tier, kit, List.copyOf(rol));
     }
+    /** Valor de um afixo sorteado na faixa do tier (VIDA inteiro, resto com 1 casa). */
+    static Rolagem rolar(Random r, Afixo a, int tier) {
+        double[] f = a.faixa(tier); double v = f[0] + (f[1] - f[0]) * r.nextDouble();
+        return new Rolagem(a, a == Afixo.VIDA ? Math.round(v) : Math.round(v * 10) / 10.0);
+    }
+
+    // ---------------- Essencia do Vazio e Ferreiro ----------------
+    /** Essencia recebida ao desmanchar uma reliquia de cada tier. */
+    public static final int[] DESMANCHE = {0, 2, 5, 12, 30, 80};
+    /** Custo em Essencia para reforjar so os valores (mesmos afixos); reforjar tudo custa o dobro. */
+    public static final int[] CUSTO_VALORES = {0, 3, 7, 16, 36, 90};
+    public enum Reforja { VALORES, TUDO }
+    public static int custo(int tier, Reforja modo) { int c = CUSTO_VALORES[Math.max(1, Math.min(TIERS, tier))]; return modo == Reforja.TUDO ? c * 2 : c; }
+    /** Ferreiro: VALORES re-sorteia os valores dos mesmos afixos; TUDO sorteia afixos novos. Tier, tipo e chefe ficam. */
+    public static Reliquia reforjar(Random r, Reliquia rel, Reforja modo) {
+        if (modo == Reforja.TUDO) return gerar(r, rel.tipo(), rel.tier(), rel.kit());
+        return new Reliquia(rel.tipo(), rel.tier(), rel.kit(), rel.afixos().stream().map(a -> rolar(r, a.afixo(), rel.tier())).toList());
+    }
+    /** Essencia extra no bau do chefe: 2 a 4. */
+    public static int essenciaBau(Random r) { return 2 + r.nextInt(3); }
 
     /** Bonus somados de tudo que esta na Bolsa (valores em % ou coracoes, como nos afixos), com teto por afixo. */
     public static Map<Afixo, Double> somar(Collection<Reliquia> bolsa) {

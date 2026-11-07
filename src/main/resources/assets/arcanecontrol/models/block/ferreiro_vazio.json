@@ -1,0 +1,107 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "base": "minecraft:block/polished_blackstone",
+    "corpo": "minecraft:block/crying_obsidian",
+    "topo": "minecraft:block/smithing_table_top",
+    "particle": "minecraft:block/crying_obsidian"
+  },
+  "elements": [
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        14,
+        4,
+        14
+      ],
+      "faces": {
+        "north": {
+          "texture": "#base"
+        },
+        "south": {
+          "texture": "#base"
+        },
+        "east": {
+          "texture": "#base"
+        },
+        "west": {
+          "texture": "#base"
+        },
+        "up": {
+          "texture": "#base"
+        },
+        "down": {
+          "texture": "#base"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        4,
+        5
+      ],
+      "to": [
+        12,
+        9,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#corpo"
+        },
+        "south": {
+          "texture": "#corpo"
+        },
+        "east": {
+          "texture": "#corpo"
+        },
+        "west": {
+          "texture": "#corpo"
+        },
+        "up": {
+          "texture": "#corpo"
+        },
+        "down": {
+          "texture": "#corpo"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        9,
+        3
+      ],
+      "to": [
+        16,
+        15,
+        13
+      ],
+      "faces": {
+        "north": {
+          "texture": "#corpo"
+        },
+        "south": {
+          "texture": "#corpo"
+        },
+        "east": {
+          "texture": "#corpo"
+        },
+        "west": {
+          "texture": "#corpo"
+        },
+        "up": {
+          "texture": "#topo"
+        },
+        "down": {
+          "texture": "#corpo"
+        }
+      }
+    }
+  ]
+}

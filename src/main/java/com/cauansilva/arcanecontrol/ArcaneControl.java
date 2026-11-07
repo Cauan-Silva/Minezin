@@ -48,6 +48,7 @@ public class ArcaneControl {
         public static void onClientSetup(net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent event) {
             event.enqueueWork(com.cauansilva.arcanecontrol.core.client.AnimacoesGojo::registrar);
             event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.BOLSA.get(),com.cauansilva.arcanecontrol.core.reliquias.TelaBolsa::new));
+            event.enqueueWork(()->net.minecraft.client.gui.screens.MenuScreens.register(com.cauansilva.arcanecontrol.core.reliquias.RegistroReliquias.MENU_FERREIRO.get(),com.cauansilva.arcanecontrol.core.reliquias.TelaFerreiro::new));
         }
         @SubscribeEvent
         public static void onKeyRegister(RegisterKeyMappingsEvent event) {

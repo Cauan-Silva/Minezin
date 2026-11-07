@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "arcanecontrol:altar_despertar"
+    "arcanecontrol:altar_despertar",
+    "arcanecontrol:ferreiro_vazio"
   ]
 }

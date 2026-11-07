@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    " N ",
+    "BBB"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "N": {
+      "item": "minecraft:anvil"
+    },
+    "B": {
+      "item": "minecraft:polished_blackstone"
+    }
+  },
+  "result": {
+    "item": "arcanecontrol:ferreiro_vazio"
+  }
+}

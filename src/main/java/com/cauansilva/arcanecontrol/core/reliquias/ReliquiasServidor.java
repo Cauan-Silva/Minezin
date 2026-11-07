@@ -123,7 +123,8 @@ public final class ReliquiasServidor {
         var t=RpgServidor.dados(p);int[] pt=Reliquias.pity(t.getInt("rel_pity"));
         var bau=Reliquias.bau(RNG,kit,pt[0]==1);boolean mitico=bau.stream().anyMatch(Reliquia::mitica);
         t.putInt("rel_pity",Reliquias.depois(pt[1],mitico));
-        return bau.stream().map(ItemReliquia::criar).toList();
+        var out=new ArrayList<>(bau.stream().map(ItemReliquia::criar).toList());
+        out.add(new ItemStack(RegistroReliquias.ESSENCIA.get(),Reliquias.essenciaBau(RNG)));return out;
     }
     /** Abre o bau so com o loot deste jogador; o que sobrar volta ao inventario quando ele fechar. */
     public static void abrirBau(ServerPlayer p,List<ItemStack> itens,String chefe,Runnable aoFechar){

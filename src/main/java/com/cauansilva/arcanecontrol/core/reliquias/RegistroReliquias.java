@@ -15,6 +15,10 @@ public final class RegistroReliquias {
     public static final RegistryObject<Item> AMULETO=EspadaCid.ITEMS.register("reliquia_amuleto",()->new ItemReliquia(Tipo.AMULETO));
     public static final RegistryObject<Item> BRINCO=EspadaCid.ITEMS.register("reliquia_brinco",()->new ItemReliquia(Tipo.BRINCO));
     public static final RegistryObject<MenuType<MenuBolsa>> BOLSA=MENUS.register("bolsa_reliquias",()->IForgeMenuType.create((id,inv,buf)->new MenuBolsa(id,inv)));
+    public static final RegistryObject<Item> ESSENCIA=EspadaCid.ITEMS.register("essencia_vazio",()->new Item(new Item.Properties().rarity(net.minecraft.world.item.Rarity.UNCOMMON)));
+    public static final RegistryObject<net.minecraft.world.level.block.Block> FERREIRO=com.cauansilva.arcanecontrol.core.rpg.RegistroDespertar.BLOCOS.register("ferreiro_vazio",()->new BlocoFerreiro(net.minecraft.world.level.block.state.BlockBehaviour.Properties.copy(net.minecraft.world.level.block.Blocks.ANVIL).strength(5,1200).lightLevel(x->6)));
+    public static final RegistryObject<Item> ITEM_FERREIRO=EspadaCid.ITEMS.register("ferreiro_vazio",()->new net.minecraft.world.item.BlockItem(FERREIRO.get(),new Item.Properties().rarity(net.minecraft.world.item.Rarity.RARE)));
+    public static final RegistryObject<MenuType<MenuFerreiro>> MENU_FERREIRO=MENUS.register("ferreiro_vazio",()->IForgeMenuType.create((id,inv,buf)->new MenuFerreiro(id,inv)));
     public static void registrar(IEventBus bus){MENUS.register(bus);}
     private RegistroReliquias(){}
 }
