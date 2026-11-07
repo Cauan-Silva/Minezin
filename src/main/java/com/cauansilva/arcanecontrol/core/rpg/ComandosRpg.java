@@ -23,6 +23,13 @@ public final class ComandosRpg {
                 .executes(c->darReliquia(c.getSource(),com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c,"tier"),1))
                 .then(Commands.argument("kit",com.mojang.brigadier.arguments.IntegerArgumentType.integer(1,16))
                     .executes(c->darReliquia(c.getSource(),com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c,"tier"),com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c,"kit"))))))
+            // /minezin rank -> mostra o Rank de Cacador; /minezin rank <pontos> (teste) -> define os pontos
+            .then(Commands.literal("rank").executes(c->{var p=c.getSource().getPlayerOrException();int pts=com.cauansilva.arcanecontrol.core.rank.RankServidor.pontos(p);
+                    var r=com.cauansilva.arcanecontrol.core.rank.RankServidor.rank(p);var n=r.proximo();
+                    c.getSource().sendSuccess(()->net.minecraft.network.chat.Component.literal("Rank de Caçador ").append(com.cauansilva.arcanecontrol.core.rank.RankServidor.texto(r)).append(" "+pts+(n==null?" (máximo)":" / "+n.minimo)),false);return 1;})
+                .then(Commands.argument("pontos",com.mojang.brigadier.arguments.IntegerArgumentType.integer(0,100000)).executes(c->{var p=c.getSource().getPlayerOrException();
+                    com.cauansilva.arcanecontrol.core.rank.RankServidor.definir(p,com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c,"pontos"));
+                    c.getSource().sendSuccess(()->net.minecraft.network.chat.Component.literal("Rank: ").append(com.cauansilva.arcanecontrol.core.rank.RankServidor.texto(com.cauansilva.arcanecontrol.core.rank.RankServidor.rank(p))),false);return 1;})))
             .then(Commands.literal("rpg")
                 .then(comandoMaestria())
                 .then(Commands.literal("restaurar_recursos").executes(c->{

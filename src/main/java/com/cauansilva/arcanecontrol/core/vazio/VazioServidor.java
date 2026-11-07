@@ -42,7 +42,7 @@ public final class VazioServidor {
     public static final int ENTRADA=800,SAIDA=801,CENA=802,MAX_GRUPO=4;public static final double RAIO_GRUPO=8;
 
     private static final class Instancia{
-        final long n;final BlockPos centro;final int kit;final EstadoInstancia<UUID> estado;UUID chefe;UUID dono;long inicio;
+        final long n;final BlockPos centro;final int kit;com.cauansilva.arcanecontrol.core.rank.RankCacador.Dificuldade dif=com.cauansilva.arcanecontrol.core.rank.RankCacador.Dificuldade.NORMAL;final EstadoInstancia<UUID> estado;UUID chefe;UUID dono;long inicio;
         /** Espolio individual de cada jogador (bau do chefe), ainda nao retirado. */
         final Map<UUID,List<net.minecraft.world.item.ItemStack>> espolio=new HashMap<>();BlockPos bau;
         Instancia(long n,BlockPos centro,int kit,List<UUID> grupo,long agora){this.n=n;this.centro=centro;this.kit=kit;estado=new EstadoInstancia<>(grupo,agora);}
@@ -79,6 +79,9 @@ public final class VazioServidor {
         var i=doChefe(chefe);if(i==null)return;var s=chefe.getServer();i.estado.vencer(agora(s));
         var p=dono==null?null:s.getPlayerList().getPlayer(dono);
         if(p!=null){RpgServidor.dados(p).remove("desafio");var alma=AlmaDespertar.criar(kit);if(!p.getInventory().add(alma))p.drop(alma,false);}
+        // Rank de Cacador: pontos para cada participante (derrota nunca tira)
+        int seg=(int)Math.max(0,(agora(s)-i.inicio-CinematicaEntrada.FIM)/20);
+        for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)com.cauansilva.arcanecontrol.core.rank.RankServidor.premiar(o,i.dif,seg,!i.estado.vivos().contains(id),i.estado.todos().size());}
         // bau do chefe no centro: cada jogador ve so o proprio espolio (com pity de Mitico)
         for(var id:i.estado.todos()){var o=s.getPlayerList().getPlayer(id);if(o!=null)i.espolio.put(id,new ArrayList<>(com.cauansilva.arcanecontrol.core.reliquias.ReliquiasServidor.sortear(o,i.kit)));}
         if(chefe.level() instanceof ServerLevel reino){i.bau=i.centro.above();reino.setBlock(i.bau,Blocks.ENDER_CHEST.defaultBlockState(),Block.UPDATE_ALL);
@@ -88,15 +91,21 @@ public final class VazioServidor {
 
     // ---------------- entrada ----------------
     /** Altar: abre a instancia para o dono e quem estiver perto. Devolve false (com mensagem) se nao der. */
-    public static boolean iniciar(ServerPlayer dono,BlockPos altar,PoderAnime kit){
+    public static boolean iniciar(ServerPlayer dono,BlockPos altar,PoderAnime kit){return iniciar(dono,altar,kit,com.cauansilva.arcanecontrol.core.rank.RankCacador.Dificuldade.NORMAL);}
+    /** Quem entra junto: o dono e quem estiver a ate RAIO_GRUPO blocos do altar (ate MAX_GRUPO). */
+    public static List<ServerPlayer> grupo(ServerPlayer dono,BlockPos altar){
+        List<ServerPlayer> grupo=new ArrayList<>();grupo.add(dono);
+        for(var o:dono.serverLevel().players())if(grupo.size()<MAX_GRUPO&&o!=dono&&o.isAlive()&&!o.isSpectator()&&doJogador(o.getUUID())==null&&o.position().distanceTo(Vec3.atCenterOf(altar))<=RAIO_GRUPO)grupo.add(o);
+        return grupo;
+    }
+    public static boolean iniciar(ServerPlayer dono,BlockPos altar,PoderAnime kit,com.cauansilva.arcanecontrol.core.rank.RankCacador.Dificuldade dif){
         var s=dono.getServer();var reino=s.getLevel(REINO);
         if(reino==null){mensagem(dono,"A dimensão do Vazio não carregou (datapack ausente).",ChatFormatting.RED);return false;}
         if(dono.level().dimension()==REINO){mensagem(dono,"Você já está no Vazio.",ChatFormatting.RED);return false;}
-        List<ServerPlayer> grupo=new ArrayList<>();grupo.add(dono);
-        for(var o:dono.serverLevel().players())if(grupo.size()<MAX_GRUPO&&o!=dono&&o.isAlive()&&!o.isSpectator()&&doJogador(o.getUUID())==null&&o.position().distanceTo(Vec3.atCenterOf(altar))<=RAIO_GRUPO)grupo.add(o);
+        var grupo=grupo(dono,altar);
         long n=proxima(s);int[] c=PlantaArena.centro(n);BlockPos centro=new BlockPos(c[0],PlantaArena.CHAO,c[1]);
         construir(reino,centro,kit.id);
-        var inst=new Instancia(n,centro,kit.id,grupo.stream().map(Entity::getUUID).toList(),agora(s));inst.dono=dono.getUUID();inst.inicio=agora(s);
+        var inst=new Instancia(n,centro,kit.id,grupo.stream().map(Entity::getUUID).toList(),agora(s));inst.dono=dono.getUUID();inst.inicio=agora(s);inst.dif=dif;
         INSTANCIAS.put(n,inst);
         for(int k=0;k<grupo.size();k++){var p=grupo.get(k);salvarRetorno(p);double[] e=PlantaArena.entradaJogador(k,grupo.size());
             Vec3 destino=Vec3.atBottomCenterOf(centro).add(e[0],1,e[1]);float yaw=(float)Math.toDegrees(Math.atan2(e[0],-e[1]));
@@ -108,11 +117,12 @@ public final class VazioServidor {
         double[] ec=PlantaArena.entradaChefe();chefe.configurarTamanho(kit.id);
         chefe.moveTo(centro.getX()+.5+ec[0],centro.getY()+1,centro.getZ()+.5+ec[1],90,0);
         chefe.preparar(dono,kit.id,Vec3.atBottomCenterOf(centro).add(0,1,0));
+        if(dif.vida!=1){var vida=chefe.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH);vida.setBaseValue(vida.getBaseValue()*dif.vida);chefe.setHealth(chefe.getMaxHealth());}
         inst.chefe=chefe.getUUID();RpgServidor.dados(dono).putUUID("desafio",chefe.getUUID());
         if(!reino.addFreshEntity(chefe)){encerrar(s,inst);return false;}
         Vec3 chao=Vec3.atBottomCenterOf(centro).add(0,1,0);
         for(var p:grupo)RegistoRede.ENVIAR.send(PacketDistributor.PLAYER.with(()->p),new PacoteSincronizarCutscene3D(CENA,p.getUUID(),chao.x,chao.y,chao.z,kit.id,chefe.getBbHeight(),0));
-        mensagem(dono,"Desafio: "+PersonagemRpg.porId(kit.id).nemesis+" (grupo de "+grupo.size()+").",ChatFormatting.DARK_PURPLE);
+        mensagem(dono,"Desafio "+dif.nome+": "+PersonagemRpg.porId(kit.id).nemesis+" (grupo de "+grupo.size()+").",ChatFormatting.DARK_PURPLE);
         return true;
     }
     private static BlockState bloco(int kit,PlantaArena.Papel papel){
@@ -169,6 +179,11 @@ public final class VazioServidor {
     }
 
     // ---------------- eventos ----------------
+    /** Dificuldade: o golpe do chefe da instancia sai multiplicado. */
+    @SubscribeEvent public static void danoChefe(net.minecraftforge.event.entity.living.LivingHurtEvent e){
+        var autor=e.getSource().getEntity();if(autor==null||autor.level().dimension()!=REINO)return;var i=doChefe(autor);
+        if(i!=null&&i.dif.dano!=1)e.setAmount((float)(e.getAmount()*i.dif.dano));
+    }
     @SubscribeEvent public static void tick(TickEvent.ServerTickEvent e){
         if(e.phase!=TickEvent.Phase.END||INSTANCIAS.isEmpty())return;var s=e.getServer();long agora=agora(s);var reino=s.getLevel(REINO);
         for(var i:List.copyOf(INSTANCIAS.values())){
