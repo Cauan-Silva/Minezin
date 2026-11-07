@@ -148,5 +148,7 @@
   "item.arcanecontrol.reliquia_colar": "Relíquia: Colar",
   "item.arcanecontrol.reliquia_amuleto": "Relíquia: Amuleto",
   "item.arcanecontrol.reliquia_brinco": "Relíquia: Brinco",
-  "key.minezin.relics": "Bolsa de Relíquias"
+  "key.minezin.relics": "Bolsa de Relíquias",
+  "block.arcanecontrol.ferreiro_vazio": "Ferreiro do Vazio",
+  "item.arcanecontrol.essencia_vazio": "Essência do Vazio"
 }
